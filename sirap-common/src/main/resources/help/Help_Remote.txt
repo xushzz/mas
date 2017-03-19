@@ -1,0 +1,6 @@
+rx                 enable or disable remote control
+rc                 display remote configuration
+r..                display history remote commands
+F:                 issued from email Subject part, the result will be replied to the sender 
+#ignored           email subject starts with #, the command won't be executed
+$noreply           email subject starts with $, command will be executed without replying

@@ -1,0 +1,13 @@
+fd 000119          display all the detail of this employee in LDAP by account
+bs 000119          display all the bosses of this employee in offline-LDAP by account
+xs 000119          display all the subordinates of this employee in offline-LDAP by account
+xs2 012458         display two-level subordinates in tree format from offline-LDAP
+xs2. 012458        display two-level subordinates in plain format from offline-LDAP
+#bs 000119          display all the bosses of this employee in online-LDAP by account
+#xs 000119          display all the subordinates of this employee in online-LDAP by account
+la                 list some users on LDAP server, some defined by default pageSize(100) and maxPage(2)
+la mail:*ding*     list users matching given filter expression, order by creation date ascending
+la alias           [zhao, ghao, acc] for sAMAccountName
+la expression      site: http://blog.csdn.net/jbgtwang/article/details/39180915
+la 01107,m78fd     list users on LDAP server whose accounts are in the comma-separated string
+ver=SIRAP-LDAP1.0.2-ALWIN  2/12/2017, VII

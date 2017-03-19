@@ -1,0 +1,29 @@
+-F:\fire.abc       print detail like size, creation time, last modified time, lines, duration if any                 
+txt F:\fire.abc    print target file in text manner, no matter it is a text file or not
+cat F:\fire.abc    print target file in text manner, no matter it is a text file or not
+=F:\fly.txt        print target file in text manner, no matter it is a text file or not
+F:\fire\fly.mp3    for an audio file, the sound will be played by the configured audio player, same goes 
+                   for video/photo/doc/docx/xls/xlsx/PDF files with their players/viewers respectively, 
+                   when it comes to executable file, the file will run itself.
+F:\fire            for a folder, we just simply list the stuff in this folder
+-F:\fire           for a folder, we just simply list the stuff in this folder, along with size info
+F:\fire<           for a folder with 'less than' character, open Windows resource manager at this folder
+<                  open Windows resource manager at storage
+E:\Fly mp3&fire    display the files/folders whose name contains 'mp3' and 'fire' in the folder 
+E:\Fly txt|kid     display the files/folders which name contains 'txt' or 'kid' in the folder
+F:\fire 3          this will recursively list the stuff in the folder and its subs till layer three 
+F:\fire 3 txt      this will recursively list the txt files in the folder and its subs till layer three
+F:\Lon Don, 3 txt  this will recursively list the txt files in the folder and its subs till layer three
+:                  list out all available disks in detail manner
+::                 similar to performing C:, D: and all other available disks all together
+::\fire            similar to performing C:\fire, D:\fire and all other available disks all together
+::\fire 3 txt      recursively display for all available disks
+v                  display folder names configured in v.folder nodes, "v folders"
+v..                list all files in v folders recursively by given depth, default 2 and configurable 
+vr                 refresh 'v folders' cache, the changes in folders will be reflected in next search
+v homeland&tower   conduct search in v folders by multiple conditions, & for 'and', | for 'or'
+v 5.3              the number-format criteria would be additionally read as season 05 episode 03
+(wi\d+)@http://a.cn  filter out those records matching the specified java regex
+(wi\d+)@E:\a.txt   filter out those records matching the specified java regex
+pdf1,4-7 E:\A.pdf  select specified pages from give PDF and export to a new PDF file
+pdf A.pdf,B.pdf    merge all PDF files and export to a new PDF file

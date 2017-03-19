@@ -1,0 +1,34 @@
+?                  list help, in this system, all commands are case-insensitive
+?fire              display any record containing fire
+?^fire             display any record starting with fire
+?fire$             display any record ending with water
+?fire&water        display any record containing both fire and water
+?fire|water        display any record containing fire or water
+'fire              the single quote behaves exactly the same as question mark, and i prefer '
+search             the aforementioned rules apply for any other searching commands
+                   such as 'ch fire', 'F: water' and so on
+e/exit/q/quit      quit
+ABC>$              the yielded files will be copied to folder export
+ABC>$E:            the yielded files will be copied to E:
+ABC>$E:=           the yielded files will be copied to E:\ABC
+ABC>$max           the yielded files will be copied to export\max, say max is not a folder in storage
+ABC>$max=          the yielded files will be copied to export\max
+ABC>.              the yielded content will be exported as text to file export\ABC.txt
+ABC>*              the yielded content will be sirap-encoded and exported to file export\ABC.sirap
+ABC>E:             the yielded content will be exported as text to file E:\ABC.txt
+ABC>E:\\max        the yielded content will be exported as text to file E:\max.txt
+ABC>E:\\max.txt    the yielded content will be exported as text to file E:\max.txt
+ABC>max            the yielded content will be exported as text to file export\max.txt
+ABC>*E:            the yielded content will be sirap-encoded and exported to file E:\ABC.sirap
+ABC>.pdf           the yielded content will be exported to pdf file export\ABC.pdf
+ABC>E:\\.pdf       the yielded content will be exported to pdf file E:\ABC.pdf
+ABC>E:\\max.pdf    the yielded content will be exported to pdf file E:\max.pdf
+ABC>max.pdf        the yielded content will be exported to pdf file export\max.pdf
+ABC>.htm           the yielded content will be exported to html file export\ABC.htm
+ABC>E:\\.htm       the yielded content will be exported to html file E:\ABC.htm
+ABC>E:\\max.htm    the yielded content will be exported to html file E:\max.htm
+ABC>max.htm        the yielded content will be exported to html file export\max.htm
+ABC>.xls           the yielded content will be exported to html file export\ABC.xls
+ABC>E:\\.xls       the yielded content will be exported to html file E:\ABC.xls
+ABC>E:\\max.xls    the yielded content will be exported to html file E:\max.xls
+ABC>max.xls        the yielded content will be exported to html file export\max.xls

@@ -1,0 +1,22 @@
+\                  display previous N records of commands with backward slash, currently default N=20
+\fire              display all inputs matching given criteria(s), month info will be translated
+\mar/March         ch means 'command history', inputs generated in March will be displayed
+]\13               display given number of records of inputs, the number is 13 in this example
+]\..               display all records of inputs
+sc                 sc means 'system configuration', display all of them
+sc fire            display system configuration entries matching given criteria
+lh[8|..]           display default(20), or given number of, or all login records
+lh -08-            display login records matching given criteria(s), month info will be translated
+ld[..]             display time spent distribution for logins in current month or all logins
+ld aug             display time spent distribution for logins matching given criteria(s) 
+ah                 ah line1\line2\line3, display lines
+ah e[s]            display environment variables or system variables or both
+ah user.dir        display environment variables or system variables containing 'user.dir'
+k D:/work          scan files and display java lines containing keywords described in 'keys.reader.methods'   
+kc                 display all entries in file Keys.txt
+kc fire            display entries in file Keys.txt that matching given criteria
+jiami-xy content   encode content with sirap algorithm
+jiami-xy E:/a.txt  encode content specified by path with sirap algorithm
+jiemi-xy content   decode content with sirap algorithm
+jiemi-xy E:/a.txt  decode content specified by path with sirap algorithm
+n..                list all available command nodes

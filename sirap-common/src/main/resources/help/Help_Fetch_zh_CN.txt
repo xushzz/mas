@@ -1,0 +1,3 @@
+NeteaseXX或者 PhoenixSocial  其中XX可用[seriea, china, social, bundes, laliga, premier, uefa]其中之一代替
+                   .获取网站相关模块列出的图片的全部路径，如网易中国，网易英超，凤凰网社会
+iga或者pinder       .获取网站提供的相关人物对应的图片链接

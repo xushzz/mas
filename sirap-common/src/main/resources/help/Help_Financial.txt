@@ -1,0 +1,12 @@
+kk                 list all credit cards basic information from credit card path
+kk ZS              list the detail for credit card ZS, Zhaoshang
+dc                 day check, display memory entries that would happen within 30 days
+mm                 display last 20 memory entries in file specified as 'file.memory' in user config
+mm3                display last N memory entries
+mm..               display all memory entries
+mm fire            search and display memory entries matching criteria
+CNY10000           how much could you have in other currencies by trading given amount of given currency
+                   under going rate? Such as top currencies GBP,EUR,CHF,USD,CAD,AUD,SGD,NZD,CNY,HKD,JPY.
+CNY10000/          more than just top but total of 56 currencies will be listed, TWD,KWD,BHD and so on.
+CNY10000JPY[,HKD]  specified currencies will be listed, courtesy of http://www.x-rates.com/table
+loan 12000,12,0.7  tell exactly how much you have to pay under given loan agreement, regular/decreased.

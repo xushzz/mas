@@ -1,0 +1,610 @@
+package com.sirap.basic.util;
+
+import java.io.File;
+import java.io.FileFilter;
+import java.io.InputStream;
+import java.math.RoundingMode;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.FileTime;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.swing.filechooser.FileSystemView;
+
+import com.sirap.basic.component.CleverFolder;
+import com.sirap.basic.component.Konstants;
+import com.sirap.basic.exception.MexException;
+import com.sirap.basic.tool.FileWalker;
+
+@SuppressWarnings("unchecked")
+public class FileUtil {
+	
+	public static final String SUFFIXES_IMAGE = "png;bmp;jpg;jpeg;jpe;jfif;gif;tif;tiff;ico";
+	public static final String SUFFIXES_AUDIO = "mp3;wma;wav;mid;midi;mpa;aac";
+	public static final String SUFFIXES_VIDEO = "3gp;avi;wmv;wmp;asf;rm;ram;rmvb;ra;mpg;mpeg;mp4;mpa;mkv";
+	public static final String SUFFIXES_TEXT = "txt;properties;java;js;css;xml;log;pom;bat;cpp;h;sh";
+	public static final String SUFFIXES_PDF = "pdf";
+	public static final String SUFFIXES_WORD = "doc;docx";
+	public static final String SUFFIXES_EXCEL = "xls;xlsx";
+	public static final String SUFFIXES_HTML = "html;htm";
+	public static final String SUFFIXES_EXECUTABLE = "exe";
+	public static final String SUFFIX_MEX = "mex";
+	public static final String SUFFIX_SIRAP = "sirap";
+	public static final String SUFFIXES_OTHERS = "jar;apk;zip";
+	
+	public static final char[] BAD_CHARS_FOR_FILENAME = {'/','\\',':','\"','*','?','|','>','<'};
+	public static final String FOLDER_TRASH = "$";
+	public static final String FILE_THUMBS = "Thumbs.db";
+	
+	public static final String SLASH_DOUBLE = "\\\\";
+	
+	public static boolean isNormalFile(String fileName) {
+		File file = new File(fileName);
+		return file.isFile();
+	}
+
+	public static File getIfNormalFile(String fileName) {
+		File file = new File(fileName);
+
+		if (file.isFile()) {
+			return file;
+		} else {
+			return null;
+		}
+	}
+
+	public static File getIfNormalFolder(String folderName) {
+		File file = new File(folderName);
+
+		if (file.isDirectory()) {
+			return file;
+		} else {
+			return null;
+		}
+	}
+
+	public static boolean exists(String filePath) {
+		if(filePath == null) {
+			return false;
+		}
+		
+		File file = new File(filePath);
+		return file.exists();
+	}
+
+	public static boolean makeDirectoriesIfNonExist(String storage) {
+		if (EmptyUtil.isNullOrEmptyOrBlank(storage)) {
+			return false;
+		}
+
+		File file = new File(storage);
+		if (!file.exists()) {
+			file.mkdirs();
+			return false;
+		}
+
+		return true;
+	}
+
+	public static String generateFileName(String prefix, String name) {
+		return generateFileName(prefix, name, Konstants.SUFFIX_TXT);
+	}
+
+	public static String generateFileName(String prefix, String name, String fileType) {
+		return generateFileName(prefix, name, "", fileType);
+	}
+
+	public static String generateFileName(String prefix, String name, String suffix, String fileType) {
+		return prefix + name + suffix + fileType;
+	}
+	
+	/***
+	 * 
+	 * @param fileName
+	 * @param suffixes txt;png;java
+	 * @return
+	 */
+	public static boolean isAnyTypeOf(String fileName, String suffixes) {
+		if(fileName == null || suffixes == null) {
+			return false;
+		}
+		
+		String[] suffixArr = suffixes.split(";");
+		
+		for(int i = 0; i < suffixArr.length; i++) {
+			String suffix = suffixArr[i];
+			if(EmptyUtil.isNullOrEmptyOrBlank(suffix)) {
+				continue;
+			}
+			
+			String tempName = fileName.toLowerCase();
+			String tempSfx = suffix.toLowerCase();
+			if(tempName.endsWith(tempSfx) || tempName.endsWith("." + tempSfx)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public static boolean isMexFile(String fileName) {
+		return isAnyTypeOf(fileName, Konstants.SUFFIX_MEX);
+	}
+	
+	public static boolean isSirapFile(String fileName) {
+		return isAnyTypeOf(fileName, Konstants.SUFFIX_SIRAP);
+	}
+
+	public static List<File> scanFolder(String path, int depth) {
+		return scanFolder(path, depth, null);
+	}
+	
+	public static List<File> scanFolder(String path, int depth, String[] suffixes) {
+		List<String> paths = new ArrayList<String>();
+		paths.add(path);
+		return scanFolder(paths, depth, suffixes);
+	}
+
+	public static List<File> scanFolder(String path, int depth, String[] suffixes, boolean includeFolder) {
+		List<String> paths = new ArrayList<String>();
+		paths.add(path);
+		return scanFolder(paths, depth, suffixes, includeFolder);
+	}
+
+	public static List<File> scanFolder(List<String> paths, int depth, String[] suffixes) {
+		return scanFolder(paths, depth, suffixes, true);
+	}
+	
+	public static List<File> scanFolder(List<String> paths, int depth, String[] suffixes, boolean includeFolder) {
+		List<File> allFiles = new ArrayList<File>();
+		
+		if(EmptyUtil.isNullOrEmpty(paths)) {
+			return Collections.EMPTY_LIST;
+		}
+
+		for (String temp:paths) {
+			if(EmptyUtil.isNullOrEmpty(temp)) {
+				continue;
+			}
+			
+			if(isUndesiredFile(temp)) {
+				continue;
+			}
+			
+			temp = temp.trim();
+			if(FileUtil.isMaliciousPath(temp)) {
+				continue;
+			}
+			
+			File file = FileUtil.getIfNormalFolder(temp);
+			if(file == null) {
+				continue;
+			}
+			
+			String path = file.getAbsolutePath();
+			FileWalker mary = new FileWalker(path, suffixes);
+			mary.setIncludeFolder(includeFolder);
+			allFiles.addAll(mary.listFilesRecursively(depth));
+		}
+
+		return allFiles;
+	}
+
+	public static String generateLegalFileName(String source) {
+		if(source == null) {
+			return null;
+		}
+		
+		boolean isWindows = StrUtil.contains(System.getProperty("os.name"), "Windows");
+		if(isWindows) {
+			String temp = new String(BAD_CHARS_FOR_FILENAME);
+			temp = temp.replace("\\", "\\\\");
+			String regex = "[" + temp + "]";
+			String fileName = source.replaceAll(regex, "-"); 
+			fileName = fileName.replace("\t", " ");
+			
+			return fileName;
+		}
+		
+		return source;
+	}
+	
+	public static String escapeChars(String source, char[] charsToEscape) {
+		String temp = new String(charsToEscape);
+		String regex = "[" + temp + "]";
+		
+		String result = source.replaceAll(regex, "-");
+		
+		return result;
+	}
+	
+	public static boolean startWithDiskName(String path) {
+		if(EmptyUtil.isNullOrEmpty(path)) {
+			return false;
+		}
+
+		Matcher m = Pattern.compile("^[A-Z]:", Pattern.CASE_INSENSITIVE).matcher(path);
+		boolean flag = m.lookingAt();
+		
+		return flag;
+	}
+
+	public static boolean isMaliciousPath(String path) {
+		if(EmptyUtil.isNullOrEmpty(path)) {
+			return true;
+		}
+		
+		Matcher m = Pattern.compile("(\\.|/|\\\\)+", Pattern.CASE_INSENSITIVE).matcher(path);
+		boolean flag = m.matches();
+		
+		return flag;
+	}
+	
+	public static boolean isDiskName(String path) {
+		Matcher m = Pattern.compile("[A-Z]:", Pattern.CASE_INSENSITIVE).matcher(path);
+		boolean flag = m.matches();
+		
+		return flag;
+	}
+	
+	public static File parseNormalFile(List<String> possibleFileNames) {
+		if(EmptyUtil.isNullOrEmpty(possibleFileNames)) {
+			return null;
+		}
+		
+		for(String fileName:possibleFileNames) {
+			File file = FileUtil.getIfNormalFile(fileName);
+			
+			if(file != null) {
+				return file;
+			}
+		}
+		
+		return null;
+	}
+	
+	public static boolean isUndesiredFile(String name) {
+		if(name.startsWith(FOLDER_TRASH) || name.equalsIgnoreCase(FILE_THUMBS)) {
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public static List<String> listDirectory(String dir) {
+		File file = new File(dir);
+		List<String> records = new ArrayList<String>();
+		final List<String> normalFiles = new ArrayList<String>();
+		final List<String> subFolders = new ArrayList<String>();
+		file.listFiles(new FileFilter() {
+			public boolean accept(File filePath) {
+				String name = filePath.getName();
+				if(isUndesiredFile(name)) {
+					return false;
+				}
+				
+				if(filePath.isDirectory()) {
+					String[] files = filePath.list();
+					if(files != null) {
+						subFolders.add(filePath.getAbsolutePath() + "(" + files.length + ")");
+					}
+				} else {
+					normalFiles.add(filePath.getAbsolutePath());
+				}
+				
+				return true;
+			}
+		});
+		
+		records.add(dir);
+		records.addAll(subFolders);
+		records.addAll(normalFiles);
+		
+		return records;
+	}
+	
+	public static List<String> readResourceFilesIntoList(String filePath) {
+		return readResourceFilesIntoList(filePath, "");
+	}
+
+	public static List<String> readResourceFilesIntoList(String filePath, String prefix) {
+		List<String> records = new ArrayList<String>();
+		InputStream inputStream = InputStream.class.getResourceAsStream(filePath);
+		if(inputStream == null) {
+			return Collections.EMPTY_LIST;
+		}
+		
+		List<String> items = IOUtil.readStreamIntoList(inputStream, false, prefix);
+		if(items != null) {
+			records.addAll(items);
+		}
+		
+		return records;
+	}
+	
+	public static String generateFilenameByUrl(String httpUrl) {
+		return generateFilenameByUrl(httpUrl, null);
+	}
+	
+	public static String generateFilenameByUrl(String httpUrl, String suffixWhenObscure) {
+		String temp = httpUrl.substring(httpUrl.lastIndexOf("/") + 1);
+		int idxOfAsk = temp.indexOf('?');
+		if(idxOfAsk != -1) {
+			temp = temp.substring(0, idxOfAsk);
+		}
+		temp = FileUtil.generateLegalFileName(temp);
+		if(temp.indexOf(".") == -1 && suffixWhenObscure != null) {
+			temp += suffixWhenObscure;
+		}
+		
+		return temp;
+	}
+	
+	public static String getCleverPath(String folderName) {
+		CleverFolder mf = new CleverFolder(folderName);
+		
+		return mf.getCleverFolderPath();
+	}
+	
+	public static File parseFile(String param, String defaultFolder) {
+		if(EmptyUtil.isNullOrEmpty(param)) {
+			return null;
+		}
+		
+		List<String> possibleFileNames = new ArrayList<String>();
+		
+		if(startWithDiskName(param)) {
+			possibleFileNames.add(param);
+			possibleFileNames.add(param + Konstants.SUFFIX_TXT);
+		} else if(param.startsWith("\\\\")) {
+			possibleFileNames.add(param);
+			possibleFileNames.add(param + Konstants.SUFFIX_TXT);
+		} else {
+			possibleFileNames.add(defaultFolder + param);
+			possibleFileNames.add(defaultFolder + param + Konstants.SUFFIX_TXT);
+		}
+		
+		return parseNormalFile(possibleFileNames);
+	}
+	
+	public static File parseFolder(String param, String defaultFolder) {
+		
+		String path = getCleverPath(param);
+		if(path != null) {
+			return new File(path);
+		}
+		
+		if(param.startsWith("\\\\")) {
+			File file = FileUtil.getIfNormalFolder(param);
+			if(file != null) {
+				return file;
+			}
+		}
+		
+		return FileUtil.getIfNormalFolder(defaultFolder + param);
+	}
+	
+	public static String parseFolderPath(String param, String defaultFolder) {
+		String path = getCleverPath(param);
+		if(path != null) {
+			return path;
+		}
+		
+		File file = FileUtil.getIfNormalFolder(defaultFolder + param);
+		if(file != null) {
+			return file.getAbsolutePath();
+		}
+		
+		if(param.startsWith("\\\\")) {
+			file = FileUtil.getIfNormalFolder(param);
+			if(file != null) {
+				return file.getAbsolutePath();
+			}
+		}
+		
+		return null;
+	}
+	
+	public static String[] splitFolderAndFile(String filepath) {
+		String temp = filepath.replaceAll("/", "\\\\");
+		filepath = temp;
+		int idxOfLastSeparator = filepath.lastIndexOf("\\");
+		
+		if(idxOfLastSeparator < 0) {
+			return new String[] {null, filepath};
+		}
+		
+		String folder = filepath.substring(0, idxOfLastSeparator);
+		String filename = filepath.substring(idxOfLastSeparator + 1);
+		
+		return new String[] {folder, filename};
+	}
+
+	public static String extractFilenameWithoutExtension(String filepath) {
+		if(EmptyUtil.isNullOrEmpty(filepath)) {
+			return null;
+		}
+		
+		int idxOfLastSeparator = filepath.lastIndexOf(File.separator);
+		String filename = filepath.substring(idxOfLastSeparator + 1);
+		int idxOfLastDot = filename.lastIndexOf(".");
+		if(idxOfLastDot >= 0) {
+			filename = filename.substring(0, idxOfLastDot);
+		}
+		
+		return filename;
+	}
+	
+	/***
+	 * 
+	 * @return C:
+	 *         D:
+	 */
+	public static List<String> availableDiskDetails() {
+		List<String> items = new ArrayList<>();
+		String template = "{0} available {1} out of {2}";
+		FileSystemView fsv = FileSystemView.getFileSystemView();
+		
+		for(char flag = 'A'; flag <= 'Z'; flag++) {
+			String folderName = flag + ":\\";
+			File file = FileUtil.getIfNormalFolder(folderName);
+			if(file == null) {
+				continue;
+			}
+			
+			String displayName = organizeSystemDisplayName(fsv.getSystemDisplayName(file));
+			String record = StrUtil.occupy(template, displayName, formatFileSize(file.getFreeSpace()), formatFileSize(file.getTotalSpace()));
+			items.add(record);
+		}
+		
+		return items;
+	}
+	
+	/***
+	 * 
+	 * @return C: (CA) available 20291M out of 76800M
+	 *         D: (DA) available 5940M out of 81925M
+	 */
+	public static List<String> availableDiskNames() {
+		List<String> items = new ArrayList<>();
+		
+		for(char flag = 'A'; flag <= 'Z'; flag++) {
+			String folderName = flag + ":\\";
+			File file = FileUtil.getIfNormalFolder(folderName);
+			if(file == null) {
+				continue;
+			}
+			
+			items.add(flag + ":");
+		}
+		
+		return items;
+	}
+	
+	/***
+	 * CA (C:)
+	 * @return C: (CA)
+	 */
+	public static String organizeSystemDisplayName(String source) {
+		String regex = "(.*)\\(([A-Z]:)\\)";
+		String[] params = StrUtil.parseParams(regex, source);
+		
+		if(params == null) {
+			throw new IllegalArgumentException(source);
+		}
+
+		String template = "{0} ({1})";
+		String record = StrUtil.occupy(template, params[1], params[0]); 
+		
+		return record;
+	}
+	
+	public static String formatFileSize(String fileName) {
+		File file = getIfNormalFile(fileName);
+		if(file == null) {
+			return null;
+		}
+		
+		long size = file.length();
+		String value = formatFileSize(size);
+		
+		return value;
+	}
+	
+	public static String formatFileSize(long sizeInByte) {
+		NumberFormat pretty = NumberFormat.getNumberInstance();
+		pretty.setMaximumFractionDigits(2);
+		pretty.setRoundingMode(RoundingMode.HALF_UP);
+		
+		int base = Konstants.FILE_SIZE_STEP;
+		String value = null;
+		String units = Konstants.FILE_SIZE_UNIT;
+		for(int i = 0; i < units.length(); i++) {
+			double max = Math.pow(base, (i + 1));
+			if(sizeInByte < max) {
+				double number = sizeInByte / Math.pow(base, i);
+				value = pretty.format(number) + units.charAt(i);
+				
+				break;
+			}
+		}
+		
+		if(value == null) {
+			throw new MexException("The size [" + sizeInByte + "] is extraordinary large, are you sure?");
+		}
+		
+		return value;
+	}
+	
+	/**
+	 * 
+	 * @param source 2K
+	 * @return 2048
+	 */
+	public static long parseFileSize(String source) {
+		String units = Konstants.FILE_SIZE_UNIT;
+		
+		String regex = "(\\d+)([" + units + "])";
+		String[] params = StrUtil.parseParams(regex, source.toUpperCase());
+		if(params == null) {
+			throw new MexException("can't parse file size, try legal examples like 2B, 12M, 388G and so on.");
+		}
+		
+		Double number = Double.valueOf(params[0]);
+		int power = units.indexOf(params[1].charAt(0));
+		Double result = number * Math.pow(Konstants.FILE_SIZE_STEP, power);
+		
+		if(result > Long.MAX_VALUE) {
+			throw new MexException("The size [" + result + "] is larger than Long.MAX_VALUE [ " + Long.MAX_VALUE + "], are you sure?");
+		} else {
+			return result.longValue();
+		}
+	}
+	
+	public static List<String> detail(String filepath) {
+		List<String> items = new ArrayList<>();
+		
+		Path path = Paths.get(filepath);
+
+		items.add(createItem(path, "size"));
+		items.add(createItem(path, "creationTime"));
+		items.add(createItem(path, "lastModifiedTime"));
+		
+		return items;
+	}
+	
+	private static String createItem(Path path, String key) {
+		try {
+			Object value = Files.getAttribute(path, "basic:" + key);
+			if(StrUtil.equals("size", key) && value instanceof Long) {
+				value = formatFileSize((Long)value);
+			} else if(value instanceof FileTime) {
+				FileTime ft = (FileTime)value;
+				value = DateUtil.displayDate(new Date(ft.toMillis()), DateUtil.DATETIME);
+			} else if(value instanceof Boolean) {
+				return value.toString();
+			}
+			
+			Pattern p = Pattern.compile("[A-Z]");
+			Matcher m = p.matcher(key);
+			String display = key;
+			while(m.find()) {
+				String tempChar = m.group(0);
+				display = display.replace(tempChar, " " + tempChar.toLowerCase());
+			}
+			
+			String temp = display + ": " + value;
+			
+			return temp;
+		} catch (Exception ex) {
+			throw new MexException(ex);
+		}
+	}
+}

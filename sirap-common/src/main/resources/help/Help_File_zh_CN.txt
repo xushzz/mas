@@ -1,0 +1,17 @@
+F:\London\fly.txt  对于普通文本文件，显示文件内容
+!F:\fly.txt        对于普通文本文件，显示文件内容，并且每行不超过100个字符
+F:\fly.txt@Shenzhen\Guangzhou\Hongkong  对于普通文本文件。在文件底部内容，遇到斜杠\则换行                   
+F:\London\fly.mp3  播放MP3文件，同样对于视频、图片、word文档、PDF文档，都会被用windows用默认的播放器、图片浏览器打开，除非有用户自己配置
+F:\London          对于文件夹，显示其包含的文件列表
+E:\Fly mp3&fire    对于文件夹，显示文件夹下面名字同时包含'mp3'和'fire'的文件名称 
+E:\Fly txt|kid     对于文件夹，显示文件夹下面名字包含'txt'或者'kid'的文件名称
+F:\London 3        对于文件夹，递归显示其下3层以内的文件名列表
+F:\London 3 txt    对于文件夹，递归显示3层并且名字包含'txt'的文件名称
+F:\Lon Don, 3 txt  对于路径中包含空格的文件夹，递归显示3层并且名字包含'txt'的文件名称
+v                  西施用户配置的所有"重要文件夹"，即'v.folder.'开头的配置
+v..                显示重要文件夹下面的所有内容。递归显示，默认两层，可配置，如'v.depth=4'表示4层 
+vr                 刷新重要文件夹包含的文件列表信息
+v homeland&tower   显示重要文件夹下面名字同时包含'homeland'和'tower'的文件名称 
+v 5.3              显示重要文件夹下面名字同时包含'5.3'的文件名称，或者"S05E03"的文件名称，如美剧或英剧文件名
+(wiki\d+)@http://en.wikipedia.org/wiki/Main_Page  解析页面内容，显示符合正则表达式的相关内容
+(wiki\d+)@E:/MasPro/MasDev.properties  解析文件内容，显示符合正则表达式的相关内容

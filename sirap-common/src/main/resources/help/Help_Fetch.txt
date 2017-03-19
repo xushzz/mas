@@ -1,0 +1,4 @@
+http://URLxxx.pdf  it is a typical url indicating a normal file, fetch the file and save to misc folder
+f E:\Links.txt     the text file could contain lines of URLs indicating specified resources, parse them
+                   and fetch resource one by one
+w.cityName         display weather info of China cities, such as shenzhen, guangzhou, beijing 

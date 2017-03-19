@@ -1,0 +1,14 @@
+?                  获取帮助信息。注意：执行命令不需要区分大小写
+?ch                显示帮助信息中包含'ch'的记录
+e/exit/q/quit      退出程序的几种方法
+ABC>$              将命令执行结果产生的文件信息对应的文件复制到exp目录
+ABC>$E:            将命令执行结果产生的文件信息对应的文件复制到E盘
+ABC>$E:=           将命令执行结果产生的文件信息对应的文件复制到E:\ABC
+ABC>$max           将命令执行结果产生的文件信息对应的文件复制到export\max
+ABC>.              将命令执行结果产生的文件信息记录至export\ABC.txt
+ABC>*              将命令执行结果产生的文件信息加密后记录至export\ABC.mex，
+ABC>E:             将命令执行结果产生的文件信息记录至E:\ABC.txt
+ABC>E:,max         将命令执行结果产生的文件信息记录至E:\max.txt
+ABC>E:,max.txt     将命令执行结果产生的文件信息记录至E:\max.txt
+ABC>max            将命令执行结果产生的文件信息记录至export\max.txt
+ABC>*E:            将命令执行结果产生的文件信息加密后记录至E:\ABC.mex

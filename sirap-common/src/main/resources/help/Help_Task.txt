@@ -1,0 +1,10 @@
+al@12:20           set alarm at specified time for default action, time could be like 12, 12:20, 21:00:00
+al+10s             set alarm at the time defined by a specified delay for default action
+                   delay could be like 10s, 10m, 10h or their combination e.g. 10h10m,4m5h8s
+al#10s             set alarm with specified interval, the action will be performed periodically 
+al@12:20 A[;B]     set alarm for specified actions like A and B and more, same goes for delay mode
+al                 list all active alarms
+ac                 cancel all active alarms
+ac3,4              cancel alarms no. 3) and 4)
+tk A[;B][..]       it is a string of commands, treat them as tasks and execute one by one synchronously
+tk E:\tasks.txt    it is a text file could contain lines of commands, treat them as tasks and execute

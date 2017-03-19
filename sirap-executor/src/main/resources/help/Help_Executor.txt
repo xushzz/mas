@@ -1,0 +1,6 @@
+d.ssh              display date time on target SSH server defined in user configuration
+ssh myCommand      execute command remotely and display the result, such as ls, cat a.txt, cat /etc/profile 
+haproxy::add       display input parameters for recipe add from cookbook haproxy on given chef repository
+=haproxy::add      display ruby script for recipe add from cookbook haproxy on given chef repository
+!haproxy::add      execute chef-client and display result, like in SSH with "chef-client -r haproxy::add"
+ver=SIRAP-EXECUTOR1.0.3-TEDDY  12/20/2016, I

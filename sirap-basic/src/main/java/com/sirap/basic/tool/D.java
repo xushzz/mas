@@ -1,0 +1,140 @@
+package com.sirap.basic.tool;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import com.sirap.basic.util.DateUtil;
+import com.sirap.basic.util.EmptyUtil;
+
+/***
+ * D for Debug
+ * @author dell
+ * @Date September 19, 2014
+ */
+@SuppressWarnings({"rawtypes", "unchecked"})
+public class D {
+	
+	public static boolean eq(Object a, Object b) {
+		if(!a.equals(b)) {
+			throw new RuntimeException(a + " is not equal to " + b);
+		}
+		
+		return true;
+	}
+	
+	public static void pr(Object obj) {
+		System.out.print(obj);
+	}
+
+	public static void pl(Object obj) {
+		System.out.println(obj);
+	}
+	public static void pll(Object obj) {
+		System.out.println("[" + obj + "]");
+	}
+
+	public static void pl() {
+		System.out.println();
+	}
+	
+	public static void nl() {
+		System.out.println("Null param.");
+	}
+
+	public static void arr(int[] arr) {
+		for(int i = 0; i < arr.length; i++) {
+			pl(arr[i]);
+		}
+	}
+	
+	public static <E extends Object > void pl(E... objArr) {
+		if(objArr == null) {
+			nl();
+			return;
+		}
+		
+		pl(Arrays.asList(objArr));
+	}
+	
+	public static <E extends Object > void ls(List<E> list) {
+		ls(list, false);
+	}
+	
+	public static <E extends Object > void ls(List<E> list, boolean neverShowTotal) {
+		if(list == null) {
+			nl();
+			return;
+		}
+		
+		for(Object obj: list) {
+			C.pl(obj);
+		}
+		
+		if(!neverShowTotal && list.size() > 5) {
+			C.total(list.size());
+		}
+	}
+
+	public static void debug(Class<?> clz, String method, Object... objects) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("Debug:" + clz.getName() + "." + method);
+		sb.append(Arrays.asList(objects));
+		D.pl(sb);
+	}
+	
+	public static void sink() {
+		D.pl("SINK");
+	}
+	
+	public static void sink(Object stuff) {
+		D.pl("SINK> " + stuff);
+	}
+	
+	public static void ts() {
+		String str = DateUtil.displayDate(new Date(), DateUtil.DATE_TIME_FULL);
+		D.pl(str);
+	}
+	
+	public static void ts(Object stuff) {
+		String str = DateUtil.displayDate(new Date(), DateUtil.DATE_TIME_FULL);
+		D.pl(str + "> " + stuff);
+	}
+	
+	public static void pl(Map map) {
+		Iterator it = map.keySet().iterator();
+		while(it.hasNext()) {
+			Object key = it.next();
+			pl(key + " => " + map.get(key));
+		}
+	}
+	
+	public static <E extends Object > void list(E... objArr) {
+		List list = Arrays.asList(objArr);
+		C.list(list);
+	}
+	
+	public static void list(List list) {
+		D.pl("D.list start");
+		if(EmptyUtil.isNullOrEmpty(list)) {
+			D.sink("empty list");
+		}
+		
+		for(Object obj : list) {
+			D.pl(obj);
+		}
+		D.pl("D.list end");
+	}
+	
+	public static List toList(byte[] bs) {
+		List items = new ArrayList();
+		for(int i = 0; i < bs.length; i++) {
+			items.add(bs[i]);
+		}
+		
+		return items;
+	}
+}
