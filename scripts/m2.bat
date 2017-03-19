@@ -1,13 +1,13 @@
 @echo off
 rem piratewithoutsea@163.com
-rem https://github.com/piratesea/mas
-rem https://github.com/piratesea/mas-app
+rem https://github.com/acesfullmike/mas
+rem https://github.com/acesfullmike/masrun
 rem chcp 65001
 
 set jre=C:\java\jre8
 set storage=E:\Mas
 set config=D:\Github\SIRAP\mas\scripts\mas.properties
-set jars=D:\Github\SIRAP\mas-app\jars
+set jars=D:\Github\SIRAP\masrun\jars
 set deps=%jars%\deps
 set slogan=Money Talks
 

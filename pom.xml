@@ -12,14 +12,6 @@
 	<modules>
 		<module>sirap-basic</module>
 		<module>sirap-common</module>
-		<module>sirap-db</module>
-		<module>sirap-executor</module>
-		<module>sirap-extractor</module>
-		<module>sirap-ldap</module>
-		<module>sirap-qrcode</module>
-		<module>sirap-geek</module>
-		<module>sirap-zoo</module>
-		<module>sirap-security</module>
 		<!-- 
 		<module>sirap-basic</module>
 		<module>sirap-common</module>
@@ -28,6 +20,9 @@
 		<module>sirap-extractor</module>
 		<module>sirap-ldap</module>
 		<module>sirap-qrcode</module>
+		<module>sirap-geek</module>
+		<module>sirap-zoo</module>
+		<module>sirap-security</module>
 		-->
 	</modules>
 	

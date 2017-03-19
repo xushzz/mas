@@ -1,7 +1,7 @@
 # mas
 #SOURCE CODE#
 
-$$> git clone git@github.com:piratesea/mas.git
+$$> git clone git@github.com:acesfullmike/mas.git
 
 A no-frills command system, you can "capture screen, send email, file checking, export stuff to PDF and so on"
 
