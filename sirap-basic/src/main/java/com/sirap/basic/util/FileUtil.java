@@ -1,5 +1,6 @@
 package com.sirap.basic.util;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.InputStream;
@@ -16,11 +17,13 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.imageio.ImageIO;
 import javax.swing.filechooser.FileSystemView;
 
 import com.sirap.basic.component.CleverFolder;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.exception.MexException;
+import com.sirap.basic.tool.D;
 import com.sirap.basic.tool.FileWalker;
 
 @SuppressWarnings("unchecked")
@@ -606,5 +609,18 @@ public class FileUtil {
 		} catch (Exception ex) {
 			throw new MexException(ex);
 		}
+	}
+	
+	public static int[] readImageSize(String filePath) {
+		File file = new File(filePath);  
+        
+        try {  
+        	BufferedImage bi = ImageIO.read(file);  
+            int[] arr = {bi.getWidth(), bi.getHeight()};
+            
+            return arr;
+        } catch (Exception ex) {  
+        	throw new MexException(ex);
+        }  
 	}
 }

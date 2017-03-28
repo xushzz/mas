@@ -27,8 +27,9 @@ public class QRCodeUtil {
 	
 	public static String createImage(String codeText, String filepath, String format, int width, int height) {
 		try {
-			Map<EncodeHintType, ErrorCorrectionLevel> hintMap = new HashMap<>();
+			Map<EncodeHintType, Object> hintMap = new HashMap<>();
 			hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
+			hintMap.put(EncodeHintType.CHARACTER_SET, Konstants.CODE_UTF8);
 			
 			MultiFormatWriter james = new MultiFormatWriter();
 			BitMatrix matrix = james.encode(codeText, BarcodeFormat.QR_CODE, width, height, hintMap);
@@ -44,8 +45,9 @@ public class QRCodeUtil {
 
 	public static byte[] createBytes(String codeText, String format, int width, int height) {
 		try {
-			Map<EncodeHintType, ErrorCorrectionLevel> hintMap = new HashMap<>();
+			Map<EncodeHintType, Object> hintMap = new HashMap<>();
 			hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
+			hintMap.put(EncodeHintType.CHARACTER_SET, Konstants.CODE_UTF8);
 			
 			MultiFormatWriter james = new MultiFormatWriter();
 			BitMatrix matrix = james.encode(codeText, BarcodeFormat.QR_CODE, width, height, hintMap);

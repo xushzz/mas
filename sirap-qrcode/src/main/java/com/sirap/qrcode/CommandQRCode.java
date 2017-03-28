@@ -2,6 +2,7 @@ package com.sirap.qrcode;
 
 import java.io.File;
 
+import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
@@ -28,6 +29,7 @@ public class CommandQRCode extends CommandBase {
 				String filePath = file.getAbsolutePath();
 				if(FileOpener.isTextFile(filePath)) {
 					content = IOUtil.readFileWithRegularLineSeparator(filePath);
+					C.pl("Encode text file.");
 					if(EmptyUtil.isNullOrEmpty(nameInfo)) {
 						nameInfo = FileUtil.extractFilenameWithoutExtension(filePath);
 					}

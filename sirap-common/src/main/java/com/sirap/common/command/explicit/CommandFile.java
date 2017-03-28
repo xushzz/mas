@@ -388,6 +388,9 @@ public class CommandFile extends CommandBase {
 					} else if(FileOpener.isTextFile(filePath)) {
 						int lines = IOUtil.totalLines(filePath);
 						items.add("lines: " + lines);
+					} else if(FileOpener.isImageFile(filePath)) {
+						int[] widthHeight = FileUtil.readImageSize(filePath);
+						items.add("width: " + widthHeight[0] + "x" + widthHeight[1]);
 					} else {
 						MediaFileAnalyzer mario = MexFactory.getMediaFileAnalyzer(filePath);
 						if(mario != null) {

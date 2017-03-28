@@ -74,7 +74,7 @@ public class FileOpener {
 			return true;
 		} else if(isAcceptableFormat(filePath, FileUtil.SUFFIXES_VIDEO, KEY_VIDEO)) {
 			return true;
-		} else if(isAcceptableFormat(filePath, FileUtil.SUFFIXES_IMAGE, KEY_IMAGE)) {
+		} else if(isImageFile(filePath)) {
 			return true;
 		} else if(isAcceptableFormat(filePath, FileUtil.SUFFIXES_EXECUTABLE, KEY_EXECUTABLE)) {
 			return true;
@@ -91,6 +91,12 @@ public class FileOpener {
 		}
 		
 		return false;
+	}
+	
+	public static boolean isImageFile(String filePath) {
+		boolean flag = isAcceptableFormat(filePath, FileUtil.SUFFIXES_IMAGE, KEY_IMAGE);
+		
+		return flag;
 	}
 	
 	public static boolean isTextFile(String fileName) {
