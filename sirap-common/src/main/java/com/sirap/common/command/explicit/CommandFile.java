@@ -389,15 +389,13 @@ public class CommandFile extends CommandBase {
 						int lines = IOUtil.totalLines(filePath);
 						items.add("lines: " + lines);
 					} else if(FileOpener.isImageFile(filePath)) {
-						int[] widthHeight = FileUtil.readImageSize(filePath);
-						items.add("width: " + widthHeight[0] + "x" + widthHeight[1]);
+						int[] widthHeight = FileUtil.readImageWidthHeight(filePath);
+						items.add("resolution: " + widthHeight[0] + "x" + widthHeight[1]);
 					} else {
 						MediaFileAnalyzer mario = MexFactory.getMediaFileAnalyzer(filePath);
 						if(mario != null) {
-							String duration = mario.getDurationInSeconds();
-							if(duration != null) {
-								items.add("duration: " + duration);
-							}
+							List<String> detail = mario.getDetail();
+							items.addAll(detail);
 						}
 					}
 					

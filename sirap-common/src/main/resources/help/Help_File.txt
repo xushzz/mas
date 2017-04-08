@@ -1,5 +1,6 @@
 -F:\fire.abc       print detail like size, creation time, last modified time, lines if text                 
--F:\fire.abc       print detail like width*height if image, duration if audio/video
+-F:\fire.mp3       print detail like width*height if image/video, duration if audio/video
+-F:\fire.mkv       print video detail by FFMpeg, ffmpeg -i "F:\fire.mkv"
 txt F:\fire.abc    print target file in text manner, no matter it is a text file or not
 cat F:\fire.abc    print target file in text manner, no matter it is a text file or not
 =F:\fly.txt        print target file in text manner, no matter it is a text file or not

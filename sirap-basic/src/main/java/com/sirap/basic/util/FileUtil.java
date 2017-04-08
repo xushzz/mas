@@ -611,7 +611,7 @@ public class FileUtil {
 		}
 	}
 	
-	public static int[] readImageSize(String filePath) {
+	public static int[] readImageWidthHeight(String filePath) {
 		File file = new File(filePath);  
         
         try {  

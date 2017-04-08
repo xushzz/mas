@@ -1,6 +1,7 @@
 package com.sirap.basic.thirdparty.media;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -43,19 +44,31 @@ public class MediaFileUtil {
 	 * @param ffLocation
 	 * @return
 	 */
-	public static String readMediaDurationInSecondsWithFF(String filepath) {
+	public static List<String> detailWithFF(String filepath) {
 		String cmd = "ffmpeg -i \"" + filepath + "\"";
 		String newCommand = "cmd /c " + cmd;
 
 		List<String> result = PanaceaBox.executeAndRead(newCommand);
+		List<String> needs = new ArrayList<>();
+		
 		for(String record : result) {
 			String regex = "Duration: ([\\d:\\.]+),";
 			String param = StrUtil.findFirstMatchedItem(regex, record);
 			if(param != null) {
-				return param;
+				needs.add("duration: " + param);
+				break;
 			}
 		}
 		
-		return null;
+		for(String record : result) {
+			String regex = "[\\s,]([\\d]{1,9}x[\\d]{1,9})[\\s,]";
+			String param = StrUtil.findFirstMatchedItem(regex, record);
+			if(param != null) {
+				needs.add("resolution: " + param);
+				break;
+			}
+		}
+		
+		return needs;
 	}
 }
