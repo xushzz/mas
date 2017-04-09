@@ -1,16 +1,20 @@
 package com.sirap.common.command;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexedObject;
-import com.sirap.basic.search.MexFilter;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.common.extractor.impl.WorldTimeBJTimeOrgExtractor;
+import com.sirap.common.extractor.impl.XRatesForexRateExtractor;
 import com.sirap.common.framework.SimpleKonfig;
 
 public class CommandHelp extends CommandBase {
@@ -20,6 +24,15 @@ public class CommandHelp extends CommandBase {
 	private static final String KEY_TASK = "Task";
 	private static final String TEMPLATE_HELP = "/help/Help_{0}.txt";
 	private static final String TEMPLATE_HELP_XX = "/help/Help_{0}_{1}.txt";
+	
+	private static final Map<String, Object> DOLLAR_MEANINGS = new HashMap<>();
+	
+	static {
+		DOLLAR_MEANINGS.put("image.formats", Konstants.IMG_FORMATS);
+		DOLLAR_MEANINGS.put("guest.quits", KEY_EXIT);
+		DOLLAR_MEANINGS.put("money.forex.url", XRatesForexRateExtractor.URL_X_RATES);
+		DOLLAR_MEANINGS.put("timeserver.bjtimes", WorldTimeBJTimeOrgExtractor.URL_TIME);
+	}
 	
 	public boolean handle() {
 		
@@ -56,32 +69,19 @@ public class CommandHelp extends CommandBase {
 				String prefix = StrUtil.extend(key, maxLen, " ");
 				List<String> items = FileUtil.readResourceFilesIntoList(fileName, prefix);
 				if(!EmptyUtil.isNullOrEmpty(items)) {
+					items = occupyDollarKeys(items);
 					results.addAll(items);
 				}
 			}
 
 			if(!EmptyUtil.isNullOrEmpty(results)) {
 				if(!singleParam.isEmpty()) {
-					List<MexedObject> items = filter(results, singleParam);
+					List<MexedObject> items = CollectionUtil.search(results, singleParam);
 					results = CollectionUtil.items2PrintRecords(items);
 				}
 				results.add("");
 				results.add(versionAndCopyright());
 				export(results);
-//				if(target instanceof TargetPDF) {
-//					int[] cellsWidth = {1, 5};
-//					int[] cellsAlign = {0, 0};
-//					PDFParams pdfParams = new PDFParams(cellsWidth);
-//					pdfParams.setCellsAlign(cellsAlign);
-//					target.setParams(pdfParams);
-//					List<List<String>> records = new ArrayList<>();
-//					for(String record:results) {
-//						records.add(splitHelpInfo(record));
-//					}
-//					export(records);
-//				} else {
-//					export(results);
-//				}
 			}
 			
 			return true;
@@ -106,6 +106,16 @@ public class CommandHelp extends CommandBase {
 //		return list;
 //	}
 	
+	private List<String> occupyDollarKeys(List<String> results) {
+		List<String> items = new ArrayList<>();
+		for(String temp : results) {
+			String item = StrUtil.occupy(temp, DOLLAR_MEANINGS);
+			items.add(item);
+		}
+		
+		return items;
+	}
+	
 	private String getHelpFileName(String key) {
 		String lang = g().getLocale().toString();
 		String filePath = null;
@@ -128,13 +138,7 @@ public class CommandHelp extends CommandBase {
 		return filePath;
 	}
 	
-	private List<MexedObject> filter(List<String> records, String criteria) {
-		MexFilter<MexedObject> filter = new MexFilter<MexedObject>(criteria, CollectionUtil.toMexedObjects(records));
-		List<MexedObject> items = filter.process();
-		
-		return items;
-	}
-	
+
 	private List<String> generateHelpKeys() {
 		List<String> keys = new ArrayList<String>();
 		List<String> commandNodes = SimpleKonfig.g().getCommandNodeItems();

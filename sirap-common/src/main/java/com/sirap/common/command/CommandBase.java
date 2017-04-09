@@ -75,7 +75,7 @@ public abstract class CommandBase {
 		try {
 			boolean flag = handle();
 			
-			boolean printCommandNodeName = g().isYes("command.node.print");
+			boolean printCommandNodeName = g().isYes("command.nodename.print");
 			if(printCommandNodeName) {
 				D.ts(getClass());
 			}

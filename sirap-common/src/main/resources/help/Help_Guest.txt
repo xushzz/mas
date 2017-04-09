@@ -7,7 +7,7 @@
 'fire              the single quote behaves exactly the same as question mark, and i prefer '
 search             the aforementioned rules apply for any other searching commands
                    such as 'ch fire', 'F: water' and so on
-e/exit/q/quit      quit
+quit               ${guest.quits}
 ABC>$              the yielded files will be copied to folder export
 ABC>$E:            the yielded files will be copied to E:
 ABC>$E:=           the yielded files will be copied to E:\ABC

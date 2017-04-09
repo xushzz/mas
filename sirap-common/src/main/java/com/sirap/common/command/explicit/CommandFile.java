@@ -19,6 +19,7 @@ import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
+import com.sirap.basic.util.ImageUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.StrUtil;
@@ -389,8 +390,14 @@ public class CommandFile extends CommandBase {
 						int lines = IOUtil.totalLines(filePath);
 						items.add("lines: " + lines);
 					} else if(FileOpener.isImageFile(filePath)) {
-						int[] widthHeight = FileUtil.readImageWidthHeight(filePath);
+						int[] widthHeight = ImageUtil.readImageWidthHeight(filePath);
 						items.add("resolution: " + widthHeight[0] + "x" + widthHeight[1]);
+						
+						String format = ImageUtil.getRealFormat(filePath);
+						if(!StrUtil.endsWith(filePath, format)) {
+							items.add("format: " + format);
+						}
+						
 					} else {
 						MediaFileAnalyzer mario = MexFactory.getMediaFileAnalyzer(filePath);
 						if(mario != null) {

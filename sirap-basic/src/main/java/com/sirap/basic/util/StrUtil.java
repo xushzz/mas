@@ -3,12 +3,16 @@ package com.sirap.basic.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.exception.MexException;
+import com.sirap.basic.tool.C;
+import com.sirap.basic.tool.D;
 
 public class StrUtil {
 
@@ -675,6 +679,34 @@ public class StrUtil {
 			int position = Integer.parseInt(m.group(1));
 			if(position >=0 && position < values.length) {
 				temp = temp.replace(key, values[position] + "");
+			}
+		}
+		
+		return temp;
+	}
+	
+	/****
+	 * 
+	 * @param source, and ${save} as JPG file, other formats are ${image.formats}
+	 * @param params
+	 * @return
+	 */
+	public static String occupy(String source, Map<String, Object> params) {
+		if(EmptyUtil.isNullOrEmpty(params)) {
+			return source;
+		}
+		
+		String regex = "\\$\\{([^${}()]{1,100})\\}";
+		
+		String temp = source;
+		
+		Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
+		while(m.find()) {
+			String whole = m.group(0);
+			String item = m.group(1);
+			Object obj = params.get(item);
+			if(obj != null) {
+				temp = temp.replace(whole, obj.toString());
 			}
 		}
 		

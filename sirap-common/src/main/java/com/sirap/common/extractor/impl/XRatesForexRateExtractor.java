@@ -9,7 +9,8 @@ import com.sirap.common.extractor.Extractor;
 
 public class XRatesForexRateExtractor extends Extractor<ForexRateRecord> {
 
-	public static final String URL_TEMPLATE = "http://www.x-rates.com/table/?from={0}&amount={1}";
+	public static final String URL_X_RATES = "http://www.x-rates.com/table";
+	public static final String URL_TEMPLATE = URL_X_RATES + "/?from={0}&amount={1}";
 
 	public XRatesForexRateExtractor(String ccyCode, String amount) {
 		String url = StrUtil.occupy(URL_TEMPLATE, ccyCode, amount);

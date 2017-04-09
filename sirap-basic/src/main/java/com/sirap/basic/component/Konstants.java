@@ -45,7 +45,7 @@ public class Konstants {
 	public static final String FLAG_NO = "N";
 	public static final String IMG_JPG = "jpg";
 	public static final String IMG_BMP = "bmp";
-    public static final String IMG_FORMATS = "png,jpg,jpeg,jpe,bmp,gif";
+    public static final String IMG_FORMATS = "png,jpg,jpeg,bmp,gif";
     public static final String KEY_ALL = "all";
     public static final String KEY_DOT_AS_CRITERIA = ".";
     

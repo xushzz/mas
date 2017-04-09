@@ -17,14 +17,14 @@ z.-7               want to know what kind of regions are in timezone -7? Creston
 z.Chicago          want to know the timezone of Chicago? See what happens with z.America
 z.Chi&g            display time zone info for locations who name matching 'Chi' and 'g'
 z..                display time zone info for for all listed locations
-d.                 display standard GMT, courtesy of http://www.beijing-time.org
+d.                 display standard GMT, courtesy of ${timeserver.bjtimes}
 d.Chicago          want to know the local date & time in Chicago? what about Berlin?
 d.-8               want to know the local date & time in regions with timezone -8?
 d..                display standard GMT, for all listed locations
 s                  capture screen and save it to the screenshot folder as yyyyMMdd_hhmmss.bmp, 
                    provided configured image format is bmp, then open it with configured image
                    viewer if the viewer is configured and does exist
-s .jpg             capture screen and save as JPG file, other formats are png,jpg,jpeg,jpe,bmp,gif
+s .jpg             capture screen and save as JPG file, other formats are ${image.formats}
 s3                 capture screen with three-second delay
 s3 fire            capture screen and save it with a special suffix, such as 20191003_234224_fire.jpg
 s+9                capture screen in consecutive mode, repeat nine times with one second interval 
