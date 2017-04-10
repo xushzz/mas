@@ -167,7 +167,7 @@ public class SimpleKonfig extends Konfig {
 		isPrintGreyRowWhenPDF = !isNo("pdf.table.grayrow");
 		isAsianFontWhenPDF = isYes("pdf.font.asian");
 		isExportWithTimestampEnabled = !isNo("timestamp.enabled");
-		isPrintException = isYes("exception.print");
+		isPrintException = isYes("exception.stack.print");
 	}
 	
 	public double getTimeoutMinutes() {
