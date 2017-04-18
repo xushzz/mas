@@ -156,7 +156,8 @@ public class Exporter {
 			TargetEmail email = (TargetEmail)target;
 			String subject = email.getSubject();
 			List<String> toList = email.getToList();
-			EmailCenter.g().sendEmail(records, toList, subject, true);
+			boolean useNewThread = SimpleKonfig.g().isYes("email.send.newthread");
+			EmailCenter.g().sendEmail(records, toList, subject, !useNewThread);
 			C.pl();
 		}
 		

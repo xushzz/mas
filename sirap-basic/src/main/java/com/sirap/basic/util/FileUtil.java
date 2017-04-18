@@ -588,21 +588,26 @@ public class FileUtil {
 			} else if(value instanceof FileTime) {
 				FileTime ft = (FileTime)value;
 				value = DateUtil.displayDate(new Date(ft.toMillis()), DateUtil.DATETIME);
-			} else if(value instanceof Boolean) {
-				return value.toString();
+			}
+			
+			String temp = key;
+
+			if(StrUtil.equals("lastModifiedTime", key)) {
+				temp = key.replace("Time", "");
 			}
 			
 			Pattern p = Pattern.compile("[A-Z]");
-			Matcher m = p.matcher(key);
-			String display = key;
+			Matcher m = p.matcher(temp);
+			String display = temp;
+			
 			while(m.find()) {
 				String tempChar = m.group(0);
 				display = display.replace(tempChar, " " + tempChar.toLowerCase());
 			}
 			
-			String temp = display + ": " + value;
+			String result = display + ": " + value;
 			
-			return temp;
+			return result;
 		} catch (Exception ex) {
 			throw new MexException(ex);
 		}

@@ -43,12 +43,15 @@ public class EmailService {
 				C.pl("Sent.");
 			}
 		} else {
-			C.pl("Send and don't care.");
 			ThreadUtil.executeInNewThread(new Runnable() {
 				public void run() {
-					send();
+					boolean flag = send();
+					if(flag) {
+						C.pl("Sent.");
+					}
 				}
 			});
+			C.pl("Use new thread.");
 		}
 	}
 	
