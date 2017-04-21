@@ -2,7 +2,9 @@ package com.sirap.common.framework;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.sirap.basic.component.MexedMap;
 import com.sirap.basic.tool.C;
@@ -25,6 +27,7 @@ public abstract class Konfig {
 	protected String userConfigFile;
 	protected MexedMap systemProperties = new MexedMap();
 	protected MexedMap userProperties = new MexedMap();
+	protected Map<String, Object> stash = new LinkedHashMap<String, Object>();
 
 	protected void initKonfig(String systemConfig, String userConfig) {
 		loadSystemConfigDetail(systemConfig);
@@ -148,5 +151,9 @@ public abstract class Konfig {
 	
 	public String getDisplayEnableSign(boolean flag) {
 		return flag ? "+":"-";
+	}
+
+	public Map<String, Object> getStash() {
+		return stash;
 	}
 }

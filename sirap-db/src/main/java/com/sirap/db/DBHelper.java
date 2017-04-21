@@ -49,14 +49,14 @@ public class DBHelper {
 		KEYS_DML_LIST.toArray(KEYS_DML_ARRAY);
 	}
 	
-	public static DBRecord getActiveDB() throws MexException {
-		DBRecord item = null;
+	public static DBConfigItem getActiveDB() throws MexException {
+		DBConfigItem item = null;
 		
 		String dbName = SimpleKonfig.g().getUserValueOf("db.active");
 		if(dbName == null) {
 			throw new MexException("No setting for active database [db.active].");
 		} else {
-			item = DBHelper.getDatabaseByName(dbName.toLowerCase(), SimpleKonfig.g().getUserProps().getContainer());
+			item = DBHelper.getDatabaseByName(dbName);
 			if(item == null) {
 				throw new MexException("No configuration for active database [" + dbName + "].");
 			}
@@ -67,36 +67,43 @@ public class DBHelper {
 			String url = item.getUrl();
 			String dbType = StrUtil.parseDbTypeByUrl(url);
 			SchemaNameParser zhihui = DBFactory.getSchemaNameParser(dbType);
-			String fixedUrl = zhihui.changeSchema(item.getUrl(), schema);
+			String fixedUrl = zhihui.fixUrlByChangingSchema(item.getUrl(), schema);
 			
 			item.setUrl(fixedUrl);
-			item.setSchema(zhihui.parseSchema(item.getUrl()));
 		}
 		
 		return item;
 	}
 	
-	public static List<DBRecord> getAllDBRecords() {
-		Map<String, DBRecord> map = DBHelper.getDBRecordsMap(SimpleKonfig.g().getUserProps().getContainer());
-		List<DBRecord> list = new ArrayList<>(map.values());
-		
-		return list;
+	public static List<DBConfigItem> getAllDBRecords() {
+		return new ArrayList<DBConfigItem>(getAllDBConfigItems().values());
 	}
 	
-	public static DBRecord getDatabaseByName(String dbName, Map<String, String> configs) {
-		Map<String, DBRecord> map = getDBRecordsMap(configs);
-		DBRecord record = map.get(dbName);
+	public static Map<String, DBConfigItem> getAllDBConfigItems() {
+		Map<String, DBConfigItem> map = getDBRecordsMap(SimpleKonfig.g().getUserProps().getContainer());
+
+		DBConfigItem instash = (DBConfigItem)SimpleKonfig.g().getStash().get("flydb");
+		if(instash != null) {
+			map.put(instash.getItemName(), instash);
+		}
+		
+		return map;
+	}
+	
+	public static DBConfigItem getDatabaseByName(String dbName) {
+		Map<String, DBConfigItem> map = getAllDBConfigItems();
+		DBConfigItem record = map.get(dbName);
 		
 		return record;
 	}
 
-	public static Map<String, DBRecord> getDBRecordsMap(Map<String, String> configs) {
+	private static Map<String, DBConfigItem> getDBRecordsMap(Map<String, String> configs) {
 		String keywords = "url|who";
 		List<String> list = StrUtil.split(keywords, '|');
 		String regex = "(.*?)\\.(" + keywords + ")";
 		
 		Iterator<String> it = configs.keySet().iterator();
-		Map<String, DBRecord> map = new HashMap<>();
+		Map<String, DBConfigItem> map = new HashMap<>();
 		while(it.hasNext()) {
 			String key = it.next();
 			String[] entry = StrUtil.parseParams(regex, key);
@@ -105,9 +112,9 @@ public class DBHelper {
 			}
 			
 			String dbName = entry[0];
-			DBRecord record = map.get(dbName);
+			DBConfigItem record = map.get(dbName);
 			if(record == null) {
-				record = new DBRecord(dbName);
+				record = new DBConfigItem(dbName);
 				map.put(dbName, record);
 			}
 			
@@ -127,11 +134,11 @@ public class DBHelper {
 			}
 		}
 		
-		Map<String, DBRecord> map2 = new HashMap<>();
+		Map<String, DBConfigItem> map2 = new HashMap<>();
 		it = map.keySet().iterator();
 		while(it.hasNext()) {
 			String key = it.next();
-			DBRecord record = map.get(key);
+			DBConfigItem record = map.get(key);
 			if(record.isValid()) {
 				map2.put(key, record);
 			}

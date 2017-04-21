@@ -11,9 +11,10 @@ import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
-import com.sirap.common.framework.SimpleKonfig;
 import com.sirap.common.framework.command.InputAnalyzer;
 import com.sirap.common.framework.command.target.TargetExcel;
+import com.sirap.db.parser.ConfigItemParser;
+import com.sirap.db.parser.ConfigItemParserMySQL;
 
 public class CommandSql extends CommandBase {
 
@@ -23,6 +24,7 @@ public class CommandSql extends CommandBase {
 	private static final String KEY_SCHEMA = "sma";
 	private static final String KEY_SHOW_TABLES = "tbs";
 	private static final String KEY_SHOW_DATABSES = "dbs";
+	private static final String KEY_MYSQL = "mysql";
 	
 	@Override
 	public boolean handle() {
@@ -88,7 +90,7 @@ public class CommandSql extends CommandBase {
 		}
 		
 		if(is(KEY_DATABASE)) {
-			DBRecord db = DBHelper.getActiveDB();
+			DBConfigItem db = DBHelper.getActiveDB();
 			export(db.toPrint());
 			
 			return true;
@@ -98,7 +100,7 @@ public class CommandSql extends CommandBase {
 		if(singleParam != null) {
 			String dbName = singleParam.toLowerCase();
 			if(DBHelper.takeAsColumnOrTableName(dbName)) {
-				DBRecord db = DBHelper.getDatabaseByName(dbName, SimpleKonfig.g().getUserProps().getContainer());
+				DBConfigItem db = DBHelper.getDatabaseByName(dbName);
 				if(db != null) {
 					export(db.toPrint());
 				} else {
@@ -111,9 +113,9 @@ public class CommandSql extends CommandBase {
 		
 		if(is(KEY_DATABASE + KEY_2DOTS)) {
 			List<String> result = new ArrayList<>();
-			List<DBRecord> list = DBHelper.getAllDBRecords();
+			List<DBConfigItem> list = DBHelper.getAllDBRecords();
 			for(int i = 0; i < list.size(); i++) {
-				DBRecord item = list.get(i);
+				DBConfigItem item = list.get(i);
 				if(i != 0) {
 					result.add("");
 				}
@@ -127,13 +129,27 @@ public class CommandSql extends CommandBase {
 		singleParam = parseParam(KEY_DATABASE + "=(.+)");
 		if(singleParam != null) {
 			String dbName = singleParam.toLowerCase();
-			DBRecord db = DBHelper.getDatabaseByName(dbName, SimpleKonfig.g().getUserProps().getContainer());
+			DBConfigItem db = DBHelper.getDatabaseByName(dbName);
 			if(db != null) {
 				g().getUserProps().put("db.active", dbName);
 				C.pl2("currently active: " + dbName + "");
 				export(db.toPrint());
 			} else {
 				export("No configuration for database [" + dbName + "].");
+			}
+			
+			return true;
+		}
+		
+		if(StrUtil.isRegexMatched(KEY_MYSQL + " (.+)", command)) {
+			ConfigItemParser hai = new ConfigItemParserMySQL();
+			DBConfigItem db = hai.parse(command);
+			String dbName = db.getItemName();
+			if(db != null) {
+				g().getStash().put(dbName, db);
+				g().getUserProps().put("db.active", dbName);
+				C.pl2("currently active: " + dbName + "");
+				export(db.toPrint());
 			}
 			
 			return true;

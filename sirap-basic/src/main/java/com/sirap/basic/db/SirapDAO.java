@@ -15,7 +15,6 @@ public class SirapDAO {
     private String driver;
     private String username;    
     private String password;
-    private String schema;
   
     private Connection conn;
     private Statement stmt;
@@ -71,14 +70,6 @@ public class SirapDAO {
             e.printStackTrace();  
         }  
     }
-
-	public void setSchema(String schema) {
-		this.schema = schema;
-	}
-
-	public String getSchema() {
-		return schema;
-	}
 
 	public String getUrl() {
 		return url;

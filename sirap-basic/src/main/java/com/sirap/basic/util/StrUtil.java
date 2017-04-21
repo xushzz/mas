@@ -692,7 +692,7 @@ public class StrUtil {
 	 * @param params
 	 * @return
 	 */
-	public static String occupy(String source, Map<String, Object> params) {
+	public static String occupyMaps(String source, Map<String, Object> params) {
 		if(EmptyUtil.isNullOrEmpty(params)) {
 			return source;
 		}

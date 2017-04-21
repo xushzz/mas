@@ -16,14 +16,13 @@ public class DBManager extends SirapDAO {
 	private static DBManager instance;
 
 	public static DBManager g() {
-		DBRecord db = DBHelper.getActiveDB();
+		DBConfigItem db = DBHelper.getActiveDB();
 
 		String url = db.getValidUrl();
 	    String username = db.getUsername();    
 	    String password = db.getPassword();
 
 	    instance = new DBManager(url, username, password);
-	    instance.setSchema(db.getValidSchema());
 	    
 		return instance;
 	}
@@ -64,7 +63,8 @@ public class DBManager extends SirapDAO {
 				String dbType = StrUtil.parseDbTypeByUrl(getUrl());
 				QuerySqlAdjustor zhihui = DBFactory.getQuerySqlAdjustor(dbType);
 				if(zhihui != null) {
-					tempSql = zhihui.adjust(tempSql, getSchema());
+					String schema = DBFactory.getSchemaNameParser(dbType).parseSchema(getUrl());
+					tempSql = zhihui.adjust(tempSql, schema);
 				} else {
 					String msg = "Not yet supported database type: " + dbType;
 					C.pl(msg);
