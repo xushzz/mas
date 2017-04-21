@@ -128,11 +128,12 @@ public class CommandSql extends CommandBase {
 		
 		singleParam = parseParam(KEY_DATABASE + "=(.+)");
 		if(singleParam != null) {
-			String dbName = singleParam.toLowerCase();
+			String dbName = singleParam;
 			DBConfigItem db = DBHelper.getDatabaseByName(dbName);
 			if(db != null) {
 				g().getUserProps().put("db.active", dbName);
 				C.pl2("currently active: " + dbName + "");
+				g().getUserProps().put("db.schema", null);
 				export(db.toPrint());
 			} else {
 				export("No configuration for database [" + dbName + "].");

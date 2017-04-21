@@ -8,4 +8,5 @@ t my_usrs          search all table names containing given criteria
 tbs                tables, show tables in current schema
 dbs                databases, show databases on the server
 sma=schemaName     change schema, like 'use databaseName' in mysql
-ver=SIRAP-DB1.0.9-XIU  1/5/2017, IV
+mysql -uroot -p    use cmd connection string to create solid mysql connection
+ver=SIRAP-DB1.0.10-DANIALVES  4/21/2017, V
