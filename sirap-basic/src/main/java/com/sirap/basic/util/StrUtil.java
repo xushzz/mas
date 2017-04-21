@@ -362,6 +362,13 @@ public class StrUtil {
 		return startsWith(source, keyArr, true);
 	}
 	
+	public static boolean startsWith(String source, List<String> keys) {
+		String[] keyArr = new String[keys.size()];
+		keyArr = keys.toArray(keyArr);
+		
+		return startsWith(source, keyArr, true);
+	}
+	
 	public static boolean startsWith(String source, String[] keyArr, boolean ignoreCase) {
 		if(source == null || keyArr == null) {
 			return false;

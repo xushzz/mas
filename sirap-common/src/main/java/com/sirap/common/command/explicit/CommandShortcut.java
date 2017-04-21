@@ -2,8 +2,11 @@ package com.sirap.common.command.explicit;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import com.sirap.basic.tool.C;
+import com.sirap.basic.tool.D;
+import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
@@ -25,6 +28,15 @@ public class CommandShortcut extends CommandBase {
 		if(singleParam != null) {
 			executeInternalCmd(singleParam);
 			return true;
+		}
+		
+		String dosPrefix = g().getUserValueOf("dos.prefix");
+		if(!EmptyUtil.isNullOrEmpty(dosPrefix)) {
+			List<String> items = StrUtil.split(dosPrefix);
+			if(StrUtil.startsWith(command, items)) {
+				executeInternalCmd(command);
+				return true;
+			}
 		}
 		
 		if(is(KEY_WINDOWS_LOCK)) {
