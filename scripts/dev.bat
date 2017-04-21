@@ -45,6 +45,7 @@ set CP=%CP%;%where%\sirap-ldap\target\classes
 set CP=%CP%;%where%\sirap-qrcode\target\classes
 set CP=%CP%;%where%\sirap-geek\target\classes
 set CP=%CP%;%where%\sirap-security\target\classes
+set CP=%CP%;%where%\sirap-bible\target\classes
 
 set APP=com.sirap.common.entry.AppMas
 

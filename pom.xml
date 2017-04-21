@@ -12,6 +12,7 @@
 	<modules>
 		<module>sirap-basic</module>
 		<module>sirap-common</module>
+		<module>sirap-bible</module>
 		<!-- 
 		<module>sirap-basic</module>
 		<module>sirap-common</module>

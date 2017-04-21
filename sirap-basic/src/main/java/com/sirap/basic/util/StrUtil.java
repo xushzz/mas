@@ -3,7 +3,6 @@ package com.sirap.basic.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -11,8 +10,6 @@ import java.util.regex.Pattern;
 
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.exception.MexException;
-import com.sirap.basic.tool.C;
-import com.sirap.basic.tool.D;
 
 public class StrUtil {
 
@@ -573,6 +570,10 @@ public class StrUtil {
 	}
 	
 	public static List<String> findAllMatchedItems(String regex, String source) {
+		return findAllMatchedItems(regex, source, 0);
+	}
+	
+	public static List<String> findAllMatchedItems(String regex, String source, int groupIndex) {
 		if(regex == null || source == null) {
 			return null;
 		}
@@ -581,7 +582,7 @@ public class StrUtil {
 		
 		Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
 		while(m.find()) {
-			String item = m.group(0);
+			String item = m.group(groupIndex);
 			list.add(item);
 		}
 		

@@ -4,6 +4,8 @@ rem https://github.com/acesfullmike/mas
 rem https://github.com/acesfullmike/masrun
 rem chcp 65001
 
+cd /d D:\Github\SIRAP\mas
+
 set jre=C:\java\jre8
 set storage=E:\Mas
 set config=D:\Github\SIRAP\mas\scripts\mas.properties
@@ -30,6 +32,7 @@ set CP=%CP%;%jars%\sirap-qrcode-%alpha_version%.jar
 set CP=%CP%;%jars%\sirap-db-%alpha_version%.jar
 set CP=%CP%;%jars%\sirap-security-1.0.jar
 set CP=%CP%;%jars%\sirap-geek-%alpha_version%.jar
+set CP=%CP%;%jars%\sirap-bible-%alpha_version%.jar
 
 set CP=%CP%;%deps%\mail-1.4.jar
 set CP=%CP%;%deps%\itextpdf-5.5.8.jar

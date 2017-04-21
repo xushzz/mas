@@ -23,6 +23,7 @@ set what=%what%,sirap-executor
 set what=%what%,sirap-ldap
 set what=%what%,sirap-qrcode
 set what=%what%,sirap-geek
+set what=%what%,sirap-bible
 
 set where=%target%\%name%
 
