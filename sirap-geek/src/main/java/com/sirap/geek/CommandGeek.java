@@ -33,7 +33,8 @@ import com.sirap.geek.maven.MavenManager;
 public class CommandGeek extends CommandBase {
 
 	private static final String KEY_PATH = "path";
-	private static final String KEY_MVN = "mvn";
+	private static final String KEY_PRESENT_WORKING_DIRECTORY = "pwd";
+	private static final String KEY_MAVEN = "maven";
 	private static final String KEY_DEPS = "deps";
 	private static final String KEY_ISSUE = "iss";
 	private static final String KEY_JENKINS = "jk";
@@ -67,16 +68,17 @@ public class CommandGeek extends CommandBase {
 			
 			return true;
 		}
-		
-		if(is(KEY_MVN)) {
-			List<String> items = MavenManager.g().getMavenInfo();
-			export(items);
+
+		if(is(KEY_PRESENT_WORKING_DIRECTORY)) {
+			String value = System.getProperty("user.dir");
+			export(value);
 			
 			return true;
 		}
-
-		if(StrUtil.startsWith(command, KEY_MVN + " ")) {
-			executeInternalCmd(command);
+		
+		if(is(KEY_MAVEN)) {
+			List<String> items = MavenManager.g().getMavenInfo();
+			export(items);
 			
 			return true;
 		}

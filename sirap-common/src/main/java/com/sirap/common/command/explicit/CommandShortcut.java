@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.sirap.basic.tool.C;
-import com.sirap.basic.tool.D;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.StrUtil;
@@ -33,9 +32,11 @@ public class CommandShortcut extends CommandBase {
 		String dosPrefix = g().getUserValueOf("dos.prefix");
 		if(!EmptyUtil.isNullOrEmpty(dosPrefix)) {
 			List<String> items = StrUtil.split(dosPrefix);
-			if(StrUtil.startsWith(command, items)) {
-				executeInternalCmd(command);
-				return true;
+			for(String item : items) {
+				if(StrUtil.equalsCaseSensitive(command, item) || command.startsWith(item + " ")) {
+					executeInternalCmd(command);
+					return true;
+				}
 			}
 		}
 		
