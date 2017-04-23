@@ -46,6 +46,7 @@ public class SimpleKonfig extends Konfig {
 	private boolean isGeneratedFileAutoOpen;
 	private boolean isPrintException;
 	private String securityPasscode;
+	private String charsetInUse;
 	
 	private static String FLAG_ABSENT = "A"; 
 	
@@ -156,7 +157,7 @@ public class SimpleKonfig extends Konfig {
 		if(locale == null) {
 			locale = Locale.US;
 		}
-
+		charsetInUse = isYes("use.gbk") ? Konstants.CODE_GBK : Konstants.CODE_UTF8;
 		isCaptureSoundOn = isYes("capture.sound.on");
 		isGeneratedFileAutoOpen = isYes("generatedfile.autoopen.on");
 		isEmailEnabled = isYes("email.enabled");
@@ -200,7 +201,7 @@ public class SimpleKonfig extends Konfig {
 		if(areaZoneUser != null) {
 			sb.append("@").append(areaZoneUser);
 		}
-		sb.append(" " + locale);
+		sb.append(" " + charsetInUse);
 		//sb.append(" " + getDisplaySignInt("timeout", timeoutMinutes));
 		sb.append(" email" + getDisplayEnableSign(isEmailEnabled));
 		sb.append(" remote" + getDisplayEnableSign(isRemoteEnabled));
@@ -391,5 +392,9 @@ public class SimpleKonfig extends Konfig {
 		}
 		
 		return servers;
+	}
+
+	public String getCharsetInUse() {
+		return charsetInUse;
 	}
 }

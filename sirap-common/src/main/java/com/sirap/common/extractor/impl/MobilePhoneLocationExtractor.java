@@ -13,8 +13,10 @@ public class MobilePhoneLocationExtractor extends Extractor<MexedObject> {
 	public static final String URL_TEMPLATE = "http://www.00cha.com/shouji/?mobile={0}";
 
 	public MobilePhoneLocationExtractor(String repo) {
+		printFetching = true;
 		String url = StrUtil.occupy(URL_TEMPLATE, repo);
 		setUrl(url);
+		useGBK();
 	}
 	
 	@Override

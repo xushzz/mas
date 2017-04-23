@@ -3,6 +3,7 @@ package com.sirap.common.extractor;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
@@ -11,7 +12,7 @@ import com.sirap.basic.util.IOUtil;
 public abstract class Extractor<T extends MexItem> {
 
 	private String url;
-	private String charSet;
+	private String charset = Konstants.CODE_UTF8;
 	
 	protected boolean printFetching = false;
 	protected boolean printExceptionIfNeeded = true;
@@ -71,7 +72,7 @@ public abstract class Extractor<T extends MexItem> {
 		if(printFetching) {
 			C.pl("Fetching... " + target);
 		}
-		source = IOUtil.readURL(target, charSet, printExceptionIfNeeded);
+		source = IOUtil.readURL(target, charset, printExceptionIfNeeded);
 	}
 	
 	public void setUrl(String url) {
@@ -82,8 +83,16 @@ public abstract class Extractor<T extends MexItem> {
 		return url;
 	}
 	
-	public void setCharSet(String charSet) {
-		this.charSet = charSet;
+	public void useCharset(String charset) {
+		this.charset = charset;
+	}
+	
+	public void useUTF8() {
+		this.charset = Konstants.CODE_UTF8;
+	}
+	
+	public void useGBK() {
+		this.charset = Konstants.CODE_GBK;
 	}
 
 	public boolean isReady() {

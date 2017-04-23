@@ -141,7 +141,7 @@ public class FileOpener {
 				records.add(content);
 			}
 		} else if(readAsTextAnyway || isAcceptableFormat(filePath, FileUtil.SUFFIXES_TEXT, KEY_TEXT)) {
-			List<String> temp = IOUtil.readFileIntoList(filePath);
+			List<String> temp = IOUtil.readFileIntoList(filePath, SimpleKonfig.g().getCharsetInUse());
 			if(temp != null) {
 				records.addAll(temp);
 			}

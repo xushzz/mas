@@ -503,9 +503,9 @@ public class CommandSirap extends CommandBase {
 		params = parseParams(KEY_USER_CONFIGURATION + "(|(.*?))");
 		if(params != null) {
 			String criteria = params[1];
-			String userConfigFIle = g().getUserConfigFileName();
-			if(userConfigFIle != null) {
-				List<String> records = IOUtil.readFileIntoList(userConfigFIle);
+			String userConfigFile = g().getUserConfigFileName();
+			if(userConfigFile != null) {
+				List<String> records = IOUtil.readFileIntoList(userConfigFile, g().getCharsetInUse());
 				exportItems(records, criteria);
 				
 				return true;

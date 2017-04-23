@@ -19,6 +19,7 @@ import com.sirap.common.manager.WeatherManager;
 public class CommandFetch extends CommandBase {
 
 	private static final String KEY_FETCH = "f";
+	private static final String KEY_CURL = "cur";
 
 	public boolean handle() {
 		
@@ -34,7 +35,7 @@ public class CommandFetch extends CommandBase {
 			if(file != null) {
 				String filePath = file.getAbsolutePath();
 				if(FileOpener.isTextFile(filePath)) {
-					records = IOUtil.readFileIntoList(filePath);
+					records = IOUtil.readFileIntoList(filePath, g().getCharsetInUse());
 				}
 			}
 			
@@ -92,6 +93,13 @@ public class CommandFetch extends CommandBase {
 			List<XmlItem> items = WeatherManager.g().search(cityName);
 			setIsPrintTotal(false);
 			export(items);
+		}
+		
+		singleParam = parseParam(KEY_CURL + "\\s+" + KEY_HTTP);
+		if(singleParam != null) {
+			String pageUrl = singleParam;
+			String source = IOUtil.readURL(pageUrl, g().getCharsetInUse());
+			export(source);
 		}
 		
 		return false;

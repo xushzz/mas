@@ -33,4 +33,4 @@ GBK \uBBBB\uCBA7   decode GBK chars to regular chars, also for UTF8, Unicode and
 t64 gavinbelson    convert given string to BASE64-based string.
 f64 YmluZ28=       convert a BASE64-based string to regular string.
 pwd                present working directory
-ver=SIRAP-GEEK1.0.2-XIU  2/28/2017, II
+ver=SIRAP-GEEK1.0.3-ALVES  4/21/2017, V

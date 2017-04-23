@@ -46,17 +46,21 @@ import com.sirap.basic.tool.ScreenCaptor;
 public class IOUtil {
 	
 	public static String readURL(String address) {
-		return readURL(address, null, true);
+		return readURL(address, null);
+	}
+	
+	public static String readURL(String address, String charset) {
+		return readURL(address, charset, true);
 	}
 
-	public static String readURL(String address, String charSet, boolean printException) {
+	public static String readURL(String address, String charset, boolean printException) {
 		String content = null;
 		try {
 			URLConnection urlConn = new URL(address).openConnection();
 			setUserAgent(urlConn);
 			InputStreamReader isr = null;
-			if (charSet != null) {
-				isr = new InputStreamReader(urlConn.getInputStream(), charSet);
+			if (charset != null) {
+				isr = new InputStreamReader(urlConn.getInputStream(), charset);
 			} else {
 				isr = new InputStreamReader(urlConn.getInputStream());
 			}
@@ -191,10 +195,15 @@ public class IOUtil {
 	}
 	
 	public static List<String> readFileIntoList(String fileName) {
+		return readFileIntoList(fileName, Konstants.CODE_UTF8);
+	}
+	
+	public static List<String> readFileIntoList(String fileName, String charset) {
 		List<String> list = new ArrayList<String>();
 
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(fileName));
+			InputStreamReader isr = new InputStreamReader(new FileInputStream(fileName), charset);
+			BufferedReader br = new BufferedReader(isr);
 			String record = br.readLine();
 			while (record != null) {
 				list.add(record);
