@@ -22,8 +22,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.component.MexedMap;
@@ -46,7 +49,7 @@ import com.sirap.basic.tool.ScreenCaptor;
 public class IOUtil {
 	
 	public static String readURL(String address) {
-		return readURL(address, null);
+		return readURL(address, Konstants.CODE_UTF8);
 	}
 	
 	public static String readURL(String address, String charset) {
@@ -56,15 +59,13 @@ public class IOUtil {
 	public static String readURL(String address, String charset, boolean printException) {
 		String content = null;
 		try {
-			URLConnection urlConn = new URL(address).openConnection();
-			setUserAgent(urlConn);
-			InputStreamReader isr = null;
-			if (charset != null) {
-				isr = new InputStreamReader(urlConn.getInputStream(), charset);
-			} else {
-				isr = new InputStreamReader(urlConn.getInputStream());
+			URLConnection conn = new URL(address).openConnection();
+			setUserAgent(conn);
+			String possibleCharset = parseWebCharsetByHeader(conn);
+			if(possibleCharset != null) {
+				charset = possibleCharset;
 			}
-			
+			InputStreamReader isr = new InputStreamReader(conn.getInputStream(), charset);
 			BufferedReader br = new BufferedReader(isr);
 
 			String record;
@@ -84,6 +85,36 @@ public class IOUtil {
 		}
 
 		return content;
+	}
+	
+	public static String parseWebCharsetByHeader(URLConnection conn) {
+		Map<String, List<String>> map = conn.getHeaderFields();  
+        Set<String> keys = map.keySet();  
+        Iterator<String> iterator = keys.iterator();  
+  
+        while (iterator.hasNext()) {  
+            String key = iterator.next();
+            if(!StrUtil.equals("Content-Type", key)) {
+            	continue;
+            }
+            
+            List<String> items = map.get(key);
+            for(String item : items) {
+            	String charset = StrUtil.findFirstMatchedItem("charset=([^\\s;,]+)", item);
+            	if(charset != null) {
+            		return charset;
+            	}
+            }
+        }
+        
+		return null;
+	}
+	
+	public static String parseWebCharsetByMeta(String content) {
+		String regex = "<meta http-equiv=\"Content-Type\" content=\"[^>]+ charset=([^\\s;,\"]+)\">";
+		String charset = StrUtil.findFirstMatchedItem(regex, content);
+		
+		return charset;
 	}
 
 	public static List<String> readURLIntoList(String address) {

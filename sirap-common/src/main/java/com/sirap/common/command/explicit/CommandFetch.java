@@ -19,7 +19,7 @@ import com.sirap.common.manager.WeatherManager;
 public class CommandFetch extends CommandBase {
 
 	private static final String KEY_FETCH = "f";
-	private static final String KEY_CURL = "cur";
+	private static final String KEY_WEB_PRINT = "=";
 
 	public boolean handle() {
 		
@@ -95,7 +95,7 @@ public class CommandFetch extends CommandBase {
 			export(items);
 		}
 		
-		singleParam = parseParam(KEY_CURL + "\\s+" + KEY_HTTP);
+		singleParam = parseParam(KEY_WEB_PRINT + KEY_HTTP);
 		if(singleParam != null) {
 			String pageUrl = singleParam;
 			String source = IOUtil.readURL(pageUrl, g().getCharsetInUse());
