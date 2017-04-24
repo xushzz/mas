@@ -11,6 +11,7 @@ import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.WebReader;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.framework.command.target.TargetConsole;
@@ -19,7 +20,8 @@ import com.sirap.common.manager.WeatherManager;
 public class CommandFetch extends CommandBase {
 
 	private static final String KEY_FETCH = "f";
-	private static final String KEY_WEB_PRINT = "=";
+	private static final String KEY_WEB_PRETTY_PRINT = "=";
+	private static final String KEY_WEB_UGLY_PRINT = "==";
 
 	public boolean handle() {
 		
@@ -95,11 +97,32 @@ public class CommandFetch extends CommandBase {
 			export(items);
 		}
 		
-		singleParam = parseParam(KEY_WEB_PRINT + KEY_HTTP);
+		singleParam = parseParam(KEY_WEB_PRETTY_PRINT + KEY_HTTP);
 		if(singleParam != null) {
 			String pageUrl = singleParam;
-			String source = IOUtil.readURL(pageUrl, g().getCharsetInUse());
-			export(source);
+			WebReader xiu = new WebReader(pageUrl, g().getCharsetInUse(), true);
+			List<String> items = xiu.readIntoList();
+			String charsetInUse = xiu.getCharset();
+			String serverCharset = xiu.getServerCharset();
+			if(serverCharset == null) {
+				serverCharset = "unclear";
+			}
+			export(items);
+			C.pl2("charset in use: " + charsetInUse + ", charset on server: " + serverCharset);
+		}
+		
+		singleParam = parseParam(KEY_WEB_UGLY_PRINT + KEY_HTTP);
+		if(singleParam != null) {
+			String pageUrl = singleParam;
+			WebReader xiu = new WebReader(pageUrl, g().getCharsetInUse(), true);
+			String content = xiu.readIntoString();
+			String charsetInUse = xiu.getCharset();
+			String serverCharset = xiu.getServerCharset();
+			if(serverCharset == null) {
+				serverCharset = "unclear";
+			}
+			export(content);
+			C.pl2("length: " + content.length() + ", charset in use: " + charsetInUse + ", charset on server: " + serverCharset);
 		}
 		
 		return false;

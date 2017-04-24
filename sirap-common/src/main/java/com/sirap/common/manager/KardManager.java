@@ -13,6 +13,7 @@ import com.sirap.basic.util.StrUtil;
 import com.sirap.common.domain.creditcard.BillPeriod;
 import com.sirap.common.domain.creditcard.CreditKard;
 import com.sirap.common.domain.creditcard.CreditKardFile;
+import com.sirap.common.framework.SimpleKonfig;
 
 public class KardManager {
 	private static KardManager instance;
@@ -36,7 +37,7 @@ public class KardManager {
 		File[] files = file.listFiles();
 		for(int i = 0; i < files.length; i++) {
 			File f = files[i];
-			List<String> records = IOUtil.readFileIntoList(f.getAbsolutePath());
+			List<String> records = IOUtil.readFileIntoList(f.getAbsolutePath(), SimpleKonfig.g().getCharsetInUse());
 			CreditKardFile ccFile = new CreditKardFile(records);
 			cards.add(ccFile.getCard());
 		}
@@ -49,7 +50,7 @@ public class KardManager {
 		File[] files = file.listFiles();
 		for(int i = 0; i < files.length; i++) {
 			File f = files[i];
-			List<String> records = IOUtil.readFileIntoList(f.getAbsolutePath());
+			List<String> records = IOUtil.readFileIntoList(f.getAbsolutePath(), SimpleKonfig.g().getCharsetInUse());
 			CreditKardFile ccFile = new CreditKardFile(records);
 			CreditKard kard = ccFile.getCard();
 			if(kard == null) {

@@ -18,43 +18,47 @@ public class TextSearcher {
 	private static Map<String, TextSearcher> instances = new HashMap<>();
 	private List<MexedObject> allItems;
 	
-	private TextSearcher(List<String> folders, String[] suffixes, String criteria, boolean printSource) {
-		allItems = readAllItems(folders, suffixes, printSource);
+	private TextSearcher(List<String> folders, String[] suffixes, String criteria, boolean printSource, String charset) {
+		allItems = readAllItems(folders, suffixes, printSource, charset);
 	}
 	
-	private synchronized static TextSearcher getInstance(String engineName, List<String> folders, String[] suffixes, String criteria, boolean printSource) {
+	private synchronized static TextSearcher getInstance(String engineName, List<String> folders, String[] suffixes, String criteria, boolean printSource, String charset) {
 		TextSearcher wang = instances.get(engineName);
 		if(wang == null) {
-			wang = new TextSearcher(folders, suffixes, criteria, printSource);
+			wang = new TextSearcher(folders, suffixes, criteria, printSource, charset);
 			instances.put(engineName, wang);
 		}
 		
 		return wang;
 	}
 	
-	public static List<MexedObject> search(String foldersStr, String suffixesStr, String criteria, boolean printSource) {
+	public static List<MexedObject> search(String foldersStr, String suffixesStr, String criteria, boolean printSource, String charset) {
 		List<String> folders = StrUtil.splitByRegex(foldersStr);
 		String[] suffixes = suffixesStr.split("[;|,]");
 		
-		return search(folders, suffixes, criteria, printSource);
+		return search(folders, suffixes, criteria, printSource, charset);
 	}
 	
 	public static List<MexedObject> search(List<String> folders, String[] suffixes, String criteria, boolean printSource) {
-		TextSearcher wang = new TextSearcher(folders, suffixes, criteria, printSource);
+		return search(folders, suffixes, criteria, printSource, null);
+	}
+	
+	public static List<MexedObject> search(List<String> folders, String[] suffixes, String criteria, boolean printSource, String charset) {
+		TextSearcher wang = new TextSearcher(folders, suffixes, criteria, printSource, charset);
 		List<MexedObject> result = wang.search(criteria);
 		
 		return result;
 	}
 	
-	public static List<MexedObject> searchWithCache(String engineName, String foldersStr, String suffixesStr, String criteria, boolean printSource) {
+	public static List<MexedObject> searchWithCache(String engineName, String foldersStr, String suffixesStr, String criteria, boolean printSource, String charset) {
 		List<String> folders = StrUtil.splitByRegex(foldersStr);
 		String[] suffixes = suffixesStr.split("[;|,]");
 		
-		return searchWithCache(engineName, folders, suffixes, criteria, printSource);
+		return searchWithCache(engineName, folders, suffixes, criteria, printSource, charset);
 	}
 	
-	public static List<MexedObject> searchWithCache(String engineName, List<String> folders, String[] suffixes, String criteria, boolean printSource) {
-		TextSearcher wang = getInstance(engineName, folders, suffixes, criteria, printSource);
+	public static List<MexedObject> searchWithCache(String engineName, List<String> folders, String[] suffixes, String criteria, boolean printSource, String charset) {
+		TextSearcher wang = getInstance(engineName, folders, suffixes, criteria, printSource, charset);
 		List<MexedObject> result = wang.search(criteria);
 		
 		return result;
@@ -67,12 +71,12 @@ public class TextSearcher {
 		return result;
 	}
 	
-	private List<MexedObject> readAllItems(List<String> folders, String[] suffixes, boolean printSource) {
+	private List<MexedObject> readAllItems(List<String> folders, String[] suffixes, boolean printSource, String charset) {
 		List<File> files = FileUtil.scanFolder(folders, 9, suffixes, false);
 		List<MexedObject> allItems = new ArrayList<>();
 		for(File file : files) {
 			String fileName = file.getAbsolutePath();
-			List<MexedObject> items = readEachFile(fileName, printSource);
+			List<MexedObject> items = readEachFile(fileName, printSource, charset);
 			allItems.addAll(items);
 		}
 		
@@ -80,12 +84,12 @@ public class TextSearcher {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private List<MexedObject> readEachFile(String filename, boolean printSource) {
+	private List<MexedObject> readEachFile(String filename, boolean printSource, String charset) {
 		if(!FileUtil.isNormalFile(filename)) {
 			return Collections.EMPTY_LIST;
 		}
 		
-		List<String> items = IOUtil.readFileIntoList(filename);
+		List<String> items = IOUtil.readFileIntoList(filename, charset);
 		
 		String shortFilename = FileUtil.extractFilenameWithoutExtension(filename);
 		List<MexedObject> mexItems = new ArrayList<>();

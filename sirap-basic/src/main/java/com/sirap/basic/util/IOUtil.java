@@ -22,11 +22,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.component.MexedMap;
@@ -57,77 +54,13 @@ public class IOUtil {
 	}
 
 	public static String readURL(String address, String charset, boolean printException) {
-		String content = null;
-		try {
-			URLConnection conn = new URL(address).openConnection();
-			setUserAgent(conn);
-			String possibleCharset = parseWebCharsetByHeader(conn);
-			if(possibleCharset != null) {
-				charset = possibleCharset;
-			}
-			InputStreamReader isr = new InputStreamReader(conn.getInputStream(), charset);
-			BufferedReader br = new BufferedReader(isr);
-
-			String record;
-			StringBuffer sb = new StringBuffer();
-			while ((record = br.readLine()) != null) {
-				sb.append(record);
-			}
-
-			content = sb.toString();
-			sb.setLength(0);
-			br.close();
-			isr.close();
-		} catch (Exception ex) {
-			if (printException) {
-				C.pl2(ex + "\nURL=>" + address + "\nLocation=>" + IOUtil.class.getName());
-			}
-		}
-
-		return content;
-	}
-	
-	public static String parseWebCharsetByHeader(URLConnection conn) {
-		Map<String, List<String>> map = conn.getHeaderFields();  
-        Set<String> keys = map.keySet();  
-        Iterator<String> iterator = keys.iterator();  
-  
-        while (iterator.hasNext()) {  
-            String key = iterator.next();
-            if(!StrUtil.equals("Content-Type", key)) {
-            	continue;
-            }
-            
-            List<String> items = map.get(key);
-            for(String item : items) {
-            	String charset = StrUtil.findFirstMatchedItem("charset=([^\\s;,]+)", item);
-            	if(charset != null) {
-            		return charset;
-            	}
-            }
-        }
-        
-		return null;
-	}
-	
-	public static String parseWebCharsetByMeta(String content) {
-		String regex = "<meta http-equiv=\"Content-Type\" content=\"[^>]+ charset=([^\\s;,\"]+)\">";
-		String charset = StrUtil.findFirstMatchedItem(regex, content);
-		
-		return charset;
+		WebReader xiu = new WebReader(address, charset, true);
+		return xiu.readIntoString();
 	}
 
-	public static List<String> readURLIntoList(String address) {
-		List<String> list = new ArrayList<String>();
-
-		try {
-			URL url = new URL(address);
-			return readStreamIntoList(url.openStream());
-		} catch (Exception e) {
-			C.pl(e);
-		}
-
-		return list;
+	public static List<String> readURLIntoList(String address, String charset, boolean printException) {
+		WebReader xiu = new WebReader(address, charset, true);
+		return xiu.readIntoList();
 	}
 	
 	public static List<String> readResourceIntoList(String filePath) {
@@ -226,14 +159,18 @@ public class IOUtil {
 	}
 	
 	public static List<String> readFileIntoList(String fileName) {
-		return readFileIntoList(fileName, Konstants.CODE_UTF8);
+		return readFileIntoList(fileName, null);
 	}
 	
 	public static List<String> readFileIntoList(String fileName, String charset) {
 		List<String> list = new ArrayList<String>();
-
 		try {
-			InputStreamReader isr = new InputStreamReader(new FileInputStream(fileName), charset);
+			InputStreamReader isr = null;
+			if(charset != null) {
+				isr = new InputStreamReader(new FileInputStream(fileName), charset);
+			} else {
+				isr = new InputStreamReader(new FileInputStream(fileName));
+			}
 			BufferedReader br = new BufferedReader(isr);
 			String record = br.readLine();
 			while (record != null) {

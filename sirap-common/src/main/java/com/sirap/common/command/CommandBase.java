@@ -30,7 +30,7 @@ public abstract class CommandBase {
 	public static final String KEY_2DOTS = "..";
 	public static final String KEY_REFRESH = "r";
 	public static final String KEY_EXIT = "q,e,quit,exit";
-	public static final String KEY_HTTP = "(https?://[\\S]{4,}?)";
+	public static final String KEY_HTTP = "((https?://|www\\.)[\\S]{4,}?)";
 
 	protected String input;
 	protected String command;

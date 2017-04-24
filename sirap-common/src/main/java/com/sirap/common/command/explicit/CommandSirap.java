@@ -771,9 +771,9 @@ public class CommandSirap extends CommandBase {
 			boolean useCache = engine.isUseCache();
 			List<MexedObject> list = null;
 			if(useCache) {
-				list = TextSearcher.searchWithCache(engineName, folders, suffixes, criteria, printSource);
+				list = TextSearcher.searchWithCache(engineName, folders, suffixes, criteria, printSource, g().getCharsetInUse());
 			} else {
-				list = TextSearcher.search(folders, suffixes, criteria, printSource);
+				list = TextSearcher.search(folders, suffixes, criteria, printSource, g().getCharsetInUse());
 			}
 			
 			export(list);

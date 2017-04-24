@@ -308,7 +308,7 @@ public class CommandMonitor extends CommandBase {
 				List<File> files = FileUtil.scanFolder(folders, 9, suffixes, false);
 				for(File sourceFile : files) {
 					KeysReader pycelle = new KeysReader(sourceFile, methodList);
-					keys.addAll(pycelle.readKeysFromFile());
+					keys.addAll(pycelle.readKeysFromFile(g().getCharsetInUse()));
 				}
 			}
 			
