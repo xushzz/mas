@@ -334,7 +334,7 @@ public class CommandFile extends CommandBase {
 		params = parseParams("(.+)@" + KEY_HTTP);
 		if(params != null) {
 			String regex = params[0].trim();
-			String pageUrl = params[1].trim();
+			String pageUrl = equiHttpProtoclIfNeeded(params[1].trim());
 			String source = IOUtil.readURL(pageUrl, g().getCharsetInUse(), true);
 			if(source != null) {
 				List<List<String>> items = StrUtil.findAllMatchedListedItems(regex, source);

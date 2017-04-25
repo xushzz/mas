@@ -109,7 +109,7 @@ public class CommandHelp extends CommandBase {
 	private List<String> occupyDollarKeys(List<String> results) {
 		List<String> items = new ArrayList<>();
 		for(String temp : results) {
-			String item = StrUtil.occupy(temp, DOLLAR_MEANINGS);
+			String item = StrUtil.occupyKeyValues(temp, DOLLAR_MEANINGS);
 			items.add(item);
 		}
 		

@@ -254,15 +254,27 @@ public abstract class CommandBase {
 		return pathWithSeparator("storage.screenshot", Konstants.FOLDER_SCREENSHOT);
 	}
 	
+	protected String equiHttpProtoclIfNeeded(String url) {
+		String temp = url;
+		String key = "http";
+		if(!StrUtil.startsWith(url, "http")) {
+			temp = key + "://" + url;
+		}
+		
+		return temp;
+	}
+	
 	protected boolean handleHttpRequest(String source) {
-		String param = StrUtil.parseParam(KEY_HTTP, source);
-		if(param == null) {
+		String temp = StrUtil.parseParam(KEY_HTTP, source);
+		if(temp == null) {
 			return false;
 		}
 		
-		boolean getNormalFile = FileOpener.isPossibleNormalFile(param);
+		String url = equiHttpProtoclIfNeeded(temp);
+		
+		boolean getNormalFile = FileOpener.isPossibleNormalFile(url);
 		if(getNormalFile) {
-			String httpUrl = param;
+			String httpUrl = url;
 			String fileName = FileUtil.generateFilenameByUrl(httpUrl);
 			String storage = pathWithSeparator("storage.misc", Konstants.FOLDER_MISC);
 			String filePath = storage + fileName;
@@ -295,7 +307,7 @@ public abstract class CommandBase {
 			
 		} else {
 			C.pl2("View Page.");
-			FileOpener.playThing(param, "page.viewer");
+			FileOpener.playThing(url, "page.viewer");
 		}
 		
 		return true;

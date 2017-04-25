@@ -48,6 +48,7 @@ public class CommandFetch extends CommandBase {
 				}
 				String temp = record.trim();
 				String url = StrUtil.parseParam(KEY_HTTP, temp);
+				url = equiHttpProtoclIfNeeded(url);
 				if(url != null && FileOpener.isPossibleNormalFile(url)) {
 					links.add(new MexedObject(url));
 				}
@@ -107,7 +108,7 @@ public class CommandFetch extends CommandBase {
 		
 		singleParam = parseParam(KEY_WEB_PRETTY_PRINT + KEY_HTTP);
 		if(singleParam != null) {
-			String pageUrl = singleParam;
+			String pageUrl = equiHttpProtoclIfNeeded(singleParam);
 			WebReader xiu = new WebReader(pageUrl, g().getCharsetInUse(), true);
 			List<String> items = xiu.readIntoList();
 			String charsetInUse = xiu.getCharset();
@@ -121,7 +122,7 @@ public class CommandFetch extends CommandBase {
 		
 		singleParam = parseParam(KEY_WEB_UGLY_PRINT + KEY_HTTP);
 		if(singleParam != null) {
-			String pageUrl = singleParam;
+			String pageUrl = equiHttpProtoclIfNeeded(singleParam);;
 			WebReader xiu = new WebReader(pageUrl, g().getCharsetInUse(), true);
 			String content = xiu.readIntoString();
 			String charsetInUse = xiu.getCharset();

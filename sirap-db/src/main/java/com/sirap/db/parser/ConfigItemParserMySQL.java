@@ -44,7 +44,7 @@ public class ConfigItemParserMySQL extends ConfigItemParser {
 			}
 		}
 		
-		String url = StrUtil.occupyMaps(urlTemplate, params);
+		String url = StrUtil.occupyKeyValues(urlTemplate, params);
 		config.setUrl(url);
 		config.setItemName("flydb");
 		
