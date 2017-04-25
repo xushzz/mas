@@ -89,6 +89,7 @@ public class CommandSirap extends CommandBase {
 	private static final String KEY_BEEP_HOUR = "bmw";
 	private static final String KEY_TO_DATE = "td";
 	private static final String KEY_TO_LONG = "tl";
+	private static final String KEY_SET_CHARSET = "gbk,utf8,utf-8,gb2312";
 	
 	public boolean handle() {
 		
@@ -692,6 +693,14 @@ public class CommandSirap extends CommandBase {
 			beepKTimes(currentHour);
 			
 			C.pl();
+			return true;
+		}
+		
+		if(isIn(KEY_SET_CHARSET)) {
+			String charset = command.replace("-", "").toUpperCase();
+			g().setCharsetInUse(charset);
+			C.pl2("Charset in use: " + charset);
+			
 			return true;
 		}
 				

@@ -2,7 +2,7 @@ package com.sirap.basic.search;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -69,7 +69,7 @@ public class MexFilter<T extends MexItem> {
 			}
 		} else if(LOGIC_OR.equalsIgnoreCase(logic)) {
 			int count = 0;
-			Set<T> set = new HashSet<T>();
+			Set<T> set = new LinkedHashSet<T>();
 			for(T item:source) {
 				count++;
 				if(item == null) {

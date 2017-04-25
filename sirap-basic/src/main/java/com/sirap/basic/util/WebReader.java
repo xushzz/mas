@@ -138,7 +138,7 @@ public class WebReader {
 	}
 	
 	public static String parseWebCharsetByMeta(String content) {
-		String regex = "<meta http-equiv=\"Content-Type\" content=\"[^>]+ charset=([^\\s;,\"]+)\">";
+		String regex = "<meta http-equiv=\"Content-Type\" content=\"[^>]+charset=([^\\s;,\"]+)\">";
 		String charset = StrUtil.findFirstMatchedItem(regex, content);
 		
 		return charset;

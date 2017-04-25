@@ -397,4 +397,9 @@ public class SimpleKonfig extends Konfig {
 	public String getCharsetInUse() {
 		return charsetInUse;
 	}
+
+	public void setCharsetInUse(String charsetInUse) {
+		this.charsetInUse = charsetInUse;
+	}
+	
 }

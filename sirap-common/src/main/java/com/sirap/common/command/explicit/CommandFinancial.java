@@ -23,7 +23,7 @@ public class CommandFinancial extends CommandBase {
 	private static final String KEY_CREDIT_KARD = "kk";
 	private static final String KEY_MEMORABLE = "mm";
 	private static final String KEY_DAY_CHECK = "dc";
-	private static final String KEY_FOREX = "([a-z]{3})([\\-\\d\\.]{1,99})(|/|[a-z,]+)";
+	private static final String KEY_FOREX = "\\$([a-z]{3})([\\-\\d\\.]{1,99})(|/|[a-z,]+)";
 	private static final String KEY_LOAN = "loan";
 
 	public boolean handle() {

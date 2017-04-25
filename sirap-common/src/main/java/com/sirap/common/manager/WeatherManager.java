@@ -3,8 +3,9 @@ package com.sirap.common.manager;
 import java.util.HashMap;
 import java.util.List;
 
-import com.sirap.basic.domain.xml.XmlItem;
-import com.sirap.common.extractor.impl.WebserviceXWeatherExtractor;
+import com.sirap.basic.search.MexFilter;
+import com.sirap.common.domain.WeatherRecord;
+import com.sirap.common.extractor.impl.NationalWeatherExtractor;
 
 public class WeatherManager {
 
@@ -28,15 +29,23 @@ public class WeatherManager {
 		return instance;
 	}
 	
-	public List<XmlItem> search(String criteria) {
+	public List<WeatherRecord> allRecords() {
+		NationalWeatherExtractor yoko = new NationalWeatherExtractor();
+		yoko.process();
+		List<WeatherRecord> records = yoko.getMexItems();
+		
+		return records;
+	}
+	
+	public List<WeatherRecord> search(String criteria) {
 		String cityName = CITIES.get(criteria);
 		if(cityName == null) {
 			cityName = criteria;
 		}
-		WebserviceXWeatherExtractor yoko = new WebserviceXWeatherExtractor(cityName);
-		yoko.process();
-		List<XmlItem> records = yoko.getMexItems();
 		
-		return records;
+		MexFilter<WeatherRecord> filter = new MexFilter<WeatherRecord>(cityName, allRecords());
+		List<WeatherRecord> result = filter.process();	
+		
+		return result;
 	}
 }

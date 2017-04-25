@@ -73,3 +73,4 @@ bmw                make the beep sound K times, K is the current hour value, lik
 i de facto         get the translation of this English word, courtesy of http://www.dictionary.com/
 digest abc         encrypt string with digest algorithm, such as SHA,SHA1,SHA224,SHA256,SHA512,MD2,MD5
 MD5 F:\abc.txt     encrypt given file with digest algo, such as SHA,SHA1,SHA224,SHA256,SHA512,MD2,MD5
+gbk                set File or HTTP Request charset as GBK, the same goes for UTF8,UTF-8,GB2312

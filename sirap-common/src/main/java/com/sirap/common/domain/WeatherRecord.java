@@ -1,36 +1,30 @@
 package com.sirap.common.domain;
 
-import java.util.Map;
-
 import com.sirap.basic.domain.MexItem;
-import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.StrUtil;
 
 @SuppressWarnings("serial")
 public class WeatherRecord extends MexItem {
 	
-	public static final String KEY_MAX_LEN_CITY = "maxLenCity";
-	
+	private String cityPY;
 	private String city;
-	private String time;
 	private String weather;
 	private String celsius;
-	private String link;
 	
+	public String getCityPY() {
+		return cityPY;
+	}
+
+	public void setCityPY(String cityPY) {
+		this.cityPY = cityPY;
+	}
+
 	public String getCity() {
 		return city;
 	}
 
 	public void setCity(String city) {
 		this.city = city;
-	}
-
-	public String getTime() {
-		return time;
-	}
-
-	public void setTime(String time) {
-		this.time = time;
 	}
 
 	public String getWeather() {
@@ -49,41 +43,58 @@ public class WeatherRecord extends MexItem {
 		if(celsius == null) {
 			return null;
 		}
-		StringBuffer sb = new StringBuffer(celsius);
-		sb.setCharAt(sb.length() - 2, '^');
-		return sb.toString();
 		
-//		List<Integer> temp = StringUtil.extractIntegers(celsius);
-//		String value = StringUtil.connect(temp, "");
-//		return StringUtil.extendLeftward(value, 2, " ");
+		String digits = StrUtil.findFirstMatchedItem("(\\d+)", celsius);
+		
+		return digits;
 	}
 
 	public void setCelsius(String celsius) {
 		this.celsius = celsius;
 	}
 
-	public String getLink() {
-		return link;
-	}
-
-	public void setLink(String link) {
-		this.link = link;
-	}
-
 	public boolean isMatched(String keyWord) {
+		if(isRegexMatched(cityPY, keyWord)) {
+			return true;
+		}
+		
+		if(StrUtil.contains(cityPY, keyWord)) {
+			return true;
+		}
+		
+		if(isRegexMatched(city, keyWord)) {
+			return true;
+		}
+		
+		if(StrUtil.contains(city, keyWord)) {
+			return true;
+		}
+		
+		if(isRegexMatched(weather, keyWord)) {
+			return true;
+		}
+		
+		if(StrUtil.contains(weather, keyWord)) {
+			return true;
+		}
+		
+		String temper = getCelsiusDigits();
+		if(isRegexMatched(temper, keyWord)) {
+			return true;
+		}
+		
+		if(StrUtil.contains(temper, keyWord)) {
+			return true;
+		}
 		
 		return false;
 	}
 	
-	public String toPrint(Map<String, Object> params) {
-		Integer maxCityLen = MathUtil.toInteger(String.valueOf(params.get(KEY_MAX_LEN_CITY)), 20);
-		
+	public String toString() {
 		StringBuffer sb = new StringBuffer();
-		sb.append(StrUtil.extend(city, maxCityLen + 2));
-		sb.append(getCelsiusDigits() + "  ");
-		sb.append(time + "  ");
-		sb.append(StrUtil.extend(weather, 30));
-		sb.append(link);
+		sb.append(StrUtil.extend(city, 6));
+		sb.append(StrUtil.extend(weather, 10));
+		sb.append(celsius);
 		
 		return sb.toString();
 	}
