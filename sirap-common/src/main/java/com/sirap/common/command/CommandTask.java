@@ -20,7 +20,7 @@ public class CommandTask extends CommandBase {
 	public boolean handle() {
 		
 		String regex = KEY_ALARM_SET + "(.*?)(|\\s.*?)";
-		String[] params = StrUtil.parseParams(regex, input);
+		params = StrUtil.parseParams(regex, input);
 		if(params != null) {
 			String type = params[0];
 			String faceValue = params[1];
@@ -67,12 +67,9 @@ public class CommandTask extends CommandBase {
 			return true;
 		}
 		
-		String param = parseParam(KEY_ALARM_CANCEL);
-		if(param != null) {
-			List<String> orderIds = null;
-			if(param.length() > 0) {
-				orderIds = StrUtil.split(param, ',');
-			}
+		singleParam = parseParam(KEY_ALARM_CANCEL);
+		if(singleParam != null) {
+			List<String> orderIds = StrUtil.split(singleParam);
 			int count = AlarmManager.g().cancelAlarms(true, orderIds);
 			if(count > 0) {
 				C.pl2(alarmNowInfo());
@@ -85,7 +82,7 @@ public class CommandTask extends CommandBase {
 			return true;
 		}
 		
-		String singleParam = StrUtil.parseParam(KEY_TASK + "\\s(.*?)", input);
+		singleParam = StrUtil.parseParam(KEY_TASK + "\\s(.*?)", input);
 		if(singleParam != null) {
 			List<String> tasks = readRecordsFromFile(singleParam);
 			if(tasks == null) {

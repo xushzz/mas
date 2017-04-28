@@ -49,7 +49,7 @@ public class MexedMap {
 	}
 	
 	public int getNumber(String key, int defaultIfNull) {
-		String strValue = container.get(key.toLowerCase());
+		String strValue = container.get(key);
 		if(strValue == null) {
 			return defaultIfNull;
 		} else {
@@ -59,7 +59,7 @@ public class MexedMap {
 	}
 
 	public String get(String key, String defaultIfNull) {
-		String value = container.get(key.toLowerCase());
+		String value = container.get(key);
 		return value != null ? value.trim() : defaultIfNull;
 	}
 
@@ -97,7 +97,7 @@ public class MexedMap {
 		Iterator<String> it = container.keySet().iterator();
 		while(it.hasNext()) {
 			String key = it.next();
-			String value = container.get(key.toLowerCase());
+			String value = container.get(key);
 			if(StrUtil.contains(key, keyword)) {
 				sortedMap.put(key, value);
 			}
@@ -113,7 +113,7 @@ public class MexedMap {
 		Iterator<String> it = container.keySet().iterator();
 		while(it.hasNext()) {
 			String key = it.next();
-			String value = container.get(key.toLowerCase());
+			String value = container.get(key);
 			entries.add(key + "=" + value);
 		}
 		

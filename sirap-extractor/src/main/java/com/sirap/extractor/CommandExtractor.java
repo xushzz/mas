@@ -27,7 +27,7 @@ public class CommandExtractor extends CommandBase {
 	
 	public boolean handle() {
 		
-		String singleParam = parseParam(KEY_SOGOU + "\\s(.*?)");
+		singleParam = parseParam(KEY_SOGOU + "\\s(.*?)");
 		if(singleParam != null) {
 			String kw = singleParam;
 			if(!EmptyUtil.isNullOrEmptyOrBlank(kw)) {
@@ -35,7 +35,7 @@ public class CommandExtractor extends CommandBase {
 			}
 		}
 		
-		String[] params = parseParams(KEY_YOUDAO + "\\s(.*?)(|,\\s*(\\d{1,5}))");
+		params = parseParams(KEY_YOUDAO + "\\s(.*?)(|,\\s*(\\d{1,5}))");
 		if(params != null) {
 			String kw = params[0];
 			int images = MathUtil.toInteger(params[2], 48);

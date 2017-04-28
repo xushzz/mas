@@ -26,7 +26,7 @@ public class CommandFetch extends CommandBase {
 
 	public boolean handle() {
 		
-		String singleParam = parseParam(KEY_FETCH + "\\s(.+?)");
+		singleParam = parseParam(KEY_FETCH + "\\s(.+?)");
 		if(singleParam != null) {
 			if(handleHttpRequest(singleParam)) {
 				return true;

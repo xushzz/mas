@@ -285,7 +285,7 @@ public class CommandSirap extends CommandBase {
 			}
 		}
 		
-		String[] params = parseParams("(s|c)(|\\d{1,2})(|\\s.*?)");
+		params = parseParams("(s|c)(|\\d{1,2})(|\\s.*?)");
 		if(params != null) {
 			String type = params[0];
 			String strDelay = params[1];

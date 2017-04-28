@@ -36,7 +36,7 @@ public class CommandHelp extends CommandBase {
 	
 	public boolean handle() {
 		
-		String singleParam = parseParam("[?|'](.*?)");
+		singleParam = parseParam("[?|'](.*?)");
 		if(singleParam != null) {
 			List<String> allKeys = new ArrayList<>();
 			allKeys.add(KEY_GUEST);
@@ -89,22 +89,6 @@ public class CommandHelp extends CommandBase {
 		
 		return false;
 	}
-	
-//	private List<String> splitHelpInfo(String record) {
-//		List<String> list = new ArrayList<>();
-//		int index = record.indexOf("  ");
-//		if(index < 0) {
-//			list.add("");
-//			list.add(record);
-//		} else {
-//			String item = record.substring(0, index).trim();
-//			String more = record.substring(index).trim();
-//			list.add(item);
-//			list.add(more);
-//		}
-//		
-//		return list;
-//	}
 	
 	private List<String> occupyDollarKeys(List<String> results) {
 		List<String> items = new ArrayList<>();

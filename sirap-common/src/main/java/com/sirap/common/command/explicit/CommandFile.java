@@ -43,7 +43,7 @@ public class CommandFile extends CommandBase {
 	private static final String KEY_PDF = "pdf";
 	
 	public boolean handle() {
-		String singleParam = parseParam(KEY_EXTENSIBLE + "\\s(.*?)");
+		singleParam = parseParam(KEY_EXTENSIBLE + "\\s(.*?)");
 		if(singleParam != null) {
 			if(target instanceof TargetConsole) {
 				if(isEmailEnabled()) {
@@ -140,7 +140,7 @@ public class CommandFile extends CommandBase {
 			return true;
 		}
 				
-		String[] params = parseParams("(" + KEY_SHOW_DETAIL + "|)([^<]*)(<|)");
+		params = parseParams("(" + KEY_SHOW_DETAIL + "|)([^<]*)(<|)");
 		if(params != null) {
 			boolean detail = !params[0].isEmpty();
 			String path = params[1];

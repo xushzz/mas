@@ -28,7 +28,7 @@ public class CommandSql extends CommandBase {
 	
 	@Override
 	public boolean handle() {
-		String singleParam = parseParam(KEY_SQL + "(.{4,})");
+		singleParam = parseParam(KEY_SQL + "(.{4,})");
 		if(singleParam != null) {
 			File file = parseFile(singleParam);
 			if(file != null) {
@@ -75,7 +75,7 @@ public class CommandSql extends CommandBase {
 		
 		String temp = DBHelper.SQL_RESERVED_WORDS.replaceAll(";", "|");
 		String regex = "(" + temp + ")\\s+(.+)";
-		String[] params = parseParams(regex);
+		params = parseParams(regex);
 		if(params != null) {
 			InputAnalyzer sean = new DBInputAnalyzer(input);
 			this.command = sean.getCommand();

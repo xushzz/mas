@@ -38,10 +38,10 @@ public class CommandFinancial extends CommandBase {
 			return true;
 		}
 		
-		String param = parseParam(KEY_CREDIT_KARD + " ([a-zA-Z]+)");
-		if(param != null) {
+		singleParam = parseParam(KEY_CREDIT_KARD + " ([a-zA-Z]+)");
+		if(singleParam != null) {
 			String filePath = cardPath();
-			KardManager.g().analyzeCards(param, filePath);
+			KardManager.g().analyzeCards(singleParam, filePath);
 			return true;
 		}
 		
@@ -57,7 +57,7 @@ public class CommandFinancial extends CommandBase {
 			}
 		}
 		
-		String[] params = parseParams(KEY_MEMORABLE + "(|\\d{1,4})");
+		params = parseParams(KEY_MEMORABLE + "(|\\d{1,4})");
 		if(params != null) {
 			final Integer count = MathUtil.toInteger(params[0], 20);
 			MemoryKeeper lucy = new MemoryKeeper() {
@@ -87,7 +87,7 @@ public class CommandFinancial extends CommandBase {
 			}
 		}
 		
-		String singleParam = parseParam(KEY_MEMORABLE + "\\s(.+?)");
+		singleParam = parseParam(KEY_MEMORABLE + "\\s(.+?)");
 		if(singleParam != null) {
 			MemoryKeeper lucy = new MemoryKeeper() {
 				public List<MemoryRecord> readRecords() {

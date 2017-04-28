@@ -52,7 +52,7 @@ public class CommandMonitor extends CommandBase {
 	private static final PDFParams LH_PDF_PARAMS = new PDFParams(LH_cellsWidth, LH_cellsAlign);
 	
 	public boolean handle() {
-		String singleParam = parseParam(KEY_ECHO + "\\s(.+?)");
+		singleParam = parseParam(KEY_ECHO + "\\s(.+?)");
 		if(singleParam != null) {
 			Properties props = System.getProperties();
 			MexedMap mapProps = IOUtil.createMexedMapByProperties(props);
@@ -86,7 +86,7 @@ public class CommandMonitor extends CommandBase {
 			return true;
 		}
 		
-		String[] params = parseParams(KEY_SECURITY_ENCODE + "(|-([a-z0-9]+))\\s(|.+?)");
+		params = parseParams(KEY_SECURITY_ENCODE + "(|-([a-z0-9]+))\\s(|.+?)");
 		if(params != null) {
 			noCollect();
 			String passcode = params[1];

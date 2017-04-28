@@ -17,7 +17,7 @@ public class CommandExecutor extends CommandBase {
 	
 	@Override
 	public boolean handle() {
-		String singleParam = parseParam(KEY_SSH + "\\s(.{1,})");
+		singleParam = parseParam(KEY_SSH + "\\s(.{1,})");
 		if(singleParam != null) {
 			String sshCommand = singleParam;
 			List<String> items = SSHCommandExecutor.g().execute(sshCommand);
@@ -39,7 +39,7 @@ public class CommandExecutor extends CommandBase {
 			return true;
 		}
 		
-		String[] params = parseParams("(!|=|)" + "(\\S+)::(\\S+)");
+		params = parseParams("(!|=|)" + "(\\S+)::(\\S+)");
 		if(params != null) {
 			String cookbook = params[1];
 			String recipe = params[2];
