@@ -2,6 +2,7 @@ package com.sirap.basic.domain;
 
 import java.io.File;
 
+import com.sirap.basic.search.SizeCriteria;
 import com.sirap.basic.util.StrUtil;
 
 @SuppressWarnings("serial")
@@ -33,7 +34,25 @@ public class MexedFile extends MexItem implements Comparable<MexedFile> {
 			return true;
 		}
 		
-		return StrUtil.contains(temp, keyWord);
+		if(StrUtil.contains(temp, keyWord)) {
+			return true;
+		}
+		
+		SizeCriteria quinn = getSizeCriteria(keyWord);
+		if(quinn != null && quinn.isGood(file.length())) {
+			return true;
+		}
+		
+		return false;
+	}
+	
+	private SizeCriteria getSizeCriteria(String source) {
+		SizeCriteria quinn = new SizeCriteria();
+		if(quinn.parse(source)) {
+			return quinn;
+		} else {
+			return null;
+		}
 	}
 	
 	public String toString() {

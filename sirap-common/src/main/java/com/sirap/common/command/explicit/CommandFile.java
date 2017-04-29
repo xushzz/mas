@@ -26,6 +26,8 @@ import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.framework.SimpleKonfig;
+import com.sirap.common.framework.command.FileSizeInputAnalyzer;
+import com.sirap.common.framework.command.InputAnalyzer;
 import com.sirap.common.framework.command.target.TargetAnalyzer;
 import com.sirap.common.framework.command.target.TargetConsole;
 import com.sirap.common.manager.FileManager;
@@ -217,6 +219,9 @@ public class CommandFile extends CommandBase {
 			return true;
 		}
 		
+		InputAnalyzer sean = new FileSizeInputAnalyzer(input);
+		this.command = sean.getCommand();
+		this.target = sean.getTarget();
 		SearchComponent jack = parseFolderPathAndCriterias(command);
 		if(jack != null) {
 			List<MexedFile> allMexedFiles = new ArrayList<>();
@@ -289,8 +294,15 @@ public class CommandFile extends CommandBase {
 			return true;
 		}
 		
-		params = parseParams("(" + KEY_SHOW_DETAIL + "|)" + KEY_VERY_IMPORTANT_FOLDER + "\\s(.*?)");
+		String vRegex = "(" + KEY_SHOW_DETAIL + "|)" + KEY_VERY_IMPORTANT_FOLDER + "(\\s(.*?)|)";
+		params = parseParams(vRegex);
 		if(params != null) {
+			sean = new FileSizeInputAnalyzer(input);
+			this.command = sean.getCommand();
+			this.target = sean.getTarget();
+			
+			params = parseParams(vRegex);
+			
 			boolean detail = !params[0].isEmpty();
 			String criteria = params[1].trim();
 			List<MexedFile> records = FileManager.g().getFileRecordsByName(criteria);

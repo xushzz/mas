@@ -551,14 +551,20 @@ public class FileUtil {
 	public static long parseFileSize(String source) {
 		String units = Konstants.FILE_SIZE_UNIT;
 		
-		String regex = "(\\d+)([" + units + "])";
+		String regex = Konstants.REGEX_FLOAT + "([" + units + "])";
 		String[] params = StrUtil.parseParams(regex, source.toUpperCase());
 		if(params == null) {
-			throw new MexException("can't parse file size, try legal examples like 2B, 12M, 388G and so on.");
+			throw new MexException("can't parse file size, try legal examples like 2B, 12M, 38.8G and so on.");
 		}
 		
-		Double number = Double.valueOf(params[0]);
-		int power = units.indexOf(params[1].charAt(0));
+		return parseFileSize(params[0], params[1].charAt(0));
+	}
+	
+	public static long parseFileSize(String numberStr, char unit) {
+		String units = Konstants.FILE_SIZE_UNIT;
+		
+		Double number = Double.valueOf(numberStr);
+		int power = units.indexOf(unit);
 		Double result = number * Math.pow(Konstants.FILE_SIZE_STEP, power);
 		
 		if(result > Long.MAX_VALUE) {
