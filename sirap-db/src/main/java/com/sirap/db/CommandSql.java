@@ -149,6 +149,7 @@ public class CommandSql extends CommandBase {
 			if(db != null) {
 				g().getStash().put(dbName, db);
 				g().getUserProps().put("db.active", dbName);
+				g().getUserProps().put("db.schema", null);
 				C.pl2("currently active: " + dbName + "");
 				export(db.toPrint());
 			}

@@ -39,6 +39,7 @@ public abstract class CommandBase {
 	
 	protected String singleParam;
 	protected String[] params;
+	protected String regex;
 	
 	public CommandBase() {
 	}

@@ -1,9 +1,9 @@
 package com.sirap.common.command.explicit;
 
 import java.io.File;
-import java.math.BigDecimal;
 import java.util.List;
 
+import com.sirap.basic.component.Konstants;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.output.PDFParams;
 import com.sirap.basic.util.CollectionUtil;
@@ -17,13 +17,13 @@ import com.sirap.common.manager.ForexManager;
 import com.sirap.common.manager.KardManager;
 import com.sirap.common.manager.LoanManager;
 import com.sirap.common.manager.MemorableDayManager;
-	
+
 public class CommandFinancial extends CommandBase {
 
 	private static final String KEY_CREDIT_KARD = "kk";
 	private static final String KEY_MEMORABLE = "mm";
 	private static final String KEY_DAY_CHECK = "dc";
-	private static final String KEY_FOREX = "\\$([a-z]{3})([\\-\\d\\.]{1,99})(|/|[a-z,]+)";
+	private static final String KEY_FOREX = "\\$([a-z]{3})" + Konstants.REGEX_FLOAT + "(|/|[a-z,]+)";
 	private static final String KEY_LOAN = "loan";
 
 	public boolean handle() {
@@ -106,7 +106,7 @@ public class CommandFinancial extends CommandBase {
 			String name = params[0];
 			String amount = params[1];
 			String currencies = params[2];
-			BigDecimal bd = MathUtil.toBigDecimal(amount);
+			Double bd = MathUtil.toDouble(amount);
 			if(bd != null) {
 				if(target instanceof TargetPDF) {
 					int[] cellsWidth = {1, 4, 2};
@@ -123,7 +123,8 @@ public class CommandFinancial extends CommandBase {
 			}
 		}
 		
-		params = parseParams(KEY_LOAN + "\\s+([\\d\\.]{1,20})\\s*,\\s*(\\d{1,3})\\s*,\\s*([\\d\\.]+)");
+		regex = KEY_LOAN + "\\s+" + Konstants.REGEX_FLOAT + "\\s*,\\s*(\\d{1,3})\\s*,\\s*" + Konstants.REGEX_FLOAT;
+		params = parseParams(regex);
 		if(params != null) {
 			Double principal = MathUtil.toDouble(params[0]);
 			Integer period = MathUtil.toInteger(params[1]);
