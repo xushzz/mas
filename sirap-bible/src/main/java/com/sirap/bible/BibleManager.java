@@ -120,7 +120,7 @@ public class BibleManager {
 		
 		BibleBook book = items.get(0);
 		if(chapter == 0 || chapter > book.getMaxChapter()) {
-			String msg = "chapter " + chapter + " doesn't exist, max chapter of " + book.getName() + " + is " + book.getMaxChapter();
+			String msg = "chapter " + chapter + " doesn't exist, max chapter of " + book.getName() + " is " + book.getMaxChapter();
 			throw new MexException(msg);
 		}
 		

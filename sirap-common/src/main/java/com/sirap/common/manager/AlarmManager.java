@@ -41,6 +41,11 @@ public class AlarmManager {
 		alarm.setOrder(count + "");
 	}
 
+	/***
+	 * @param isShowMsg
+	 * @param orderIdList, means ALL alarms if null
+	 * @return
+	 */
 	public int cancelAlarms(boolean isShowMsg, List<String> orderIdList) {
 		int size = alarms.size();
 		if(size == 0) {

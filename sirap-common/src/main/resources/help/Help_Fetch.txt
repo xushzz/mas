@@ -5,4 +5,4 @@ f E:\Links.txt     and fetch resource one by one
 =http://www.a.cn   display html source code in pretty format, same as cURL
 ==http://www.a.cn  display html source code in raw format, kind of ugly
 w.cityName         display weather info of China cities, like sz, shenzhen, 10, duoyun, from www.nmc.cn
-w..                display weather info of all cities in China
+w..                display weather info of all cities in China, courtesy of http://www.nmc.cn
