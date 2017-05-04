@@ -28,6 +28,10 @@ public class CommandSql extends CommandBase {
 	
 	@Override
 	public boolean handle() {
+		InputAnalyzer sean = new DBInputAnalyzer(input);
+		this.command = sean.getCommand();
+		this.target = sean.getTarget();
+		
 		singleParam = parseParam(KEY_SQL + "(.{4,})");
 		if(singleParam != null) {
 			File file = parseFile(singleParam);
@@ -75,16 +79,14 @@ public class CommandSql extends CommandBase {
 		
 		String temp = DBHelper.SQL_RESERVED_WORDS.replaceAll(";", "|");
 		String regex = "(" + temp + ")\\s+(.+)";
+		sean = new DBInputAnalyzer(input);
+		this.command = sean.getCommand();
+		this.target = sean.getTarget();
 		params = parseParams(regex);
+		
 		if(params != null) {
-			InputAnalyzer sean = new DBInputAnalyzer(input);
-			this.command = sean.getCommand();
-			this.target = sean.getTarget();
-			params = parseParams(regex);
-			if(params != null) {
-				String sql = DBHelper.rephrase(params);
-				dealWith(sql);
-			}
+			String sql = DBHelper.rephrase(params);
+			dealWith(sql);
 			
 			return true;
 		}
@@ -196,6 +198,9 @@ public class CommandSql extends CommandBase {
 				export(ming.exportLiteralStrings());
 			}
 		} else {
+			if(g().isYes("sql.print")) {
+				C.pl("doing... " + sql);
+			}
 			int affectedRows = DBManager.g().update(sql);
 			String plural = affectedRows > 1 ? "s" : "";
 			String tempalte = "affected row{0}: {1}.";

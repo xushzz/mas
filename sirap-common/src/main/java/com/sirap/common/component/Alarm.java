@@ -14,7 +14,8 @@ public abstract class Alarm extends MexedTimer implements Comparable<Alarm> {
 
 	public static final String TYPE_DELAY = "+";
 	public static final String TYPE_FIXED = "@";
-	public static final String TYPE_REPEAT = "#";
+	public static final String TYPE_REPEAT_NO_DELAY = "#";
+	public static final String TYPE_REPEAT_DELAY = "##";
 	
 	private boolean isActive = true; 
 	private String order;
@@ -61,19 +62,28 @@ public abstract class Alarm extends MexedTimer implements Comparable<Alarm> {
 		return theMoment;
 	}
 	
+	private boolean isRepeat() {
+		boolean flag = TYPE_REPEAT_NO_DELAY.equals(type) || TYPE_REPEAT_DELAY.equals(type);
+		return flag;
+	}
+	
 	private void tick() {
 		if(targetMoment == null) {
 			return;
 		}
 		
 		long diffInMilli = targetMoment.getTime() - (new Date()).getTime();
-		if(TYPE_REPEAT.equalsIgnoreCase(type)) {
+		if(isRepeat()) {
 			int min = 3000;
 			if(diffInMilli < min) {
 				diffInMilli = min;
 			}
 			setPeriodMills(diffInMilli);
-			setDelayMillis(diffInMilli);
+			if(TYPE_REPEAT_DELAY.equals(type)) {
+				setDelayMillis(diffInMilli);
+			} else {
+				setDelayMillis(1);
+			}
 		} else {
 			if(diffInMilli < 0) {
 				diffInMilli = 0;
@@ -97,8 +107,7 @@ public abstract class Alarm extends MexedTimer implements Comparable<Alarm> {
 	@Override
 	protected void timerAction()  {
 		execute();
-		boolean isRepeated = TYPE_REPEAT.equals(type);
-		if(isRepeated) {
+		if(isRepeat()) {
 			targetMoment = jamie.recalculateTargetMoment();
 		} else {
 			cancel();

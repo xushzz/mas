@@ -12,7 +12,7 @@ import com.sirap.common.manager.AlarmManager;
 
 public class CommandTask extends CommandBase {
 
-	private static final String KEY_ALARM_SET = "al(@|\\+|#)";
+	private static final String KEY_ALARM_SET = "al(@|\\+|#{1,2})";
 	private static final String KEY_ALARM_SHOW = "al";
 	private static final String KEY_ALARM_CANCEL = "ac(|[\\d|,]+)";
 	private static final String KEY_TASK = "tk";
