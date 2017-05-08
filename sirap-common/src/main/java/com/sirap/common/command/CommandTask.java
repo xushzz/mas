@@ -37,10 +37,10 @@ public class CommandTask extends CommandBase {
 			Alarm al = new Alarm(type, faceValue, actionStr) {
 				@Override
 				public void execute() {
-					C.pl("[Begin => " + actionStr + "]");
+					C.pl("==================== START of alarm task => " + actionStr + " ====================");
 					List<String> actions = StrUtil.split(actionStr, ';');
 					executeActions(actions);
-					C.pl("[End => " + actionStr + "]");
+					C.pl("==================== END of alarm task => " + actionStr + " ====================");
 				}
 			};
 			
@@ -109,9 +109,9 @@ public class CommandTask extends CommandBase {
 			if(EmptyUtil.isNullOrEmpty(action)) {
 				continue;
 			}
-			String info = "[Action " + (i + 1) + "/" + actions.size() + "] ";
-			C.pl(info +  action);
+			C.pl("********** begin of action " + (i + 1) + "/" + actions.size() + ": " + action + " **********");
 			Janitor.g().process(action.trim());
+			C.pl("********** end of action " + (i + 1) + "/" + actions.size() + ": " + action + " **********");
 		}
 	}
 }

@@ -5,6 +5,7 @@ import java.util.Locale;
 
 import com.sirap.basic.component.MexedTimer;
 import com.sirap.basic.component.MomentCalculator;
+import com.sirap.basic.tool.C;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.common.manager.AlarmManager;
 
@@ -76,13 +77,13 @@ public abstract class Alarm extends MexedTimer implements Comparable<Alarm> {
 		if(isRepeat()) {
 			int min = 3000;
 			if(diffInMilli < min) {
+				C.pl("Minimum repeat interval would be changed to " + min + " milliseconds.");
 				diffInMilli = min;
 			}
 			setPeriodMills(diffInMilli);
-			if(TYPE_REPEAT_DELAY.equals(type)) {
-				setDelayMillis(diffInMilli);
-			} else {
-				setDelayMillis(1);
+			setDelayMillis(diffInMilli);
+			if(TYPE_REPEAT_NO_DELAY.equals(type)) {
+				execute();
 			}
 		} else {
 			if(diffInMilli < 0) {
