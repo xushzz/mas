@@ -1,8 +1,9 @@
 package com.sirap.common.framework;
 
 import com.sirap.basic.tool.C;
-import com.sirap.security.MrTrump;
-
+import com.sirap.basic.util.TrumpUtil;
+import com.sirap.basic.util.XXXUtil;
+	
 public class VerbalJanitor extends Janitor {
     
     public VerbalJanitor(SimpleKonfig konfig) {
@@ -23,13 +24,15 @@ public class VerbalJanitor extends Janitor {
     	}
 
     	String passcode = SimpleKonfig.g().getSecurityPasscode();
+    	XXXUtil.nullOrEmptyCheck(passcode, "security passcode");
+    	
     	String temp = SimpleKonfig.g().getPasswordEncrypted();
     	if(temp == null) {
     		C.pl("Invalid encrypted password provided.");
 			return false;
     	}
     	
-    	String password = MrTrump.decodeBySIRAP(temp, passcode);
+    	String password = TrumpUtil.decodeBySIRAP(temp, passcode);
     	if(password == null) {
 			C.pl("Illegal encrypted password [" + temp + "]");
 			return false;

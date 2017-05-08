@@ -17,6 +17,7 @@ import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.TrumpUtil;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.framework.SimpleKonfig;
 import com.sirap.common.framework.command.target.Target;
@@ -27,7 +28,6 @@ import com.sirap.common.framework.command.target.TargetFolder;
 import com.sirap.common.framework.command.target.TargetHtml;
 import com.sirap.common.framework.command.target.TargetPDF;
 import com.sirap.common.framework.command.target.TargetTxtFile;
-import com.sirap.security.MrTrump;
 
 public class Exporter {
 	
@@ -49,7 +49,7 @@ public class Exporter {
 			if(FileUtil.isSirapFile(filePath)) {
 				String content = StrUtil.connectWithLineSeparator(records);
 				String passcode = SimpleKonfig.g().getSecurityPasscode();
-				String encoded = MrTrump.encodeBySIRAP(content, passcode);
+				String encoded = TrumpUtil.encodeBySIRAP(content, passcode);
 				List<String> list = new ArrayList<>();
 				list.add(encoded);
 				IOUtil.saveAsTxt(list, filePath);

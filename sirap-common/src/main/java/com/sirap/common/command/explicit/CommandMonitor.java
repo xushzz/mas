@@ -16,6 +16,7 @@ import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.TrumpUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
@@ -28,7 +29,6 @@ import com.sirap.common.framework.SimpleKonfig;
 import com.sirap.common.framework.command.target.TargetPDF;
 import com.sirap.common.manager.CommandHistoryManager;
 import com.sirap.common.manager.LoginHistoryManager;
-import com.sirap.security.MrTrump;
 
 public class CommandMonitor extends CommandBase {
 
@@ -100,7 +100,7 @@ public class CommandMonitor extends CommandBase {
 				String filePath = file.getAbsolutePath();
 				if(FileOpener.isTextFile(filePath)) {
 					String content = IOUtil.readFileWithRegularLineSeparator(filePath);
-					String text = MrTrump.encodeBySIRAP(content, passcode);
+					String text = TrumpUtil.encodeBySIRAP(content, passcode);
 					export(text);
 				} else {
 					XXXUtil.alert("Not a text file: " + filePath);
@@ -108,7 +108,7 @@ public class CommandMonitor extends CommandBase {
 				
 				return true;
 			} else {
-				String text = MrTrump.encodeBySIRAP(param, passcode);
+				String text = TrumpUtil.encodeBySIRAP(param, passcode);
 				export(text);
 			}
 			
@@ -129,7 +129,7 @@ public class CommandMonitor extends CommandBase {
 				String filePath = file.getAbsolutePath();
 				if(FileOpener.isTextFile(filePath)) {
 					String content = IOUtil.readFileWithoutLineSeparator(filePath);
-					String text = MrTrump.decodeBySIRAP(content, passcode, true);
+					String text = TrumpUtil.decodeBySIRAP(content, passcode, true);
 					List<String> items = StrUtil.split(text, '\n');
 					export(items);
 				} else {
@@ -138,7 +138,7 @@ public class CommandMonitor extends CommandBase {
 				
 				return true;
 			} else {
-				String text = MrTrump.decodeBySIRAP(param, passcode, true);
+				String text = TrumpUtil.decodeBySIRAP(param, passcode, true);
 				List<String> items = StrUtil.split(text, '\n');
 				export(items);
 			}

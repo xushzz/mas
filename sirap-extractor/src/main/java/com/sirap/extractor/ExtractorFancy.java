@@ -9,15 +9,15 @@ import java.util.regex.Pattern;
 
 import com.sirap.basic.thread.MasterMexItemsOriented;
 import com.sirap.basic.thread.WorkerMexItemsOritented;
+import com.sirap.basic.util.TrumpUtil;
 import com.sirap.common.domain.Link;
 import com.sirap.common.extractor.Extractor;
-import com.sirap.security.MrTrump;
 
 public class ExtractorFancy {
 
-	public static final String SITE_PINDER = MrTrump.decodeBySIRAP("7544210D0DD0010AC4F0E37BB1CB3DF12D304A14B59CA9D06DB89B573AC450D4", "fancy", true);
-	public static final String SITE_IGA = MrTrump.decodeBySIRAP("CE40B4E17C53FA37FC66A1B4850EE87618C4DF31B104022E642F033E686399D6", "fancy", true);
-	public static final String SITE_CARVER = MrTrump.decodeBySIRAP("9B0E2757D3723842C2301835277D6A0A", "fancy", true);
+	public static final String SITE_PINDER = TrumpUtil.decodeBySIRAP("7544210D0DD0010AC4F0E37BB1CB3DF12D304A14B59CA9D06DB89B573AC450D4", "fancy", true);
+	public static final String SITE_IGA = TrumpUtil.decodeBySIRAP("CE40B4E17C53FA37FC66A1B4850EE87618C4DF31B104022E642F033E686399D6", "fancy", true);
+	public static final String SITE_CARVER = TrumpUtil.decodeBySIRAP("9B0E2757D3723842C2301835277D6A0A", "fancy", true);
 	
 	public static final Map<String, String> TYPE_METHOD = new HashMap<String, String>();
 	static {

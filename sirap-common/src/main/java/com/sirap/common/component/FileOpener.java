@@ -11,8 +11,8 @@ import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.MexUtil;
 import com.sirap.basic.util.PanaceaBox;
+import com.sirap.basic.util.TrumpUtil;
 import com.sirap.common.framework.SimpleKonfig;
-import com.sirap.security.MrTrump;
 
 public class FileOpener {
 	
@@ -136,7 +136,7 @@ public class FileOpener {
 		} else if(FileUtil.isAnyTypeOf(filePath, FileUtil.SUFFIX_SIRAP)) {
 			String temp = IOUtil.readFileWithoutLineSeparator(filePath);
 			String passcode = SimpleKonfig.g().getSecurityPasscode();
-			String content = MrTrump.decodeBySIRAP(temp, passcode);
+			String content = TrumpUtil.decodeBySIRAP(temp, passcode);
 			if(content != null) {
 				records.add(content);
 			}

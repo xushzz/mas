@@ -18,11 +18,11 @@ import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.TrumpUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.domain.CommandRecord;
 import com.sirap.common.domain.TZRecord;
 import com.sirap.common.manager.TimeZoneManager;
-import com.sirap.security.MrTrump;
 
 public class SimpleKonfig extends Konfig {
 	
@@ -80,11 +80,14 @@ public class SimpleKonfig extends Konfig {
 	
 	private void initEmail() {
 		String username = getUserValueOf("email.sender");
+		String password = null;
 		String temp = getUserValueOf("email.sender.pwd");
-		String password = MrTrump.decodeBySIRAP(temp, securityPasscode);
-		if(temp != null && password == null) {
-			String msg = "Illegal password [" + temp + "]";
-			C.pl(msg);
+		if(!EmptyUtil.isNullOrEmpty(temp)) {
+			password = TrumpUtil.decodeBySIRAP(temp, securityPasscode);
+			if(temp != null && password == null) {
+				String msg = "Illegal password [" + temp + "]";
+				C.pl(msg);
+			}
 		}
 		
 		String receiver = getUserValueOf("email.receiver");
