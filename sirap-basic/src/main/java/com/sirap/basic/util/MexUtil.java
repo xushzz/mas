@@ -2,9 +2,11 @@ package com.sirap.basic.util;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -140,23 +142,33 @@ public class MexUtil {
 	}
 	
 	public static <E extends MexItem> List<E> readMexItemsViaExplicitClass(String fileName, Class<?> clazz) {
-		return readMexItemsViaClassName(fileName, clazz.getName());
+		return readMexItemsViaExplicitClass(fileName, clazz, null);
 	}
 	
-	@SuppressWarnings("unchecked")
+	public static <E extends MexItem> List<E> readMexItemsViaExplicitClass(String fileName, Class<?> clazz, String charset) {
+		return readMexItemsViaClassName(fileName, clazz.getName(), charset);
+	}
+	
 	public static <E extends MexItem> List<E> readMexItemsViaClassName(String fileName, String className) {
+		return readMexItemsViaClassName(fileName, className, null);
+	}
+	 
+	@SuppressWarnings("unchecked")
+	public static <E extends MexItem> List<E> readMexItemsViaClassName(String fileName, String className, String charset) {
 		List<E> list = new ArrayList<E>();
 		
 		if(EmptyUtil.isNullOrEmpty(className)) {
 			return list;
 		}
 		
-		BufferedReader kevin = null;
 		try {
-			File file = new File(fileName);
-			if(!file.exists()) return list;
-			
-			kevin = new BufferedReader(new FileReader(file));
+			InputStreamReader isr = null;
+			if(charset != null) {
+				isr = new InputStreamReader(new FileInputStream(fileName), charset);
+			} else {
+				isr = new InputStreamReader(new FileInputStream(fileName));
+			}
+			BufferedReader kevin = new BufferedReader(isr);
 			String record = null;
 			while((record = kevin.readLine()) != null) {
 				String temp = record.trim();
@@ -173,12 +185,6 @@ public class MexUtil {
 		} catch (Exception e) {
 			D.debug(MexUtil.class, "readAndParseByClassName", fileName, className);
 			e.printStackTrace();
-		} finally {
-			try {
-				if(kevin != null) kevin.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 		}
 		
 		return list;

@@ -1,5 +1,7 @@
 package com.sirap.common.manager;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -12,6 +14,7 @@ import com.sirap.basic.component.MexedTimer;
 import com.sirap.basic.search.MexFilter;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
+import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.MexUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.domain.LoginRecord;
@@ -20,9 +23,9 @@ import com.sirap.common.framework.SimpleKonfig;
 public class LoginHistoryManager extends MexedTimer {
 	
 	private static LoginHistoryManager instance;
-	private List<LoginRecord> ALL_RECORDS;
+	private List<LoginRecord> ALL_RECORDS = new ArrayList<>();
 	
-	private LoginRecord currentLogin;
+	private LoginRecord currentLogin = new LoginRecord(DateUtil.displayNow(DateUtil.DATETIME));
 	private String filePath;
 	
 	public static LoginHistoryManager g() {
@@ -44,7 +47,6 @@ public class LoginHistoryManager extends MexedTimer {
     	
 		filePath = location + fileName;
 		List<LoginRecord> allRecords = getAllRecords(true);
-		currentLogin = new LoginRecord(DateUtil.displayNow(DateUtil.DATETIME));
 		allRecords.add(currentLogin);
 		setDelaySeconds(60);
 		setPeriodSeconds(60);
@@ -84,7 +86,15 @@ public class LoginHistoryManager extends MexedTimer {
 	
 	public synchronized List<LoginRecord> getAllRecords(boolean isForcibly) {
 		if(EmptyUtil.isNullOrEmpty(ALL_RECORDS) || isForcibly) {
-			ALL_RECORDS = MexUtil.readMexItemsViaExplicitClass(filePath, LoginRecord.class);
+			if(FileUtil.exists(filePath)) {
+				File file = new File(filePath);
+				try {
+					file.createNewFile();
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
+				ALL_RECORDS = MexUtil.readMexItemsViaExplicitClass(filePath, LoginRecord.class);
+			}
 		}
 		
 		return ALL_RECORDS;

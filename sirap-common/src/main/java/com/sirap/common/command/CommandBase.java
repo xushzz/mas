@@ -30,7 +30,7 @@ public abstract class CommandBase {
 	public static final String KEY_2DOTS = "..";
 	public static final String KEY_REFRESH = "r";
 	public static final String KEY_EXIT = "q,e,quit,exit";
-	public static final String KEY_HTTP = "((https?://|www\\.)[\\S]{4,}?)";
+	public static final String KEY_HTTP_WWW = "((https?://|www\\.)[\\S]{4,}?)";
 
 	protected String input;
 	protected String command;
@@ -266,7 +266,7 @@ public abstract class CommandBase {
 	}
 	
 	protected boolean handleHttpRequest(String source) {
-		String temp = StrUtil.parseParam(KEY_HTTP, source);
+		String temp = StrUtil.parseParam(KEY_HTTP_WWW, source);
 		if(temp == null) {
 			return false;
 		}

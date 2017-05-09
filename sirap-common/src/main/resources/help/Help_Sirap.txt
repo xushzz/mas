@@ -6,7 +6,7 @@ ca199902           display calendar of specified February
 ca1999             display all month calendars of year 1999 in a 4rowsx3cols matrix form
 ca1&12&1999        display month of January, December of current year and the whole year of 1999
 u                  display user-concerned info like user time zone, language, timeout, ability to send email,
-                   remote control, sound on/off, auto-open on/off, time-stamp of/off, server time zone
+u                  remote control, sound on/off, auto-open on/off, time-stamp of/off, server time zone
 d                  display server date & time
 du                 display user date & time
 u+2                set user time zone as +2
@@ -17,13 +17,9 @@ z.-7               want to know what kind of regions are in timezone -7? Creston
 z.Chicago          want to know the timezone of Chicago? See what happens with z.America
 z.Chi&g            display time zone info for locations who name matching 'Chi' and 'g'
 z..                display time zone info for for all listed locations
-d.                 display standard GMT, courtesy of ${timeserver.bjtimes}
-d.Chicago          want to know the local date & time in Chicago? what about Berlin?
-d.-8               want to know the local date & time in regions with timezone -8?
-d..                display standard GMT, for all listed locations
 s                  capture screen and save it to the screenshot folder as yyyyMMdd_hhmmss.bmp, 
-                   provided configured image format is bmp, then open it with configured image
-                   viewer if the viewer is configured and does exist
+s                  provided configured image format is bmp, then open it with configured image
+s                  viewer if the viewer is configured and does exist
 s .jpg             capture screen and save as JPG file, other formats are ${image.formats}
 s3                 capture screen with three-second delay
 s3 fire            capture screen and save it with a special suffix, such as 20191003_234224_fire.jpg
@@ -46,10 +42,10 @@ p=ABCD,3           permutation with given samples, display all the possibilities
 #F1F2F4[,00FFCC]   RGB values expressed in three two-bit-hexes, this help you get equivalent three decimals
 =21[,23][..]       display hex, decimal, octal and binary values for decimals '21' and '23' and others
 h=FFF[,21][..]     display hex, decimal, octal and binary values for hex numbers 'FFF' and '21' and others, 
-                   the type of the numbers can be 'd', 'o' and 'b', aka 'hex', 'dec', 'oct' and 'bin'.
-                   The numbers can be split by space or ',', this rule also applies to RGB cases
+h=FFF[,21][..]     the type of the numbers can be 'd', 'o' and 'b', aka 'hex', 'dec', 'oct' and 'bin'.
+h=FFF[,21][..]     The numbers can be split by space or ',', this rule also applies to RGB cases
 sudoku             the solution for the puzzle can be found if exists, in input the zero stands for blank
-                   000010000,000007645,906000700,400000302,870000000,000000060,000020590,230600000,089403000
+sudoku             000010000,000007645,906000700,400000302,870000000,000000060,000020590,230600000,089403000
 2012.12.23-2010.12.2 calculate day difference
 ..23-.1.31         calculate day diff, the value of unspecified field is default to be that of current day  
 a Vincent          search 'Vincent' via AOL
@@ -57,6 +53,7 @@ b Vincent          search 'Vincent' via Baidu
 g Vincent          search 'Vincent' via Google
 w Vincent          search 'Vincent' via Wiki
 http://aol.com     open the web page with configured explorer
+www.google.com     open the web page with configured explorer with http://www.google.com
 host               display local host name IP address, and macAddress 
 host name          display target host name and IP address if exists
 mac                display all currently active mac addresses 
@@ -67,10 +64,6 @@ l.abcdefgh         display the length of specified string
 g fire&water       conduct text search with command 'g' defined by configuration
 g fire&water       p#D:/SF#.txt#+usecache,+printsource
 sfz 4325...9832    validate and display check code for China ID card
-@15789451236       check and display mobile phone location info, seven digits at least
-b7				   make the beep sound seven times, in CMD only
+b7                 make the beep sound seven times, in CMD only
 bmw                make the beep sound K times, K is the current hour value, like 6, 17, or 24 if 0.
-i de facto         get the translation of this English word, courtesy of http://www.dictionary.com/
-digest abc         encrypt string with digest algorithm, such as SHA,SHA1,SHA224,SHA256,SHA512,MD2,MD5
-MD5 F:\abc.txt     encrypt given file with digest algo, such as SHA,SHA1,SHA224,SHA256,SHA512,MD2,MD5
 gbk                set File or HTTP Request charset as GBK, the same goes for UTF8,UTF-8,GB2312

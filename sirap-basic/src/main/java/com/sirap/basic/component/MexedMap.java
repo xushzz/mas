@@ -21,6 +21,23 @@ public class MexedMap {
 		
 	}
 	
+	public int decodeValues(String passcode) {
+		Iterator<String> it = container.keySet().iterator();
+		int affectedItems = 0;
+		while(it.hasNext()) {
+			String key = it.next();
+			String value = container.get(key);
+			String v2 = StrUtil.decodeWithPasscode(value, passcode);
+			if(StrUtil.equals(value, v2)) {
+				affectedItems++;
+			} else {
+				container.put(key, v2);
+			}
+		}
+		
+		return affectedItems;
+	}
+	
 	public List<String> detectCircularItems() {
 		CircularItemsDetector james = new CircularItemsDetector(container);
 		return james.detect();

@@ -36,6 +36,7 @@ public class WorldTimeBJTimeOrgExtractor extends WorldTimeExtractor {
 
 	@Override
 	public String getUrl() {
+		printFetching = true;
 		return URL_TIME;
 	}
 }

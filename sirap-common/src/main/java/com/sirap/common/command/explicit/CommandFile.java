@@ -10,6 +10,7 @@ import com.sirap.basic.component.Konstants;
 import com.sirap.basic.component.media.MediaFileAnalyzer;
 import com.sirap.basic.domain.MexedFile;
 import com.sirap.basic.email.EmailCenter;
+import com.sirap.basic.exception.MexException;
 import com.sirap.basic.search.MexFilter;
 import com.sirap.basic.thirdparty.pdf.PdfHelper;
 import com.sirap.basic.tool.C;
@@ -25,12 +26,14 @@ import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
+import com.sirap.common.domain.MemoryRecord;
 import com.sirap.common.framework.SimpleKonfig;
 import com.sirap.common.framework.command.FileSizeInputAnalyzer;
 import com.sirap.common.framework.command.InputAnalyzer;
 import com.sirap.common.framework.command.target.TargetAnalyzer;
 import com.sirap.common.framework.command.target.TargetConsole;
 import com.sirap.common.manager.FileManager;
+import com.sirap.common.manager.MemorableDayManager;
 
 public class CommandFile extends CommandBase {
 
@@ -43,6 +46,8 @@ public class CommandFile extends CommandBase {
 	private static final String KEY_ONELINE_TXT = "one";
 	private static final String KEY_SHOW_DETAIL = "-";
 	private static final String KEY_PDF = "pdf";
+	private static final String KEY_DAY_CHECK = "dc";
+	private static final String KEY_MEMORABLE = "mm";
 	
 	public boolean handle() {
 		singleParam = parseParam(KEY_EXTENSIBLE + "\\s(.*?)");
@@ -343,7 +348,7 @@ public class CommandFile extends CommandBase {
 			return true;
 		}
 		
-		params = parseParams("(.+)@" + KEY_HTTP);
+		params = parseParams("(.+)@" + KEY_HTTP_WWW);
 		if(params != null) {
 			String regex = params[0].trim();
 			String pageUrl = equiHttpProtoclIfNeeded(params[1].trim());
@@ -503,6 +508,48 @@ public class CommandFile extends CommandBase {
 			return true;
 		}
 		
+		if(is(KEY_DAY_CHECK)) {
+			MemoryKeeper lucy = new MemoryKeeper() {
+				public List<MemoryRecord> readRecords() {
+					return MemorableDayManager.g(filePath).searchWithNDays(30);
+				}
+			};
+			
+			if(lucy.handle()) {
+				return true;
+			}
+		}
+		
+		params = parseParams(KEY_MEMORABLE + "(|\\d{1,4})");
+		if(params != null) {
+			final Integer count = MathUtil.toInteger(params[0], 20);
+			MemoryKeeper lucy = new MemoryKeeper() {
+				public List<MemoryRecord> readRecords() {
+					List<MemoryRecord> records = MemorableDayManager.g(filePath).getMemoryRecords(count);
+					return records;
+				}
+			};
+			
+			if(lucy.handle()) {
+				return true;
+			}
+			
+			return true;
+		}
+		
+		if(is(KEY_MEMORABLE + KEY_2DOTS)) {
+			MemoryKeeper lucy = new MemoryKeeper() {
+				public List<MemoryRecord> readRecords() {
+					List<MemoryRecord> records = MemorableDayManager.g(filePath).getAllRecords();
+					return records;
+				}
+			};
+			
+			if(lucy.handle()) {
+				return true;
+			}
+		}
+		
 		return false;
 	}
 	
@@ -573,6 +620,36 @@ public class CommandFile extends CommandBase {
 		}
 		
 		return items;
+	}
+	
+	abstract class MemoryKeeper {
+		protected String filePath;
+		
+		public MemoryKeeper() {
+			init();
+		}
+		
+		private void init() {
+			File file = parseFile(g().getUserValueOf("file.memory"));
+			if(file == null) {
+				throw new MexException("Memory file missing, pleace check user config [file.memory].");
+			}
+			
+			filePath = file.getAbsolutePath();
+		}
+		
+		protected boolean handle() {
+			if(filePath == null) {
+				return false;
+			}
+			
+			List<MemoryRecord> records = readRecords();
+			export(CollectionUtil.items2PrintRecords(records));
+			
+			return true;
+		}
+		
+		public abstract List<MemoryRecord> readRecords();
 	}
 }
 

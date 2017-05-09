@@ -40,7 +40,6 @@ import com.sirap.basic.util.MexUtil;
 import com.sirap.basic.util.NetworkUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.ThreadUtil;
-import com.sirap.common.CommonHelper;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.domain.LocalSearchEngine;
@@ -63,8 +62,6 @@ public class CommandSirap extends CommandBase {
 	private static final String KEY_VERSION = "ver";
 	private static final String KEY_DATETIME_SERVER = "d,now";
 	private static final String KEY_DATETIME_USER = "du";
-	private static final String KEY_DATETIME_GMT = "d.";
-	private static final String KEY_DATETIME_TIMEZONE = "d\\.(.{1,20})";
 	private static final String KEY_TIMEZONE_DISPLAY = "z\\.(.{1,20})";
 	private static final String KEY_USER_TIMEZONE_SET = "u([+-](1[0-2]|[0-9]))";
 	private static final String KEY_USER_SETTING = "u";
@@ -83,8 +80,6 @@ public class CommandSirap extends CommandBase {
 	private static final String KEY_MAC = "mac";
 	private static final String LENGTH_OF = "l\\.";
 	private static final String KEY_ID_SFZ = "sfz";
-	private static final String KEY_PHONE_MOBILE = "@";
-	private static final String KEY_TRANSLATE = "i";
 	private static final String KEY_BEEP_K = "b(\\d{1,2})";
 	private static final String KEY_BEEP_HOUR = "bmw";
 	private static final String KEY_TO_DATE = "td";
@@ -234,36 +229,6 @@ public class CommandSirap extends CommandBase {
 			export(DateUtil.displayDateWithGMT(dateUser, DateUtil.HOUR_Min_Sec_AM_WEEK_DATE, g().getLocale(), g().getTimeZoneUser()));
     		
 			return true;
-		}
-
-		if(isIn(KEY_DATETIME_GMT)) {
-			Date date = CommonHelper.getWorldTime();
-			if(date != null) {
-				export(DateUtil.displayDateWithGMT(date, DateUtil.HOUR_Min_Sec_AM_WEEK_DATE, g().getLocale(), 0));
-			} else {
-				export("UTC unavailable.");
-			}
-			
-    		return true;
-		}
-		
-		singleParam = parseParam(KEY_DATETIME_TIMEZONE);
-		if(singleParam != null) {
-			List<TZRecord> records = TimeZoneManager.g().getTimeZones(singleParam, g().getLocale());
-			if(!EmptyUtil.isNullOrEmpty(records)) {
-				if(target instanceof TargetPDF) {
-					int[] cellsWidth = {5, 1, 5};
-					int[] cellsAlign = {0, 1, 2};
-					PDFParams pdfParams = new PDFParams(cellsWidth, cellsAlign);
-					target.setParams(pdfParams);
-					List<List<String>> items = CollectionUtil.items2PDFRecords(records);
-					export(items);
-				} else {
-					export(CollectionUtil.items2PrintRecords(records));					
-				}
-
-	    		return true;
-			}
 		}
 		
 		singleParam = parseParam(KEY_TIMEZONE_DISPLAY);
@@ -650,30 +615,6 @@ public class CommandSirap extends CommandBase {
 			return true;
 		} catch (MexException ex) {
 			
-		}
-		
-		singleParam = parseParam(KEY_PHONE_MOBILE + "(.+?)");
-		if(singleParam != null) {
-			String number = StrUtil.takeDigitsOnly(singleParam);
-
-			if(number.length() >= 7) {
-				String detail = CommonHelper.getMobilePhoneLocation(number);
-				if(EmptyUtil.isNullOrEmpty(detail)) {
-					detail = "no detail.";
-				}
-				String value = number + " " + detail;
-				export(value);
-			}
-			
-			return true;
-		}
-				
-		singleParam = parseParam(KEY_TRANSLATE + "\\s+(.+?)");
-		if(singleParam != null) {
-			List<MexedObject> items = CommonHelper.getWordTranslation(singleParam);
-			export(items);
-			
-			return true;
 		}
 		
 		singleParam = parseParam(KEY_BEEP_K);

@@ -9,6 +9,7 @@ import java.util.Properties;
 
 import com.sirap.basic.component.MexedMap;
 import com.sirap.basic.output.PDFParams;
+import com.sirap.basic.tool.C;
 import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
@@ -101,6 +102,7 @@ public class CommandMonitor extends CommandBase {
 				if(FileOpener.isTextFile(filePath)) {
 					String content = IOUtil.readFileWithRegularLineSeparator(filePath);
 					String text = TrumpUtil.encodeBySIRAP(content, passcode);
+					C.pl("File content.");
 					export(text);
 				} else {
 					XXXUtil.alert("Not a text file: " + filePath);

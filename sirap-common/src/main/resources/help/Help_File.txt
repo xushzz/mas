@@ -31,3 +31,8 @@ v 5.3              the number-format criteria would be additionally read as seas
 (wi\d+)@E:\a.txt   filter out those records matching the specified java regex
 pdf1,4-7 E:\A.pdf  select specified pages from give PDF and export to a new PDF file
 pdf A.pdf,B.pdf    merge all PDF files and export to a new PDF file
+dc                 day check, display memory entries that would happen within 30 days
+mm                 display last 20 memory entries in file specified as 'file.memory' in user config
+mm3                display last N memory entries
+mm..               display all memory entries
+mm fire            search and display memory entries matching criteria

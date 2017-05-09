@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.exception.MexException;
+import com.sirap.basic.tool.C;
 
 public class StrUtil {
 
@@ -832,5 +833,31 @@ public class StrUtil {
 		int intValue = Integer.parseInt(twoHex, 16);
 		
 		return (byte)(intValue);
+	}
+
+	/***
+	 * --**1CC6CC87C4B7CB92E86017F91EE62332**,**A96D3FB916661A18093F09516D8A7DF4**-ninja
+	 * @param source
+	 * @param passcode
+	 * @return
+	 */
+	public static String decodeWithPasscode(String source, String passcode) {
+		String regex = "\\*{2}([\\da-z]{3,})\\*{2}";
+		Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
+		String temp = source;
+		while(m.find()) {
+			String origin = m.group();
+			String stuff = m.group(1);
+			int len = stuff.length();
+			if(len % 32 == 0) {
+				String value = TrumpUtil.decodeBySIRAP(stuff, passcode);
+				temp = source.replace(origin, value);
+			} else {
+				C.pl("Failed to decode [" + stuff + "]");
+				continue;
+			}
+		}
+		
+		return temp;
 	}
 }

@@ -18,7 +18,6 @@ import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.StrUtil;
-import com.sirap.basic.util.TrumpUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.domain.CommandRecord;
 import com.sirap.common.domain.TZRecord;
@@ -57,11 +56,14 @@ public class SimpleKonfig extends Konfig {
 	public static void init(String storage, String configName, String userConfig) {
 		instance = new SimpleKonfig();
 		instance.advance(storage, configName, userConfig);
+		instance.decodeUserConfig();		
+		instance.initEmail();
 	}
 	
 	public static void init(String storage, String configName) {
 		instance = new SimpleKonfig();
 		instance.advance(storage, configName, FLAG_ABSENT);
+		instance.initEmail();
 	}
 	
 	private void advance(String storage, String configName, String userConfig) {
@@ -74,22 +76,21 @@ public class SimpleKonfig extends Konfig {
 		} else {
 			initKonfig(configFile, userConfig);
 		}
-		
-		initEmail();
+	}
+	
+	private void decodeUserConfig() {
+		getUserProps().decodeValues(securityPasscode);
+		List<String> items = getUserProps().detectCircularItems();
+		if(!EmptyUtil.isNullOrEmpty(items)) {
+			C.pl("[Configuration] Circular items found in [" + userConfigFile + "] as following:");
+			C.list(items);
+			getUserProps().getContainer().clear();
+		}
 	}
 	
 	private void initEmail() {
 		String username = getUserValueOf("email.sender");
-		String password = null;
-		String temp = getUserValueOf("email.sender.pwd");
-		if(!EmptyUtil.isNullOrEmpty(temp)) {
-			password = TrumpUtil.decodeBySIRAP(temp, securityPasscode);
-			if(temp != null && password == null) {
-				String msg = "Illegal password [" + temp + "]";
-				C.pl(msg);
-			}
-		}
-		
+		String password = getUserValueOf("email.sender.pwd");
 		String receiver = getUserValueOf("email.receiver");
 		
 		Map<String, EmailServerItem> ervers = getExtraServers();

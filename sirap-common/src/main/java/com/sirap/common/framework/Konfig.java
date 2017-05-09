@@ -8,7 +8,6 @@ import java.util.Map;
 
 import com.sirap.basic.component.MexedMap;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.StrUtil;
@@ -74,16 +73,7 @@ public abstract class Konfig {
 		} else {
 			File file = FileUtil.getIfNormalFile(userConfigFile);
 			if(file != null) {
-				MexedMap temp = IOUtil.createMexedMapByRegularFile(file.getAbsolutePath());
-				if(temp != null) {
-					List<String> items = temp.detectCircularItems();
-					if(!EmptyUtil.isNullOrEmpty(items)) {
-						C.pl("[Configuration] Circular items found in [" + userConfigFile + "] as following:");
-						C.list(items);
-					} else {
-						userProperties = temp;
-					}
-				}
+				userProperties = IOUtil.createMexedMapByRegularFile(file.getAbsolutePath());
 			} else {
 				C.pl("[Configuration] User config file unavailable, please check [" + userConfigFile + "].");
 			}

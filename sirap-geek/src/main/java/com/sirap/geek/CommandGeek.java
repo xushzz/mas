@@ -155,7 +155,7 @@ public class CommandGeek extends CommandBase {
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_JSON + " " + KEY_HTTP);
+		singleParam = parseParam(KEY_JSON + " " + KEY_HTTP_WWW);
 		if(singleParam != null) {
 			String source = IOUtil.readURL(singleParam);
 			String text = JsonUtil.getPrettyText(source);
@@ -196,7 +196,7 @@ public class CommandGeek extends CommandBase {
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_RAW_JSON + " " + KEY_HTTP);
+		singleParam = parseParam(KEY_RAW_JSON + " " + KEY_HTTP_WWW);
 		if(singleParam != null) {
 			String source = IOUtil.readURL(singleParam);
 			String text = JsonUtil.getRawText(source);
