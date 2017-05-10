@@ -122,7 +122,7 @@ public class CommandMonitor extends CommandBase {
 			noCollect();
 			String passcode = params[1];
 			if(passcode == null) {
-				passcode = SimpleKonfig.g().getSecurityPasscode();				
+				passcode = g().getSecurityPasscode();				
 			}
 			
 			String param = params[2];
@@ -140,7 +140,11 @@ public class CommandMonitor extends CommandBase {
 				
 				return true;
 			} else {
-				String text = TrumpUtil.decodeBySIRAP(param, passcode, true);
+				String text = TrumpUtil.decodeMixedTextBySIRAP(param, passcode, true);
+				if(StrUtil.equals(param, text)) {
+					text = TrumpUtil.decodeBySIRAP(param, passcode, true);
+				} 
+
 				List<String> items = StrUtil.split(text, '\n');
 				export(items);
 			}

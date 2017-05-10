@@ -12,6 +12,7 @@ import java.util.TreeMap;
 import com.sirap.basic.math.CircularItemsDetector;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.TrumpUtil;
 
 public class MexedMap {
 	
@@ -27,7 +28,7 @@ public class MexedMap {
 		while(it.hasNext()) {
 			String key = it.next();
 			String value = container.get(key);
-			String v2 = StrUtil.decodeWithPasscode(value, passcode);
+			String v2 = TrumpUtil.decodeMixedTextBySIRAP(value, passcode);
 			if(StrUtil.equals(value, v2)) {
 				affectedItems++;
 			} else {
