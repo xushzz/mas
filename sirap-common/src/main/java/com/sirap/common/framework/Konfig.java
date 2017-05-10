@@ -26,7 +26,7 @@ public abstract class Konfig {
 	protected String userConfigFile;
 	protected MexedMap systemProperties = new MexedMap();
 	protected MexedMap userProperties = new MexedMap();
-	protected Map<String, Object> stash = new LinkedHashMap<String, Object>();
+	private Map<String, Object> stash = new LinkedHashMap<String, Object>();
 
 	protected void initKonfig(String systemConfig, String userConfig) {
 		loadSystemConfigDetail(systemConfig);

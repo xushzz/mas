@@ -10,9 +10,9 @@ x HelloWorld       x command, send an email to default receiver, simple subject&
 x F:\A.txt         though it is a normal file, we treat it as a simple text string
 x $F:\B.txt        the normal filename starts with a $ symbol, we treat it as a file
 x $$F:\C.txt       the normal text filename starts with two $ symbols, that indicates that we are going
-                   to deal with the content of this text file, which could be the content of the email,
-                   further more we will parse each line in the content, if the given line indicates a 
-                   normal file then it could be attached to the email if no target specified                   
+x $$F:\C.txt       to deal with the content of this text file, which could be the content of the email,
+x $$F:\C.txt       further more we will parse each line in the content, if the given line indicates a 
+x $$F:\C.txt       normal file then it could be attached to the email if no target specified                   
 x F:\fire          it is a folder, but we treat it as a simple text string
 x $F:\fire         the folder name starts with a $ symbol, we deal with the normal files in it
 x stuff>@,Hello    the mail will be with a subject 'Hello', same goes for specified receiver

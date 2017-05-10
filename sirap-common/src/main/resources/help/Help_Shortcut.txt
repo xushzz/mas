@@ -3,4 +3,4 @@ l                  lock computer, just one letter, pretty amazing
 out                log out computer immediately
 off                turn off computer immediately
 rest               restart computer
-c.dos_command  issue command and display the result like doing this in DOS
+c.dos_command      issue command and display the result like doing this in DOS

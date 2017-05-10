@@ -1,4 +1,4 @@
-?                  list help, in this system, all commands are case-insensitive
+ ?                  list help, in this system, all commands are case-insensitive
 ?fire              display any record containing fire
 ?^fire             display any record starting with fire
 ?fire$             display any record ending with water
@@ -6,7 +6,7 @@
 ?fire|water        display any record containing fire or water
 'fire              the single quote behaves exactly the same as question mark, and i prefer '
 search             the aforementioned rules apply for any other searching commands
-                   such as 'ch fire', 'F: water' and so on
+search             such as 'ch fire', 'F: water' and so on
 quit               ${guest.quits}
 ABC>$              the yielded files will be copied to folder export
 ABC>$E:            the yielded files will be copied to E:

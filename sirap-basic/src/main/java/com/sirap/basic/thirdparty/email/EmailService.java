@@ -23,6 +23,7 @@ import com.sirap.basic.email.Email;
 import com.sirap.basic.email.EmailCenter;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.HtmlUtil;
+import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.ThreadUtil;
 
 public class EmailService {
@@ -38,16 +39,20 @@ public class EmailService {
 	public void deliver(boolean wait2complete) {
 		
 		if(wait2complete) {
+			long start = System.currentTimeMillis();
 			boolean flag = send();
+			long end = System.currentTimeMillis();
 			if(flag) {
-				C.pl("Sent.");
+				C.pl("Sent, " + StrUtil.secondsCost(start, end));
 			}
 		} else {
 			ThreadUtil.executeInNewThread(new Runnable() {
 				public void run() {
+					long start = System.currentTimeMillis();
 					boolean flag = send();
+					long end = System.currentTimeMillis();
 					if(flag) {
-						C.pl("Sent.");
+						C.pl("Sent, " + StrUtil.secondsCost(start, end));
 					}
 				}
 			});
@@ -56,7 +61,6 @@ public class EmailService {
 	}
 	
 	public boolean send() {
-		
 		EmailAuth authenticator = null;
 		if (mail.isAuthRequired()) {
 			authenticator = new EmailAuth(mail.getUsername(), mail.getPassword());

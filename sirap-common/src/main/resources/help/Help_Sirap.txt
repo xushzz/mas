@@ -61,8 +61,8 @@ td.14412345678     parse the string to long as milliseconds, then convert it to 
 tl.20160915        convert the date to long, the date could be from yyyyMMdd to yyyyMMddhhmmssSSS
 tl                 not team leader, but convert current date to long in milliseconds
 l.abcdefgh         display the length of specified string
-g fire&water       conduct text search with command 'g' defined by configuration
-g fire&water       p#D:/SF#.txt#+usecache,+printsource
+p fire&water       conduct text search with command 'p' defined by configuration, for example p#D:/SF#.txt
+p fire&water       conduct text search example, p#D:/SF#.txt#+usecache,+printsource
 sfz 4325...9832    validate and display check code for China ID card
 b7                 make the beep sound seven times, in CMD only
 bmw                make the beep sound K times, K is the current hour value, like 6, 17, or 24 if 0.

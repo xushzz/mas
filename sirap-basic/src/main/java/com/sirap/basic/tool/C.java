@@ -3,6 +3,7 @@ package com.sirap.basic.tool;
 import java.util.List;
 
 import com.sirap.basic.domain.MexItem;
+import com.sirap.basic.util.StrUtil;
 
 /***
  * C for Console
@@ -57,6 +58,10 @@ public class C {
 	}
 	
 	public static void list(List list, boolean showTotal) {
+		
+	}
+	
+	public static void list(List list, boolean showTotal, long start) {
 		if(list == null) {
 			return;
 		}
@@ -66,7 +71,10 @@ public class C {
 		}
 		
 		if(showTotal && list.size() > 5) {
-			C.total(list.size());
+			long end = System.currentTimeMillis();
+			String secondsCost = StrUtil.secondsCost(start, end);
+			String info = "Total " + list.size() + ", " + secondsCost;
+			C.pl(info);
 		}
 	}
 	

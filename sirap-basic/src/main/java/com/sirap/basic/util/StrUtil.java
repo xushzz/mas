@@ -10,7 +10,6 @@ import java.util.regex.Pattern;
 
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.exception.MexException;
-import com.sirap.basic.tool.C;
 
 public class StrUtil {
 
@@ -833,5 +832,15 @@ public class StrUtil {
 		int intValue = Integer.parseInt(twoHex, 16);
 		
 		return (byte)(intValue);
+	}
+	
+	public static String secondsCost(long start, long end) {
+		double seconds = Math.abs(end - start + 0.0) / Konstants.MILLI_PER_SECOND;
+		String bd = MathUtil.formatNumber(seconds, 2);
+		String template = "{0} second{1}.";
+		String suffix = seconds > 1 ? "s" : "";
+		String value = StrUtil.occupy(template, bd, suffix);
+		
+		return value;
 	}
 }

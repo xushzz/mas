@@ -17,6 +17,7 @@ kc                 display all entries in file Keys.txt
 kc fire            display entries in file Keys.txt that matching given criteria
 jiami-xy content   encode content with sirap algorithm
 jiami-xy E:/a.txt  encode content specified by path with sirap algorithm
-jiemi-xy content   decode content with sirap algorithm
+jiemi-xy FEA96D3DF20AD5B622C2F99800F59FC7   decode content with sirap algorithm
+jiemi-xy nice**FEA96D3DF20AD5B622C2F99800F59FC7**ok   decode mix content with sirap algorithm
 jiemi-xy E:/a.txt  decode content specified by path with sirap algorithm
 n..                list all available command nodes

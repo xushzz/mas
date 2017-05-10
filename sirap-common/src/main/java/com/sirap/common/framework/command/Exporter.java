@@ -180,7 +180,8 @@ public class Exporter {
 				C.total(records.size());
 			}
 		} else {
-			C.list(records, params.isPrintTotal());
+			long start = (Long)(SimpleKonfig.g().getStash().get("startInMillis"));
+			C.list(records, params.isPrintTotal(), start);
 		}
 
 		C.pl();
