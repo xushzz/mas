@@ -80,7 +80,7 @@ public class Janitor extends Checker {
     	String command = fara.getCommand();
     	Target target = fara.getTarget();
     	
-    	if(EmptyUtil.isNullOrEmpty(command) || target == null) {
+    	if(EmptyUtil.isNullOrEmpty(command)) {
     		return;
     	}
     	

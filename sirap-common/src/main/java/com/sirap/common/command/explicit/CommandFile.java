@@ -299,15 +299,12 @@ public class CommandFile extends CommandBase {
 			return true;
 		}
 		
+		sean = new FileSizeInputAnalyzer(input);
+		this.command = sean.getCommand();
+		this.target = sean.getTarget();
 		String vRegex = "(" + KEY_SHOW_DETAIL + "|)" + KEY_VERY_IMPORTANT_FOLDER + "(\\s(.*?)|)";
 		params = parseParams(vRegex);
 		if(params != null) {
-			sean = new FileSizeInputAnalyzer(input);
-			this.command = sean.getCommand();
-			this.target = sean.getTarget();
-			
-			params = parseParams(vRegex);
-			
 			boolean detail = !params[0].isEmpty();
 			String criteria = params[1].trim();
 			List<MexedFile> records = FileManager.g().getFileRecordsByName(criteria);

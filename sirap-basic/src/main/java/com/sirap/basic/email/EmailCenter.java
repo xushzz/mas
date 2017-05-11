@@ -157,7 +157,7 @@ public class EmailCenter {
 		}
 		
 		if(EmptyUtil.isNullOrEmpty(list)) {
-			C.pl2("Email, receivers["+ temp + "] kind of totally illeagl.");
+			//C.pl2("Email, receivers["+ temp + "] kind of totally illeagl.");
 		}
 		
 		return list;
