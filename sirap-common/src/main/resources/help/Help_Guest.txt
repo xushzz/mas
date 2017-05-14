@@ -1,4 +1,4 @@
- ?                  list help, in this system, all commands are case-insensitive
+?                  list help, in this system, all commands are case-insensitive
 ?fire              display any record containing fire
 ?^fire             display any record starting with fire
 ?fire$             display any record ending with water

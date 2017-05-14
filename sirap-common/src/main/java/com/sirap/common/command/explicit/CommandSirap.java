@@ -521,6 +521,26 @@ public class CommandSirap extends CommandBase {
 			return true;
 		}
 		
+		params = parseParams(regexDateStr + "\\s*([+-])\\s*(\\d{1,5})");
+		if(params != null) {
+			Date d1 = DateUtil.construct(params[0], params[1], params[2]);
+			String operator = params[3];
+			int dayDiffAbs = MathUtil.toInteger(params[4]);
+			int dayDiff = dayDiffAbs;
+			if(StrUtil.equals(operator, "-")) {
+				dayDiff *= -1;
+			}
+			
+			Date d2 = DateUtil.add(d1, Calendar.DAY_OF_YEAR, dayDiff);
+
+			String d1Str = DateUtil.displayDateCompact(d1);
+			String d2Str = DateUtil.displayDateCompact(d2);
+			export(d1Str + " " + operator + " " + dayDiffAbs + " = " + d2Str);
+			
+			
+			return true;
+		}
+		
 		List<SiteSearchEngine> sites = getSiteSearchEngines();
 		for(SiteSearchEngine engine:sites) {
 			boolean isMatched = conductSiteSearch(engine);

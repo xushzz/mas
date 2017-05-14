@@ -48,6 +48,8 @@ sudoku             the solution for the puzzle can be found if exists, in input 
 sudoku             000010000,000007645,906000700,400000302,870000000,000000060,000020590,230600000,089403000
 2012.12.23-2010.12.2 calculate day difference
 ..23-.1.31         calculate day diff, the value of unspecified field is default to be that of current day  
+..23+139           calculate next date with positive day diff, max 99999
+..23-139           calculate next date with negative day diff, max -99999
 a Vincent          search 'Vincent' via AOL
 b Vincent          search 'Vincent' via Baidu
 g Vincent          search 'Vincent' via Google
