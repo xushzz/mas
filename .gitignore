@@ -15,6 +15,7 @@
 **/*.log
 **/*.properties
 !**/Config_Mas.properties
+!**/Extra.properties
 /sirap-email
 
 # Windows image file caches
