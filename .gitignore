@@ -15,8 +15,7 @@
 **/*.log
 **/*.properties
 !**/Config_Mas.properties
-/sirap-security
-/sirap-zoo
+/sirap-email
 
 # Windows image file caches
 Thumbs.db
