@@ -7,6 +7,7 @@ import com.sirap.basic.domain.MexedObject;
 import com.sirap.basic.util.ThreadUtil;
 import com.sirap.common.extractor.Extractor;
 import com.sirap.common.extractor.impl.EnglishDictionaryExtractor;
+import com.sirap.common.extractor.impl.EnglishTranslationExtractor;
 import com.sirap.common.extractor.impl.MobilePhoneLocationExtractor;
 import com.sirap.common.extractor.impl.RemoteSecurityExtractor;
 import com.sirap.common.extractor.impl.WorldTimeBJTimeOrgExtractor;
@@ -56,7 +57,15 @@ public class CommonHelper {
 		return value;
 	}
 	
-	public static List<MexedObject> getWordTranslation(String word) {
+	public static List<MexedObject> getTranslation(String word) {
+		Extractor<MexedObject> frank = new EnglishTranslationExtractor(word);
+		frank.process();
+		List<MexedObject> items = frank.getMexItems();
+		
+		return items;
+	}
+	
+	public static List<MexedObject> lookupDictionary(String word) {
 		Extractor<MexedObject> frank = new EnglishDictionaryExtractor(word);
 		frank.process();
 		List<MexedObject> items = frank.getMexItems();

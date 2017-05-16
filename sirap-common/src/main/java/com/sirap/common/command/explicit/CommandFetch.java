@@ -36,6 +36,7 @@ public class CommandFetch extends CommandBase {
 	private static final String KEY_DATETIME_GMT = "d.";
 	private static final String KEY_DATETIME_TIMEZONE = "d\\.(.{1,20})";
 	private static final String KEY_PHONE_MOBILE = "@";
+	private static final String KEY_DICTONARY = "ia";
 	private static final String KEY_TRANSLATE = "i";
 	private static final String KEY_FOREX = "\\$([a-z]{3})" + Konstants.REGEX_FLOAT + "(|/|[a-z,]+)";
 
@@ -198,7 +199,15 @@ public class CommandFetch extends CommandBase {
 				
 		singleParam = parseParam(KEY_TRANSLATE + "\\s+(.+?)");
 		if(singleParam != null) {
-			List<MexedObject> items = CommonHelper.getWordTranslation(singleParam);
+			List<MexedObject> items = CommonHelper.getTranslation(singleParam);
+			export(items);
+			
+			return true;
+		}
+		
+		singleParam = parseParam(KEY_DICTONARY + "\\s+(.+?)");
+		if(singleParam != null) {
+			List<MexedObject> items = CommonHelper.lookupDictionary(singleParam);
 			export(items);
 			
 			return true;
