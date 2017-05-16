@@ -155,15 +155,26 @@ public class PanaceaBox {
 	}
 	
 	public static boolean isWindows() {
-		String name = getOperatingSystemName().toLowerCase();
-		boolean flag = name.startsWith(Konstants.OS_WINDOWS.toLowerCase());
+		String name = getOperatingSystemName();
+		boolean flag = StrUtil.contains(name, Konstants.OS_WINDOWS);
 		
 		return flag;
 	}
 	
 	public static boolean isMac() {
-		String name = getOperatingSystemName().toLowerCase();
-		boolean flag = name.startsWith(Konstants.OS_MAC.toLowerCase());
+		String name = getOperatingSystemName();
+		boolean flag = StrUtil.contains(name, Konstants.OS_MAC);
+		
+		return flag;
+	}
+	
+	public static boolean isMacOrLinuxOrUnix() {
+		String name = getOperatingSystemName();
+		List<String> items = new ArrayList<>();
+		items.add(Konstants.OS_LINUX);
+		items.add(Konstants.OS_UNIX);
+		items.add(Konstants.OS_MAC);
+		boolean flag = StrUtil.containsIgnoreCase(name, items);
 		
 		return flag;
 	}

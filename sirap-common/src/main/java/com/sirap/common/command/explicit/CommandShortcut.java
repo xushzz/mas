@@ -14,7 +14,7 @@ import com.sirap.common.framework.SimpleKonfig;
 
 public class CommandShortcut extends CommandBase {
 	
-	private static final String KEY_WINDOWS_COMMAND = "c\\.";
+	private static final String KEY_TERMINAL_COMMAND = "c\\.";
 	private static final String KEY_WINDOWS_LOCK = "l";
 	private static final String KEY_WINDOWS_LOGOUT = "out";
 	private static final String KEY_WINDOWS_TURNOFF = "off";
@@ -24,7 +24,7 @@ public class CommandShortcut extends CommandBase {
 	@Override
 	public boolean handle() {
 		
-		singleParam = parseParam(KEY_WINDOWS_COMMAND + "(.{3,}?)");
+		singleParam = parseParam(KEY_TERMINAL_COMMAND + "(.{3,}?)");
 		if(singleParam != null) {
 			executeInternalCmd(singleParam);
 			return true;

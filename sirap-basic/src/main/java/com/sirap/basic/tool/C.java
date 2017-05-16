@@ -58,7 +58,7 @@ public class C {
 	}
 	
 	public static void list(List list, boolean showTotal) {
-		
+		list(list, showTotal, -1);
 	}
 	
 	public static void list(List list, boolean showTotal, long start) {
@@ -72,9 +72,14 @@ public class C {
 		
 		if(showTotal && list.size() > 5) {
 			long end = System.currentTimeMillis();
-			String secondsCost = StrUtil.secondsCost(start, end);
-			String info = "Total " + list.size() + ", " + secondsCost;
-			C.pl(info);
+			if(start < 0) {
+				String info = "Total " + list.size();
+				C.pl(info);
+			} else {
+				String secondsCost = StrUtil.secondsCost(start, end);
+				String info = "Total " + list.size() + ", " + secondsCost;
+				C.pl(info);
+			}
 		}
 	}
 	

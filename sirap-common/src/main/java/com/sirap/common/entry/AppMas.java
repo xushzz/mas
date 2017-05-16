@@ -35,7 +35,7 @@ public class AppMas extends AppBase {
 	protected String prompt() {
 		String timestamp = DateUtil.displayNow(DateUtil.TIME_ONLY);
 		String temp = timestamp + " $ ";
-		if(PanaceaBox.isMac()) {
+		if(PanaceaBox.isMacOrLinuxOrUnix()) {
 			temp = timestamp + " M$ ";
 		}
 		

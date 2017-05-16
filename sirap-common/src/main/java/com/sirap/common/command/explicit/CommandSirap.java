@@ -46,7 +46,6 @@ import com.sirap.common.component.FileOpener;
 import com.sirap.common.domain.LocalSearchEngine;
 import com.sirap.common.domain.SiteSearchEngine;
 import com.sirap.common.domain.TZRecord;
-import com.sirap.common.entry.AppMas;
 import com.sirap.common.extractor.Extractor;
 import com.sirap.common.framework.AppBase;
 import com.sirap.common.framework.Janitor;
@@ -471,7 +470,7 @@ public class CommandSirap extends CommandBase {
 		
 		String userConfig = KEY_USER_CONFIGURATION;
 		if(PanaceaBox.isMac()) {
-			userConfig = "u" + KEY_USER_CONFIGURATION;
+			userConfig = ";" + KEY_USER_CONFIGURATION;
 		}
 		params = parseParams(userConfig + "(|(.*?))");
 		if(params != null) {

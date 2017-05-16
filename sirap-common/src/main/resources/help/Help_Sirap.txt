@@ -12,6 +12,7 @@ du                 display user date & time
 u+2                set user time zone as +2
 /                  display user configuration with forward slash
 /fire              display user configuration entries matching given criterias
+;/                 in mac, display user configuration
 cr                 refresh configuration file
 z.-7               want to know what kind of regions are in timezone -7? Creston, Dawson!
 z.Chicago          want to know the timezone of Chicago? See what happens with z.America

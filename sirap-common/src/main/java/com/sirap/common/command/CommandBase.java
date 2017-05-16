@@ -428,6 +428,9 @@ public abstract class CommandBase {
 	protected void executeInternalCmd(String conciseCommand) {
 		boolean printAlong = target instanceof TargetConsole;
 		String newCommand = "cmd /c " + conciseCommand;
+		if(PanaceaBox.isMac()) {
+			newCommand = conciseCommand;
+		}
 		List<String> result = PanaceaBox.executeAndRead(newCommand, printAlong);
 		if(EmptyUtil.isNullOrEmpty(result)) {
 			export("Command [" + conciseCommand + "] executed.");

@@ -1,6 +1,7 @@
 package com.sirap.mac;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -11,7 +12,13 @@ import com.sirap.security.MrTrump;
 
 public class RuntimeTest {
 
-	@Test
+	
+	public void run() {
+		String cmd = "java";
+		List<String> items = PanaceaBox.executeAndRead(cmd);
+		C.list(items);
+		
+	}
 	public void seed() {
 		String passcode = "Obamacare";
 		String sa = "A";
@@ -20,12 +27,14 @@ public class RuntimeTest {
 		C.pl(MrTrump.encodeBySIRAP(sa, passcode));
 	}
 	
+	@Test
 	public void open() {
 		String sa = "/Users/ky/Documents/mas/shot/20170516_115723_QR_abc.png";
-		sa = "/Users/";
+//		sa = "/Users/";
+		PanaceaBox.openFile(sa);
 		String[] arr = {"open", sa};
 		try {
-			PanaceaBox.openFile(sa);
+//			PanaceaBox.openFile(sa);
 			//Runtime.getRuntime().exec(arr);
 		} catch (Exception e) {
 			e.printStackTrace();

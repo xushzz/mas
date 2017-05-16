@@ -372,7 +372,7 @@ public class FileUtil {
 			possibleFileNames.add(param + Konstants.SUFFIX_TXT);
 		}
 		
-		if (PanaceaBox.isMac()){
+		if (PanaceaBox.isMacOrLinuxOrUnix()){
 			possibleFileNames.add(param);
 			possibleFileNames.add(param + Konstants.SUFFIX_TXT);
 		}
@@ -402,7 +402,7 @@ public class FileUtil {
 			}
 		}
 		
-		if (PanaceaBox.isMac()){
+		if (PanaceaBox.isMacOrLinuxOrUnix()){
 			File file = FileUtil.getIfNormalFolder(param);
 			if(file != null) {
 				return file;
@@ -418,7 +418,7 @@ public class FileUtil {
 			return path;
 		}
 		
-		if (PanaceaBox.isMac()){
+		if (PanaceaBox.isMacOrLinuxOrUnix()){
 			File file = FileUtil.getIfNormalFolder(param);
 			if(file != null) {
 				return file.getAbsolutePath();
