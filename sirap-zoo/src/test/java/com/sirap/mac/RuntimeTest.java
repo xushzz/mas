@@ -5,11 +5,21 @@ import java.io.IOException;
 import org.junit.Test;
 
 import com.sirap.basic.exception.MexException;
+import com.sirap.basic.tool.C;
 import com.sirap.basic.util.PanaceaBox;
+import com.sirap.security.MrTrump;
 
 public class RuntimeTest {
 
 	@Test
+	public void seed() {
+		String passcode = "Obamacare";
+		String sa = "A";
+		C.pl(MrTrump.encodeBySIRAP(sa, passcode));
+		C.pl(MrTrump.encodeBySIRAP(sa, passcode));
+		C.pl(MrTrump.encodeBySIRAP(sa, passcode));
+	}
+	
 	public void open() {
 		String sa = "/Users/ky/Documents/mas/shot/20170516_115723_QR_abc.png";
 		sa = "/Users/";

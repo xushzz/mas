@@ -11,7 +11,9 @@ public class MrTrump {
 	public static String encodeBySIRAP(String plainText, String passcode) {
 		try {
 			KeyGenerator kgen = KeyGenerator.getInstance("AES");
-			kgen.init(128, new SecureRandom(passcode.getBytes(CODE_UTF8)));
+			SecureRandom donald = SecureRandom.getInstance("SHA1PRNG");
+			donald.setSeed(passcode.getBytes(CODE_UTF8));
+			kgen.init(128, donald);
 			Cipher cipher = Cipher.getInstance("AES");
 			cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(kgen.generateKey().getEncoded(), "AES"));
 
@@ -31,7 +33,9 @@ public class MrTrump {
 	public static String decodeBySIRAP(String encodedText, String passcode, boolean throwException) {
 		try {
 			KeyGenerator kgen = KeyGenerator.getInstance("AES");
-			kgen.init(128, new SecureRandom(passcode.getBytes(CODE_UTF8)));
+			SecureRandom donald = SecureRandom.getInstance("SHA1PRNG");
+			donald.setSeed(passcode.getBytes(CODE_UTF8));
+			kgen.init(128, donald);
 			Cipher cipher = Cipher.getInstance("AES");
 			cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(kgen.generateKey().getEncoded(), "AES"));
 
