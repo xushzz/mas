@@ -19,6 +19,7 @@ public class AppMasVerbal extends AppBase {
 		return SimpleKonfig.g();
 	}
 
+	@Override
 	public void initKonfig(String[] args) {
 		SimpleKonfig.init(PanaceaBox.firstParam(args), "MasVerbal", PanaceaBox.getParam(args, 1));
 		setDelayMinutes(getKonfig().getTimeoutMinutes());

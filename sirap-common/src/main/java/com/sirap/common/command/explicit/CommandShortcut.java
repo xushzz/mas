@@ -21,6 +21,7 @@ public class CommandShortcut extends CommandBase {
 	private static final String KEY_WINDOWS_RESTART = "rest";
 	private static final String KEY_DYNAMIC = "(\\S+)\\s(.+)";
 	
+	@Override
 	public boolean handle() {
 		
 		singleParam = parseParam(KEY_WINDOWS_COMMAND + "(.{3,}?)");

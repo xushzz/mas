@@ -81,6 +81,7 @@ public class ThreadUtil {
 		}
 		
 		Runnable wang = new Runnable() {
+			@Override
 			public void run() {
 				ObjectUtil.execute(instanceOrClazz, methodName, tempClazz, tempArgs);
 			}
@@ -115,6 +116,7 @@ public class ThreadUtil {
 		
 		final ExecutorService laojiang = Executors.newSingleThreadExecutor();
 		Callable<Object> wang = new Callable<Object>() {
+			@Override
 			public Object call() {
 				return ObjectUtil.execute(instanceOrClazz, methodName, clazzArr, args);
 			}

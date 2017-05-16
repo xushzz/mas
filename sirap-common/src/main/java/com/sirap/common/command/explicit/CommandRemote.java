@@ -14,6 +14,7 @@ public class CommandRemote extends CommandBase {
 	private static final String KEY_REMOTE_CONFIGURATION = "rc";
 	private static final String KEY_REMOTE_COMMANDS = "r..";
 	
+	@Override
 	public boolean handle() {
 		if(is(KEY_REMOTE_ENABLED_SWITCH)) {
 			boolean flag = !g().isRemoteEnabled();

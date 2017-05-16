@@ -39,6 +39,7 @@ public class InputRecord extends MexItem implements Comparable<InputRecord> {
 		this.input = input;
 	}
 
+	@Override
 	public boolean isMatched(String keyWord) {
 		String month = DateUtil.parseMonthIndex(keyWord);
 		if(month != null) {
@@ -76,10 +77,12 @@ public class InputRecord extends MexItem implements Comparable<InputRecord> {
 		return true;
 	}
 	
+	@Override
 	public void print() {
 		C.pl(this);
 	}
 	
+	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append(datetime);

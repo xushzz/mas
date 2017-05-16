@@ -13,6 +13,7 @@ class EmailAuth extends Authenticator{
 		this.userName = username; 
 		this.password = password; 
 	} 
+	@Override
 	protected PasswordAuthentication getPasswordAuthentication(){
 		return new PasswordAuthentication(userName, password);
 	}

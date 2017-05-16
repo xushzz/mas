@@ -36,6 +36,7 @@ public class Link extends MexItem {
 		this.href = href;
 	}
 	
+	@Override
 	public boolean parse(String source) {
 		String[] info = source.split("\t");
 		if(info.length != 2) {
@@ -79,6 +80,7 @@ public class Link extends MexItem {
 		return true;
 	}
 	
+	@Override
 	public boolean isMatched(String keyWord) {
 		if(keyWord.length() < 3) {
 			return false;
@@ -100,6 +102,7 @@ public class Link extends MexItem {
 		return sb.toString(); 
 	}
 
+	@Override
 	public String toPrint() {
 		StringBuffer sb = new StringBuffer();
 		sb.append(StrUtil.extend(name, 50));

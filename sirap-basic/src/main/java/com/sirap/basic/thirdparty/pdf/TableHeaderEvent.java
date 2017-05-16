@@ -27,7 +27,8 @@ public class TableHeaderEvent extends PdfPageEventHelper {
      * @see com.itextpdf.text.pdf.PdfPageEventHelper#onOpenDocument(
      *      com.itextpdf.text.pdf.PdfWriter, com.itextpdf.text.Document)
      */
-    public void onOpenDocument(PdfWriter writer, Document document) {
+    @Override
+	public void onOpenDocument(PdfWriter writer, Document document) {
         total = writer.getDirectContent().createTemplate(30, 16);
     }
 
@@ -36,7 +37,8 @@ public class TableHeaderEvent extends PdfPageEventHelper {
      * @see com.itextpdf.text.pdf.PdfPageEventHelper#onEndPage(
      *      com.itextpdf.text.pdf.PdfWriter, com.itextpdf.text.Document)
      */
-    public void onEndPage(PdfWriter writer, Document document) {
+    @Override
+	public void onEndPage(PdfWriter writer, Document document) {
         PdfPTable table = new PdfPTable(3);
         try {
             table.setWidths(new int[]{24, 24, 2});
@@ -62,7 +64,8 @@ public class TableHeaderEvent extends PdfPageEventHelper {
      * @see com.itextpdf.text.pdf.PdfPageEventHelper#onCloseDocument(
      *      com.itextpdf.text.pdf.PdfWriter, com.itextpdf.text.Document)
      */
-    public void onCloseDocument(PdfWriter writer, Document document) {
+    @Override
+	public void onCloseDocument(PdfWriter writer, Document document) {
     	String value = String.valueOf(writer.getPageNumber());
         ColumnText.showTextAligned(total, Element.ALIGN_LEFT, new Phrase(value), 2, 2, 0);
     }

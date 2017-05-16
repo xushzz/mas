@@ -185,7 +185,7 @@ public class FileUtilTest {
 	
 	@Test(enabled=false)
 	public void legalFilename() {
-		char[] carr = FileUtil.BAD_CHARS_FOR_FILENAME;
+		char[] carr = FileUtil.BAD_CHARS_FOR_FILENAME_WINDOWS;
 		String temp = new String(carr);
 		temp = temp.replace("\\", "\\\\");
 		D.pl(temp);

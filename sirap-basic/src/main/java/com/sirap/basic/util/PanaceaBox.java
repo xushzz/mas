@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sirap.basic.component.Konstants;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.tool.C;
 
@@ -14,9 +15,22 @@ public class PanaceaBox {
 	
 	public static boolean openFile(String filePath) {
 		String temp = wrapWithQuotes(filePath);
-		String cmd = "cmd /c call " + temp;
+		String cmd = "";
+		if(isWindows()) {
+			cmd = "cmd /c call " + temp;
+			execute(cmd);
+		} else if(isMac()) {
+			String[] arr = {"open", filePath};
+			try {
+				Runtime.getRuntime().exec(arr);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			throw new UnsupportedOperationException("shit happens.");
+		}
 		
-		return execute(cmd);
+		return true;
 	}
 	
 	public static boolean openFile(String opener, String filePath) {
@@ -134,5 +148,23 @@ public class PanaceaBox {
 		String input = new String(passwd);
 		
 		return input;
+	}
+	
+	public static String getOperatingSystemName() {
+		return System.getProperty("os.name");
+	}
+	
+	public static boolean isWindows() {
+		String name = getOperatingSystemName().toLowerCase();
+		boolean flag = name.startsWith(Konstants.OS_WINDOWS.toLowerCase());
+		
+		return flag;
+	}
+	
+	public static boolean isMac() {
+		String name = getOperatingSystemName().toLowerCase();
+		boolean flag = name.startsWith(Konstants.OS_MAC.toLowerCase());
+		
+		return flag;
 	}
 }

@@ -51,6 +51,7 @@ public class MexedTextSearchRecord extends MexedObject {
 		this.lineNumber = lineNumber;
 	}
 
+	@Override
 	public String getString() {
 		String temp = String.valueOf(obj);
 		if(printSource) {

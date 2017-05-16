@@ -34,6 +34,7 @@ public class CommandHelp extends CommandBase {
 		DOLLAR_MEANINGS.put("timeserver.bjtimes", WorldTimeBJTimeOrgExtractor.URL_TIME);
 	}
 	
+	@Override
 	public boolean handle() {
 		
 		singleParam = parseParam("[?|'](.*?)");

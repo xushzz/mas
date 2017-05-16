@@ -157,6 +157,7 @@ public class EmailCommandRecord extends MexItem implements Comparable<EmailComma
 		return true;
 	}
 	
+	@Override
 	public String toString() {
 		String template = "{0}_{1}_[{2}][{3}][{4}]";
     	String dateStr = DateUtil.displayDate(sentDate, DateUtil.DATETIME_SPACE_TIGHT);

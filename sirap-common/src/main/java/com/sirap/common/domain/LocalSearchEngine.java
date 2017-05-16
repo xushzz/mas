@@ -77,6 +77,7 @@ public class LocalSearchEngine extends MexItem {
 		this.useSpace = useSpace;
 	}
 
+	@Override
 	public boolean parse(String source) {
 		String[] info = source.split("#");
 		if(info.length < 3) {
@@ -108,6 +109,7 @@ public class LocalSearchEngine extends MexItem {
 		return true;
 	}
 	
+	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append(prefix).append("\t");

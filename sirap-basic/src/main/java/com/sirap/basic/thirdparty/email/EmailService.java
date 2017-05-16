@@ -47,6 +47,7 @@ public class EmailService {
 			}
 		} else {
 			ThreadUtil.executeInNewThread(new Runnable() {
+				@Override
 				public void run() {
 					long start = System.currentTimeMillis();
 					boolean flag = send();

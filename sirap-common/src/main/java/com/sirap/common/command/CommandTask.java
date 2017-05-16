@@ -17,6 +17,7 @@ public class CommandTask extends CommandBase {
 	private static final String KEY_ALARM_CANCEL = "ac(|[\\d|,]+)";
 	private static final String KEY_TASK = "tk";
 	
+	@Override
 	public boolean handle() {
 		
 		String regex = KEY_ALARM_SET + "(.*?)(|\\s.*?)";

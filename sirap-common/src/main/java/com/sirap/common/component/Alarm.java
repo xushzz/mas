@@ -130,6 +130,7 @@ public abstract class Alarm extends MexedTimer implements Comparable<Alarm> {
 		return sb.toString();
 	}
 
+	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append(targetMoment).append("\t");

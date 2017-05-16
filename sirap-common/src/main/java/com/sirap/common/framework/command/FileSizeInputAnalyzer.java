@@ -9,6 +9,7 @@ public class FileSizeInputAnalyzer extends InputAnalyzer {
 		super(input);
 	}
 	
+	@Override
 	public int whereToSplit() {
 		String source = input;
 		int indexOfGT = source.indexOf(EXPORT_FLAG);

@@ -6,10 +6,11 @@ public class TargetConsole extends Target {
 
 	private ConsoleParams params;
 
+	@Override
 	public ConsoleParams getParams() {
 		
 		if(params instanceof ConsoleParams) {
-			return (ConsoleParams)params;
+			return params;
 		}
 		
 		if(params == null) {

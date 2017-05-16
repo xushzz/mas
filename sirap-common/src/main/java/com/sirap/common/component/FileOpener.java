@@ -169,6 +169,10 @@ public class FileOpener {
 	}
 	
 	public static void playThing(String filePath, String playerKey) {
+		if(PanaceaBox.isMac()) {
+			PanaceaBox.openFile(filePath);
+			return;
+		}
 		String appDir = SimpleKonfig.g().getUserValueOf(playerKey);
 		if(EmptyUtil.isNullOrEmpty(appDir) || appDir.length() < 5) {
 			PanaceaBox.openFile(filePath);

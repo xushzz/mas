@@ -74,6 +74,7 @@ public class Player extends MexItem implements Cloneable, Comparable<Player> {
 		this.position = position;
 	}
 	
+	@Override
 	public int hashCode() {
 		if(team == null) {
 			return 0;
@@ -86,6 +87,7 @@ public class Player extends MexItem implements Cloneable, Comparable<Player> {
 		return p2.getTeam().equals(team) && p2.getNumber().equals(number); 
 	}
 	
+	@Override
 	public int compareTo(Player p2) {
 		int byTeam = team.compareTo(p2.team);
 		if(byTeam != 0) {
@@ -104,6 +106,7 @@ public class Player extends MexItem implements Cloneable, Comparable<Player> {
 		return 0;
 	}
 	
+	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append(StrUtil.extend(team, 25));

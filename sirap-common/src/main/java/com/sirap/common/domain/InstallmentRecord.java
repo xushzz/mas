@@ -19,6 +19,7 @@ public class InstallmentRecord extends MexItem {
 		this.plusByAverageCapital = plusByAverageCapital;
 	}
 	
+	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append(order).append(" ");

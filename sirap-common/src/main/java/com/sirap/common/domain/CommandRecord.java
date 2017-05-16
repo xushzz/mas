@@ -58,6 +58,7 @@ public class CommandRecord extends MexItem implements Comparable<CommandRecord> 
 		return value;
 	}
 	
+	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append(key).append("=").append(getPseudoOrder()).append(", ").append(className);

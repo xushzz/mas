@@ -31,6 +31,7 @@ public class PomArtifact extends MexItem {
 		this.version = version;
 	}
 	
+	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(groupId).append(", ");

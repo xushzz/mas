@@ -19,6 +19,7 @@ public class AppMasArmed extends AppBase {
 		return SimpleKonfig.g();
 	}
 
+	@Override
 	public void initKonfig(String[] args) {
 		SimpleKonfig.init(PanaceaBox.firstParam(args), "MasArmed", PanaceaBox.getParam(args, 1));
 		setDelayMinutes(getKonfig().getTimeoutMinutes());

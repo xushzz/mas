@@ -29,6 +29,7 @@ public class SizeCriteria extends MexItem {
 		return value;
 	}
 
+	@Override
 	public boolean parse(String record) {
 		String regex = "([=><~])" + Konstants.REGEX_FLOAT + "([" + Konstants.FILE_SIZE_UNIT + "])";
 		String[] params = StrUtil.parseParams(regex, record);

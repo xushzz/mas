@@ -38,6 +38,7 @@ import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.MexUtil;
 import com.sirap.basic.util.NetworkUtil;
+import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.ThreadUtil;
 import com.sirap.common.command.CommandBase;
@@ -47,6 +48,7 @@ import com.sirap.common.domain.SiteSearchEngine;
 import com.sirap.common.domain.TZRecord;
 import com.sirap.common.entry.AppMas;
 import com.sirap.common.extractor.Extractor;
+import com.sirap.common.framework.AppBase;
 import com.sirap.common.framework.Janitor;
 import com.sirap.common.framework.SimpleKonfig;
 import com.sirap.common.framework.command.target.TargetConsole;
@@ -86,6 +88,7 @@ public class CommandSirap extends CommandBase {
 	private static final String KEY_TO_LONG = "tl";
 	private static final String KEY_SET_CHARSET = "gbk,utf8,utf-8,gb2312";
 	
+	@Override
 	public boolean handle() {
 		
 		if(is(KEY_EMAIL_CONFIGURATION)) {
@@ -466,7 +469,11 @@ public class CommandSirap extends CommandBase {
 			}
 		}
 		
-		params = parseParams(KEY_USER_CONFIGURATION + "(|(.*?))");
+		String userConfig = KEY_USER_CONFIGURATION;
+		if(PanaceaBox.isMac()) {
+			userConfig = "u" + KEY_USER_CONFIGURATION;
+		}
+		params = parseParams(userConfig + "(|(.*?))");
 		if(params != null) {
 			String criteria = params[1];
 			String userConfigFile = g().getUserConfigFileName();
@@ -838,7 +845,7 @@ public class CommandSirap extends CommandBase {
 	protected String getSystemInfo() {
 
 		StringBuffer sb = new StringBuffer();
-		sb.append(AppMas.USERNAME);
+		sb.append(AppBase.USERNAME);
 		sb.append(" ").append(g().getSystemInfo());
 		
 		Date expirationDate = Janitor.g().getExpirationDate();
@@ -880,6 +887,7 @@ public class CommandSirap extends CommandBase {
 		List<MexedFile> list = new ArrayList<MexedFile>();
 		folder.listFiles(new FileFilter() {
 			
+			@Override
 			public boolean accept(File file) {
 				if(!file.isFile()) {
 					return false;

@@ -45,6 +45,7 @@ public class XmlItem extends MexItem {
 		return value;
 	}
 	
+	@Override
 	public String toString() {
 		return display();
 	}

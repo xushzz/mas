@@ -144,6 +144,7 @@ public class SimpleKonfig extends Konfig {
 		this.isPrintGreyRowWhenPDF = isPrintGreyRowWhenPDF;
 	}
 
+	@Override
 	protected void setValues() {
 		if(EmptyUtil.isNullOrEmpty(originalStorage)) {
 			XXXUtil.alert("[Configuration] Storage should be specified.");

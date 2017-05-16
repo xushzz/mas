@@ -20,6 +20,7 @@ public class DistributionKeyComparator implements Comparator<String> {
 		this.descend = descend;
 	}
 	
+	@Override
 	public int compare(String strA, String strB) {
 		int value = compareAscend(strA, strB);
 		if(descend) {

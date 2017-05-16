@@ -26,6 +26,7 @@ public class TargetHtml extends Target {
 		this.path = path;
 	}
 	
+	@Override
 	public HtmlParams getParams() {
 		if(params instanceof HtmlParams) {
 			return (HtmlParams)params;

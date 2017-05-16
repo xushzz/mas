@@ -49,6 +49,7 @@ public class CommandFile extends CommandBase {
 	private static final String KEY_DAY_CHECK = "dc";
 	private static final String KEY_MEMORABLE = "mm";
 	
+	@Override
 	public boolean handle() {
 		singleParam = parseParam(KEY_EXTENSIBLE + "\\s(.*?)");
 		if(singleParam != null) {
@@ -162,8 +163,13 @@ public class CommandFile extends CommandBase {
 				
 				if(targetPath != null) {
 					String temp = targetPath.replaceFirst("\\\\$", "");
-					PanaceaBox.execute("explorer " + temp);
-					C.pl2("Open Windows resource manager at [" + temp + "].");
+					if(PanaceaBox.isMac()) {
+						PanaceaBox.openFile(temp);
+						C.pl2("Open Mac Finder at [" + temp + "].");
+					} else {
+						PanaceaBox.execute("explorer " + temp);
+						C.pl2("Open Windows resource manager at [" + temp + "].");
+					}
 					
 					return true;
 				}
@@ -507,6 +513,7 @@ public class CommandFile extends CommandBase {
 		
 		if(is(KEY_DAY_CHECK)) {
 			MemoryKeeper lucy = new MemoryKeeper() {
+				@Override
 				public List<MemoryRecord> readRecords() {
 					return MemorableDayManager.g(filePath).searchWithNDays(30);
 				}
@@ -521,6 +528,7 @@ public class CommandFile extends CommandBase {
 		if(params != null) {
 			final Integer count = MathUtil.toInteger(params[0], 20);
 			MemoryKeeper lucy = new MemoryKeeper() {
+				@Override
 				public List<MemoryRecord> readRecords() {
 					List<MemoryRecord> records = MemorableDayManager.g(filePath).getMemoryRecords(count);
 					return records;
@@ -536,6 +544,7 @@ public class CommandFile extends CommandBase {
 		
 		if(is(KEY_MEMORABLE + KEY_2DOTS)) {
 			MemoryKeeper lucy = new MemoryKeeper() {
+				@Override
 				public List<MemoryRecord> readRecords() {
 					List<MemoryRecord> records = MemorableDayManager.g(filePath).getAllRecords();
 					return records;

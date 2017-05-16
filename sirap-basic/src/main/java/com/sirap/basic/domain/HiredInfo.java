@@ -52,6 +52,7 @@ public class HiredInfo extends MexItem {
 	 * @param record
 	 * @return
 	 */
+	@Override
 	public boolean parse(String record) {
 		if(record == null) {
 			return false;
@@ -75,6 +76,7 @@ public class HiredInfo extends MexItem {
 		return true;
 	}
 	
+	@Override
 	public String toPrint() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append(getPseudoOrder() + ") ").append(name).append("\t");

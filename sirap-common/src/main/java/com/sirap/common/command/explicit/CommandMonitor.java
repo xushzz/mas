@@ -26,6 +26,7 @@ import com.sirap.common.domain.CommandRecord;
 import com.sirap.common.domain.InputRecord;
 import com.sirap.common.domain.LoginRecord;
 import com.sirap.common.extractor.impl.RemoteSecurityExtractor;
+import com.sirap.common.framework.Konfig;
 import com.sirap.common.framework.SimpleKonfig;
 import com.sirap.common.framework.command.target.TargetPDF;
 import com.sirap.common.manager.CommandHistoryManager;
@@ -52,6 +53,7 @@ public class CommandMonitor extends CommandBase {
 	private static final int[] LH_cellsAlign = {0, 1, 2};
 	private static final PDFParams LH_PDF_PARAMS = new PDFParams(LH_cellsWidth, LH_cellsAlign);
 	
+	@Override
 	public boolean handle() {
 		singleParam = parseParam(KEY_ECHO + "\\s(.+?)");
 		if(singleParam != null) {
@@ -277,7 +279,7 @@ public class CommandMonitor extends CommandBase {
 		params = parseParams(KEY_KEYS_CONFIG + "(|\\s+(.*?))");
 		if(params != null) {
 			String criteria = params[1];
-			List<String> list = FileUtil.readResourceFilesIntoList(SimpleKonfig.KEYS_FILE);
+			List<String> list = FileUtil.readResourceFilesIntoList(Konfig.KEYS_FILE);
 			
 			exportItems(list, criteria);
 			
@@ -288,7 +290,7 @@ public class CommandMonitor extends CommandBase {
 		if(params != null) {
 			String criteria = params[1];
 			List<String> list = FileUtil.readResourceFilesIntoList(g().getSystemConfigFileName());
-			List<String> recordsExtra = FileUtil.readResourceFilesIntoList(SimpleKonfig.EXTRA_FILE);
+			List<String> recordsExtra = FileUtil.readResourceFilesIntoList(Konfig.EXTRA_FILE);
 			list.addAll(recordsExtra);
 			
 			exportItems(list, criteria);

@@ -38,8 +38,9 @@ public class FileUtil {
 	public static final String SUFFIX_MEX = "mex";
 	public static final String SUFFIX_SIRAP = "sirap";
 	public static final String SUFFIXES_OTHERS = "jar;apk;zip";
-	
-	public static final char[] BAD_CHARS_FOR_FILENAME = {'/','\\',':','\"','*','?','|','>','<'};
+
+	public static final char[] BAD_CHARS_FOR_FILENAME_WINDOWS = {'/','\\',':','\"','*','?','|','>','<'};
+	public static final char[] BAD_CHARS_FOR_FILENAME_MAC = {'/','\\',':','\"','*','?','|','>','<'};
 	public static final String FOLDER_TRASH = "$";
 	public static final String FILE_THUMBS = "Thumbs.db";
 	
@@ -202,9 +203,16 @@ public class FileUtil {
 			return null;
 		}
 		
-		boolean isWindows = StrUtil.contains(System.getProperty("os.name"), "Windows");
-		if(isWindows) {
-			String temp = new String(BAD_CHARS_FOR_FILENAME);
+		if(PanaceaBox.isWindows()) {
+			String temp = new String(BAD_CHARS_FOR_FILENAME_WINDOWS);
+			temp = temp.replace("\\", "\\\\");
+			String regex = "[" + temp + "]";
+			String fileName = source.replaceAll(regex, "-"); 
+			fileName = fileName.replace("\t", " ");
+			
+			return fileName;
+		} else {
+			String temp = new String(BAD_CHARS_FOR_FILENAME_WINDOWS);
 			temp = temp.replace("\\", "\\\\");
 			String regex = "[" + temp + "]";
 			String fileName = source.replaceAll(regex, "-"); 
@@ -212,8 +220,6 @@ public class FileUtil {
 			
 			return fileName;
 		}
-		
-		return source;
 	}
 	
 	public static String escapeChars(String source, char[] charsToEscape) {
@@ -284,6 +290,7 @@ public class FileUtil {
 		final List<String> normalFiles = new ArrayList<String>();
 		final List<String> subFolders = new ArrayList<String>();
 		file.listFiles(new FileFilter() {
+			@Override
 			public boolean accept(File filePath) {
 				String name = filePath.getName();
 				if(isUndesiredFile(name)) {
@@ -360,10 +367,17 @@ public class FileUtil {
 		
 		List<String> possibleFileNames = new ArrayList<String>();
 		
-		if(startWithDiskName(param)) {
+		if(PanaceaBox.isWindows() && startWithDiskName(param)) {
 			possibleFileNames.add(param);
 			possibleFileNames.add(param + Konstants.SUFFIX_TXT);
-		} else if(param.startsWith("\\\\")) {
+		}
+		
+		if (PanaceaBox.isMac()){
+			possibleFileNames.add(param);
+			possibleFileNames.add(param + Konstants.SUFFIX_TXT);
+		}
+		
+		if(param.startsWith("\\\\")) {
 			possibleFileNames.add(param);
 			possibleFileNames.add(param + Konstants.SUFFIX_TXT);
 		} else {
@@ -388,6 +402,13 @@ public class FileUtil {
 			}
 		}
 		
+		if (PanaceaBox.isMac()){
+			File file = FileUtil.getIfNormalFolder(param);
+			if(file != null) {
+				return file;
+			}
+		}
+		
 		return FileUtil.getIfNormalFolder(defaultFolder + param);
 	}
 	
@@ -395,6 +416,13 @@ public class FileUtil {
 		String path = getCleverPath(param);
 		if(path != null) {
 			return path;
+		}
+		
+		if (PanaceaBox.isMac()){
+			File file = FileUtil.getIfNormalFolder(param);
+			if(file != null) {
+				return file.getAbsolutePath();
+			}
 		}
 		
 		File file = FileUtil.getIfNormalFolder(defaultFolder + param);

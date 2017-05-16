@@ -39,6 +39,7 @@ public class CommandFetch extends CommandBase {
 	private static final String KEY_TRANSLATE = "i";
 	private static final String KEY_FOREX = "\\$([a-z]{3})" + Konstants.REGEX_FLOAT + "(|/|[a-z,]+)";
 
+	@Override
 	public boolean handle() {
 		
 		singleParam = parseParam(KEY_FETCH + "\\s(.+?)");

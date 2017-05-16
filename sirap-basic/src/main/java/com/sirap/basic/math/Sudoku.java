@@ -16,6 +16,7 @@ public class Sudoku {
 			this.matrix = new ArrayList<String>(content);
 		}
 		
+		@Override
 		public String toString() {
 			return matrix.toString();
 		}

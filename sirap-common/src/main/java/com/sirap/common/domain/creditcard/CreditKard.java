@@ -45,6 +45,7 @@ public class CreditKard extends MexItem {
 		return bill;
 	}
 	
+	@Override
 	public boolean parse(String source) {
 		String regex = "([A-Z]{2,3})_(\\d+)_(\\d{2})(\\d{2})_(\\d{3})_(\\d{1,2})_(\\d{2})_([\\d|@]+)_([\\d|@]+)";
 		String[] params = StrUtil.parseParams(regex, source);
@@ -95,6 +96,7 @@ public class CreditKard extends MexItem {
 		return null;
 	}
 	
+	@Override
 	public void print() {
 		C.pl(this);
 	}

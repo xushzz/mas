@@ -15,6 +15,7 @@ public class CommandFinancial extends CommandBase {
 	private static final String KEY_CREDIT_KARD = "kk";
 	private static final String KEY_LOAN = "loan";
 
+	@Override
 	public boolean handle() {
 
 		if(is(KEY_CREDIT_KARD)) {

@@ -17,6 +17,7 @@ public class CommonHelper {
 	public static void setWorldTime(final MexedObject mDate) {
 		final WorldTimeExtractor frank = new WorldTimeBJTimeOrgExtractor();
 		ThreadUtil.executeInNewThread(new Runnable() {
+			@Override
 			public void run() {
 				frank.process();
 				Date date = frank.getDatetime();
@@ -28,6 +29,7 @@ public class CommonHelper {
 	public static void setUserExpiration(final MexedObject mDate, String username) {
 		final RemoteSecurityExtractor frank = new RemoteSecurityExtractor(username);
 		ThreadUtil.executeInNewThread(new Runnable() {
+			@Override
 			public void run() {
 				frank.process();
 				mDate.setObj(frank.getExpiration());

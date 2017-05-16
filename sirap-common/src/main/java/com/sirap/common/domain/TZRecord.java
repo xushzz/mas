@@ -52,6 +52,7 @@ public class TZRecord extends MexItem {
 		this.dateFormat = dateFormat;
 	}
 
+	@Override
 	public boolean isMatched(String keyWord) {
 		
 		if(diff != null) {
@@ -78,6 +79,7 @@ public class TZRecord extends MexItem {
 		return false;
 	}
 	
+	@Override
 	public String toPrint() {
 		return toPrint(Locale.US, 28);
 	}
@@ -96,6 +98,7 @@ public class TZRecord extends MexItem {
 		return sb.toString();
 	}
 	
+	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append(id);

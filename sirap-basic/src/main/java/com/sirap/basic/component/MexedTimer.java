@@ -38,7 +38,8 @@ public abstract class MexedTimer {
 	
 	protected final TimerTask createTimerTask()  {
     	return new TimerTask() {
- 			public void run() {
+ 			@Override
+			public void run() {
  				timerAction();
  			}
      	};

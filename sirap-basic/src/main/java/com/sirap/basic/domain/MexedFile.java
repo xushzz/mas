@@ -55,6 +55,7 @@ public class MexedFile extends MexItem implements Comparable<MexedFile> {
 		}
 	}
 	
+	@Override
 	public String toString() {
 		return file.getAbsolutePath();
 	}

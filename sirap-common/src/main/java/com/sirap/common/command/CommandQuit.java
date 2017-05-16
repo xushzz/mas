@@ -6,6 +6,7 @@ public class CommandQuit extends CommandBase {
 		this.command = command;
 	}
 	
+	@Override
 	public boolean handle() {
 		if(isIn(KEY_EXIT)) {
     		return true;

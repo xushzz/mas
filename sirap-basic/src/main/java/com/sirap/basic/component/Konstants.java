@@ -79,4 +79,8 @@ public class Konstants {
 		MAP_DB_TYPE_CLASS.put(DB_TYPE_INFORMIX, DRIVER_INFORMIX);
 		MAP_DB_TYPE_CLASS.put(DB_TYPE_ACCESS, DRIVER_ACCESS);
 	}
+	
+	public static final String OS_MAC = "Mac";
+	public static final String OS_WINDOWS = "Windows";
+	
 }

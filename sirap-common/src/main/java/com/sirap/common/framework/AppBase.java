@@ -145,6 +145,6 @@ public abstract class AppBase extends MexedTimer {
 	protected void timeout() {
 		C.pl();
     	C.pl("=== Session TIMEOUT ===");
-    	C.pl("Press ENTER to continue, [" + CommandQuit.KEY_EXIT + "] to quit");
+    	C.pl("Press ENTER to continue, [" + CommandBase.KEY_EXIT + "] to quit");
 	}
 }

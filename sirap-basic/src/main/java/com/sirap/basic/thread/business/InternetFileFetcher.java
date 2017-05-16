@@ -18,6 +18,7 @@ public class InternetFileFetcher extends WorkerGeneralItemOriented<MexedObject> 
 		this.suffixWhenObscure = suffixWhenObscure;
 	}
 	
+	@Override
 	public Object process(MexedObject link) {
 		Object tempObj = link.getObj();
 		if(tempObj == null) {

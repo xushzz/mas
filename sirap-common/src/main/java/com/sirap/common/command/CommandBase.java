@@ -191,7 +191,7 @@ public abstract class CommandBase {
 	}
 	
 	public String parseFolderPath(String param) {
-		if(StrUtil.containsNoneOfAplhanumeric(param)) {
+		if(PanaceaBox.isWindows() && StrUtil.containsNoneOfAplhanumeric(param)) {
 			return null;
 		}
 		return FileUtil.parseFolderPath(param, storage());
@@ -407,7 +407,7 @@ public abstract class CommandBase {
 	}
 	
 	protected List<String> downloadFiles(String destination, List<MexedObject> links, String suffixWhenObscure) {
-		int threads = (int)SimpleKonfig.g().getUserNumberValueOf("threads.download");
+		int threads = SimpleKonfig.g().getUserNumberValueOf("threads.download");
 		return IOUtil.downloadFiles(destination, links, suffixWhenObscure, threads);
 	}
 	

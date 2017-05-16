@@ -26,6 +26,7 @@ public class TargetPDF extends Target {
 		this.path = path;
 	}
 	
+	@Override
 	public PDFParams getParams() {
 		if(params instanceof PDFParams) {
 			return (PDFParams)params;

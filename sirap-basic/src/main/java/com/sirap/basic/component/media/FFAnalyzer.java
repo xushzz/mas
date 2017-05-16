@@ -10,6 +10,7 @@ public class FFAnalyzer extends MediaFileAnalyzer {
 		this.filepath = filepath;
 	}
 	
+	@Override
 	public List<String> getDetail() {
 		List<String> items = MediaFileUtil.detailWithFF(filepath);
 		

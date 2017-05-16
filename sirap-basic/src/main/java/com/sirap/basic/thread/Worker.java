@@ -6,6 +6,7 @@ public abstract class Worker<T extends MexItem> extends WorkerBase<T> {
 
 	public abstract void process(T obj);
 	
+	@Override
 	public void run() {
 		if(tasks == null) {
 			return;

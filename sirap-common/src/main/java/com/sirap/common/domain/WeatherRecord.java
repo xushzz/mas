@@ -53,6 +53,7 @@ public class WeatherRecord extends MexItem {
 		this.celsius = celsius;
 	}
 
+	@Override
 	public boolean isMatched(String keyWord) {
 		if(isRegexMatched(cityPY, keyWord)) {
 			return true;
@@ -90,6 +91,7 @@ public class WeatherRecord extends MexItem {
 		return false;
 	}
 	
+	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append(StrUtil.extend(city, 6));

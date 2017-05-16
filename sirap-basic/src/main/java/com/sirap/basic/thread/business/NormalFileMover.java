@@ -11,6 +11,7 @@ public class NormalFileMover extends Worker<MexedFile> {
 		this.storage = targetFolder;
 	}
 	
+	@Override
 	public void process(MexedFile obj) {
 		String path = obj.getPath();
 		int count = countOfTasks - tasks.size();

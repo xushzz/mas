@@ -26,6 +26,7 @@ public class TargetExcel extends Target {
 		this.path = path;
 	}
 	
+	@Override
 	public ExcelParams getParams() {
 		if(params instanceof ExcelParams) {
 			return (ExcelParams)params;

@@ -698,7 +698,11 @@ public class IOUtil {
 	
 	public static List<String> echoPath() {
 		String path = System.getProperty("java.library.path");
-		List<String> items = StrUtil.split(path, ';');
+		char delimiter = ';';
+		if(PanaceaBox.isMac()) {
+			delimiter = ':';
+		}
+		List<String> items = StrUtil.split(path, delimiter);
 
 		return items;
 	}

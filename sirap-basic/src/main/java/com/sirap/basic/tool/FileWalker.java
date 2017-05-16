@@ -31,6 +31,7 @@ public class FileWalker {
 
 	private void initiateFileFilter(final String... criterias) {
 		fileFilter = new FileFilter() {
+			@Override
 			public boolean accept(File file) {
 				if(FileUtil.isUndesiredFile(file.getName())) {
 					return false;

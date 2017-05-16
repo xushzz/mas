@@ -19,6 +19,7 @@ public class AppMas extends AppBase {
 		return SimpleKonfig.g();
 	}
 
+	@Override
 	public void initKonfig(String[] args) {
 		SimpleKonfig.init(PanaceaBox.firstParam(args), "Mas", PanaceaBox.getParam(args, 1));
 	}
@@ -33,7 +34,12 @@ public class AppMas extends AppBase {
 	@Override
 	protected String prompt() {
 		String timestamp = DateUtil.displayNow(DateUtil.TIME_ONLY);
-		return timestamp + " $ ";
+		String temp = timestamp + " $ ";
+		if(PanaceaBox.isMac()) {
+			temp = timestamp + " M$ ";
+		}
+		
+		return temp;
 	}
 
 	@Override

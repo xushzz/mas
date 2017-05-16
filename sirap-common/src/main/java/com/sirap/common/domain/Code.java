@@ -51,6 +51,7 @@ public class Code extends MexItem implements Comparable<Code> {
 		return name.compareTo(o.name);
 	}
 
+	@Override
 	public boolean isMatched(String keyWord) {
 		if(keyWord.length() < 2) {
 			return false;
@@ -118,6 +119,7 @@ public class Code extends MexItem implements Comparable<Code> {
 		return sb.toString(); 
 	}
 	
+	@Override
 	public boolean parse(String source) {
 		String[] info = source.split("\t");
 		if(info.length != 3) {
@@ -131,6 +133,7 @@ public class Code extends MexItem implements Comparable<Code> {
 		return true;
 	}
 
+	@Override
 	public void print() {
 		StringBuffer sb = new StringBuffer();
 		sb.append(StrUtil.extendNice(name, 10));

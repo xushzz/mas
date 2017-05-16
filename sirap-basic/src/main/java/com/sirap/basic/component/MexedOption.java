@@ -31,6 +31,7 @@ public class MexedOption extends MexItem {
 	 * ParallelGCThreads=20
 	 * motto=Nothing is free
 	 */
+	@Override
 	public boolean parse(String source) {
 		String regex = "([+\\-])(\\w+)";
 		String[] params = StrUtil.parseParams(regex, source);

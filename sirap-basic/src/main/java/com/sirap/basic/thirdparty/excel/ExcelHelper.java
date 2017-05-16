@@ -17,18 +17,18 @@ public class ExcelHelper {
 	
 	public static boolean export(List<Object> list, String fullFileName, ExcelParams params)  {
 		Workbook wb = new HSSFWorkbook();
-		Sheet she = (Sheet) wb.createSheet("sheet1");
+		Sheet she = wb.createSheet("sheet1");
 		
 		int startRow = 0;
 		if(params != null) {
-			Row firstRow = (Row) she.createRow(startRow);
+			Row firstRow = she.createRow(startRow);
 			startRow++;
 			Cell firstCell = firstRow.createCell(0);
 			firstCell.setCellValue(params.getTopInfo());
 		}
 		
 		for (int i = 0; i < list.size(); i++) {
-			Row row = (Row) she.createRow(startRow + i);
+			Row row = she.createRow(startRow + i);
 			
 			Object record = list.get(i);
 			if(record instanceof List) {

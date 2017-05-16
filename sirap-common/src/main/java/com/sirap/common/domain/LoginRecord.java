@@ -54,6 +54,7 @@ public class LoginRecord extends MexItem {
 		mins++;
 	}
 
+	@Override
 	public boolean isMatched(String keyWord) {
 		String month = DateUtil.parseMonthIndex(keyWord);
 		if(month != null) {
@@ -101,10 +102,12 @@ public class LoginRecord extends MexItem {
 		return true;
 	}
 	
+	@Override
 	public void print() {
 		C.pl(this);
 	}
 	
+	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append(datetimeLogin);
