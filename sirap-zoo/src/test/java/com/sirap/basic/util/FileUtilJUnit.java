@@ -25,6 +25,7 @@ import com.sirap.basic.search.SizeCriteria;
 import com.sirap.basic.thirdparty.media.MediaFileUtil;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
+import com.sirap.basic.tool.FileDeeper;
 import com.sirap.common.framework.command.FileSizeInputAnalyzer;
 
 public class FileUtilJUnit {
@@ -32,6 +33,17 @@ public class FileUtilJUnit {
 	private static String audioFile = "C:\\Users\\Public\\Music\\Sample Music\\Kalimba.mp3";
 	
 	@Test
+	public void deep() {
+		String dir = "E:\\KDB\\tasks\\0519_DeepestFile";
+//		dir = "E:\\KDB\\tasks\\0519_DeepestFile\\BASE.txt";
+//		dir = "D:\\Github\\SIRAP\\mas\\sirap-basic";
+//		dir = "G:";
+		FileDeeper dima = new FileDeeper(dir);
+		int maxLevel = dima.howDeep();
+		C.pl(maxLevel);
+		C.list(dima.getMaxLevelFiles());
+	}
+	
 	public void inputAnalyzer() {
 
 		//v >4g

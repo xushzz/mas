@@ -62,6 +62,10 @@ public class FileUtil {
 	}
 
 	public static File getIfNormalFolder(String folderName) {
+		if(EmptyUtil.isNullOrEmpty(folderName)) {
+			return null;
+		}
+		
 		File file = new File(folderName);
 
 		if (file.isDirectory()) {

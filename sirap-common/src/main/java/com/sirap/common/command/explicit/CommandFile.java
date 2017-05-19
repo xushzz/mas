@@ -14,6 +14,7 @@ import com.sirap.basic.exception.MexException;
 import com.sirap.basic.search.MexFilter;
 import com.sirap.basic.thirdparty.pdf.PdfHelper;
 import com.sirap.basic.tool.C;
+import com.sirap.basic.tool.FileDeeper;
 import com.sirap.basic.tool.MexFactory;
 import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.DateUtil;
@@ -45,6 +46,7 @@ public class CommandFile extends CommandBase {
 	private static final String KEY_PRINT_TXT = "txt,cat,=";
 	private static final String KEY_ONELINE_TXT = "one";
 	private static final String KEY_SHOW_DETAIL = "-";
+	private static final String KEY_DIVE_DEEP = "#";
 	private static final String KEY_PDF = "pdf";
 	private static final String KEY_DAY_CHECK = "dc";
 	private static final String KEY_MEMORABLE = "mm";
@@ -148,9 +150,9 @@ public class CommandFile extends CommandBase {
 			return true;
 		}
 				
-		params = parseParams("(" + KEY_SHOW_DETAIL + "|)([^<]*)(<|)");
+		params = parseParams("(" + KEY_SHOW_DETAIL + "|" + KEY_DIVE_DEEP + "|)([^<]*)(<|)");
 		if(params != null) {
-			boolean detail = !params[0].isEmpty();
+			String does = params[0];
 			String path = params[1];
 			String type = params[2];
 			if(KEY_OPEN_EXPLORER.equals(type)) {
@@ -173,6 +175,29 @@ public class CommandFile extends CommandBase {
 					
 					return true;
 				}
+			}
+			
+			if(StrUtil.equals(KEY_DIVE_DEEP, does)) {
+				String cleverPath = parseFolderPath(path);
+				if(FileUtil.getIfNormalFolder(cleverPath) != null) {
+					FileDeeper dima = new FileDeeper(cleverPath);
+					
+					int maxLevel = dima.howDeep();
+					List<File> files = dima.getMaxLevelFiles();
+					
+					if(target.isFileRelated()) {
+						export(files);
+					} else {
+						List<String> items = new ArrayList<>();
+						for(File what: files) {
+							items.add("#" + maxLevel + " " + what.getAbsolutePath());
+						}
+						
+						export(items);
+					}
+				}
+				
+				return true;
 			}
 			
 			List<String> paths = new ArrayList<>();
@@ -206,7 +231,7 @@ public class CommandFile extends CommandBase {
 					if(target.isFileRelated()) {
 						export(CollectionUtil.toFileList(allRecords));
 					} else {
-						if(detail) {
+						if(StrUtil.equals(KEY_SHOW_DETAIL, does)) {
 							List<String> items = new ArrayList<>();
 							for(String record : allRecords) {
 								String temp = detailFileInfo(record);
@@ -261,6 +286,10 @@ public class CommandFile extends CommandBase {
 					}
 				}
 				
+				if(depth > 0) {
+					depth--;
+				}
+				
 				List<MexedFile> items = scanMexedFiles(path, depth, nameCriteria);
 				if(!EmptyUtil.isNullOrEmpty(items)) {
 					allMexedFiles.addAll(items);
@@ -296,6 +325,8 @@ public class CommandFile extends CommandBase {
 					}
 				}
 			}
+			
+			return true;
 		}
 		
 		if(is(KEY_VERY_IMPORTANT_FOLDER)) {
@@ -392,7 +423,7 @@ public class CommandFile extends CommandBase {
 			}
 		}
 		
-		params = parseParams("(-|one |txt |cat |=)(.+?)");
+		params = parseParams("(-|#|one |txt |cat |=)(.+?)");
 		if(params != null) {
 			file = parseFile(params[1]);
 			if(file != null) {

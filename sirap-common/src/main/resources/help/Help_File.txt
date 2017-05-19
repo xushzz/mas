@@ -4,6 +4,7 @@
 txt F:\fire.abc    print target file in text manner, no matter it is a text file or not
 cat F:\fire.abc    print target file in text manner, no matter it is a text file or not
 =F:\fly.txt        print target file in text manner, no matter it is a text file or not
+#F:\folderA        list the names of folder or file at the deepest level
 F:\fire\fly.mp3    for an audio file, the sound will be played by the configured audio player, same goes 
                    for video/photo/doc/docx/xls/xlsx/PDF files with their players/viewers respectively, 
                    when it comes to executable file, the file will run itself.

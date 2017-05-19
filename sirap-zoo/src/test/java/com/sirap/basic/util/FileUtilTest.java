@@ -14,10 +14,11 @@ import org.testng.annotations.Test;
 
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
+import com.sirap.basic.tool.FileDeeper;
 
 public class FileUtilTest {
 	
-//	@Test
+	@Test
 	public void attr() {
 		Date bjTime = new Date(System.currentTimeMillis());
 		Date time = DateUtil.add(bjTime, Calendar.HOUR_OF_DAY, -8);
@@ -58,7 +59,7 @@ public class FileUtilTest {
 		String value = pretty.format(number);
 		D.sink(value);
 	}
-	@Test
+//	@Test
 	public void displaySize() {
 		//1025230 1,001.2K
 		D.pl(FileUtil.formatFileSize(1025230));
