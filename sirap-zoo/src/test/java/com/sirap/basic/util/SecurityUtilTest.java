@@ -9,6 +9,12 @@ import com.sirap.security.MrTrump;
 public class SecurityUtilTest {
 	
 	@Test
+	public void sirap() {
+		String sa = "james";
+		String passcode = "Obamacare";
+		C.pl(TrumpUtil.encodeBySIRAP(sa, passcode));
+	}
+	
 	public void hex2byte() {
 //		String va = "f2";
 //		String maxIntBin = StrUtil.repeat('1', 32);
@@ -38,11 +44,11 @@ public class SecurityUtilTest {
 	public void trump() {
 		String passcode = "roosevelt";
 		String text = "jackdawson";
-		String v1 = MrTrump.encodeBySIRAP(text, passcode);
+		String v1 = TrumpUtil.encodeBySIRAP(text, passcode);
 		C.pl(v1);
-		String v2 = MrTrump.encodeBySIRAP("vivianfork", passcode);
+		String v2 = TrumpUtil.encodeBySIRAP("vivianfork", passcode);
 		C.pl(v2);
-		C.pl(MrTrump.decodeBySIRAP(v1 + v2, passcode));
+		C.pl(TrumpUtil.decodeBySIRAP(v1 + v2, passcode));
 	}
 	
 	public void some() {

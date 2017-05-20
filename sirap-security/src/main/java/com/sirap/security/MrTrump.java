@@ -7,41 +7,35 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.spec.SecretKeySpec;
 
 public class MrTrump {
-	private static final String CODE_UTF8 = "UTF-8";
-	public static String encodeBySIRAP(String plainText, String passcode) {
+	
+	private static final String CHARSET = "UTF-8";
+	private static final String ALGO = "AES";
+	
+	public String encode(String plainText, String passcode) {
 		try {
-			KeyGenerator kgen = KeyGenerator.getInstance("AES");
-			SecureRandom donald = SecureRandom.getInstance("SHA1PRNG");
-			donald.setSeed(passcode.getBytes(CODE_UTF8));
-			kgen.init(128, donald);
-			Cipher cipher = Cipher.getInstance("AES");
-			cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(kgen.generateKey().getEncoded(), "AES"));
-
-			byte[] result = cipher.doFinal(plainText.getBytes(CODE_UTF8));
-			return parseByte2HexStr(result);
+			String algo = ALGO;
+			Cipher cipher = Cipher.getInstance(algo);
+			cipher.init(Cipher.ENCRYPT_MODE, createKeySpec(passcode, algo));
+			byte[] bytes = cipher.doFinal(plainText.getBytes(CHARSET));
+			String result = bytes2HexStr(bytes);
+			
+			return result;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		return null;
 	}
-
-	public static String decodeBySIRAP(String encodedText, String passcode) {
-		return decodeBySIRAP(encodedText, passcode, false);
-	}
 	
-	public static String decodeBySIRAP(String encodedText, String passcode, boolean throwException) {
+	public String decode(String encodedText, String passcode, boolean throwException) {
 		try {
-			KeyGenerator kgen = KeyGenerator.getInstance("AES");
-			SecureRandom donald = SecureRandom.getInstance("SHA1PRNG");
-			donald.setSeed(passcode.getBytes(CODE_UTF8));
-			kgen.init(128, donald);
-			Cipher cipher = Cipher.getInstance("AES");
-			cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(kgen.generateKey().getEncoded(), "AES"));
-
-			byte[] temp = parseHexStr2Byte(encodedText);
-			byte[] result = cipher.doFinal(temp);
-			return new String(result, CODE_UTF8);
+			String algo = ALGO;
+			Cipher cipher = Cipher.getInstance(algo);
+			cipher.init(Cipher.DECRYPT_MODE, createKeySpec(passcode, algo));
+			byte[] bytes = cipher.doFinal(hexStr2Bytes(encodedText));
+			String result = new String(bytes, CHARSET);
+			
+			return result;
 		} catch (Exception ex) {
 			if(throwException) {
 				String msg = "can't decode text: " + displaySome(encodedText, 49);
@@ -52,7 +46,7 @@ public class MrTrump {
 		return null;
 	}
 
-	private static byte[] parseHexStr2Byte(String hexStr) {
+	private byte[] hexStr2Bytes(String hexStr) {
 		if (hexStr.length() < 1)
 			return null;
 		byte[] result = new byte[hexStr.length() / 2];
@@ -65,7 +59,7 @@ public class MrTrump {
 		return result;
 	}
 
-	private static String parseByte2HexStr(byte buf[]) {
+	private String bytes2HexStr(byte buf[]) {
 		StringBuffer sb = new StringBuffer();
 		for (int i = 0; i < buf.length; i++) {
 			String hex = Integer.toHexString(buf[i] & 0xFF);
@@ -77,7 +71,7 @@ public class MrTrump {
 		return sb.toString();
 	}
 
-	private static String displaySome(String source, int len) {
+	private String displaySome(String source, int len) {
 		int size = source.length();
 		if(size <= len) {
 			return source;
@@ -88,5 +82,14 @@ public class MrTrump {
 		
 		return temp;
 	}
-
+	
+	private SecretKeySpec createKeySpec(String passcode, String algo) throws Exception {
+		KeyGenerator kgen = KeyGenerator.getInstance(algo);
+		SecureRandom donald = SecureRandom.getInstance("SHA1PRNG");
+		donald.setSeed(passcode.getBytes(CHARSET));
+		kgen.init(128, donald);
+		SecretKeySpec mama = new SecretKeySpec(kgen.generateKey().getEncoded(), algo);
+		
+		return mama;
+	}
 }

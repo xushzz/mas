@@ -17,7 +17,7 @@ import com.sirap.basic.exception.MexException;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
 import com.sirap.basic.util.StrUtil;
-import com.sirap.security.MrTrump;
+import com.sirap.basic.util.TrumpUtil;
 
 public class LdapVisitor {
 
@@ -25,12 +25,12 @@ public class LdapVisitor {
 //	String credentials = MrTrump.decodeBySIRAP("1E4197B6A97CC0E92B03BBA0C837D6D5", "ninja");
 //	String providerUrl = MrTrump.decodeBySIRAP("99CD5241C5889AA614313D03A1683861920D31BC1CF0F7CF480A651602026C01", "ninja");
 
-	public static final String SEARCH_BASE = MrTrump.decodeBySIRAP("FFADDFAD0AAC753736CFE94B4239E486", "ldap");
+	public static final String SEARCH_BASE = TrumpUtil.decodeBySIRAP("FFADDFAD0AAC753736CFE94B4239E486", "ldap");
 	//"(&(title=*)(objectClass=User)(objectCategory=person)(!(userAccountControl:1.2.840.113556.1.4.803:=2))(|(accountExpires=0)(accountExpires=9223372036854775807)))";
 	public static final String SEARCH_FILTER = "(&(sn=*骥*)(title=*)(objectClass=User)(objectCategory=person))";
-	private static final String PROVIDER_URL = MrTrump.decodeBySIRAP("5080C9E4967E1ADD0AB2C4FAB4EBA35FDA90AB572919E3BA5623E333DEBBAB89", "ldap");;
-	private static final String PRINCIPAL = MrTrump.decodeBySIRAP("C04D3AB2C032499BF8CF8DFCD7BAC07B", "ldap");
-	private static final String CREDENTIALS = MrTrump.decodeBySIRAP("A0A036A81F0AACBF8EF67A625473A6D7", "ldap");
+	private static final String PROVIDER_URL = TrumpUtil.decodeBySIRAP("5080C9E4967E1ADD0AB2C4FAB4EBA35FDA90AB572919E3BA5623E333DEBBAB89", "ldap");;
+	private static final String PRINCIPAL = TrumpUtil.decodeBySIRAP("C04D3AB2C032499BF8CF8DFCD7BAC07B", "ldap");
+	private static final String CREDENTIALS = TrumpUtil.decodeBySIRAP("A0A036A81F0AACBF8EF67A625473A6D7", "ldap");
 	
 	public static String KEYS_STR = "whenCreated,name,mail,title,displayName,department,mobile,givenName";
 	public static List<String> KEYS_LIST = StrUtil.split(KEYS_STR);
