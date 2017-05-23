@@ -7,9 +7,8 @@ import org.junit.Test;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
 import com.sirap.basic.util.StrUtil;
-import com.sirap.executor.ChefUtil;
+import com.sirap.basic.util.TrumpUtil;
 import com.sirap.executor.ssh.SSHCommandExecutor;
-import com.sirap.security.MrTrump;
 
 public class SSHTest {
 	
@@ -29,9 +28,9 @@ public class SSHTest {
 	
 	@Test
     public void ssh() {
-		String ip = MrTrump.decodeBySIRAP("CC5CEFF645EDC32CE0D09ABCEDEE9916", "ninja");
-		String username = MrTrump.decodeBySIRAP("6EFB129B314C1D24EE6042A6C1744F1D", "ninja");
-		String password = MrTrump.decodeBySIRAP("3655E1DA0F41850E17D76A8AFED1EF4C", "ninja");
+		String ip = TrumpUtil.decodeBySIRAP("CC5CEFF645EDC32CE0D09ABCEDEE9916", "ninja");
+		String username = TrumpUtil.decodeBySIRAP("6EFB129B314C1D24EE6042A6C1744F1D", "ninja");
+		String password = TrumpUtil.decodeBySIRAP("3655E1DA0F41850E17D76A8AFED1EF4C", "ninja");
         SSHCommandExecutor sshExecutor = SSHCommandExecutor.g2(ip, username, password);
         String cmd = "uname -s -r -v";
 //        cmd = "date +%s";

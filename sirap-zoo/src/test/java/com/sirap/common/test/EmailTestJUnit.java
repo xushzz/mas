@@ -25,8 +25,8 @@ import com.sirap.basic.tool.D;
 import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.TrumpUtil;
 import com.sirap.basic.util.XXXUtil;
-import com.sirap.security.MrTrump;
 
 public class EmailTestJUnit {
 	
@@ -36,7 +36,7 @@ public class EmailTestJUnit {
 		username = "yuzhending";
 		username = "aol007";
 
-		String pwd = MrTrump.decodeBySIRAP("5C5985E456AFC2E780D5D41AF127E283", "jinx");
+		String pwd = TrumpUtil.decodeBySIRAP("5C5985E456AFC2E780D5D41AF127E283", "jinx");
 		pwd = "wodexiuxiu";
 		pwd = "loveyou";
 		

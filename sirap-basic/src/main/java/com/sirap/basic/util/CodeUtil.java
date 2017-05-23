@@ -13,7 +13,6 @@ import com.sirap.basic.component.Konstants;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.tool.C;
 
-@SuppressWarnings("restriction")
 public class CodeUtil {
 
 	public static final String REGEX_HEX = "[0-9A-F]{2}";

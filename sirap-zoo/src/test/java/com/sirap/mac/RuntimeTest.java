@@ -8,7 +8,7 @@ import org.junit.Test;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.PanaceaBox;
-import com.sirap.security.MrTrump;
+import com.sirap.basic.util.TrumpUtil;
 
 public class RuntimeTest {
 
@@ -22,9 +22,9 @@ public class RuntimeTest {
 	public void seed() {
 		String passcode = "Obamacare";
 		String sa = "A";
-		C.pl(MrTrump.encodeBySIRAP(sa, passcode));
-		C.pl(MrTrump.encodeBySIRAP(sa, passcode));
-		C.pl(MrTrump.encodeBySIRAP(sa, passcode));
+		C.pl(TrumpUtil.encodeBySIRAP(sa, passcode));
+		C.pl(TrumpUtil.encodeBySIRAP(sa, passcode));
+		C.pl(TrumpUtil.encodeBySIRAP(sa, passcode));
 	}
 	
 	@Test

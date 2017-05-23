@@ -9,21 +9,21 @@ import org.junit.Test;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.TrumpUtil;
 import com.sirap.ldap.offline.SmartRelation;
 import com.sirap.ldap.online.LdapOnlineManager;
 import com.sirap.ldap.online.LdapOnlineSubordinatesFetcher;
 import com.sirap.ldap.online.SearchParams;
-import com.sirap.security.MrTrump;
 
 public class LdapTest {
 	 
 	private String filterExpression = "(&{0}(title=*)(objectClass=User)(objectCategory=person))";
 	
 	private LdapOnlineManager g() {
-		String principal = MrTrump.decodeBySIRAP("8A8882488530CC42ABA4152D5DC6A4EC", "ninja");
-		String credentials = MrTrump.decodeBySIRAP("1E4197B6A97CC0E92B03BBA0C837D6D5", "ninja");
-		String providerUrl = MrTrump.decodeBySIRAP("99CD5241C5889AA614313D03A1683861920D31BC1CF0F7CF480A651602026C01", "ninja");
-		String searchBase = MrTrump.decodeBySIRAP("5DC909556223CAAFEB088CB3A9CF36CC", "ninja");
+		String principal = TrumpUtil.decodeBySIRAP("8A8882488530CC42ABA4152D5DC6A4EC", "ninja");
+		String credentials = TrumpUtil.decodeBySIRAP("1E4197B6A97CC0E92B03BBA0C837D6D5", "ninja");
+		String providerUrl = TrumpUtil.decodeBySIRAP("99CD5241C5889AA614313D03A1683861920D31BC1CF0F7CF480A651602026C01", "ninja");
+		String searchBase = TrumpUtil.decodeBySIRAP("5DC909556223CAAFEB088CB3A9CF36CC", "ninja");
 		String returningAttributes = "name,whenCreated,title,displayName,department,mail,mobile,telephoneNumber,sAMAccountName";
 		int maxPage = 10;
 		int pageSize = 400;

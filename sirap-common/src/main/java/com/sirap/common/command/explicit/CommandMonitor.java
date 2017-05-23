@@ -104,15 +104,18 @@ public class CommandMonitor extends CommandBase {
 				if(FileOpener.isTextFile(filePath)) {
 					String content = IOUtil.readFileWithRegularLineSeparator(filePath);
 					String text = TrumpUtil.encodeBySIRAP(content, passcode);
-					C.pl("File content.");
+					C.pl("File, SIRAP generates " + text.length() + " chars. ");
 					export(text);
 				} else {
-					XXXUtil.alert("Not a text file: " + filePath);
+					String text = TrumpUtil.encodeBySIRAP(param, passcode);
+					C.pl("SIRAP generates " + text.length() + " chars. ");
+					export(text);
 				}
 				
 				return true;
 			} else {
 				String text = TrumpUtil.encodeBySIRAP(param, passcode);
+				C.pl("SIRAP generates " + text.length() + " chars. ");
 				export(text);
 			}
 			

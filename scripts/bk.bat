@@ -45,7 +45,7 @@ call mvn -Dmaven.test.skip=true clean install -P s
 ::copy %from%\%%i\target\*SHOT.jar %where%\jars
 :cpy
 for %%i in (%what%) do copy %from%\%%i\target\*SHOT.jar %where%\jars
-copy %other%\sirap-security-1.0.jar %where%\jars
+copy %from%\sirap-security\target\*.jar %where%\jars
 copy %other%\mas.wav %where%\jars
 copy %script%\ship.properties %where%
 copy %script%\ship.bat %where%
