@@ -18,8 +18,6 @@ export PATH
 version=3.5-SNAPSHOT
 alpha_version=1.0-SNAPSHOT
 
-echo $jars
-
 CP=“”
 CP=$CP:$jars/sirap-common-$version.jar
 CP=$CP:$jars/sirap-basic-$version.jar

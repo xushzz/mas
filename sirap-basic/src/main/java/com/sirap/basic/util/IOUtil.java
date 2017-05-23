@@ -699,7 +699,7 @@ public class IOUtil {
 	public static List<String> echoPath() {
 		String path = System.getProperty("java.library.path");
 		char delimiter = ';';
-		if(PanaceaBox.isMac()) {
+		if(PanaceaBox.isMacOrLinuxOrUnix()) {
 			delimiter = ':';
 		}
 		List<String> items = StrUtil.split(path, delimiter);
