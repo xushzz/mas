@@ -43,10 +43,11 @@ public class CommandFile extends CommandBase {
 	private static final String KEY_OPEN_EXPLORER = "<";
 	private static final String KEY_ALL_DISKS_SINGLE_COLON = ":";
 	private static final String KEY_ALL_DISKS_DOUBLE_COLON = "::";
-	private static final String KEY_PRINT_TXT = "txt,cat,=";
-	private static final String KEY_ONELINE_TXT = "one";
+	private static final String KEY_PRINT_TXT = "=";
+	private static final String KEY_PRINT_TXT_ONELINE = "&";
+	private static final String KEY_PRINT_TXT_LINENUMBER = "#";
 	private static final String KEY_SHOW_DETAIL = "-";
-	private static final String KEY_DIVE_DEEP = "#";
+	private static final String KEY_FOLDER_DEPTH = "#";
 	private static final String KEY_PDF = "pdf";
 	private static final String KEY_DAY_CHECK = "dc";
 	private static final String KEY_MEMORABLE = "mm";
@@ -150,7 +151,7 @@ public class CommandFile extends CommandBase {
 			return true;
 		}
 				
-		params = parseParams("(" + KEY_SHOW_DETAIL + "|" + KEY_DIVE_DEEP + "|)([^<]*)(<|)");
+		params = parseParams("(" + KEY_SHOW_DETAIL + "|" + KEY_FOLDER_DEPTH + "|)([^<]*)(<|)");
 		if(params != null) {
 			String does = params[0];
 			String path = params[1];
@@ -177,7 +178,7 @@ public class CommandFile extends CommandBase {
 				}
 			}
 			
-			if(StrUtil.equals(KEY_DIVE_DEEP, does)) {
+			if(StrUtil.equals(KEY_FOLDER_DEPTH, does)) {
 				String cleverPath = parseFolderPath(path);
 				if(FileUtil.getIfNormalFolder(cleverPath) != null) {
 					FileDeeper dima = new FileDeeper(cleverPath);
@@ -190,14 +191,14 @@ public class CommandFile extends CommandBase {
 					} else {
 						List<String> items = new ArrayList<>();
 						for(File what: files) {
-							items.add("#" + maxLevel + " " + what.getAbsolutePath());
+							items.add(maxLevel + " " + what.getAbsolutePath());
 						}
 						
 						export(items);
 					}
+					
+					return true;
 				}
-				
-				return true;
 			}
 			
 			List<String> paths = new ArrayList<>();
@@ -423,7 +424,7 @@ public class CommandFile extends CommandBase {
 			}
 		}
 		
-		params = parseParams("(-|#|one |txt |cat |=)(.+?)");
+		params = parseParams("(-|#|&|=)(.+?)");
 		if(params != null) {
 			file = parseFile(params[1]);
 			if(file != null) {
@@ -466,13 +467,23 @@ public class CommandFile extends CommandBase {
 					return true;
 				}
 				
-				if(StrUtil.equals(KEY_ONELINE_TXT, type)) {
-					String temp = IOUtil.readFileWithLineSeparator(filePath, " ");
+				if(StrUtil.equals(KEY_PRINT_TXT_ONELINE, type)) {
+					String temp = IOUtil.readFileWithoutLineSeparator(filePath, g().getCharsetInUse());
 					String result = StrUtil.reduceMultipleSpacesToOne(temp);
 					export(result);
-				} else if(StrUtil.existsIgnoreCase(KEY_PRINT_TXT.split(","), type)) {
+				} else if(StrUtil.equals(KEY_PRINT_TXT, type)) {
 					List<String> records = FileOpener.readTextContent(filePath, true);
 					export(records);
+				} else if(StrUtil.equals(KEY_PRINT_TXT_LINENUMBER, type)) {
+					List<String> records = FileOpener.readTextContent(filePath, true);
+					List<String> items = new ArrayList<>();
+					int maxLen = (records.size() + "").length();
+					for(int i = 0; i < records.size(); i++) {
+						String temp = i + 1 + "";
+						temp = StrUtil.extend(temp, maxLen);
+						items.add(temp + " " + records.get(i));
+					}
+					export(items);
 				}
 				
 				return true;

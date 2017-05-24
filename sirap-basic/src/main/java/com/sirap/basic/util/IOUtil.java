@@ -112,15 +112,27 @@ public class IOUtil {
 	}
 
 	public static String readFileWithoutLineSeparator(String fileName) {
-		return readFileWithLineSeparator(fileName, "");
+		return readFileWithLineSeparator(fileName, "", null);
 	}
 
 	public static String readFileWithRegularLineSeparator(String fileName) {
-		return readFileWithLineSeparator(fileName, Konstants.NEWLINE);
+		return readFileWithLineSeparator(fileName, Konstants.NEWLINE, null);
 	}
 	
 	public static String readFileWithLineSeparator(String fileName, String lineSeperator) {
-		return readFileWithLineSeparator(fileName, lineSeperator, new String[0]);
+		return readFileWithLineSeparator(fileName, lineSeperator, null, new String[0]);
+	}
+
+	public static String readFileWithoutLineSeparator(String fileName, String charset) {
+		return readFileWithLineSeparator(fileName, "", charset);
+	}
+
+	public static String readFileWithRegularLineSeparator(String fileName, String charset) {
+		return readFileWithLineSeparator(fileName, Konstants.NEWLINE, charset);
+	}
+	
+	public static String readFileWithLineSeparator(String fileName, String lineSeperator, String charset) {
+		return readFileWithLineSeparator(fileName, lineSeperator, charset, new String[0]);
 	}
 
 	/***
@@ -130,11 +142,17 @@ public class IOUtil {
 	 * @param prefixesToIgnoreOneline
 	 * @return
 	 */
-	public static String readFileWithLineSeparator(String fileName, String lineSeperator, String... prefixesToIgnoreOneline) {
+	public static String readFileWithLineSeparator(String fileName, String lineSeperator, String charset, String... prefixesToIgnoreOneline) {
 		StringBuffer sb = new StringBuffer();
 
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(fileName));
+			InputStreamReader isr = null;
+			if(charset != null) {
+				isr = new InputStreamReader(new FileInputStream(fileName), charset);
+			} else {
+				isr = new InputStreamReader(new FileInputStream(fileName));
+			}
+			BufferedReader br = new BufferedReader(isr);
 			String record = br.readLine();
 			boolean theFirstOne = true;
 			while (record != null) {
@@ -184,6 +202,7 @@ public class IOUtil {
 
 		return list;
 	}
+	
 	public static int totalLines(String fileName) {
 		int count = 0;
 		try {
