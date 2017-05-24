@@ -8,12 +8,12 @@ ORIGIN=$PATH
 PATH=$JRE_HOME/bin
 CLASS_PATH=$JRE_HOME/lib/rt.jar
 
+cd /Users/ky/Documents/mas
+
 storage=/Users/ky/Documents/mas
 config=/Users/ky/Documents/mas/dev.properties
 where=/Users/ky/Documents/farm/gitplace/mas
 repo=/Users/ky/Documents/zoo/m2repo
-
-export PATH
 
 CP=“”
 CP=$CP:$where/sirap-common/target/classes
@@ -42,5 +42,3 @@ APP=com.sirap.common.entry.AppMas
 java -cp "$CP" "$APP" "$storage" "$config"
 
 PATH=$ORIGIN
-
-export PATH
