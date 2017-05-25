@@ -13,17 +13,21 @@ import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexedObject;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
-import com.sirap.basic.util.XCodeUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.StrUtil;
-import com.sirap.common.extractor.Extractor;
+import com.sirap.basic.util.XCodeUtil;
 import com.sirap.common.extractor.impl.EnglishTranslationExtractor;
 import com.sirap.common.extractor.impl.RemoteSecurityExtractor;
 
 public class MinorExtractorTest {
 	
 	@Test
+	public void sfz() {
+//		Extractor<MexedObject> jes = new ChinaSFZExtractor();
+//		jes.process();
+	}
+	
 	public void compare() {
 		String sa = "~ !@#$%^&*()_+`-=[]\\{}|;':\",./<>?L编";
 //		sa = "#$";

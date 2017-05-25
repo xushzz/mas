@@ -7,11 +7,13 @@ asc                display ASCII values for all numbers and letters in bin/oct/d
 asc..              display ASCII values for characters in bin/oct/dec/hex/NATO phonetics
 ascii              display ASCII values for characters in bin/oct/dec/hex/NATO phonetics
 asc mike           search any ascii info matching given criteria bin/oct/dec/hex/nato
-cod ABC            encode regular chars to four or hex chars via UTF8, Unicode, GBK
-cod-UTF8           search charsets matching given criteria
-cod-BIG5 ABC       encode regular chars to Big5 hex chars, also for UTF8, Unicode,
-cod..              display all available charsets, like UTF8,ISO,Unicode,GBK and so on
+cde ABC            encode regular chars to four or hex chars via UTF8, Unicode, GBK
+cde-UTF8           search charsets matching given criteria
+cde-BIG5 ABC       encode regular chars to Big5 hex chars, also for UTF8, Unicode,
+cde..              display all available charsets, like UTF8,ISO,Unicode,GBK and so on
 GBK \uBBBB\uCBA7   decode GBK chars to regular chars, also for UTF8, Unicode and so on
+UTF-8 \uE5B885     decode UTF8 chars to regular chars, also for UTF8, Unicode and so on
+UTF8 \uE593A5      decode UTF8 chars to regular chars, also for UTF8, Unicode and so on
 t64 gavinbelson    convert given string to BASE64-based string.
 f64 YmluZ28=       convert a BASE64-based string to regular string.
 digest abc         encrypt string with digest algorithm, such as SHA,SHA1,SHA224,SHA256,SHA512,MD2,MD5

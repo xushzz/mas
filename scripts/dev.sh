@@ -1,4 +1,4 @@
-#!/bin/sh
+﻿#!/bin/sh
 
 # @echo off
 # rem chcp 65001

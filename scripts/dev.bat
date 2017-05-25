@@ -42,7 +42,6 @@ set CP=%CP%;%where%\sirap-db\target\classes
 set CP=%CP%;%where%\sirap-extractor\target\classes
 set CP=%CP%;%where%\sirap-executor\target\classes
 set CP=%CP%;%where%\sirap-ldap\target\classes
-set CP=%CP%;%where%\sirap-qrcode\target\classes
 set CP=%CP%;%where%\sirap-geek\target\classes
 set CP=%CP%;%where%\sirap-security\target\classes
 set CP=%CP%;%where%\sirap-bible\target\classes

@@ -6,6 +6,8 @@ import java.util.List;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.tool.C;
+import com.sirap.basic.util.HtmlUtil;
+import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XCodeUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.IOUtil;
@@ -125,5 +127,14 @@ public abstract class Extractor<T extends MexItem> {
 	
 	public boolean isAllBeingWell() {
 		return isAllBeingWell;
+	}
+	
+	public String removeHttpStuff(String source) {
+		String temp = HtmlUtil.removeHttpTag(source);
+		temp = temp.replaceAll("&nbsp;", "");
+		temp = StrUtil.reduceMultipleSpacesToOne(temp);
+		temp = temp.trim();
+		
+		return temp;
 	}
 }

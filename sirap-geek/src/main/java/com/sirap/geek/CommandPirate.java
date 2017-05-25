@@ -1,13 +1,19 @@
 package com.sirap.geek;
 
 import java.io.File;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.sirap.basic.component.Konstants;
+import com.sirap.basic.domain.MexedObject;
+import com.sirap.basic.domain.Person;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.tool.D;
+import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.DateUtil;
+import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.IDCardUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.MathUtil;
@@ -57,7 +63,25 @@ public class CommandPirate extends CommandBase {
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_ID_SFZ + "\\s+(.+?)");
+		singleParam = parseParam(KEY_ID_SFZ + "\\s(\\d{1,6}|[\\D]{1,100})");
+		if(singleParam != null) {
+			String source = g().getUserValueOf("sfz.source");
+			if(!EmptyUtil.isNullOrEmpty(source)) {
+				boolean isText = FileOpener.isTextFile(source);
+				if(isText) {
+					String path = parseFile(source).getAbsolutePath();
+					List<String> allAreas = IOUtil.readFileIntoList(path, g().getCharsetInUse());
+					List<MexedObject> items = CollectionUtil.search(allAreas, singleParam);
+					export(items);
+				} else {
+					C.pl2("Not a text file: " + source);
+				}
+			}
+			
+			return true;
+		}
+		
+		singleParam = parseParam(KEY_ID_SFZ + "\\s((\\d{17})(|\\d|X))");
 		if(singleParam != null) {
 			sfz(singleParam);
 			return true;
@@ -90,6 +114,11 @@ public class CommandPirate extends CommandBase {
 			return true;
 		}
 		
+		String source = g().getUserValueOf("sfz.s2");
+		if(!EmptyUtil.isNullOrEmpty(source)) {
+			C.pl(source);
+		}
+		
 		return false;
 	}
 	
@@ -104,18 +133,46 @@ public class CommandPirate extends CommandBase {
 	
 	private void sfz(String param) {
 		String code = IDCardUtil.checkCodeChina(param) + "";
-		String info = "";
+		List<String> items = new ArrayList<>();
+		String msg = "";
 		if(param.length() == 18) {
 			if(StrUtil.endsWith(param, code)) {
-				info = param + " is a right ID.";
+				msg = param + " is a right ID.";
 			} else {
 				String temp = param.replaceAll(".$", code);
-				info = "Wrong, right ID should be " + temp ;
+				msg = "Wrong, should be " + temp ;
 			}
 		} else {
-			info = "ID should be " + param + code ;
+			msg = "ID should be " + param + code ;
 		}
+		items.add(msg);
 		
-		export(info);
+		Person saul = IDCardUtil.readBasicInfo(param);
+		String areaCode = saul.getAreaCode();
+		
+		int monthDiff = DateUtil.monthDiff(new Date(), saul.getBirthDate());
+		BigDecimal age = MathUtil.divide(monthDiff, 12, 1);
+		
+		StringBuffer bf = new StringBuffer();
+		bf.append(saul.displayGender()).append(", ");
+		bf.append(age).append(", ");
+		bf.append(saul.getDateOfBirth());
+		
+		String source = g().getUserValueOf("sfz.source");
+		if(!EmptyUtil.isNullOrEmpty(source)) {
+			boolean isText = FileOpener.isTextFile(source);
+			if(isText) {
+				String path = parseFile(source).getAbsolutePath();
+				List<String> allAreas = IOUtil.readFileIntoList(path, g().getCharsetInUse());
+				String areaName = IDCardUtil.getAreaInfo(areaCode, allAreas);
+				saul.setAreaName(areaName);
+			}
+		}
+		bf.append(", ").append("from ").append(saul.getAreaName());
+		items.add(bf.toString());
+		
+		export(items);
 	}
 }
+
+
