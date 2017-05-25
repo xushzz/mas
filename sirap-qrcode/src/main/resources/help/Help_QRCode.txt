@@ -1,6 +1,0 @@
-qr ABC             generate a QRCode for text ABC, the image will be saved in "exp"
-qr D:\\ABC.txt     generate a QRCode for content of ABC.txt, the image will be saved suffixed with "ABC"
-qr ABC///jack      generate a QRCode for text ABC, the image will be saved and suffixed with "jack"
-qr ABC.jpg>D:      generate a QRCode for text ABC, the image will be saved in "D:"
-de ABC.png         decode the text from a QRCode
-ver=SIRAP-QRCODE1.0.1-DIGAO  3/26/2017, VI

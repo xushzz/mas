@@ -5,12 +5,13 @@ import java.util.List;
 import org.junit.Test;
 
 import com.sirap.basic.tool.C;
+import com.sirap.basic.util.IDCardUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.StrUtil;
-import com.sirap.geek.git.GithubIssuesExtractor;
 import com.sirap.geek.jenkins.JenkinsBuildRecord;
 import com.sirap.geek.jenkins.JenkinsManager;
-import com.sirap.geek.maven.MavenManager;
+import com.sirap.geek.manager.GithubIssuesExtractor;
+import com.sirap.geek.manager.MavenManager;
 
 public class GeekTest {
 
@@ -25,7 +26,7 @@ public class GeekTest {
 	
 	private JenkinsManager nick = JenkinsManager.g2(url);
 	
-	@Test
+//	@Test
 	public void ascii() {
 		String src = "D:/1.txt";
 		List<String> items = IOUtil.readFileIntoList(src);
@@ -74,5 +75,15 @@ public class GeekTest {
 		GithubIssuesExtractor frank = new GithubIssuesExtractor(repo);
 		frank.process();
 		C.list(frank.getMexItems());
+	}
+	
+	@Test
+	public void checkCode() {
+		C.pl('1' - '0');
+//		C.pl(StrUtil.checkCode("45272319940110083a"));
+		C.pl("452723199401100834".replaceAll("\\d$", "X"));
+		C.pl(IDCardUtil.checkCodeChina("45272319940110083X"));
+		C.pl(IDCardUtil.checkCodeChina("132302198908270037"));
+		C.pl(IDCardUtil.checkCodeChina("45272319880529083"));
 	}
 }

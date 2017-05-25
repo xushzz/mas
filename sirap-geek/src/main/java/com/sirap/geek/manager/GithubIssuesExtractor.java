@@ -1,4 +1,4 @@
-package com.sirap.geek.git;
+package com.sirap.geek.manager;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

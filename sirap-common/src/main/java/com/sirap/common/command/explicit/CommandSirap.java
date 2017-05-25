@@ -19,7 +19,6 @@ import com.sirap.basic.component.RioCalendar;
 import com.sirap.basic.domain.MexedFile;
 import com.sirap.basic.domain.MexedObject;
 import com.sirap.basic.email.EmailCenter;
-import com.sirap.basic.exception.MexException;
 import com.sirap.basic.math.FormulaCalculator;
 import com.sirap.basic.math.MexCalculator;
 import com.sirap.basic.math.MexColorConverter;
@@ -33,14 +32,12 @@ import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
-import com.sirap.basic.util.IDCardUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.MexUtil;
 import com.sirap.basic.util.NetworkUtil;
 import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.StrUtil;
-import com.sirap.basic.util.ThreadUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.domain.LocalSearchEngine;
@@ -80,12 +77,10 @@ public class CommandSirap extends CommandBase {
 	private static final String KEY_HOST = "host";
 	private static final String KEY_MAC = "mac";
 	private static final String LENGTH_OF = "l\\.";
-	private static final String KEY_ID_SFZ = "sfz";
-	private static final String KEY_BEEP_K = "b(\\d{1,2})";
-	private static final String KEY_BEEP_HOUR = "bmw";
 	private static final String KEY_TO_DATE = "td";
 	private static final String KEY_TO_LONG = "tl";
-	private static final String KEY_SET_CHARSET = "gbk,utf8,utf-8,gb2312";
+	private static final String KEY_ASSIGN_CHARSET = "gbk,utf8,utf-8,gb2312";
+	private static final String KEY_MAXMIN = "max,min";
 	
 	@Override
 	public boolean handle() {
@@ -491,29 +486,6 @@ public class CommandSirap extends CommandBase {
 			return true;
 		}
 		
-		if(is("swap")) {
-			String[] codeAndImage = IOUtil.generateCaptcha(4, screenShotPath());
-			String code = null;
-			String filePath = null;
-			if(codeAndImage != null) {
-				code = codeAndImage[0];
-				filePath = codeAndImage[1];
-			}
-			
-			if(filePath != null) {
-				C.pl(code + ", " + filePath);
-				tryToOpenGeneratedImage(filePath);
-			}
-			
-			if(target instanceof TargetConsole) {
-				return true;
-			}
-			
-			export(FileUtil.getIfNormalFile(filePath));
-			
-			return true;
-		}
-		
 		String regexDateStr = "(|\\d{4})\\.(|\\d{1,2})\\.(|\\d{1,2})";
 		params = parseParams(regexDateStr + "\\s*-\\s*" + regexDateStr);
 		if(params != null) {
@@ -624,46 +596,23 @@ public class CommandSirap extends CommandBase {
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_ID_SFZ + "\\s+(.+?)");
-		if(singleParam != null) {
-			String code = IDCardUtil.checkCodeChina(singleParam);
-			String value = "check code for " + singleParam + ": " + code;
-			export(value);
+		if(isIn(KEY_MAXMIN)) {
+			List<String> items = new ArrayList<>();
+			items.add(maxmin("Max of Long", Long.MAX_VALUE));
+			items.add(maxmin("Min of Long", Long.MIN_VALUE));
+			items.add(maxmin("Max of Integer", Integer.MAX_VALUE));
+			items.add(maxmin("Min of Integer", Integer.MIN_VALUE));
+			items.add(maxmin("Max of Short", Short.MAX_VALUE));
+			items.add(maxmin("Min of Short", Short.MIN_VALUE));
+			items.add(maxmin("Max of Byte", Byte.MAX_VALUE));
+			items.add(maxmin("Min of Byte", Byte.MIN_VALUE));
+			
+			export(items);
 			
 			return true;
 		}
 		
-		try {
-			String code = IDCardUtil.checkCodeChina(command);
-			String value = "check code for " + command + ": " + code;
-			export(value);
-			
-			return true;
-		} catch (MexException ex) {
-			
-		}
-		
-		singleParam = parseParam(KEY_BEEP_K);
-		if(singleParam != null) {
-			Integer count = MathUtil.toInteger(singleParam);
-			beepKTimes(count);
-			
-			C.pl();
-			return true;
-		}
-		
-		if(is(KEY_BEEP_HOUR)) {
-			int currentHour = DateUtil.getHour();
-			if(currentHour == 0) {
-				currentHour = 24;
-			}
-			beepKTimes(currentHour);
-			
-			C.pl();
-			return true;
-		}
-		
-		if(isIn(KEY_SET_CHARSET)) {
+		if(isIn(KEY_ASSIGN_CHARSET)) {
 			String charset = command.replace("-", "").toUpperCase();
 			g().setCharsetInUse(charset);
 			C.pl2("Charset in use: " + charset);
@@ -672,15 +621,6 @@ public class CommandSirap extends CommandBase {
 		}
 				
 		return false;
-	}
-	
-	private void beepKTimes(int count) {
-		for(int i = 0; i < count; i++) {
-			String temp = "Beep {0}/{1} ..." + Konstants.BEEP;
-			String value = StrUtil.occupy(temp, i + 1, count);
-			C.pl(value);
-			ThreadUtil.sleepInSeconds(1);
-		}
 	}
 	
 	private List<SiteSearchEngine> getSiteSearchEngines() {
@@ -945,5 +885,18 @@ public class CommandSirap extends CommandBase {
 		}
 		
 		return filePath;
+	}
+	
+	private String maxmin(String displayName, long value) {
+		String str = String.valueOf(value);
+		int len = str.length();
+		if(value < 0) {
+			len--;
+		}
+		
+		String temp = "{0} is {1}, {2} chars.";
+		String result = StrUtil.occupy(temp, displayName, str, len);
+		
+		return result;
 	}
 }

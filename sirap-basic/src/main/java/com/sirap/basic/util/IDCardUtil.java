@@ -1,10 +1,12 @@
 package com.sirap.basic.util;
 
 import com.sirap.basic.exception.MexException;
+import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.XXXUtil;
 
 public class IDCardUtil {
 	
-	public static String checkCodeChina(String id17or18) {
+	public static char checkCodeChina(String id17or18) {
 		int len = 17;
 		String regex = "(\\d{" + len + "})(|\\d|X)";
 
@@ -27,7 +29,7 @@ public class IDCardUtil {
 		
 		char[] validate = { '1','0','X','9','8','7','6','5','4','3','2'};
 		int mode = sum % validate.length;
-		String code = validate[mode] + "";
+		char code = validate[mode];
 		
 		return code;
 	}

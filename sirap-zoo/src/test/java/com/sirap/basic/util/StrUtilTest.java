@@ -109,15 +109,6 @@ public class StrUtilTest {
 	}
 	
 	//@Test
-	public void checkCode() {
-		C.pl('1' - '0');
-//		C.pl(StrUtil.checkCode("45272319940110083a"));
-		C.pl(IDCardUtil.checkCodeChina("45272319940110083X"));
-		C.pl(IDCardUtil.checkCodeChina("132302198908270037"));
-		C.pl(IDCardUtil.checkCodeChina("45272319880529083"));
-	}
-	
-	//@Test
 	public void splitByNewline() {
 		String source = "alex\njames\nphil\n";
 		D.ts();

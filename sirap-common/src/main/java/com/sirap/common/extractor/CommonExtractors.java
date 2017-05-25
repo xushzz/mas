@@ -1,11 +1,10 @@
-package com.sirap.common;
+package com.sirap.common.extractor;
 
 import java.util.Date;
 import java.util.List;
 
 import com.sirap.basic.domain.MexedObject;
 import com.sirap.basic.util.ThreadUtil;
-import com.sirap.common.extractor.Extractor;
 import com.sirap.common.extractor.impl.EnglishDictionaryExtractor;
 import com.sirap.common.extractor.impl.EnglishTranslationExtractor;
 import com.sirap.common.extractor.impl.MobilePhoneLocationExtractor;
@@ -13,7 +12,7 @@ import com.sirap.common.extractor.impl.RemoteSecurityExtractor;
 import com.sirap.common.extractor.impl.WorldTimeBJTimeOrgExtractor;
 import com.sirap.common.extractor.impl.WorldTimeExtractor;
 
-public class CommonHelper {
+public class CommonExtractors {
 	
 	public static void setWorldTime(final MexedObject mDate) {
 		final WorldTimeExtractor frank = new WorldTimeBJTimeOrgExtractor();

@@ -6,6 +6,7 @@ import java.util.List;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.tool.C;
+import com.sirap.basic.util.XCodeUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.IOUtil;
 
@@ -24,34 +25,13 @@ public abstract class Extractor<T extends MexItem> {
 	protected T mexItem;
 	protected List<T> mexItems = new ArrayList<T>();
 	protected List<Object> objItems = new ArrayList<Object>();
-
-	private static String[] PARAM_PLAIN = {"+"," ","/","?","#","&","=",":","'"};
-	private static String[] PARAM_ENCODED = {"%2B","+","%2F","%3F","%23","%26","%3D","%3A","%27"};
 	
 	public static String encodeURLParam(String param) {
-		if(param == null) {
-			return null;
-		}
-
-		String temp = param;
-		for(int i = 0; i < PARAM_PLAIN.length; i++) {
-			temp = temp.replace(PARAM_PLAIN[i], PARAM_ENCODED[i]);
-		}
-		
-		return temp;
+		return XCodeUtil.urlEncodeUTF8(param);
 	}
 	
 	public static String decodeURLParam(String param) {
-		if(param == null) {
-			return null;
-		}
-		
-		String temp = param;
-		for(int i = 0; i < PARAM_PLAIN.length; i++) {
-			temp = temp.replace(PARAM_ENCODED[i], PARAM_PLAIN[i]);
-		}
-		
-		return temp;
+		return XCodeUtil.urlDecodeUTF8(param);
 	}
 	
 	public void process() {

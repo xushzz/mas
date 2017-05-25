@@ -16,11 +16,11 @@ import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.WebReader;
-import com.sirap.common.CommonHelper;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.domain.TZRecord;
 import com.sirap.common.domain.WeatherRecord;
+import com.sirap.common.extractor.CommonExtractors;
 import com.sirap.common.framework.command.target.TargetConsole;
 import com.sirap.common.framework.command.target.TargetPDF;
 import com.sirap.common.manager.ForexManager;
@@ -152,7 +152,7 @@ public class CommandFetch extends CommandBase {
 		}
 		
 		if(is(KEY_DATETIME_GMT)) {
-			Date date = CommonHelper.getWorldTime();
+			Date date = CommonExtractors.getWorldTime();
 			if(date != null) {
 				export(DateUtil.displayDateWithGMT(date, DateUtil.HOUR_Min_Sec_AM_WEEK_DATE, g().getLocale(), 0));
 			} else {
@@ -186,7 +186,7 @@ public class CommandFetch extends CommandBase {
 			String number = StrUtil.takeDigitsOnly(singleParam);
 
 			if(number.length() >= 7) {
-				String detail = CommonHelper.getMobilePhoneLocation(number);
+				String detail = CommonExtractors.getMobilePhoneLocation(number);
 				if(EmptyUtil.isNullOrEmpty(detail)) {
 					detail = "no detail.";
 				}
@@ -199,7 +199,7 @@ public class CommandFetch extends CommandBase {
 				
 		singleParam = parseParam(KEY_TRANSLATE + "\\s+(.+?)");
 		if(singleParam != null) {
-			List<MexedObject> items = CommonHelper.getTranslation(singleParam);
+			List<MexedObject> items = CommonExtractors.getTranslation(singleParam);
 			export(items);
 			
 			return true;
@@ -207,7 +207,7 @@ public class CommandFetch extends CommandBase {
 		
 		singleParam = parseParam(KEY_DICTONARY + "\\s+(.+?)");
 		if(singleParam != null) {
-			List<MexedObject> items = CommonHelper.lookupDictionary(singleParam);
+			List<MexedObject> items = CommonExtractors.lookupDictionary(singleParam);
 			export(items);
 			
 			return true;

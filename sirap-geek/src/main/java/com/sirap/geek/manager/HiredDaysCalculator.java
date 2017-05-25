@@ -1,4 +1,4 @@
-package com.sirap.basic.math;
+package com.sirap.geek.manager;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -7,10 +7,10 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import com.sirap.basic.domain.HiredInfo;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.XXXUtil;
+import com.sirap.geek.domain.HiredInfo;
 
 public class HiredDaysCalculator {
 

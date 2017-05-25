@@ -1,7 +1,8 @@
-package com.sirap.basic.domain;
+package com.sirap.geek.domain;
 
 import java.util.Date;
 
+import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.StrUtil;
 

@@ -1,4 +1,4 @@
-package com.sirap.qrcode;
+package com.sirap.geek.util;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;

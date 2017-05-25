@@ -7,10 +7,10 @@ import java.util.TimeZone;
 
 import org.junit.Test;
 
-import com.sirap.basic.domain.HiredInfo;
-import com.sirap.basic.math.HiredDaysCalculator;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
+import com.sirap.geek.domain.HiredInfo;
+import com.sirap.geek.manager.HiredDaysCalculator;
 
 public class DateUtilTest {
 	public void parseHired() {

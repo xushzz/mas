@@ -355,7 +355,9 @@ public class FileUtil {
 			temp += suffixWhenObscure;
 		}
 		
-		return temp;
+		String filePath = XCodeUtil.urlDecodeUTF8(temp);
+		
+		return filePath;
 	}
 	
 	public static String getCleverPath(String folderName) {

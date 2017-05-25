@@ -1,4 +1,4 @@
-package com.sirap.basic.component.json;
+package com.sirap.geek.json;
 
 import java.util.ArrayList;
 import java.util.List;

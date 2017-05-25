@@ -1,19 +1,66 @@
 package com.sirap.extractor;
 
 import java.io.File;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.junit.Test;
+
+import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexedObject;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
+import com.sirap.basic.util.XCodeUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.common.extractor.Extractor;
+import com.sirap.common.extractor.impl.EnglishTranslationExtractor;
 import com.sirap.common.extractor.impl.RemoteSecurityExtractor;
 
 public class MinorExtractorTest {
+	
+	@Test
+	public void compare() {
+		String sa = "~ !@#$%^&*()_+`-=[]\\{}|;':\",./<>?L编";
+//		sa = "#$";
+		C.pl(sa);
+		String va = XCodeUtil.urlEncodeUTF8(sa);
+		C.pl(va);
+		C.pl(XCodeUtil.urlDecodeUTF8(va));
+	}
+	
+	public void chinese() throws Exception {
+			String name="中+-*/f文";
+		  //URL编码
+		  String nameStr=new String(URLEncoder.encode(name,"utf-8").getBytes());
+//		  C.pl(nameStr);
+		  C.pl(System.getProperty("file.encoding"));
+		  String[] codes = {Konstants.CODE_UTF8, Konstants.CODE_GBK, Konstants.CODE_GB2312};
+		  for(int i = 0; i < codes.length; i++) {
+			  D.pl(codes[i], URLEncoder.encode(name, codes[i]));
+		  }
+		  C.pl(URLEncoder.encode(name));
+//		  C.pl(URLEncoder.encode(name, Konstants.CODE_UTF8));
+//		  C.pl(URLEncoder.encode(name, Konstants.CODE_GBK));
+//		  C.pl(URLEncoder.encode(name, Konstants.CODE_GB2312));
+//		  C.pl(URLEncoder.encode(name, Konstants.CODE_ISO88591));
+		  D.pl();
+		  String s2 = new String(URLEncoder.encode(name, "UTF-8").getBytes(), "ISO-8859-1");
+		  C.pl(s2);
+		  //URL解码
+		  System.out.println(URLDecoder.decode(new String(s2.getBytes("ISO-8859-1"), "UTF-8"), "UTF-8"));
+	}
+	
+	public void english() {
+		String word = "你好";
+		EnglishTranslationExtractor james = new EnglishTranslationExtractor(word);
+		james.process();
+		C.list(james.getMexItems());
+	}
 
 	public void reduce() {
 		String va = "html>            <html>            <head>		 		<meta";

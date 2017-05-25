@@ -1,6 +1,9 @@
 package com.sirap.basic.util;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -13,7 +16,8 @@ import com.sirap.basic.component.Konstants;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.tool.C;
 
-public class CodeUtil {
+@SuppressWarnings("restriction")
+public class XCodeUtil {
 
 	public static final String REGEX_HEX = "[0-9A-F]{2}";
 	public static final String REGEX_HEX_TAKE = "(" + REGEX_HEX + ")";
@@ -283,5 +287,31 @@ public class CodeUtil {
 		boolean isMatched = StrUtil.isRegexMatched(regex, str);
 
 		return !isMatched;
+	}
+	
+	public static String urlEncode(String source, String charset) {
+		try {
+			String result = URLEncoder.encode(source, charset);
+			return result;
+		} catch (UnsupportedEncodingException ex) {
+			throw new MexException(ex);
+		}
+	}
+	
+	public static String urlEncodeUTF8(String source) {
+		return urlEncode(source, Konstants.CODE_UTF8);
+	}
+	
+	public static String urlDecode(String source, String charset) {
+		try {
+			String result = URLDecoder.decode(source, charset);
+			return result;
+		} catch (UnsupportedEncodingException ex) {
+			throw new MexException(ex);
+		}
+	}
+	
+	public static String urlDecodeUTF8(String source) {
+		return urlDecode(source, Konstants.CODE_UTF8);
 	}
 }

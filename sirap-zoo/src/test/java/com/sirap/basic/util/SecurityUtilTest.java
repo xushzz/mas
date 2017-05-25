@@ -1,14 +1,36 @@
 package com.sirap.basic.util;
 
+import java.security.SecureRandom;
+import java.security.Security;
+
 import org.junit.Test;
 
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
-import com.sirap.security.MrTrump;
 
 public class SecurityUtilTest {
 	
 	@Test
+	public void castle() throws Exception {
+		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+        // SHA1PRNG随机数算法
+        SecureRandom rng = SecureRandom.getInstance("SHA1PRNG");
+        rng.setSeed(21);
+         
+        // 生成随机数
+        int numberToGenerate = 9;
+        byte randNumbers[] = new byte[numberToGenerate];
+        rng.nextBytes(randNumbers);
+         
+        // 打印随机数
+        for (int j = 0; j < numberToGenerate; j++) {
+            C.pl(randNumbers[j]);
+        }
+        D.ts(rng.nextInt(100));
+        D.ts(rng.nextInt(100));
+        D.ts(rng.nextInt(100));
+	}
+	
 	public void sirap() {
 		String sa = "james";
 		String passcode = "Obamacare";
@@ -53,23 +75,23 @@ public class SecurityUtilTest {
 	
 	public void some() {
 		String s1 = "W3siU19teV9wbW9kZSI6Im15c3FsZCIsIlNfbXlfZ3BhcmEiOiJhIiwiU19teV9ndmFsdWUiOiJzIiwiU19teV9ncGRpc3BsYXkiOiJkIiwiU19teV9jcGFyYSI6ImYiLCJTX215X2N2YWx1ZSI6ImcifSx7IlNfbXlfcG1vZGUiOiJteXNxbGQiLCJTX215X2dwYXJhIjoicSIsIlNfbXlfZ3ZhbHVlIjoidyIsIlNfbXlfZ3BkaXNwbGF5IjoiciIsIlNfbXlfY3BhcmEiOiJ3IiwiU19teV9jdmFsdWUiOiJ0In0seyJTX215X3Btb2RlIjoibXlzcWxkIiwiU19teV9ncGFyYSI6InoiLCJTX215X2d2YWx1ZSI6IngiLCJTX215X2dwZGlzcGxheSI6ImMiLCJTX215X2NwYXJhIjoidiIsIlNfbXlfY3ZhbHVlIjoiYiJ9XQ==";
-		D.pl(CodeUtil.isAbsolutelyNonBase64Encoded(s1));
-		String s2 = CodeUtil.fromBase64(s1);
+		D.pl(XCodeUtil.isAbsolutelyNonBase64Encoded(s1));
+		String s2 = XCodeUtil.fromBase64(s1);
 		D.sink(s2);
-		D.sink(CodeUtil.toBase64(s2));
+		D.sink(XCodeUtil.toBase64(s2));
 	}
 	
 //	@Test
 	public void base64() {
 //		C.pl(CodeUtil.toBase64(null));
 //		C.pl(CodeUtil.toBase64(s1));
-		D.sink(CodeUtil.toBase64("gavin belson"));
-		D.sink(CodeUtil.fromBase64("Z2F2aW4gYmVsc29u"));
+		D.sink(XCodeUtil.toBase64("gavin belson"));
+		D.sink(XCodeUtil.fromBase64("Z2F2aW4gYmVsc29u"));
 //		D.sink(CodeUtil.fromBase64("not a base 64 string"));
-		D.sink(CodeUtil.fromBase64("R2F2aW4gQmVsc29uIOe7r+mXu+e7r+mXu+acjeWKoQ=="));
+		D.sink(XCodeUtil.fromBase64("R2F2aW4gQmVsc29uIOe7r+mXu+e7r+mXu+acjeWKoQ=="));
 //		
 //		C.pl(CodeUtil.isAbsolutelyNonBase64Encoded("abc==="));
-		D.pl(CodeUtil.isAbsolutelyNonBase64Encoded("++acjeWKoQ=="));
+		D.pl(XCodeUtil.isAbsolutelyNonBase64Encoded("++acjeWKoQ=="));
 //		C.pl(CodeUtil.isAbsolutelyNonBase64Encoded("=="));
 //		C.pl(CodeUtil.isAbsolutelyNonBase64Encoded("=aCACSC="));
 //		C.pl(CodeUtil.isAbsolutelyNonBase64Encoded("CAV{}"));

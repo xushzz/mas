@@ -32,7 +32,6 @@ ll fire            open last modified file matching criteria in ll. folder
 ox                 photo auto-open on/off switch after captured
 sx                 sound on/off switch when capturing screen
 tx                 export with or without time stamp switch
-swap               generate random captcha, aka verification code
 .                  list storage with dot
 l=                 list general locales such as en,zh,en_GB, en_US, es_ES, zh_CN, zh_TW, ja_JP, it_IT
 l=zh               set locale as zh
@@ -66,7 +65,6 @@ tl                 not team leader, but convert current date to long in millisec
 l.abcdefgh         display the length of specified string
 p fire&water       conduct text search with command 'p' defined by configuration, for example p#D:/SF#.txt
 p fire&water       conduct text search example, p#D:/SF#.txt#+usecache,+printsource
-sfz 4325...9832    validate and display check code for China ID card
-b7                 make the beep sound seven times, in CMD only
-bmw                make the beep sound K times, K is the current hour value, like 6, 17, or 24 if 0.
 gbk                set File or HTTP Request charset as GBK, the same goes for UTF8,UTF-8,GB2312
+max                display maximal and minimum values for long, integer, short and byte
+min                display maximal and minimum values for long, integer, short and byte

@@ -1,4 +1,4 @@
-package com.sirap.geek;
+package com.sirap.geek.manager;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -9,7 +9,7 @@ import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.search.MexFilter;
-import com.sirap.basic.util.CodeUtil;
+import com.sirap.basic.util.XCodeUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
@@ -47,7 +47,7 @@ public class GeekManager {
 			String octal = StrUtil.extendLeftward(Integer.toOctalString(i), 3, "0");
 			String decimal = StrUtil.extendLeftward(Integer.toString(i), 3, "0");
 			String hex = StrUtil.extendLeftward(Integer.toHexString(i), 2, "0").toUpperCase();
-			String info = CodeUtil.ASCII_INFO.get(i);
+			String info = XCodeUtil.ASCII_INFO.get(i);
 			
 			item.setBinary(binary);
 			item.setOctal(octal);
@@ -76,7 +76,7 @@ public class GeekManager {
 		return items;
 	}
 	
-	public List<CharsetCode> searchCodingNames(String criteria) {
+	public List<CharsetCode> searchCharsetNames(String criteria) {
 		MexFilter<CharsetCode> filter = new MexFilter<CharsetCode>(criteria, allCodingNames());
 		List<CharsetCode> items = filter.process();
 		
@@ -98,7 +98,7 @@ public class GeekManager {
 			sb.append(prefix).append("    ");
 			for(int i = 0; i < source.length(); i++) {
 				char ch = source.charAt(i);
-				String value = CodeUtil.encode2HexChars(ch, code, true);
+				String value = XCodeUtil.encode2HexChars(ch, code, true);
 				if(!EmptyUtil.isNullOrEmpty(value)) {
 					sb.append(value);
 				}

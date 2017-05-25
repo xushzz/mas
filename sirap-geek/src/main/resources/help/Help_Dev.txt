@@ -1,0 +1,20 @@
+path               display what you would get when "echo %PATH%"
+path tomcat        display PATH any record containing 'tomcat'
+maven              display home and repository for Maven, mvn help:system
+pwd                present working directory
+deps D:\pom.xml    display all Maven related jars implied in this pom.xml
+deps D:\project    display all Maven related jars implied in pom.xml under this folder
+mvn help:system    retrieve system properties and environment variables via Maven
+iss piratesea/mas  display the latest Github issues in this repo, www.github.com
+jk                 display the location of Jenkins server
+jk Elastos         display build info for Jenkins job Elasto
+jk Elastos.18      display latest 18 build info for Jenkins job Elasto
+jk Elastos#8       display build No.8 info for Jenkins job Elasto
+{"a":1, "b":2}     if given string, 9 chars at least, could be parsed to json, parse it
+js E:\A1.txt       parse local TXT file into json and display pretty format
+js http://X/json   parse URL-specified content into json and display pretty format
+js {"a":1, "b":2}  parse string into json and display pretty format
+rjs E:\A1.txt      parse TXT file into json and display raw format
+rjs {"a":1, "b":2} parse TXT file into json and display raw format
+rjs http://X/json  parse URL-specified content into json and display raw format
+ver=GEEK-DEV1.0.3-ALVES  5/26/2017, IV

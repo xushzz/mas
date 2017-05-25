@@ -39,6 +39,7 @@ public class Konstants {
 	public static final String[] DISTRIBUTION_KEYS_TBD = {"-", "/", "TBD"};
 
 	public static final String CODE_GBK = "GBK";
+	public static final String CODE_GB2312 = "GB2312";
     public static final String CODE_UTF8 = "UTF-8";
     public static final String CODE_UNICODE = "Unicode";
 

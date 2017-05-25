@@ -8,7 +8,7 @@ import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.MexUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
-import com.sirap.common.CommonHelper;
+import com.sirap.common.extractor.CommonExtractors;
 import com.sirap.common.manager.CommandHistoryManager;
 
 public abstract class Checker {
@@ -21,11 +21,11 @@ public abstract class Checker {
 	protected void initLoginTime() {
 		serverTimeWhenLogin = new Date();
 		wrappedWorldTimeWhenLogin = new MexedObject(new Date());
-		CommonHelper.setWorldTime(wrappedWorldTimeWhenLogin);
+		CommonExtractors.setWorldTime(wrappedWorldTimeWhenLogin);
 		
 		Date expDate = null;
 		wrappedExpirationDate = new MexedObject(expDate);
-		CommonHelper.setUserExpiration(wrappedExpirationDate, AppBase.USERNAME);
+		CommonExtractors.setUserExpiration(wrappedExpirationDate, AppBase.USERNAME);
 	}
 
     protected boolean askAndCheckPassword() {

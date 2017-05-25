@@ -13,8 +13,8 @@ import com.sirap.basic.search.MexFilter;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.MathUtil;
-import com.sirap.common.CommonHelper;
 import com.sirap.common.domain.TZRecord;
+import com.sirap.common.extractor.CommonExtractors;
 import com.sirap.common.framework.SimpleKonfig;
 
 public class TimeZoneManager {
@@ -75,7 +75,7 @@ public class TimeZoneManager {
 		Date worldTime = null;
 		
 		if(displayTime) {
-			worldTime = CommonHelper.getWorldTime();
+			worldTime = CommonExtractors.getWorldTime();
 			if(worldTime == null) {
 				C.pl("UTC unavailable");
 			}
