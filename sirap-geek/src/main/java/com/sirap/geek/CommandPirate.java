@@ -114,11 +114,6 @@ public class CommandPirate extends CommandBase {
 			return true;
 		}
 		
-		String source = g().getUserValueOf("sfz.s2");
-		if(!EmptyUtil.isNullOrEmpty(source)) {
-			C.pl(source);
-		}
-		
 		return false;
 	}
 	
