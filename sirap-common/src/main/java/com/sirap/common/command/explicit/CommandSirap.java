@@ -47,7 +47,6 @@ import com.sirap.common.extractor.Extractor;
 import com.sirap.common.framework.AppBase;
 import com.sirap.common.framework.Janitor;
 import com.sirap.common.framework.SimpleKonfig;
-import com.sirap.common.framework.command.target.TargetConsole;
 import com.sirap.common.framework.command.target.TargetEmail;
 import com.sirap.common.framework.command.target.TargetPDF;
 import com.sirap.common.manager.TimeZoneManager;

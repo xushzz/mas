@@ -9,6 +9,7 @@ import java.util.List;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.component.media.MediaFileAnalyzer;
 import com.sirap.basic.domain.MexedFile;
+import com.sirap.basic.domain.MexedObject;
 import com.sirap.basic.email.EmailCenter;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.search.MexFilter;
@@ -252,6 +253,17 @@ public class CommandFile extends CommandBase {
 		if(is(KEY_ALL_DISKS_SINGLE_COLON)) {
 			List<String> records = FileUtil.availableDiskDetails();
 			export(records);
+			
+			return true;
+		}
+		
+		String[] regexArr = {"(.*?)\\s+(.+)", "(.*?)\\s*,\\s*(.+)"};
+		String[] textFileAndCriteria = parseTextFilepathAndCriterias(input, regexArr);
+		if(textFileAndCriteria != null) {
+			String filePath = textFileAndCriteria[0];
+			String criteria = textFileAndCriteria[1];
+			List<String> records = IOUtil.readFileIntoList(filePath); 
+			exportItems(records, criteria);
 			
 			return true;
 		}
@@ -645,6 +657,31 @@ public class CommandFile extends CommandBase {
 					jack.setShowDetail(detail);
 					return jack;
 				}
+			}
+		}
+		
+		return null;
+	}
+	
+	private String[] parseTextFilepathAndCriterias(String input, String[] regexArr) {
+		for(int i = 0; i < regexArr.length; i++) {
+			String[] params = parseParams(regexArr[i]);
+			if(params != null) {
+				String sourceName = params[0];
+				String criteria = params[1];
+				
+				File file = parseFile(sourceName);
+				if(file == null) {
+					continue;
+				}
+				
+				String filePath = file.getAbsolutePath();
+				if(!FileOpener.isTextFile(filePath)) {
+					C.pl2("Not a text file: " + filePath);
+					continue;
+				}
+				
+				return new String[]{filePath, criteria};
 			}
 		}
 		

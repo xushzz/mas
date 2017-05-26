@@ -40,15 +40,14 @@ public class FileWalker {
 				if(file.isDirectory()) {
 					return true;
 				}
-
+				
 				if(EmptyUtil.isNullOrEmpty(criterias)) {
 					return true;
 				}
 				
 				String filePath = file.getAbsolutePath();
 				for(int i = 0; i < criterias.length; i++) {
-//					boolean flag = filePath.endsWith(suffixes[i]);
-					boolean flag = StrUtil.contains(filePath, criterias[i], 2);
+					boolean flag = StrUtil.contains(filePath, criterias[i]);
 					if(flag) {
 						return true;
 					}

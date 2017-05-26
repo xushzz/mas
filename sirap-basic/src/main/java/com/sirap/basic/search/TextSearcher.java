@@ -9,6 +9,7 @@ import java.util.Map;
 
 import com.sirap.basic.domain.MexedObject;
 import com.sirap.basic.domain.MexedTextSearchRecord;
+import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.StrUtil;
@@ -18,14 +19,14 @@ public class TextSearcher {
 	private static Map<String, TextSearcher> instances = new HashMap<>();
 	private List<MexedObject> allItems;
 	
-	private TextSearcher(List<String> folders, String[] suffixes, String criteria, boolean printSource, String charset) {
+	private TextSearcher(List<String> folders, String[] suffixes, boolean printSource, String charset) {
 		allItems = readAllItems(folders, suffixes, printSource, charset);
 	}
 	
-	private synchronized static TextSearcher getInstance(String engineName, List<String> folders, String[] suffixes, String criteria, boolean printSource, String charset) {
+	private synchronized static TextSearcher getInstance(String engineName, List<String> folders, String[] suffixes, boolean printSource, String charset) {
 		TextSearcher wang = instances.get(engineName);
 		if(wang == null) {
-			wang = new TextSearcher(folders, suffixes, criteria, printSource, charset);
+			wang = new TextSearcher(folders, suffixes, printSource, charset);
 			instances.put(engineName, wang);
 		}
 		
@@ -34,7 +35,10 @@ public class TextSearcher {
 	
 	public static List<MexedObject> search(String foldersStr, String suffixesStr, String criteria, boolean printSource, String charset) {
 		List<String> folders = StrUtil.splitByRegex(foldersStr);
-		String[] suffixes = suffixesStr.split("[;|,]");
+		String[] suffixes = null;
+		if(!EmptyUtil.isNullOrEmpty(suffixesStr)) {
+			suffixes = suffixesStr.split("[;|,]");
+		}
 		
 		return search(folders, suffixes, criteria, printSource, charset);
 	}
@@ -44,7 +48,7 @@ public class TextSearcher {
 	}
 	
 	public static List<MexedObject> search(List<String> folders, String[] suffixes, String criteria, boolean printSource, String charset) {
-		TextSearcher wang = new TextSearcher(folders, suffixes, criteria, printSource, charset);
+		TextSearcher wang = new TextSearcher(folders, suffixes, printSource, charset);
 		List<MexedObject> result = wang.search(criteria);
 		
 		return result;
@@ -58,7 +62,7 @@ public class TextSearcher {
 	}
 	
 	public static List<MexedObject> searchWithCache(String engineName, List<String> folders, String[] suffixes, String criteria, boolean printSource, String charset) {
-		TextSearcher wang = getInstance(engineName, folders, suffixes, criteria, printSource, charset);
+		TextSearcher wang = getInstance(engineName, folders, suffixes, printSource, charset);
 		List<MexedObject> result = wang.search(criteria);
 		
 		return result;

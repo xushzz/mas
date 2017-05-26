@@ -1,3 +1,0 @@
-CNY10000           显示10000人民币对应其他常用货币数量。如GBP,EUR,CHF,USD,CAD,AUD,SGD,NZD,CNY,HKD,JPY.
-CNY10000/          显示10000人民币对应其他常用和次常用货币数量THB泰币。INR印度货币等等
-CNY10000JPY,HKD    显示10000对应的日元和港币数量，来源：http://www.x-rates.com/table
