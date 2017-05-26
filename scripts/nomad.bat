@@ -26,7 +26,6 @@ set CP=%CP%;%jars%\sirap-common-%version%.jar
 set CP=%CP%;%jars%\sirap-extractor-%alpha_version%.jar
 set CP=%CP%;%jars%\sirap-executor-%alpha_version%.jar
 set CP=%CP%;%jars%\sirap-ldap-%alpha_version%.jar
-set CP=%CP%;%jars%\sirap-qrcode-%alpha_version%.jar
 set CP=%CP%;%jars%\sirap-db-%alpha_version%.jar
 set CP=%CP%;%jars%\sirap-security-1.0.jar
 set CP=%CP%;%jars%\sirap-geek-%alpha_version%.jar

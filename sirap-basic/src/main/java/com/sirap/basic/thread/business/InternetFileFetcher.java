@@ -28,17 +28,17 @@ public class InternetFileFetcher extends WorkerGeneralItemOriented<MexedObject> 
 		String url = tempObj.toString();
 		int count = countOfTasks - tasks.size();
 
-		status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "Fetching...", url);
-
 		String filePath = storage + FileUtil.generateFilenameByUrl(url, suffixWhenObscure);
 		if(FileUtil.exists(filePath)) {
 			status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "Existed =>", filePath);
 		} else {
+			status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "Fetching...", url);
 			FileUtil.makeDirectoriesIfNonExist(storage);
-			boolean flag = IOUtil.downloadNormalFile(url, filePath);
+			boolean flag = IOUtil.downloadNormalFile(url, filePath, true);
 			if(flag) {
 				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "Saved =>", filePath);
 			} else {
+				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "Error =>", url);
 				return null;
 			}
 		}

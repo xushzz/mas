@@ -32,7 +32,7 @@ import com.sirap.basic.tool.D;
 
 public class IOUtilTest {
 
-	@Test
+	//@Test
 	public void readCharsetMeta() {
 		String va = "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=UTF-8\">";
 		C.pl(WebReader.parseWebCharsetByMeta(va));
@@ -242,17 +242,20 @@ public class IOUtilTest {
 		IOUtil.copyFile(sourceFile, targetFile);
 	}
 	
+	@Test
 	public void fetch() {
-		String storage = "E:\\MasPro\\others\\";
-		String imageUrl = "http://images.china.cn/attachement/jpg/site1007/20120409/0019b91ec74f10ecc31e0c.jpg";
-		imageUrl = "http://images.china.cn/attacheme2nt/jpg/site1007/20120409/0019b91ecs74f10ecc31e0c.jpg";
-		String filePath = storage + FileUtil.generateFilenameByUrl(imageUrl);
+		String storage = "E:\\Mas\\";
+		String sa = "http://images.china.cn/attachement/jpg/site1007/20120409/0019b91ec74f10ecc31e0c.jpg";
+		sa = "http://images.china.cn/attacheme2nt/jpg/site1007/20120409/0019b91ecs74f10ecc31e0c.jpg";
+		sa = "http://www.americanrhetoric.com/speeches/PDFFiles/Barack%20Obama%20-%202004%20DNC%20Address.pdf";
+		sa = "http://www.americanrhetoric.com/speeches/PDFFiles/Barack%20Obama%20-%20Nomination%20Victory.pdf";
+		String filePath = storage + FileUtil.generateFilenameByUrl(sa);
 		if(FileUtil.exists(filePath)) {
 			C.pl("Already existed => " + filePath);
 			return;
 		}
 		
-		if(IOUtil.downloadNormalFile(imageUrl, filePath)) {
+		if(IOUtil.downloadNormalFile(sa, filePath, true)) {
 			D.pl(filePath);
 			PanaceaBox.openFile(filePath);
 		} else {

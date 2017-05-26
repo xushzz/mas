@@ -14,9 +14,9 @@ import com.sirap.basic.util.XCodeUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.geek.manager.GeekManager;
 
-public class EncodeTest {
+public class XCodeTest {
 	
-	@Test
+	
 	public void codeAll() {
 		Charset code = Charset.defaultCharset();
 //		C.pl(code.aliases());
@@ -27,6 +27,8 @@ public class EncodeTest {
 //		C.list(DevManager.g().allCodingNames());
 		C.list(GeekManager.g().searchCharsetNames("big5|gbk"));
 	}
+	
+	@Test
 	public void is2by() throws Exception {
 		String source = "\\uCDF2ACD\\uCDF2";
 		String va = XCodeUtil.replaceHexChars(source, Konstants.CODE_GBK);

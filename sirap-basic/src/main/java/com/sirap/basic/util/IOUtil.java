@@ -406,30 +406,36 @@ public class IOUtil {
 	}
 	
 	public static boolean downloadNormalFile(String address, String filePath) {
+		return downloadNormalFile(address, filePath, false);
+	}
+	
+	public static boolean downloadNormalFile(String address, String filePath, boolean checkSize) {
 		BufferedInputStream inBuff = null;
 		BufferedOutputStream outBuff = null;
 		
-		boolean flag = true;
+		long fileSizeInBytes = -1;
+		boolean flag = false;
 		try {
-			URLConnection urlConn = new URL(address).openConnection();
-			setUserAgent(urlConn);
-			urlConn.setConnectTimeout(9000);
-			urlConn.setReadTimeout(9000);
-			inBuff = new BufferedInputStream(urlConn.getInputStream());
+			URLConnection conn = new URL(address).openConnection();
+			setUserAgent(conn);
+			conn.setConnectTimeout(9000);
+			conn.setReadTimeout(9000);
+			fileSizeInBytes = conn.getContentLengthLong();
+			inBuff = new BufferedInputStream(conn.getInputStream());
 			outBuff = new BufferedOutputStream(new FileOutputStream(filePath));
 
 			int t;
 			while ((t = inBuff.read()) != -1) {
 				outBuff.write(t);
 			}
+			
+			flag = true;
 		} catch (Exception ex) {
 			C.pl(ex + "\n\turl=>" + address + "\n\tLocation=>" + IOUtil.class.getName() + ".downloadNormalFile");
 			File invalidFile = new File(filePath);
 			if(invalidFile.exists()) {
 				invalidFile.delete();
 			}
-			
-			flag = false;
 		} finally {
         	try {
                 if (inBuff != null)
@@ -440,6 +446,26 @@ public class IOUtil {
 				e.printStackTrace();
 			}
         }
+		
+		if(checkSize) {
+			if(fileSizeInBytes < 0) {
+				return false;
+			}
+			boolean isComplete = false;
+			File temp = new File(filePath);
+			if(temp.exists()) {
+				double diffPerc = 0.01;
+				long min = (long) (fileSizeInBytes * (1 - diffPerc));
+				isComplete = temp.length() > min;
+			}
+			
+			if(!isComplete) {
+				C.pl("Incomplete, going to delete file: " + filePath);
+				temp.delete();
+			}
+			
+			flag = isComplete;
+		}
 		
 		return flag;
 	}
