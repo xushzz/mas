@@ -5,7 +5,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.sirap.basic.domain.MexedObject;
-import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.HtmlUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.extractor.Extractor;
@@ -33,7 +32,14 @@ public class BibleChapterExtractor extends Extractor<MexedObject> {
 			section = StrUtil.reduceMultipleSpacesToOne(section);
 			String regexVerse = "(\\d+|#).*?([^\\d#]+)";
 			List<String> items = StrUtil.findAllMatchedItems(regexVerse, section);
-			mexItems.addAll(CollectionUtil.convert(items));
+			for(String item : items) {
+				String temp = item;
+				String error = StrUtil.findFirstMatchedItem("^\\d+(.)", temp);
+				if(error != null) {
+					temp = item.replace(error, " ");
+				}
+				mexItems.add(new MexedObject(temp));
+			}
 		}
 	}
 }
