@@ -408,7 +408,8 @@ public abstract class CommandBase {
 	
 	protected List<String> downloadFiles(String destination, List<MexedObject> links, String suffixWhenObscure) {
 		int threads = SimpleKonfig.g().getUserNumberValueOf("threads.download");
-		return IOUtil.downloadFiles(destination, links, suffixWhenObscure, threads);
+		boolean useUniqueFilename = SimpleKonfig.g().isYes("unique.filename.download");
+		return IOUtil.downloadFiles(destination, links, suffixWhenObscure, threads, useUniqueFilename);
 	}
 	
 	protected boolean tooBigToHanlde(File file, String size) {

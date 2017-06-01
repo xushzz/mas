@@ -2,12 +2,15 @@ package com.sirap.basic.thread.business;
 
 import com.sirap.basic.domain.MexedObject;
 import com.sirap.basic.thread.WorkerGeneralItemOriented;
+import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
+import com.sirap.basic.util.RandomUtil;
 
 public class InternetFileFetcher extends WorkerGeneralItemOriented<MexedObject> {
 	private String storage;
 	private String suffixWhenObscure;
+	private boolean useUniqueFilename;
 	
 	public InternetFileFetcher(String storage) {
 		this.storage = storage;
@@ -18,6 +21,14 @@ public class InternetFileFetcher extends WorkerGeneralItemOriented<MexedObject> 
 		this.suffixWhenObscure = suffixWhenObscure;
 	}
 	
+	public boolean isUseUniqueFilename() {
+		return useUniqueFilename;
+	}
+
+	public void setUseUniqueFilename(boolean useUniqueFilename) {
+		this.useUniqueFilename = useUniqueFilename;
+	}
+
 	@Override
 	public Object process(MexedObject link) {
 		Object tempObj = link.getObj();
@@ -27,8 +38,11 @@ public class InternetFileFetcher extends WorkerGeneralItemOriented<MexedObject> 
 		
 		String url = tempObj.toString();
 		int count = countOfTasks - tasks.size();
-
-		String filePath = storage + FileUtil.generateFilenameByUrl(url, suffixWhenObscure);
+		String unique = "";
+		if(useUniqueFilename) {
+			unique = DateUtil.timestamp() + "_" + RandomUtil.letters(4) + "_";
+		}
+		String filePath = storage + unique + FileUtil.generateFilenameByUrl(url, suffixWhenObscure);
 		if(FileUtil.exists(filePath)) {
 			status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "Existed =>", filePath);
 		} else {

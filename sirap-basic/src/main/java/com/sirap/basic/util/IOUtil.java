@@ -709,9 +709,16 @@ public class IOUtil {
 	}
 	
 	public static List<String> downloadFiles(String storage, List<MexedObject> links, String suffixWhenObscure, final int threads) {
+		return downloadFiles(storage, links, suffixWhenObscure, threads, false);
+	}
+	
+	public static List<String> downloadFiles(String storage, List<MexedObject> links, String suffixWhenObscure, final int threads, boolean useUniqueFilename) {
 		FileUtil.makeDirectoriesIfNonExist(storage);
 		
-		MasterGeneralItemOriented<MexedObject> master = new MasterGeneralItemOriented<MexedObject>(links, new InternetFileFetcher(storage, suffixWhenObscure)){
+		InternetFileFetcher dinesh = new InternetFileFetcher(storage, suffixWhenObscure);
+		dinesh.setUseUniqueFilename(useUniqueFilename);
+		
+		MasterGeneralItemOriented<MexedObject> master = new MasterGeneralItemOriented<MexedObject>(links, dinesh){
 			@Override
 			protected int countOfThread() {
 				int temp = threads <= 0 ? super.countOfThread() : threads;
