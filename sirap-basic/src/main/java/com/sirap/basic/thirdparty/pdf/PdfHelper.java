@@ -25,15 +25,14 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.output.PDFParams;
-import com.sirap.basic.tool.D;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 
+@SuppressWarnings("all")
 public class PdfHelper {
-
-	@SuppressWarnings("rawtypes")
+	
 	public static PdfPTable createSimpleTable(List list) {
 		PdfPTable table = new PdfPTable(1);
 		PdfPCell cell = table.getDefaultCell();

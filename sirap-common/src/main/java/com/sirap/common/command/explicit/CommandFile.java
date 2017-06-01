@@ -52,6 +52,7 @@ public class CommandFile extends CommandBase {
 	private static final String KEY_DAY_CHECK = "dc";
 	private static final String KEY_MEMORABLE = "mm";
 	
+	@SuppressWarnings("all")
 	@Override
 	public boolean handle() {
 		singleParam = parseParam(KEY_EXTENSIBLE + "\\s(.*?)");
@@ -400,8 +401,18 @@ public class CommandFile extends CommandBase {
 			String pageUrl = equiHttpProtoclIfNeeded(params[1].trim());
 			String source = IOUtil.readURL(pageUrl, g().getCharsetInUse(), true);
 			if(source != null) {
-				List<List<String>> items = StrUtil.findAllMatchedListedItems(regex, source);
-				export(items);
+				List<List<String>> allItems = StrUtil.findAllMatchedListedItems(regex, source);
+				List tempList = new ArrayList();
+				for(List<String> list : allItems) {
+					boolean singleItem = list.size() == 1;
+					if(singleItem) {
+						tempList.add(list.get(0));
+					} else {
+						tempList.add(list);
+					}
+				}
+				
+				export(tempList);
 				
 				return true;
 			}

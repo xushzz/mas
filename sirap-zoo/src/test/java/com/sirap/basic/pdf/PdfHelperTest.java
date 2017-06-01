@@ -1,11 +1,15 @@
 package com.sirap.basic.pdf;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.poi.POIXMLDocument;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.junit.Test;
 
 import com.sirap.basic.thirdparty.pdf.PdfHelper;
+import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.StrUtil;
@@ -13,9 +17,19 @@ import com.sirap.basic.util.StrUtil;
 public class PdfHelperTest {
 	
 	@Test
+	public void docxPages() throws IOException {
+		String sa = "E:\\KDB\\tasks\\0526_TextSearch\\Mac.docx";
+		XWPFDocument docx = new XWPFDocument(POIXMLDocument.openPackage(sa));
+		int pages = docx.getProperties().getExtendedProperties().getUnderlyingProperties().getPages();//总页数
+		D.pl(sa, pages);
+	}
+	
 	public void count() {
 		String dir = "D:\\MasDEV\\exp\\20161103_123035_KDB5_28-1.pdf";
 		dir = "D:\\MasDEV\\exp\\20161103_123129_KDB5_3x_2_1.pdf";
+		dir = "E:\\KDB\\tasks\\0526_TextSearch\\20160118_224901_z.china.pdf";
+		dir = "E:\\KDB\\tasks\\0526_TextSearch\\The Art of Deception_P335.pdf";
+		//C.pl(PdfHelper.isEncrypted(dir));
 		int size = PdfHelper.howManyPages(dir);
 		D.pl(dir, size);
 	}
