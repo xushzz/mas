@@ -9,7 +9,6 @@ import java.util.List;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.component.media.MediaFileAnalyzer;
 import com.sirap.basic.domain.MexedFile;
-import com.sirap.basic.domain.MexedObject;
 import com.sirap.basic.email.EmailCenter;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.search.MexFilter;
@@ -419,6 +418,7 @@ public class CommandFile extends CommandBase {
 					List<String> items = new ArrayList<String>();
 					List<String> txtContent = readRecordsFromFile(filePath);
 					int line = 0;
+					int maxLen = (txtContent.size() + "").length();
 					for(String record:txtContent) {
 						line++;
 						List<List<String>> allItems = StrUtil.findAllMatchedListedItems(regex, record);
@@ -427,7 +427,15 @@ public class CommandFile extends CommandBase {
 							continue;
 						}
 						
-						items.add(line + ") "+ StrUtil.connect(allItems, ", "));
+						String lineNumber = StrUtil.extend(line + "", maxLen);
+						boolean singleItem = allItems.size() == 1;
+						String temp = null;
+						if(singleItem) {
+							temp = StrUtil.connect(allItems.get(0), ", ");
+						} else {
+							temp = StrUtil.connect(allItems, ", ");
+						}
+						items.add(lineNumber + " " + temp);
 					}
 					
 					export(items);
@@ -491,9 +499,8 @@ public class CommandFile extends CommandBase {
 					List<String> items = new ArrayList<>();
 					int maxLen = (records.size() + "").length();
 					for(int i = 0; i < records.size(); i++) {
-						String temp = i + 1 + "";
-						temp = StrUtil.extend(temp, maxLen);
-						items.add(temp + " " + records.get(i));
+						String lineNumber = StrUtil.extend(i + 1 + "", maxLen);
+						items.add(lineNumber + " " + records.get(i));
 					}
 					export(items);
 				}

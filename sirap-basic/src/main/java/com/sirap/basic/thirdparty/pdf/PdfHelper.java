@@ -25,6 +25,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.output.PDFParams;
+import com.sirap.basic.tool.D;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.StrUtil;
@@ -178,7 +179,7 @@ public class PdfHelper {
 		File file = FileUtil.getIfNormalFile(filepath);
 		XXXUtil.nullCheck(file, ":Invalid file path : " + filepath);
 		
-		try (PDDocument newPdf = new PDDocument();PDDocument oldPdf = PDDocument.load(file)) {
+		try (PDDocument oldPdf = PDDocument.load(file)) {
 		    PDPageTree tree = oldPdf.getDocumentCatalog().getPages();
 		    int size = tree.getCount();
 		    

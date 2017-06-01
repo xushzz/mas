@@ -44,6 +44,7 @@ set CP=%CP%;%deps%\fontbox-2.0.3.jar
 set CP=%CP%;%deps%\mysql-connector-java-5.1.31.jar
 set CP=%CP%;%deps%\jaudiotagger-2.0.3.jar
 set CP=%CP%;%deps%\poi-3.7.jar
+set CP=%CP%;%deps%\bcprov-jdk15on-1.55.jar
 
 set APP=com.sirap.common.entry.AppMas
 
