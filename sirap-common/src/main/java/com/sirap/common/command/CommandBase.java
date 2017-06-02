@@ -16,6 +16,7 @@ import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.PanaceaBox;
+import com.sirap.basic.util.RandomUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.component.FileOpener;
@@ -276,7 +277,12 @@ public abstract class CommandBase {
 		boolean getNormalFile = FileOpener.isPossibleNormalFile(url);
 		if(getNormalFile) {
 			String httpUrl = url;
-			String fileName = FileUtil.generateFilenameByUrl(httpUrl);
+			String unique = "";
+			boolean useUniqueFilename = SimpleKonfig.g().isYes("unique.filename.download");
+			if(useUniqueFilename) {
+				unique = DateUtil.timestamp() + "_" + RandomUtil.letters(4) + "_";
+			}
+			String fileName = unique + FileUtil.generateFilenameByUrl(httpUrl);
 			String storage = pathWithSeparator("storage.misc", Konstants.FOLDER_MISC);
 			String filePath = storage + fileName;
 			if(FileUtil.exists(filePath)) {

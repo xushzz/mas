@@ -235,8 +235,6 @@ public class CommandFetch extends CommandBase {
 			}
 		}
 		
-
-		
 		return false;
 	}
 }
