@@ -20,6 +20,7 @@ import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.MexUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.TrumpUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.domain.CommandRecord;
 import com.sirap.common.domain.TZRecord;
@@ -67,7 +68,8 @@ public class SimpleKonfig extends Konfig {
 		
 		String tempPasscode = MexUtil.readOptionString(options, KEY_PASSCODE);
 		if(!EmptyUtil.isNullOrEmpty(tempPasscode)) {
-			instance.securityPasscode = tempPasscode;
+			String temp2 = TrumpUtil.decodeMixedTextBySIRAP(tempPasscode, "true", true);
+			instance.securityPasscode = temp2;
 		}
 		instance.userConfigFile = MexUtil.readOptionString(options, KEY_USERCONFIG);
 		
