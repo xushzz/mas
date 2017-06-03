@@ -2,6 +2,7 @@ package com.sirap.basic.util;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -18,8 +19,9 @@ public class WebReader {
 	private String url;
 	private boolean printException;
 	private String charset;
-	
 	private String serverCharset;
+	private boolean isMethodPost;
+	private String requestParams;
 
 	public WebReader(String url) {
 		this.url = url;
@@ -29,6 +31,14 @@ public class WebReader {
 		this.url = url;
 		this.charset = charset;
 		this.printException = printException;
+	}
+	
+	public boolean isMethodPost() {
+		return isMethodPost;
+	}
+
+	public void setMethodPost(boolean isMethodPost) {
+		this.isMethodPost = isMethodPost;
 	}
 	
 	public String getCharset() {
@@ -94,7 +104,7 @@ public class WebReader {
 	private BufferedReader createReader() {
 		try {
 			URLConnection conn = new URL(url).openConnection();
-			setUserAgent(conn);
+			equip(conn);
 			String charsetInHeader = parseWebCharsetByHeader(conn);
 			if(charsetInHeader != null) {
 				charset = charsetInHeader;
@@ -144,8 +154,21 @@ public class WebReader {
 		return charset;
 	}
 	
-	private void setUserAgent(URLConnection urlConn) {
+	private void equip(URLConnection urlConn) throws Exception {
 		urlConn.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1WOW64rv:25.0) Gecko/20100101 Firefox/25.0");
+		if(isMethodPost) {
+			urlConn.setDoOutput(true);
+			urlConn.setDoInput(true);
+			if(!EmptyUtil.isNullOrEmpty(requestParams)) {
+				PrintWriter out = new PrintWriter(urlConn.getOutputStream());
+		        out.print(requestParams);
+		        out.flush();
+			}
+		}
 	}
 
+	public void setRequestParams(String requestParams) {
+		this.requestParams = requestParams;
+	}
+	
 }

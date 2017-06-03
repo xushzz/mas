@@ -6,11 +6,11 @@ import java.util.List;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.tool.C;
+import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.HtmlUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.WebReader;
 import com.sirap.basic.util.XCodeUtil;
-import com.sirap.basic.util.EmptyUtil;
-import com.sirap.basic.util.IOUtil;
 
 public abstract class Extractor<T extends MexItem> {
 
@@ -20,13 +20,14 @@ public abstract class Extractor<T extends MexItem> {
 	protected boolean printFetching = false;
 	protected boolean printExceptionIfNeeded = true;
 	protected boolean isAllBeingWell = true;
-	protected List<String> params = new ArrayList<String>();
 
 	protected String source;
 	protected List<String> sourceList;
 	protected T mexItem;
 	protected List<T> mexItems = new ArrayList<T>();
 	protected List<Object> objItems = new ArrayList<Object>();
+	private boolean isMethodPost;
+	private String requestParams;
 	
 	public static String encodeURLParam(String param) {
 		return XCodeUtil.urlEncodeUTF8(param);
@@ -52,9 +53,19 @@ public abstract class Extractor<T extends MexItem> {
 	protected void readSource() {
 		String target = getUrl();
 		if(printFetching) {
-			C.pl("Fetching... " + target);
+			String temp = "";
+			if(isMethodPost) {
+				temp = ", POST: " + (requestParams != null ? requestParams : "zero param."); 
+			}
+			
+			C.pl("Fetching... " + target + temp);
 		}
-		source = IOUtil.readURL(target, charset, printExceptionIfNeeded);
+		
+		WebReader xiu = new WebReader(target, charset, true);
+		xiu.setMethodPost(isMethodPost);
+		xiu.setRequestParams(requestParams);
+
+		source = xiu.readIntoString();
 	}
 	
 	public void setUrl(String url) {
@@ -79,18 +90,6 @@ public abstract class Extractor<T extends MexItem> {
 
 	public boolean isReady() {
 		return getUrl() != null && getUrl().length() > 10;
-	}
-
-	public void setParam(String param) {
-		params.add(param);
-	}
-
-	public void setParams(List<String> params) {
-		params.addAll(params);
-	}
-	
-	public List<String> getParams() {
-		return params;
 	}
 
 	public List<T> getMexItems() {
@@ -137,4 +136,21 @@ public abstract class Extractor<T extends MexItem> {
 		
 		return temp;
 	}
+
+	public boolean isMethodPost() {
+		return isMethodPost;
+	}
+
+	public void setMethodPost(boolean isMethodPost) {
+		this.isMethodPost = isMethodPost;
+	}
+
+	public String getRequestParams() {
+		return requestParams;
+	}
+
+	public void setRequestParams(String requestParams) {
+		this.requestParams = requestParams;
+	}
+	
 }

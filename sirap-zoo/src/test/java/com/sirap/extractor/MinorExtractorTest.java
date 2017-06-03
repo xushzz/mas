@@ -19,18 +19,26 @@ import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XCodeUtil;
 import com.sirap.bible.BibleChapterExtractor;
 import com.sirap.common.extractor.Extractor;
+import com.sirap.common.extractor.impl.ChinaCalendarExtractor;
 import com.sirap.common.extractor.impl.EnglishTranslationExtractor;
 import com.sirap.common.extractor.impl.RemoteSecurityExtractor;
 
 public class MinorExtractorTest {
 	
 	@Test
+	public void nongli() {
+		Extractor mike = new ChinaCalendarExtractor("n20170601");
+		mike.process();
+		C.list(mike.getMexItems());
+	}
+
 	public void bible() {
 		String sa = "E:\\KDB\\tasks\\0420_Bible\\titus.txt";
 		Extractor mike = new BibleChapterExtractor("titus", 1);
 		mike.process();
 		C.list(mike.getMexItems());
 	}
+
 	public void sfz() {
 //		Extractor<MexedObject> jes = new ChinaSFZExtractor();
 //		jes.process();

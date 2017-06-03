@@ -310,13 +310,14 @@ public class CommandMonitor extends CommandBase {
 
 		singleParam = parseParam(KEY_KEYS_READER + "\\s(.+?)");
 		if(singleParam != null) {
+			int depth = 99;
 			List<String> folders = StrUtil.splitByRegex(singleParam);
 			String methods = g().getValueOf("keys.reader.methods");
 			List<String> methodList = StrUtil.splitByRegex(methods);
 			String[] suffixes = {".java"};
 			List<String> keys = new ArrayList<String>();
 			if(!methodList.isEmpty()) {
-				List<File> files = FileUtil.scanFolder(folders, 9, suffixes, false);
+				List<File> files = FileUtil.scanFolder(folders, depth, suffixes, false);
 				for(File sourceFile : files) {
 					KeysReader pycelle = new KeysReader(sourceFile, methodList);
 					keys.addAll(pycelle.readKeysFromFile(g().getCharsetInUse()));

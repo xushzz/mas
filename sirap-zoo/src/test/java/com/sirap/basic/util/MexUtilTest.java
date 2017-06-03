@@ -4,12 +4,19 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.sirap.basic.component.MexedOption;
 import com.sirap.basic.domain.MexedObject;
 import com.sirap.basic.tool.C;
 
 public class MexUtilTest {
 	
 	@Test
+	public void options() {
+		String params = "+ninja  , storage  =  E:\\M as,config=D:\\Git.properties,passcode=Obamacare";
+		List<MexedOption> list = MexUtil.parseOptions(params);
+		C.list(list);
+	}
+	
 	public void parse() {
 		String fullFileName = "D:\\Mas\\test\\20160519_234904.txt";
 //		fullFileName = "D:\\Mas\\test\\20160519_234806.txt";

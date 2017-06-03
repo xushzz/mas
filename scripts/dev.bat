@@ -11,8 +11,10 @@ set where=D:\Github\SIRAP\mas
 set repo=D:\M2REPO
 set slogan=Dev Talks
 
+set /p privatekey=<E:\Mas\privatekey.txt
 set params=storage=E:\Mas
 set params=%params%,userConfig=D:\Github\SIRAP\mas\scripts\dev.properties
+set params=%params%,passcode=%privatekey%
 
 if not exist "%jre%" goto nojre
 

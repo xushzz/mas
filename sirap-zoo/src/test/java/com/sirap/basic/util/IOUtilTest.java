@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -243,13 +244,23 @@ public class IOUtilTest {
 	}
 	
 	@Test
+	public void uuid() {
+		for(int i = 0; i < 10; i++) {
+			String temp = UUID.randomUUID().toString();
+			String t2 = temp.replace("-", "");
+			D.pl(temp, t2);
+		}
+	}
+	
 	public void fetch() {
 		String storage = "E:\\Mas\\";
 		String sa = "http://images.china.cn/attachement/jpg/site1007/20120409/0019b91ec74f10ecc31e0c.jpg";
-		sa = "http://images.china.cn/attacheme2nt/jpg/site1007/20120409/0019b91ecs74f10ecc31e0c.jpg";
-		sa = "http://www.americanrhetoric.com/speeches/PDFFiles/Barack%20Obama%20-%202004%20DNC%20Address.pdf";
+//		sa = "http://www.americanrhetoric.com/speeches/PDFFiles/Barack%20Obama%20-%202004%20DNC%20Address.pdf";
 		sa = "http://www.americanrhetoric.com/speeches/PDFFiles/Barack%20Obama%20-%20Nomination%20Victory.pdf";
-		String filePath = storage + FileUtil.generateFilenameByUrl(sa);
+		sa = "http://www.governmentattic.org/12docs/CIA-FOIAmanual_2010.pdf";
+//		sa = "http://images.china.cn/attacheme2nt/jpg/site1007/20120409/0019b91ecs74f10ecc31e0c.jpg";
+		sa = "https://www.afio.com/publications/PALADINI%20Chinese%20Intelligence%20Draft%202015Jun27.pdf";
+		String filePath = storage + DateUtil.timestamp() + "_" + FileUtil.generateFilenameByUrl(sa);
 		if(FileUtil.exists(filePath)) {
 			C.pl("Already existed => " + filePath);
 			return;

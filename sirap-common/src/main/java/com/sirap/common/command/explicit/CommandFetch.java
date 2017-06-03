@@ -21,6 +21,7 @@ import com.sirap.common.component.FileOpener;
 import com.sirap.common.domain.TZRecord;
 import com.sirap.common.domain.WeatherRecord;
 import com.sirap.common.extractor.CommonExtractors;
+import com.sirap.common.extractor.impl.ChinaCalendarExtractor;
 import com.sirap.common.framework.command.target.TargetConsole;
 import com.sirap.common.framework.command.target.TargetPDF;
 import com.sirap.common.manager.ForexManager;
@@ -39,11 +40,13 @@ public class CommandFetch extends CommandBase {
 	private static final String KEY_DICTONARY = "ia";
 	private static final String KEY_TRANSLATE = "i";
 	private static final String KEY_FOREX = "\\$([a-z]{3})" + Konstants.REGEX_FLOAT + "(|/|[a-z,]+)";
+	private static final String KEY_IN_GONGLI_NONGLI = "(g|n)\\d{8}";
+	private static final String KEY_IN_GONGLI_TODAY = "gongli,gnow";
 
 	@Override
 	public boolean handle() {
 		
-		singleParam = parseParam(KEY_FETCH + "\\s(.+?)");
+		singleParam = parseParam(KEY_FETCH + "\\s(.+?)"); 
 		if(singleParam != null) {
 			if(handleHttpRequest(singleParam)) {
 				return true;
@@ -233,6 +236,21 @@ public class CommandFetch extends CommandBase {
 				}
 				return true;
 			}
+		}
+		
+		if(StrUtil.isRegexMatched(KEY_IN_GONGLI_NONGLI, command)) {
+			ChinaCalendarExtractor mike = new ChinaCalendarExtractor(command);
+			mike.process();
+			export(mike.getCalendarInfo());
+			
+			return true;
+		}
+		
+		if(isIn(KEY_IN_GONGLI_TODAY)) {
+			String param = "g" + DateUtil.displayNow(DateUtil.DATE_TIGHT);
+			ChinaCalendarExtractor mike = new ChinaCalendarExtractor(param);
+			mike.process();
+			export(mike.getCalendarInfo());
 		}
 		
 		return false;

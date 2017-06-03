@@ -16,3 +16,6 @@ $CNY10000          how much could you have in other currencies by trading given 
 $CNY10000          under going rate? Such as top currencies GBP,EUR,CHF,USD,CAD,AUD,SGD,NZD,CNY,HKD,JPY.
 $CNY10000/         more than just top but total of 56 currencies will be listed, TWD,KWD,BHD and so on.
 $CNY100JPY[,HKD]   forex, specified currencies will be listed, courtesy of ${money.forex.url}
+n20170601          n, nongli, old calendar, to gongli, courtesy of https://gonglinongli.51240.com
+g20170601          g, gongli, new calendar, to nongli, courtesy of https://gonglinongli.51240.com
+gnow               g, gongli, now to nongli, old calendar, courtesy of https://gonglinongli.51240.com
