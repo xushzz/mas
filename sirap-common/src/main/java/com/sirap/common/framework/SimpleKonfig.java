@@ -10,6 +10,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.sirap.basic.component.Konstants;
+import com.sirap.basic.component.MexedOption;
 import com.sirap.basic.email.EmailCenter;
 import com.sirap.basic.email.EmailServerItem;
 import com.sirap.basic.tool.C;
@@ -17,6 +18,7 @@ import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.MathUtil;
+import com.sirap.basic.util.MexUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.domain.CommandRecord;
@@ -24,7 +26,7 @@ import com.sirap.common.domain.TZRecord;
 import com.sirap.common.manager.TimeZoneManager;
 
 public class SimpleKonfig extends Konfig {
-	
+
 	private static SimpleKonfig instance;
 	
 	private String storage;
@@ -44,45 +46,48 @@ public class SimpleKonfig extends Konfig {
 	private boolean isCaptureSoundOn;
 	private boolean isGeneratedFileAutoOpen;
 	private boolean isPrintException;
-	private String securityPasscode;
+	private String securityPasscode = "mike";
 	private String charsetInUse;
 	
-	private static String FLAG_ABSENT = "A"; 
-	
 	public void refresh() {
-		init(originalStorage, originalSystemConfigName, userConfigFile);
+		loadAndSetValues();
+	}
+	
+	public static void init(String params) {
+		C.pl(params);
 	}
 
-	public static void init(String storage, String configName, String userConfig) {
+	public static void init(String systemConfigFile, String params) {
 		instance = new SimpleKonfig();
-		instance.advance(storage, configName, userConfig);
-		instance.decodeUserConfig();		
-		instance.initEmail();
-	}
-	
-	public static void init(String storage, String configName) {
-		instance = new SimpleKonfig();
-		instance.advance(storage, configName, FLAG_ABSENT);
-		instance.initEmail();
-	}
-	
-	private void advance(String storage, String configName, String userConfig) {
-		this.originalStorage = storage;
-		this.originalSystemConfigName = configName;
 		
-		String configFile = StrUtil.occupy(SYSTEM_CONFIG_FILE_TEMPLATE, configName);
-		if(FLAG_ABSENT.equalsIgnoreCase(userConfig)) {
-			initKonfig(configFile);
-		} else {
-			initKonfig(configFile, userConfig);
+		instance.systemConfigFile = systemConfigFile;
+
+		List<MexedOption> options = MexUtil.parseOptions(params);
+		instance.originalStorage = MexUtil.readOptionString(options, KEY_STORAGE);
+		
+		String tempPasscode = MexUtil.readOptionString(options, KEY_PASSCODE);
+		if(!EmptyUtil.isNullOrEmpty(tempPasscode)) {
+			instance.securityPasscode = tempPasscode;
 		}
+		instance.userConfigFile = MexUtil.readOptionString(options, KEY_USERCONFIG);
+		
+		instance.loadAndSetValues();
+	}
+	
+	private void loadAndSetValues() {
+		loadSystemConfigDetail();
+		loadUserConfigDetail();
+		
+		setValues();
+		decodeUserConfig();
+		initEmail();
 	}
 	
 	private void decodeUserConfig() {
 		getUserProps().decodeValues(securityPasscode);
 		List<String> items = getUserProps().detectCircularItems();
 		if(!EmptyUtil.isNullOrEmpty(items)) {
-			C.pl("[Configuration] Circular items found in [" + userConfigFile + "] as following:");
+			C.pl("[Configuration] Circular items found in [" + instance.userConfigFile + "] as following:");
 			C.list(items);
 			getUserProps().getContainer().clear();
 		}
@@ -93,9 +98,9 @@ public class SimpleKonfig extends Konfig {
 		String password = getUserValueOf("email.sender.pwd");
 		String receiver = getUserValueOf("email.receiver");
 		
-		Map<String, EmailServerItem> ervers = getExtraServers();
+		Map<String, EmailServerItem> servers = getExtraServers();
 		
-		EmailCenter.g().config(username, password, receiver, ervers);
+		EmailCenter.g().config(username, password, receiver, servers);
 	}
 
 	public static SimpleKonfig g() {
@@ -153,7 +158,6 @@ public class SimpleKonfig extends Konfig {
 		storage = originalStorage.replace("/", File.separator);
 		FileUtil.makeDirectoriesIfNonExist(storage);
 
-		securityPasscode = getValueOf("security.passcode");
 		timeoutMinutes = getNumberValueOf("timeout.minutes");
 		passwordEncrypted = getValueOf("password.encrypted");
 		commandNodes = parseCommandNodes();
@@ -376,6 +380,10 @@ public class SimpleKonfig extends Konfig {
 		return securityPasscode;
 	}
 	
+	public void setSecurityPasscode(String securityPasscode) {
+		this.securityPasscode = securityPasscode;
+	}
+
 	public boolean isPrintExceptionStackTrace() {
 		return isPrintException;
 	}

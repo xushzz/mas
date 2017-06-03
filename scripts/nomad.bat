@@ -5,11 +5,12 @@ rem https://github.com/acesfullmike/masrun
 rem chcp 65001
 
 set jre=C:\java\jre8
-set storage=%cd%
-set config=%cd%\nomad.properties
 set jars=%cd%\jars
 set deps=%cd%\jars\deps
 set slogan=We are building ship.
+
+set params=storage=%cd%
+set params=%params%,userConfig=%cd%\nomad.properties
 
 if not exist "%jre%" goto nojre
 
@@ -46,7 +47,7 @@ set CP=%CP%;%deps%\poi-3.7.jar
 set APP=com.sirap.common.entry.AppMas
 
 title %slogan%. %CD%
-java -cp "%CP%" "%APP%" "%storage%" "%config%"
+java -cp "%CP%" "%APP%" "%params%"
 
 set PATH=%ORIGIN%
 title %cd%

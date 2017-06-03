@@ -21,7 +21,7 @@ public class AppMas extends AppBase {
 
 	@Override
 	public void initKonfig(String[] args) {
-		SimpleKonfig.init(PanaceaBox.firstParam(args), "Mas", PanaceaBox.getParam(args, 1));
+		SimpleKonfig.init("/Config_Mas.properties", PanaceaBox.firstArgument(args));
 	}
 
 	@Override

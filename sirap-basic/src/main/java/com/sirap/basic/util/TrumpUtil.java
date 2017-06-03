@@ -41,7 +41,7 @@ public class TrumpUtil {
 			String stuff = m.group(1);
 			int len = stuff.length();
 			if(len % 32 == 0) {
-				String value = decodeBySIRAP(stuff, passcode);
+				String value = decodeBySIRAP(stuff, passcode, true);
 				temp = temp.replace(origin, value);
 			} else {
 				throw new MexException("Failed to decode [" + stuff + "]");

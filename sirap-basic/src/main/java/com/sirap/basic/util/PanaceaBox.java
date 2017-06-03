@@ -103,15 +103,17 @@ public class PanaceaBox {
 		return result;
 	}
 	
-	public static String firstParam(String[] args) {
-		return getParam(args, 0, null);
+	public static String firstArgument(String[] args) {
+		return getArgument(args, 0, null);
 	}
 
-	public static String getParam(String[] args, int index) {
-		return getParam(args, index, null);
+	public static String getArgument(String[] args, int index) {
+		return getArgument(args, index, null);
 	}
 
-	public static String getParam(String[] args, int index, String defaultValue) {
+	public static String getArgument(String[] args, int index, String defaultValue) {
+		XXXUtil.nullCheck(args, ":Found no program argument, please check...");
+		
 		if(index >= 0 && index < args.length) {
 			return args[index];
 		} else {

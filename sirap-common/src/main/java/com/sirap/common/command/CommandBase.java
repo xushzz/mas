@@ -278,7 +278,7 @@ public abstract class CommandBase {
 		if(getNormalFile) {
 			String httpUrl = url;
 			String unique = "";
-			boolean useUniqueFilename = SimpleKonfig.g().isYes("unique.filename.download");
+			boolean useUniqueFilename = g().isExportWithTimestampEnabled();
 			if(useUniqueFilename) {
 				unique = DateUtil.timestamp() + "_" + RandomUtil.letters(4) + "_";
 			}
@@ -290,7 +290,7 @@ public abstract class CommandBase {
 			} else {
 				FileUtil.makeDirectoriesIfNonExist(storage);
 				C.pl("Fetching... " + httpUrl);
-				boolean flag = IOUtil.downloadNormalFile(httpUrl, filePath);
+				boolean flag = IOUtil.downloadNormalFile(httpUrl, filePath, true);
 				if(flag) {
 					C.pl2("Saved => " + filePath);
 				}
@@ -414,7 +414,7 @@ public abstract class CommandBase {
 	
 	protected List<String> downloadFiles(String destination, List<MexedObject> links, String suffixWhenObscure) {
 		int threads = SimpleKonfig.g().getUserNumberValueOf("threads.download");
-		boolean useUniqueFilename = SimpleKonfig.g().isYes("unique.filename.download");
+		boolean useUniqueFilename = g().isExportWithTimestampEnabled();
 		return IOUtil.downloadFiles(destination, links, suffixWhenObscure, threads, useUniqueFilename);
 	}
 	

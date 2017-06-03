@@ -352,6 +352,15 @@ public class MexUtil {
 		C.pl2("Currently, " + baoan.getEmailInfo());
 	}
 	
+	public static String readOptionString(List<MexedOption> options, String targetKey) {
+		Object temp = readOption(options, targetKey, true);
+		if(temp == null) {
+			return null;
+		} else {
+			return temp.toString();
+		}
+	}
+	
 	public static Object readOption(List<MexedOption> options, String targetKey) {
 		return readOption(options, targetKey, true);
 	}

@@ -44,7 +44,7 @@ public class MexedOption extends MexItem {
 			return true;
 		}
 		
-		regex = "(\\w+)=(.+)";
+		regex = "(\\w+)\\s*=\\s*(.+)";
 		params = StrUtil.parseParams(regex, source);
 		if(params != null) {
 			name = params[0];

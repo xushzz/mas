@@ -331,7 +331,15 @@ public class CommandMonitor extends CommandBase {
 		}
 		
 		if(is("guoqi")) {
+			noCollect();
 			export(RemoteSecurityExtractor.URL_SECURITY);
+			
+			return true;
+		}
+		
+		if(is(KEY_SECURITY_ENCODE +KEY_SECURITY_DECODE)) {
+			noCollect();
+			export(g().getSecurityPasscode());
 			
 			return true;
 		}

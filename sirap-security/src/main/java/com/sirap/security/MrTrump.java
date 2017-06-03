@@ -38,7 +38,7 @@ public class MrTrump {
 			return result;
 		} catch (Exception ex) {
 			if(throwException) {
-				String msg = "can't decode text: " + displaySome(encodedText, 49);
+				String msg = "can't decode text: " + displaySome(encodedText, 32);
 				throw new RuntimeException(msg + ", msg: " + ex.getMessage());
 			}
 		}

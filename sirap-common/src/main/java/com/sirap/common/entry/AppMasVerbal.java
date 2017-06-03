@@ -21,7 +21,7 @@ public class AppMasVerbal extends AppBase {
 
 	@Override
 	public void initKonfig(String[] args) {
-		SimpleKonfig.init(PanaceaBox.firstParam(args), "MasVerbal", PanaceaBox.getParam(args, 1));
+		SimpleKonfig.init("/Config_MasVerbal.properties", PanaceaBox.firstArgument(args));
 		setDelayMinutes(getKonfig().getTimeoutMinutes());
 	}
 

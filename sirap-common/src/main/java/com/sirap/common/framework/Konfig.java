@@ -18,29 +18,19 @@ public abstract class Konfig {
 	protected static String SYSTEM_CONFIG_FILE_TEMPLATE = "/Config_{0}.properties";
 	public static String EXTRA_FILE = "/Extra.properties";
 	public static String KEYS_FILE = "/Keys.txt";
-
+	
+	public static final String KEY_STORAGE = "storage";
+	public static final String KEY_USERCONFIG = "userConfig";
+	public static final String KEY_PASSCODE = "passcode";
+	
 	protected String originalStorage;
-	protected String originalSystemConfigName;
-
 	protected String systemConfigFile;
 	protected String userConfigFile;
 	protected MexedMap systemProperties = new MexedMap();
 	protected MexedMap userProperties = new MexedMap();
 	private Map<String, Object> stash = new LinkedHashMap<String, Object>();
 
-	protected void initKonfig(String systemConfig, String userConfig) {
-		loadSystemConfigDetail(systemConfig);
-		loadUserConfigDetail(userConfig);
-		setValues();
-	}
-	
-	protected void initKonfig(String systemConfig) {
-		loadSystemConfigDetail(systemConfig);
-		setValues();
-	}
-	
-	private void loadSystemConfigDetail(String systemConfig) {
-		systemConfigFile = systemConfig;
+	protected void loadSystemConfigDetail() {
 		systemProperties.getContainer().clear();
 		
 		InputStream is = getClass().getResourceAsStream(systemConfigFile);
@@ -64,8 +54,7 @@ public abstract class Konfig {
 		}
 	}
 	
-	private void loadUserConfigDetail(String userConfig) {
-		userConfigFile = userConfig;
+	protected void loadUserConfigDetail() {
 		userProperties.getContainer().clear();
 		
 		if(userConfigFile == null) {

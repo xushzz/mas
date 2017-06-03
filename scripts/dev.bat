@@ -7,11 +7,12 @@ rem https://github.com/piratesea/mas-app
 rem chcp 65001
 
 set jre=C:\java\jre8
-set storage=E:\Mas
-set config=D:\Github\SIRAP\mas\scripts\dev.properties
 set where=D:\Github\SIRAP\mas
 set repo=D:\M2REPO
 set slogan=Dev Talks
+
+set params=storage=E:\Mas
+set params=%params%,userConfig=D:\Github\SIRAP\mas\scripts\dev.properties
 
 if not exist "%jre%" goto nojre
 
@@ -49,7 +50,7 @@ set CP=%CP%;%where%\sirap-bible\target\classes
 set APP=com.sirap.common.entry.AppMas
 
 title %slogan%. %CD%
-java -cp "%CP%" "%APP%" "%storage%" "%config%"
+java -cp "%CP%" "%APP%" "%params%"
 set PATH=%ORIGIN%
 title %cd%
 
