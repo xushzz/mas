@@ -15,12 +15,8 @@ import com.sirap.common.framework.SimpleKonfig;
 public class CommandShortcut extends CommandBase {
 	
 	private static final String KEY_TERMINAL_COMMAND = "c\\.";
-	private static final String KEY_WINDOWS_LOCK = "l";
-	private static final String KEY_WINDOWS_LOGOUT = "out";
-	private static final String KEY_WINDOWS_TURNOFF = "off";
-	private static final String KEY_WINDOWS_RESTART = "rest";
 	private static final String KEY_DYNAMIC = "(\\S+)\\s(.+)";
-	
+
 	@Override
 	public boolean handle() {
 		
@@ -39,34 +35,6 @@ public class CommandShortcut extends CommandBase {
 					return true;
 				}
 			}
-		}
-		
-		if(is(KEY_WINDOWS_LOCK)) {
-			PanaceaBox.execute("rundll32 user32.dll,LockWorkStation");
-			C.pl2("lock computer.");
-			
-			return true;
-		}
-		
-		if(is(KEY_WINDOWS_TURNOFF)) {
-			PanaceaBox.execute("shutdown -s -t 1");
-			C.pl2("turn off computer immediately.");
-			
-			return true;
-		}
-		
-		if(is(KEY_WINDOWS_LOGOUT)) {
-			PanaceaBox.execute("shutdown -l");
-			C.pl2("log out computer immediately.");
-			
-			return true;
-		}
-		
-		if(is(KEY_WINDOWS_RESTART)) {
-			PanaceaBox.execute("shutdown -r");
-			C.pl2("restart computer.");
-			
-			return true;
 		}
 		
 		params = parseParams(KEY_DYNAMIC);

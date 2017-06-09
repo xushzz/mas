@@ -3,8 +3,8 @@ rem by KY, 21:06 2014/7/9
 
 title I'm backing up stuff
 set jdk=C:\Java\jdk1.8.0_05
-set from=D:\Github\SIRAP\mas
-set target=F:\BK\Mas
+set from=D:\Gitstuff\SIRAP\mas
+set target=M:\BKMas
 set script=%from%\scripts
 set other=E:\KDB\libs
 

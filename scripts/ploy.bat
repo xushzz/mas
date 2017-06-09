@@ -2,10 +2,10 @@
 rem by KY, 21:06 2014/7/9
 title I am deploying
 
-set target=D:\Github\SIRAP\masrun
-set jars=F:\BK\Mas\latestjars
-set deps=F:\BK\Mas\latestdeps
-set script=D:\Github\SIRAP\mas\scripts
+set target=D:\Gitstuff\SIRAP\masrun
+set jars=M:\BKMas\latestjars
+set deps=M:\BKMas\latestdeps
+set script=D:\Gitstuff\SIRAP\mas\scripts
 
 if exist %target% (goto deploy) else (goto create)
 

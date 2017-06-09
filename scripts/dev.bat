@@ -7,13 +7,13 @@ rem https://github.com/piratesea/mas-app
 rem chcp 65001
 
 set jre=C:\java\jre8
-set where=D:\Github\SIRAP\mas
+set where=D:\Gitstuff\SIRAP\mas
 set repo=D:\M2REPO
 set slogan=Dev Talks
 
 set /p privatekey=<E:\Mas\privatekey.txt
 set params=storage=E:\Mas
-set params=%params%,userConfig=D:\Github\SIRAP\mas\scripts\dev.properties
+set params=%params%,userConfig=D:\Gitstuff\SIRAP\mas\scripts\dev.properties
 set params=%params%,passcode=%privatekey%
 
 if not exist "%jre%" goto nojre

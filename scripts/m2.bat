@@ -4,16 +4,16 @@ rem https://github.com/acesfullmike/mas
 rem https://github.com/acesfullmike/masrun
 rem chcp 65001
 
-cd /d D:\Github\SIRAP\mas
+cd /d D:\Gitstuff\SIRAP\mas
 
 set jre=C:\java\jre8
-set jars=D:\Github\SIRAP\masrun\jars
+set jars=D:\Gitstuff\SIRAP\masrun\jars
 set deps=%jars%\deps
 set slogan=Money Talks
 
 set /p privatekey=<E:\Mas\privatekey.txt
 set params=storage=E:\Mas
-set params=%params%,userConfig=D:\Github\SIRAP\mas\scripts\mas.properties
+set params=%params%,userConfig=D:\Gitstuff\SIRAP\mas\scripts\mas.properties
 set params=%params%,passcode=%privatekey%
 
 if not exist "%jre%" goto nojre
