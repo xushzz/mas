@@ -843,4 +843,13 @@ public class StrUtil {
 		
 		return value;
 	}
+	
+	public static String removePointZeroes(String source) {
+		if(source.indexOf('.') >= 0) {
+			String temp = source.replaceAll("\\.?0*$", "");
+			return temp;
+		} else {
+			return source;
+		}
+	}
 }

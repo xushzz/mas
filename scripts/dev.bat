@@ -37,7 +37,11 @@ set CP=%CP%;%repo%\org\apache\pdfbox\pdfbox\2.0.3\pdfbox-2.0.3.jar
 set CP=%CP%;%repo%\commons-logging\commons-logging\1.2\commons-logging-1.2.jar
 set CP=%CP%;%repo%\org\bouncycastle\bcprov-jdk15on\1.55\bcprov-jdk15on-1.55.jar
 set CP=%CP%;%repo%\org\jaudiotagger\2.0.3\jaudiotagger-2.0.3.jar
-set CP=%CP%;%repo%\org\apache\poi\poi\3.7\poi-3.7.jar
+set CP=%CP%;%repo%\org\apache\poi\poi\3.10-FINAL\poi-3.10-FINAL.jar
+set CP=%CP%;%repo%\org\apache\poi\poi-ooxml\3.10-FINAL\poi-ooxml-3.10-FINAL.jar
+set CP=%CP%;%repo%\org\apache\poi\poi-ooxml-schemas\3.10-FINAL\poi-ooxml-schemas-3.10-FINAL.jar
+set CP=%CP%;%repo%\org\apache\xmlbeans\xmlbeans\2.6.0\xmlbeans-2.6.0.jar
+set CP=%CP%;%repo%\dom4j\dom4j\1.6.1\dom4j-1.6.1.jar
 
 set CP=%CP%;%where%\sirap-basic\target\classes
 set CP=%CP%;%where%\sirap-common\target\classes

@@ -4,12 +4,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.poi.POIXMLDocument;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.junit.Test;
 
 import com.sirap.basic.thirdparty.pdf.PdfHelper;
-import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.StrUtil;
@@ -18,10 +15,10 @@ public class PdfHelperTest {
 	
 	@Test
 	public void docxPages() throws IOException {
-		String sa = "E:\\KDB\\tasks\\0526_TextSearch\\Mac.docx";
-		XWPFDocument docx = new XWPFDocument(POIXMLDocument.openPackage(sa));
-		int pages = docx.getProperties().getExtendedProperties().getUnderlyingProperties().getPages();//总页数
-		D.pl(sa, pages);
+//		String sa = "E:\\KDB\\tasks\\0526_TextSearch\\Mac.docx";
+//		XWPFDocument docx = new XWPFDocument(POIXMLDocument.openPackage(sa));
+//		int pages = docx.getProperties().getExtendedProperties().getUnderlyingProperties().getPages();//总页数
+//		D.pl(sa, pages);
 	}
 	
 	public void count() {

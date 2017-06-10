@@ -75,21 +75,21 @@ public class FormulaCalculator {
 		BigDecimal factor = MathUtil.add(factorsLeft);
 		BigDecimal number = MathUtil.add(numbersRight);
 		if(factor.doubleValue() == 0) {
-			String numerator = MathUtil.removeTrailingZeroes(number.toPlainString());
+			String numerator = StrUtil.removePointZeroes(number.toPlainString());
 			result = numerator + "/0";
 			return;
 		}
 		
 		BigDecimal grand = calc(number, factor, "/");
-		String tempResult = MathUtil.removeTrailingZeroes(grand.toPlainString());
+		String tempResult = StrUtil.removePointZeroes(grand.toPlainString());
 		int actualScale = tempResult.length() - tempResult.indexOf(".") - 1;
 		if(actualScale < SCALE) {
 			result = tempResult;
 			return;
 		}
 
-		String numerator = MathUtil.removeTrailingZeroes(number.toPlainString());
-		String denominator = MathUtil.removeTrailingZeroes(factor.toPlainString());
+		String numerator = StrUtil.removePointZeroes(number.toPlainString());
+		String denominator = StrUtil.removePointZeroes(factor.toPlainString());
 		result = numerator + "/" + denominator + "=" + tempResult;
 	}
 	

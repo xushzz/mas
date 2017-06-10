@@ -42,7 +42,11 @@ set CP=%CP%;%deps%\commons-logging-1.2.jar
 set CP=%CP%;%deps%\fontbox-2.0.3.jar
 set CP=%CP%;%deps%\mysql-connector-java-5.1.31.jar
 set CP=%CP%;%deps%\jaudiotagger-2.0.3.jar
-set CP=%CP%;%deps%\poi-3.7.jar
+set CP=%CP%;%deps%\poi-3.10-FINAL.jar
+set CP=%CP%;%deps%\poi-ooxml-3.10-FINAL.jar
+set CP=%CP%;%deps%\poi-ooxml-schemas-3.10-FINAL.jar
+set CP=%CP%;%deps%\xmlbeans-2.6.0.jar
+set CP=%CP%;%deps%\dom4j-1.6.1.jar
 
 set APP=com.sirap.common.entry.AppMas
 

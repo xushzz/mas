@@ -61,8 +61,8 @@ public class MathUtilTest {
 
 	@Test(enabled=false, dataProvider="zeroes")
 	public void removeZeros(String input, String expected) {
-		MathUtil.removeTrailingZeroes("");
-		assertEquals(MathUtil.removeTrailingZeroes(input), expected);
+		StrUtil.removePointZeroes("");
+		assertEquals(StrUtil.removePointZeroes(input), expected);
 	}
 
 	@Test(enabled=false, dataProvider="zeroes")

@@ -143,22 +143,6 @@ public class MathUtil {
 		return result;
 	}
 	
-	public static String removeTrailingZeroes(String source) {
-		if(source == null) {
-			return null;
-		}
-		
-		BigDecimal number = toBigDecimal(source);
-		if(number == null) {
-			return source;
-		}
-
-		BigDecimal bd2 = number.stripTrailingZeros();
-		String temp = bd2.toPlainString();
-		
-		return temp;
-	}
-	
 	public static BigDecimal toBigDecimal(String value) {
 		BigDecimal bd = null;
 		try {

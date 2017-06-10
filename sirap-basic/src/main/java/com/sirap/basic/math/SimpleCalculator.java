@@ -39,7 +39,7 @@ public class SimpleCalculator {
 			return;
 		}
 		
-		result = MathUtil.removeTrailingZeroes(grand.toPlainString());
+		result = StrUtil.removePointZeroes(grand.toPlainString());
 	}
 	
 	public static final String ACCEPTABLE_OPERATORS = "([\\+|\\-|\\*|X|x|/])";

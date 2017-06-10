@@ -12,6 +12,7 @@ import com.sirap.basic.domain.MexedFile;
 import com.sirap.basic.email.EmailCenter;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.search.MexFilter;
+import com.sirap.basic.thirdparty.excel.ExcelHelper;
 import com.sirap.basic.thirdparty.pdf.PdfHelper;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.FileDeeper;
@@ -258,12 +259,23 @@ public class CommandFile extends CommandBase {
 		}
 		
 		String[] regexArr = {"(.*?)\\s+(.+)", "(.*?)\\s*,\\s*(.+)"};
-		String[] textFileAndCriteria = parseTextFilepathAndCriterias(input, regexArr);
-		if(textFileAndCriteria != null) {
-			String filePath = textFileAndCriteria[0];
-			String criteria = textFileAndCriteria[1];
-			List<String> records = IOUtil.readFileIntoList(filePath); 
-			exportItems(records, criteria);
+		String[] filepathAndCriteria = parseFilepathAndCriterias(input, regexArr);
+		if(filepathAndCriteria != null) {
+			String filePath = filepathAndCriteria[0];
+			String criteria = filepathAndCriteria[1];
+			
+			if(FileOpener.isTextFile(filePath)) {
+				List<String> records = IOUtil.readFileIntoList(filePath); 
+				exportItems(records, criteria);
+			} else if(FileUtil.isAnyTypeOf(filePath, FileUtil.SUFFIXES_EXCEL)) {
+				Integer index = MathUtil.toInteger(criteria);
+				if(index == null) {
+					C.pl("try index like 0, 1, 2, 3... with " + filePath);
+				} else {
+					List<List<Object>> data = ExcelHelper.readSheetByIndex(filePath, index); 
+					export(data);
+				}
+			}
 			
 			return true;
 		}
@@ -469,6 +481,10 @@ public class CommandFile extends CommandBase {
 					if(FileUtil.isAnyTypeOf(filePath, FileUtil.SUFFIXES_PDF)) {
 						int lines = PdfHelper.howManyPages(filePath);
 						items.add("pages: " + lines);
+					} else if(FileUtil.isAnyTypeOf(filePath, FileUtil.SUFFIXES_EXCEL)) {
+						List<String> sheets = ExcelHelper.readSheetNames(filePath);
+						String msg = StrUtil.occupy("sheets({0}): {1}", sheets.size(), StrUtil.connect(sheets, ", "));
+						items.add(msg);
 					} else if(FileOpener.isTextFile(filePath)) {
 						int lines = IOUtil.totalLines(filePath);
 						items.add("lines: " + lines);
@@ -681,7 +697,7 @@ public class CommandFile extends CommandBase {
 		return null;
 	}
 	
-	private String[] parseTextFilepathAndCriterias(String input, String[] regexArr) {
+	private String[] parseFilepathAndCriterias(String input, String[] regexArr) {
 		for(int i = 0; i < regexArr.length; i++) {
 			String[] params = parseParams(regexArr[i]);
 			if(params != null) {
@@ -694,11 +710,6 @@ public class CommandFile extends CommandBase {
 				}
 				
 				String filePath = file.getAbsolutePath();
-				if(!FileOpener.isTextFile(filePath)) {
-					C.pl2("Not a text file: " + filePath);
-					continue;
-				}
-				
 				return new String[]{filePath, criteria};
 			}
 		}
