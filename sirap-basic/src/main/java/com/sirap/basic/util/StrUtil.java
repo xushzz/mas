@@ -852,4 +852,27 @@ public class StrUtil {
 			return source;
 		}
 	}
+	
+	public static List<String> parseUrlParams(String wholeUrl) {
+		String regex = "([^\\?&]+)=([^\\?&]*)";
+		Matcher ma = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(wholeUrl);
+
+		List<String> params = new ArrayList<>();
+		while(ma.find()) {
+			String key = ma.group(1);
+			String value = ma.group(2);
+			params.add(key + " = " + value);
+		}
+		
+		return params;
+	}
+	
+	/***
+	 * "\\uE59BBE\\uE781B5"
+	 * @param utf8EncodedString
+	 * @return
+	 */
+	public static String utf8ToWhatever(String source) {
+		return XCodeUtil.replaceHexChars(source, Konstants.CODE_UTF8);
+	}
 }

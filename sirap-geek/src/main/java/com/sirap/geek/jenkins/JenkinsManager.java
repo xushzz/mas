@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
@@ -16,7 +17,6 @@ import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.domain.Link;
 import com.sirap.common.extractor.Extractor;
 import com.sirap.common.framework.SimpleKonfig;
-import com.sirap.geek.util.JsonUtil;
 
 @SuppressWarnings({"rawtypes"})
 public class JenkinsManager {

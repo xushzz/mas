@@ -6,10 +6,13 @@ import java.util.List;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexedObject;
 import com.sirap.basic.exception.MexException;
+import com.sirap.basic.json.JsonUtil;
+import com.sirap.basic.tool.D;
 import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.MathUtil;
+import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
@@ -19,7 +22,6 @@ import com.sirap.geek.jenkins.JenkinsBuildRecord;
 import com.sirap.geek.jenkins.JenkinsManager;
 import com.sirap.geek.manager.GithubIssuesExtractor;
 import com.sirap.geek.manager.MavenManager;
-import com.sirap.geek.util.JsonUtil;
 
 public class CommandDev extends CommandBase {
 
@@ -32,6 +34,7 @@ public class CommandDev extends CommandBase {
 	private static final String KEY_JSON = "js";
 	private static final int KEY_JSON_MIN_LEN = 9;
 	private static final String KEY_RAW_JSON = "rjs";
+	private static final String KEY_PAIR_KEY_VALUE = "pa";
 
 	public boolean handle() {
 		singleParam = parseParam(KEY_PATH + "\\s(.*?)");
@@ -139,6 +142,7 @@ public class CommandDev extends CommandBase {
 		
 		singleParam = parseParam(KEY_JSON + " " + KEY_HTTP_WWW);
 		if(singleParam != null) {
+			D.ts(singleParam);
 			String source = IOUtil.readURL(singleParam);
 			String text = JsonUtil.getPrettyText(source);
 			export(text);
@@ -205,6 +209,14 @@ public class CommandDev extends CommandBase {
 				String text = JsonUtil.getRawText(singleParam);
 				export(text);
 			}
+			
+			return true;
+		}
+		
+		singleParam = parseParam(KEY_PAIR_KEY_VALUE + "\\s(.+)");
+		if(singleParam != null) {
+			List<String> pairs = StrUtil.parseUrlParams(singleParam);
+			export(pairs);
 			
 			return true;
 		}

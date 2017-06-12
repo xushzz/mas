@@ -10,8 +10,8 @@ import org.junit.Test;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
-import com.sirap.basic.util.XCodeUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.XCodeUtil;
 import com.sirap.geek.manager.GeekManager;
 
 public class XCodeTest {
@@ -29,6 +29,18 @@ public class XCodeTest {
 	}
 	
 	@Test
+	public void utf8() {
+		String content = "\\uE59BBE\\uE781B5";
+		String code = "utf-8";
+		C.pl(XCodeUtil.replaceHexChars(content, code));
+	}
+	public void urlParams() {
+		String url = "https://www.baidu.com/s?ninja=&ie=utf-8&f=8&rsv_bp=1&tn=baidu&wd=%E5%9B%BE%E7%81%B5openapi&oq=%25E5%259B%25BE%25E7%2581%25B5api%2520key&rsv_pq=c899596000112db3&rsv_t=f66bgZie1eOrmfaOYAkAWDNarLkHiJDV2GYpIGfiyMs9mYhO3ioNevTkLUY&rqlang=cn&rsv_enter=1&inputT=3127&rsv_sug3=86&rsv_sug1=56&rsv_sug7=100&rsv_sug2=0&rsv_sug4=4593&rsv_sug=2";
+		url = "http://www.tuling123.com/openapi/api?key=e8c190a005adc401867efd1ad2602f70&info=桂林";
+		String fixedUrl = XCodeUtil.urlParamsEncode(url, Konstants.CODE_UTF8);
+		C.pl(fixedUrl);
+	}
+	
 	public void is2by() throws Exception {
 		String source = "\\uCDF2ACD\\uCDF2";
 		String va = XCodeUtil.replaceHexChars(source, Konstants.CODE_GBK);

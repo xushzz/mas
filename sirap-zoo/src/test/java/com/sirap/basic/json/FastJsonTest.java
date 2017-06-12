@@ -7,10 +7,10 @@ import java.util.Map;
 import org.junit.Test;
 
 import com.sirap.basic.domain.MexedObject;
+import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.StrUtil;
-import com.sirap.geek.util.JsonUtil;
 
 public class FastJsonTest {
 	

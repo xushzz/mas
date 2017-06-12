@@ -17,4 +17,5 @@ js {"a":1, "b":2}  parse string into json and display pretty format
 rjs E:\A1.txt      parse TXT file into json and display raw format
 rjs {"a":1, "b":2} parse TXT file into json and display raw format
 rjs http://X/json  parse URL-specified content into json and display raw format
-ver=GEEK-DEV1.0.3-ALVES  5/26/2017, IV
+pa http://X/json?name=jack&id=19 parse key value pairs in URL with ask and &
+ver=GEEK-DEV1.0.4-ELIAS  6/12/2017, I

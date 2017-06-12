@@ -21,7 +21,9 @@ import com.sirap.common.component.FileOpener;
 import com.sirap.common.domain.TZRecord;
 import com.sirap.common.domain.WeatherRecord;
 import com.sirap.common.extractor.CommonExtractors;
+import com.sirap.common.extractor.Extractor;
 import com.sirap.common.extractor.impl.ChinaCalendarExtractor;
+import com.sirap.common.extractor.impl.TulingExtractor;
 import com.sirap.common.framework.command.target.TargetConsole;
 import com.sirap.common.framework.command.target.TargetPDF;
 import com.sirap.common.manager.ForexManager;
@@ -41,7 +43,9 @@ public class CommandFetch extends CommandBase {
 	private static final String KEY_TRANSLATE = "i";
 	private static final String KEY_FOREX = "\\$([a-z]{3})" + Konstants.REGEX_FLOAT + "(|/|[a-z,]+)";
 	private static final String KEY_IN_GONGLI_NONGLI = "(g|n)\\d{8}";
-	private static final String KEY_IN_GONGLI_TODAY = "gongli,gnow";
+	private static final String KEY_IN_GONGLI_TODAY = "gnow";
+	private static final String KEY_TULING_ASK = ":";
+	private static final String KEY_TULING_ASK_IN_CHINESE = StrUtil.utf8ToWhatever("\\uEFBC9A");
 
 	@Override
 	public boolean handle() {
@@ -251,6 +255,18 @@ public class CommandFetch extends CommandBase {
 			ChinaCalendarExtractor mike = new ChinaCalendarExtractor(param);
 			mike.process();
 			export(mike.getCalendarInfo());
+		}
+		
+		String regex = "[" + KEY_TULING_ASK + "|" + KEY_TULING_ASK_IN_CHINESE + "](.+?)";
+		singleParam = parseParam(regex);
+		if(singleParam != null) {
+			String key = g().getUserValueOf("tuling.key", "e8c190a005adc401867efd1ad2602f70");
+			Extractor<MexedObject> mike = new TulingExtractor(key, singleParam);
+			mike.process();
+			String tulingInChinese = StrUtil.utf8ToWhatever("\\uE59BBE\\uE781B5");
+			export(tulingInChinese + ": " + mike.getMexItem());
+			
+			return true;
 		}
 		
 		return false;

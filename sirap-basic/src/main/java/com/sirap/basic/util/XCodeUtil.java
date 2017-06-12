@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -289,17 +291,33 @@ public class XCodeUtil {
 		return !isMatched;
 	}
 	
-	public static String urlEncode(String source, String charset) {
+	public static String urlParamsEncode(String wholeUrl, String charset) {
+		String regex = "([^\\?&]+=)([^\\?&]*)";
+		Matcher ma = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(wholeUrl);
+		StringBuffer sb = new StringBuffer();
+		while(ma.find()) {
+			String rest = ma.group(1);
+			String value = ma.group(2);
+			String replacement = rest + urlEncode(value, charset);
+			ma.appendReplacement(sb, replacement);
+		}
+		
+		ma.appendTail(sb);
+		
+		return sb.toString();
+	}
+	
+	public static String urlEncode(String param, String charset) {
 		try {
-			String result = URLEncoder.encode(source, charset);
+			String result = URLEncoder.encode(param, charset);
 			return result;
 		} catch (UnsupportedEncodingException ex) {
 			throw new MexException(ex);
 		}
 	}
 	
-	public static String urlEncodeUTF8(String source) {
-		return urlEncode(source, Konstants.CODE_UTF8);
+	public static String urlEncodeUTF8(String param) {
+		return urlEncode(param, Konstants.CODE_UTF8);
 	}
 	
 	public static String urlDecode(String source, String charset) {

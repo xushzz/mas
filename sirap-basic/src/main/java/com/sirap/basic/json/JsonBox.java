@@ -1,4 +1,4 @@
-package com.sirap.geek.json;
+package com.sirap.basic.json;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

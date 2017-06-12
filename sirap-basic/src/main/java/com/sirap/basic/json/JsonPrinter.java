@@ -1,4 +1,4 @@
-package com.sirap.geek.json;
+package com.sirap.basic.json;
 
 import java.util.Iterator;
 import java.util.List;

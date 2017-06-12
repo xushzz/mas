@@ -22,10 +22,18 @@ import com.sirap.common.extractor.Extractor;
 import com.sirap.common.extractor.impl.ChinaCalendarExtractor;
 import com.sirap.common.extractor.impl.EnglishTranslationExtractor;
 import com.sirap.common.extractor.impl.RemoteSecurityExtractor;
+import com.sirap.common.extractor.impl.TulingExtractor;
 
 public class MinorExtractorTest {
 	
 	@Test
+	public void tuling() {
+		String key = "e8c190a005adc401867efd1ad2602f70";
+		Extractor<MexedObject> mike = new TulingExtractor(key, "nice try");
+		mike.process();
+		C.list(mike.getMexItems());
+	}
+
 	public void nongli() {
 		Extractor mike = new ChinaCalendarExtractor("n20170601");
 		mike.process();

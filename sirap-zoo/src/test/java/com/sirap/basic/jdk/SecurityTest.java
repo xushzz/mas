@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
 import com.sirap.basic.util.SecurityUtil;
 import com.sirap.basic.util.StrUtil;
@@ -13,6 +14,10 @@ import com.sirap.basic.util.StrUtil;
 public class SecurityTest {
 
 	@Test
+	public void sha1() {
+		C.pl(SecurityUtil.digest("leyi", "sha1"));
+	}
+	
 	public void digest() {
 		String algos = "SHA-1,SHA-224,SHA-256,MD2,SHA,SHA-512,MD5";
 		List<String> items = StrUtil.split(algos);
