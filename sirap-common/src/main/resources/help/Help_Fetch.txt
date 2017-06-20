@@ -19,4 +19,4 @@ $CNY100JPY[,HKD]   forex, specified currencies will be listed, courtesy of ${mon
 n20170601          n, nongli, old calendar, to gongli, courtesy of https://gonglinongli.51240.com
 g20170601          g, gongli, new calendar, to nongli, courtesy of https://gonglinongli.51240.com
 gnow               g, gongli, now to nongli, old calendar, courtesy of https://gonglinongli.51240.com
-:ask tuling        ask tuling question, start with colon or Chinese colon, courtesy of www.tuling123.com
+*Alan Turing       ask tuling question, start with asterisk, courtesy of http://www.tuling123.com

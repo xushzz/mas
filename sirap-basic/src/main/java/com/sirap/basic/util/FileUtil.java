@@ -40,7 +40,7 @@ public class FileUtil {
 	public static final String SUFFIXES_OTHERS = "jar;apk;zip";
 
 	public static final char[] BAD_CHARS_FOR_FILENAME_WINDOWS = {'/','\\',':','\"','*','?','|','>','<'};
-	public static final char[] BAD_CHARS_FOR_FILENAME_MAC = {'/','\\',':','\"','*','?','|','>','<'};
+	public static final char[] BAD_CHARS_FOR_FILENAME_MAC = {'/','?','~','^','&','*'};
 	public static final String FOLDER_TRASH = "$";
 	public static final String FILE_THUMBS = "Thumbs.db";
 	
@@ -207,23 +207,25 @@ public class FileUtil {
 			return null;
 		}
 		
-		if(PanaceaBox.isWindows()) {
-			String temp = new String(BAD_CHARS_FOR_FILENAME_WINDOWS);
-			temp = temp.replace("\\", "\\\\");
-			String regex = "[" + temp + "]";
-			String fileName = source.replaceAll(regex, "-"); 
-			fileName = fileName.replace("\t", " ");
-			
-			return fileName;
-		} else {
-			String temp = new String(BAD_CHARS_FOR_FILENAME_WINDOWS);
-			temp = temp.replace("\\", "\\\\");
-			String regex = "[" + temp + "]";
-			String fileName = source.replaceAll(regex, "-"); 
-			fileName = fileName.replace("\t", " ");
-			
-			return fileName;
+		String badChars = new String(BAD_CHARS_FOR_FILENAME_WINDOWS);
+		if(PanaceaBox.isMacOrLinuxOrUnix()) {
+			badChars = new String(BAD_CHARS_FOR_FILENAME_MAC);
 		}
+		
+		StringBuffer sb = new StringBuffer();
+		for(int i = 0; i < source.length(); i++) {
+			char key = source.charAt(i);
+			if(badChars.indexOf(key) >= 0) {
+				sb.append("%" + Integer.toHexString(key).toUpperCase());
+			} else {
+				sb.append(key);
+			}
+		}
+		
+		String fileName = sb.toString(); 
+		fileName = fileName.replace("\t", " ");
+		
+		return fileName;
 	}
 	
 	public static String escapeChars(String source, char[] charsToEscape) {

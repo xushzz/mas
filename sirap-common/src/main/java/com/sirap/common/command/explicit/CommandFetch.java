@@ -44,8 +44,7 @@ public class CommandFetch extends CommandBase {
 	private static final String KEY_FOREX = "\\$([a-z]{3})" + Konstants.REGEX_FLOAT + "(|/|[a-z,]+)";
 	private static final String KEY_IN_GONGLI_NONGLI = "(g|n)\\d{8}";
 	private static final String KEY_IN_GONGLI_TODAY = "gnow";
-	private static final String KEY_TULING_ASK = ":";
-	private static final String KEY_TULING_ASK_IN_CHINESE = StrUtil.utf8ToWhatever("\\uEFBC9A");
+	private static final String KEY_TULING_ASK = "\\*";
 
 	@Override
 	public boolean handle() {
@@ -257,8 +256,7 @@ public class CommandFetch extends CommandBase {
 			export(mike.getCalendarInfo());
 		}
 		
-		String regex = "[" + KEY_TULING_ASK + "|" + KEY_TULING_ASK_IN_CHINESE + "](.+?)";
-		singleParam = parseParam(regex);
+		singleParam = parseParam(KEY_TULING_ASK + "(.+?)");
 		if(singleParam != null) {
 			String key = g().getUserValueOf("tuling.key", "e8c190a005adc401867efd1ad2602f70");
 			Extractor<MexedObject> mike = new TulingExtractor(key, singleParam);
