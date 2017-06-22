@@ -1,0 +1,6 @@
+n20170601          n, nongli, old calendar, to gongli, courtesy of https://gonglinongli.51240.com
+g20170601          g, gongli, new calendar, to nongli, courtesy of https://gonglinongli.51240.com
+gnow               g, gongli, now to nongli, old calendar, courtesy of https://gonglinongli.51240.com
+jieqi              fetch 24 points, jieqi in Chinese, courtesy of http://114.xixik.com/24jieqi
+jieqi2017-2020     print 24 jieqi of given year, courtesy of http://114.xixik.com/24jieqi
+ver=GEEK-NONGLI1.0.0-KIM  6/22/2017, IV

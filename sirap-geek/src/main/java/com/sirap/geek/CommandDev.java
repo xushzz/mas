@@ -7,6 +7,7 @@ import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexedObject;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.json.JsonUtil;
+import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
 import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.FileUtil;
@@ -35,6 +36,8 @@ public class CommandDev extends CommandBase {
 	private static final int KEY_JSON_MIN_LEN = 9;
 	private static final String KEY_RAW_JSON = "rjs";
 	private static final String KEY_PAIR_KEY_VALUE = "pa";
+	private static final String KEY_TO_UPPERCASE = "up";
+	private static final String KEY_TO_LOWERCASE= "lo";
 
 	public boolean handle() {
 		singleParam = parseParam(KEY_PATH + "\\s(.*?)");
@@ -217,6 +220,24 @@ public class CommandDev extends CommandBase {
 		if(singleParam != null) {
 			List<String> pairs = StrUtil.parseUrlParams(singleParam);
 			export(pairs);
+			
+			return true;
+		}
+		
+		singleParam = parseParam(KEY_TO_LOWERCASE + "\\.(.+)");
+		if(singleParam != null) {
+			C.pl("To lower case, " + singleParam.length() + " chars.");
+			String result = singleParam.toLowerCase();
+			export(result);
+			
+			return true;
+		}
+		
+		singleParam = parseParam(KEY_TO_UPPERCASE + "\\.(.+)");
+		if(singleParam != null) {
+			C.pl("To upper case, " + singleParam.length() + " chars.");
+			String result = singleParam.toUpperCase();
+			export(result);
 			
 			return true;
 		}

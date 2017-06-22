@@ -485,7 +485,7 @@ public class FileUtil {
 	 */
 	public static List<String> availableDiskDetails() {
 		List<String> items = new ArrayList<>();
-		String template = "{0} available {1} out of {2}";
+		String template = "{0} {3}% available {1} out of {2}";
 		FileSystemView fsv = FileSystemView.getFileSystemView();
 		
 		for(char flag = 'A'; flag <= 'Z'; flag++) {
@@ -496,7 +496,10 @@ public class FileUtil {
 			}
 			
 			String displayName = organizeSystemDisplayName(fsv.getSystemDisplayName(file));
-			String record = StrUtil.occupy(template, displayName, formatFileSize(file.getFreeSpace()), formatFileSize(file.getTotalSpace()));
+			long free = file.getFreeSpace();
+			long total = file.getTotalSpace();
+			int percentage = (int)(free * 100.0 / total);
+			String record = StrUtil.occupy(template, displayName, formatFileSize(free), formatFileSize(total), percentage);
 			items.add(record);
 		}
 		

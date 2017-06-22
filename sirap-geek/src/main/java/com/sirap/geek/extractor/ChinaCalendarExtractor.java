@@ -1,4 +1,4 @@
-package com.sirap.common.extractor.impl;
+package com.sirap.geek.extractor;
 
 import java.util.List;
 import java.util.regex.Matcher;

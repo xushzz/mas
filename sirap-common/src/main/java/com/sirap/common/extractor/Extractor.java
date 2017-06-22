@@ -2,6 +2,8 @@ package com.sirap.common.extractor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexItem;
@@ -35,6 +37,12 @@ public abstract class Extractor<T extends MexItem> {
 	
 	public static String decodeURLParam(String param) {
 		return XCodeUtil.urlDecodeUTF8(param);
+	}
+	
+	protected final Matcher createMatcher(String regex, String content) {
+		Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(content);
+
+		return m;
 	}
 	
 	public void process() {
