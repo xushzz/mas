@@ -1,9 +1,8 @@
-package com.sirap.common.extractor.impl;
+package com.sirap.common.extractor;
 
 import java.util.Date;
 
 import com.sirap.basic.domain.MexItem;
-import com.sirap.common.extractor.Extractor;
 
 public abstract class WorldTimeExtractor extends Extractor<MexItem> {
 	

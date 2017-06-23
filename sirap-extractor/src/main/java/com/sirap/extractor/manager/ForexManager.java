@@ -1,4 +1,4 @@
-package com.sirap.common.manager;
+package com.sirap.extractor.manager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,7 +14,7 @@ import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.domain.ForexRateRecord;
-import com.sirap.common.extractor.impl.XRatesForexRateExtractor;
+import com.sirap.extractor.impl.XRatesForexRateExtractor;
 
 public class ForexManager {
 

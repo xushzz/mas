@@ -1,4 +1,4 @@
-package com.sirap.extractor;
+package com.sirap.extractor.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +10,7 @@ import com.sirap.basic.thread.MasterMexItemsOriented;
 import com.sirap.basic.thread.WorkerMexItemsOritented;
 import com.sirap.common.domain.Link;
 import com.sirap.common.extractor.Extractor;
+import com.sirap.extractor.ExtractorUtil;
 
 public class ExtractorPhoenix {
 	

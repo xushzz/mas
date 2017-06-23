@@ -1,13 +1,13 @@
-package com.sirap.geek;
+package com.sirap.extractor;
+
 
 import com.sirap.basic.domain.MexedObject;
-import com.sirap.basic.tool.D;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.extractor.Extractor;
-import com.sirap.geek.extractor.China24JieqiExtractor;
-import com.sirap.geek.extractor.ChinaCalendarExtractor;
+import com.sirap.extractor.impl.China24JieqiExtractor;
+import com.sirap.extractor.impl.ChinaCalendarExtractor;
 
 public class CommandNongli extends CommandBase {
 

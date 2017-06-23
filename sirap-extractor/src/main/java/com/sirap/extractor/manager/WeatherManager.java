@@ -1,11 +1,11 @@
-package com.sirap.common.manager;
+package com.sirap.extractor.manager;
 
 import java.util.HashMap;
 import java.util.List;
 
 import com.sirap.basic.search.MexFilter;
 import com.sirap.common.domain.WeatherRecord;
-import com.sirap.common.extractor.impl.NationalWeatherExtractor;
+import com.sirap.extractor.impl.NationalWeatherExtractor;
 
 public class WeatherManager {
 

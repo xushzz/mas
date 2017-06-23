@@ -1,0 +1,2 @@
+lady[iga,pinder,carver]  display URLs of lady-related photos from corresponding original web-sites
+ver=SIRAP-EXTRACTOR1.0.1-DYLAN  10/16/2016, VII

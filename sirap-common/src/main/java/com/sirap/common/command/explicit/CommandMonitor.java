@@ -25,7 +25,7 @@ import com.sirap.common.component.KeysReader;
 import com.sirap.common.domain.CommandRecord;
 import com.sirap.common.domain.InputRecord;
 import com.sirap.common.domain.LoginRecord;
-import com.sirap.common.extractor.impl.RemoteSecurityExtractor;
+import com.sirap.common.extractor.RemoteSecurityExtractor;
 import com.sirap.common.framework.Konfig;
 import com.sirap.common.framework.SimpleKonfig;
 import com.sirap.common.framework.command.target.TargetPDF;

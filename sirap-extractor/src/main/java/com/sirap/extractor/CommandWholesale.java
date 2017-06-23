@@ -16,8 +16,12 @@ import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.framework.command.target.TargetConsole;
+import com.sirap.extractor.impl.ExtractorChinaAreaCodeZou114;
+import com.sirap.extractor.impl.ExtractorChinaPostCodeToolcncn;
+import com.sirap.extractor.impl.ExtractorNetease;
+import com.sirap.extractor.impl.ExtractorPhoenix;
 	
-public class CommandExtractor extends CommandBase {
+public class CommandWholesale extends CommandBase {
 
 	private static final String KEY_SOGOU = "sg";
 	private static final String KEY_YOUDAO = "yd";
@@ -50,17 +54,6 @@ public class CommandExtractor extends CommandBase {
 			String type = singleParam.toLowerCase();
 			String method = ExtractorNetease.TYPE_METHOD.get(type);
 			List<String> links = ExtractorUtil.photos(method, ExtractorNetease.class);
-
-			export(links);
-			return true;
-		}
-		
-		types = StrUtil.connect(new ArrayList<String>(ExtractorFancy.TYPE_METHOD.keySet()), "|");
-		singleParam = parseParam("lady(" + types+ ")");
-		if(singleParam != null) {
-			String type = singleParam.toLowerCase();
-			String method = ExtractorFancy.TYPE_METHOD.get(type);
-			List<String> links = ExtractorUtil.photos(method, ExtractorFancy.class);
 
 			export(links);
 			return true;

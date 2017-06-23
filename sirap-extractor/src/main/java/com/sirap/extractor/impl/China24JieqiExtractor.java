@@ -1,4 +1,4 @@
-package com.sirap.geek.extractor;
+package com.sirap.extractor.impl;
 
 import java.util.ArrayList;
 import java.util.List;

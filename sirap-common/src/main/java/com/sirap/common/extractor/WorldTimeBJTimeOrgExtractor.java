@@ -1,4 +1,4 @@
-package com.sirap.common.extractor.impl;
+package com.sirap.common.extractor;
 
 import java.util.Calendar;
 import java.util.Date;

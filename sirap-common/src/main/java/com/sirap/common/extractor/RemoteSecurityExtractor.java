@@ -1,4 +1,4 @@
-package com.sirap.common.extractor.impl;
+package com.sirap.common.extractor;
 
 import java.util.Date;
 import java.util.regex.Matcher;
@@ -7,7 +7,6 @@ import java.util.regex.Pattern;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.StrUtil;
-import com.sirap.common.extractor.Extractor;
 
 public class RemoteSecurityExtractor extends Extractor<MexItem> {
 	

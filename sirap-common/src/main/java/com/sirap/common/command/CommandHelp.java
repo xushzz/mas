@@ -14,8 +14,7 @@ import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.explicit.CommandShutdown;
-import com.sirap.common.extractor.impl.WorldTimeBJTimeOrgExtractor;
-import com.sirap.common.extractor.impl.XRatesForexRateExtractor;
+import com.sirap.common.extractor.WorldTimeBJTimeOrgExtractor;
 import com.sirap.common.framework.SimpleKonfig;
 
 public class CommandHelp extends CommandBase {
@@ -31,7 +30,7 @@ public class CommandHelp extends CommandBase {
 	static {
 		DOLLAR_MEANINGS.put("image.formats", Konstants.IMG_FORMATS);
 		DOLLAR_MEANINGS.put("guest.quits", KEY_EXIT);
-		DOLLAR_MEANINGS.put("money.forex.url", XRatesForexRateExtractor.URL_X_RATES);
+//		DOLLAR_MEANINGS.put("money.forex.url", XRatesForexRateExtractor.URL_X_RATES);
 		DOLLAR_MEANINGS.put("timeserver.bjtimes", WorldTimeBJTimeOrgExtractor.URL_TIME);
 		DOLLAR_MEANINGS.put("windows.lock", CommandShutdown.VALUE_WINDOWS_LOCK);
 		DOLLAR_MEANINGS.put("windows.off", CommandShutdown.VALUE_WINDOWS_TURNOFF);

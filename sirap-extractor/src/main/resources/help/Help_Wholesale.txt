@@ -1,11 +1,9 @@
 sg fire            search photos via http://pic.sogou.com/pics, then download them to folder fire 
-                   under configured sogou folder, the number is fixed as 48. !time costly!
+sg fire            under configured sogou folder, the number is fixed as 48. !time costly!
 yd fire[,199]      search photos via http://image.youdao.com, then download specified number of them to
-                   folder fire under configured youdao folder, default number is 48. !time costly!
+yd fire[,199]      folder fire under configured youdao folder, default number is 48. !time costly!
 163[seriea, china, social, bundes, laliga, premier, uefa], social
-                   display URLs of topic-related photos from corresponding Netease web-sites
-lady[iga,pinder,carver]  display URLs of lady-related photos from corresponding original web-sites
+163[seriea, china  display URLs of topic-related photos from corresponding Netease web-sites
 postcode,youbian   display all post code info, courtesy of http://tool.cncn.com
 areacode,quhao     display all area code info, courtesy of http://www.zou114.com/qh  
-
 ver=SIRAP-EXTRACTOR1.0.1-DYLAN  10/16/2016, VII

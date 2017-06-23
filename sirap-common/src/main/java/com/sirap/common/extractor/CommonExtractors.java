@@ -1,16 +1,9 @@
 package com.sirap.common.extractor;
 
 import java.util.Date;
-import java.util.List;
 
 import com.sirap.basic.domain.MexedObject;
 import com.sirap.basic.util.ThreadUtil;
-import com.sirap.common.extractor.impl.EnglishDictionaryExtractor;
-import com.sirap.common.extractor.impl.EnglishTranslationExtractor;
-import com.sirap.common.extractor.impl.MobilePhoneLocationExtractor;
-import com.sirap.common.extractor.impl.RemoteSecurityExtractor;
-import com.sirap.common.extractor.impl.WorldTimeBJTimeOrgExtractor;
-import com.sirap.common.extractor.impl.WorldTimeExtractor;
 
 public class CommonExtractors {
 	
@@ -41,34 +34,5 @@ public class CommonExtractors {
 		WorldTimeExtractor frank = new WorldTimeBJTimeOrgExtractor();
 		frank.process();
 		return frank.getDatetime();
-	}
-	
-	public static String getMobilePhoneLocation(String phoneNumber) {
-		Extractor<MexedObject> frank = new MobilePhoneLocationExtractor(phoneNumber);
-		frank.process();
-		MexedObject mo = frank.getMexItem();
-		
-		String value = null;
-		if(mo != null) {
-			value = mo.getString().trim();
-		}
-		
-		return value;
-	}
-	
-	public static List<MexedObject> getTranslation(String word) {
-		Extractor<MexedObject> frank = new EnglishTranslationExtractor(word);
-		frank.process();
-		List<MexedObject> items = frank.getMexItems();
-		
-		return items;
-	}
-	
-	public static List<MexedObject> lookupDictionary(String word) {
-		Extractor<MexedObject> frank = new EnglishDictionaryExtractor(word);
-		frank.process();
-		List<MexedObject> items = frank.getMexItems();
-		
-		return items;
 	}
 }
