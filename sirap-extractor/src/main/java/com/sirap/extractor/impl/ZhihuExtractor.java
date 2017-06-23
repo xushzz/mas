@@ -19,15 +19,18 @@ public class ZhihuExtractor extends Extractor<ZhihuRecord> {
 		
 	@Override
 	protected void parseContent() {
-		String regex = "<li class=\"item clearfix.+?</div></div></div></div></li>";
+		String regex = "<li class=\"item clearfix.+?</div></div></li>";
 		Matcher m = createMatcher(regex);
-		String regexQNumber = "href=\"/question/(\\d+)\"";
+		String regexLink = "<a target=\"_blank\" href=\"([^\"]+)\" class=\"js-title-link\">";
 		String regexQuestion = "<div class=\"title\">(.+?)</div>";
 		String regexAnswer = "<script type=\"text\" class=\"content\">(.+?)</script>";
 		int count = 0;
 		while(m.find()) {
 			String raw = m.group();
-			String qNumber = StrUtil.findFirstMatchedItem(regexQNumber, raw);
+			String link = StrUtil.findFirstMatchedItem(regexLink, raw);
+			if(!StrUtil.startsWith(link, "https")) {
+				link = "https://www.zhihu.com" + link;
+			}
 			String question = removeHttpStuff(StrUtil.findFirstMatchedItem(regexQuestion, raw));
 
 			String answer = "SHIT";
@@ -40,7 +43,7 @@ public class ZhihuExtractor extends Extractor<ZhihuRecord> {
 			count++;
 			ZhihuRecord item = new ZhihuRecord();
 			item.setPseudoOrder(count);
-			item.setQuestionNumber(qNumber);
+			item.setLink(link);
 			item.setQuestion(question);
 			item.setAnswer(answer);
 

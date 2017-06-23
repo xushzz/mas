@@ -4,20 +4,20 @@ import com.sirap.basic.domain.MexItem;
 
 @SuppressWarnings("serial")
 public class ZhihuRecord extends MexItem {
-	private String questionNumber;
+	private String link;
 	private String question;
 	private String answer;
 	
 	public ZhihuRecord() {
 		
 	}
-		
-	public String getQuestionNumber() {
-		return questionNumber;
+	
+	public String getLink() {
+		return link;
 	}
 
-	public void setQuestionNumber(String questionNumber) {
-		this.questionNumber = questionNumber;
+	public void setLink(String link) {
+		this.link = link;
 	}
 
 	public String getQuestion() {
@@ -40,7 +40,6 @@ public class ZhihuRecord extends MexItem {
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append(pseudoOrder).append(") ").append(question);
-		String link = "https://www.zhihu.com/question/" + questionNumber;
 		sb.append(" ").append(link);
 		sb.append("\n");
 		sb.append(answer);

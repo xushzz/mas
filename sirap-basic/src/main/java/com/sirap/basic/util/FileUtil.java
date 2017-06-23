@@ -135,11 +135,12 @@ public class FileUtil {
 				if(tempName.endsWith(tempSfx)) {
 					return true;
 				}
+			} else {
+				if(tempName.endsWith("." + tempSfx)) {
+					return true;
+				}
 			}
 			
-			if(tempName.endsWith("." + tempSfx)) {
-				return true;
-			}
 		}
 		
 		return false;
