@@ -1,6 +1,7 @@
 package com.sirap.extractor;
 
 import java.util.List;
+
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexedObject;
 import com.sirap.basic.output.PDFParams;
@@ -11,10 +12,12 @@ import com.sirap.common.command.CommandBase;
 import com.sirap.common.domain.WeatherRecord;
 import com.sirap.common.extractor.Extractor;
 import com.sirap.common.framework.command.target.TargetPDF;
+import com.sirap.extractor.domain.ZhihuRecord;
 import com.sirap.extractor.impl.EnglishDictionaryExtractor;
 import com.sirap.extractor.impl.EnglishTranslationExtractor;
 import com.sirap.extractor.impl.MobilePhoneLocationExtractor;
 import com.sirap.extractor.impl.TulingExtractor;
+import com.sirap.extractor.impl.ZhihuExtractor;
 import com.sirap.extractor.manager.ForexManager;
 import com.sirap.extractor.manager.WeatherManager;
 
@@ -26,6 +29,7 @@ public class CommandCollect extends CommandBase {
 	private static final String KEY_TRANSLATE = "i";
 	private static final String KEY_FOREX = "\\$([a-z]{3})" + Konstants.REGEX_FLOAT + "(|/|[a-z,]+)";
 	private static final String KEY_TULING_ASK = "\\*";
+	private static final String KEY_ZHIHU_ASK = "#";
 
 	public boolean handle() {
 
@@ -105,6 +109,15 @@ public class CommandCollect extends CommandBase {
 			mike.process();
 			String tulingInChinese = StrUtil.utf8ToWhatever("\\uE59BBE\\uE781B5");
 			export(tulingInChinese + ": " + mike.getMexItem());
+			
+			return true;
+		}
+		
+		singleParam = parseParam(KEY_ZHIHU_ASK + "(.+?)");
+		if(singleParam != null) {
+			Extractor<ZhihuRecord> mike = new ZhihuExtractor(singleParam);
+			mike.process();
+			export(mike.getMexItems());
 			
 			return true;
 		}

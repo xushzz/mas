@@ -131,7 +131,13 @@ public class FileUtil {
 			
 			String tempName = fileName.toLowerCase();
 			String tempSfx = suffix.toLowerCase();
-			if(tempName.endsWith(tempSfx) || tempName.endsWith("." + tempSfx)) {
+			if(tempSfx.startsWith(".")) {
+				if(tempName.endsWith(tempSfx)) {
+					return true;
+				}
+			}
+			
+			if(tempName.endsWith("." + tempSfx)) {
 				return true;
 			}
 		}

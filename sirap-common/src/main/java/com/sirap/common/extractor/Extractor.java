@@ -39,6 +39,10 @@ public abstract class Extractor<T extends MexItem> {
 		return XCodeUtil.urlDecodeUTF8(param);
 	}
 	
+	protected final Matcher createMatcher(String regex) {
+		return createMatcher(regex, source);
+	}
+	
 	protected final Matcher createMatcher(String regex, String content) {
 		Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(content);
 
