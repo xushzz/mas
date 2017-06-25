@@ -80,6 +80,11 @@ public class CommandSirap extends CommandBase {
 	private static final String KEY_TO_LONG = "tl";
 	private static final String KEY_ASSIGN_CHARSET = "gbk,utf8,utf-8,gb2312";
 	private static final String KEY_MAXMIN = "max,min";
+
+	{
+		helpMeanings.put("image.formats", Konstants.IMG_FORMATS);
+		helpMeanings.put("guest.quits", KEY_EXIT);
+	}
 	
 	@Override
 	public boolean handle() {

@@ -2,7 +2,9 @@ package com.sirap.common.command;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexedObject;
@@ -33,6 +35,8 @@ public abstract class CommandBase {
 	public static final String KEY_EXIT = "q,e,quit,exit";
 	public static final String KEY_HTTP_WWW = "((https?://|www\\.)[\\S]{4,}?)";
 
+	public Map<String, Object> helpMeanings = new HashMap<>();
+	
 	protected String input;
 	protected String command;
 	public Target target;
@@ -175,6 +179,14 @@ public abstract class CommandBase {
 
 	public String[] parseParams(String regex) {
 		return StrUtil.parseParams(regex, command);
+	}
+	
+	protected boolean isParamNotnull() {
+		return singleParam != null;
+	}
+	
+	protected boolean isParamsNotnull() {
+		return params != null;
 	}
 	
 	public File parseFile(String param) {
@@ -432,6 +444,21 @@ public abstract class CommandBase {
 		return false;
 	}
 	
+
+	protected List<String> getCommandNames() {
+		List<String> keys = new ArrayList<String>();
+		List<String> commandNodes = SimpleKonfig.g().getCommandClassNames();
+		for(String node:commandNodes) {
+			String param = StrUtil.parseParam(".*?\\.Command([a-z]*?)$", node);
+			if(param == null) {
+				continue;
+			}
+			keys.add(param);
+		}
+		return keys;
+	}
+
+	
 	protected void executeInternalCmd(String conciseCommand) {
 		boolean printAlong = target instanceof TargetConsole;
 		String newCommand = "cmd /c " + conciseCommand;
@@ -452,6 +479,5 @@ public abstract class CommandBase {
 				export(result);
 			}
 		}
-
 	}
 }

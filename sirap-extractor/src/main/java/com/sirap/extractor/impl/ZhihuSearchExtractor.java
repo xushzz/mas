@@ -6,11 +6,12 @@ import com.sirap.basic.util.StrUtil;
 import com.sirap.common.extractor.Extractor;
 import com.sirap.extractor.domain.ZhihuRecord;
 
-public class ZhihuExtractor extends Extractor<ZhihuRecord> {
+public class ZhihuSearchExtractor extends Extractor<ZhihuRecord> {
 	
-	public static final String URL_TEMPLATE = "https://www.zhihu.com/search?type=content&q={0}";
+	public static final String HOMEPAGE = "https://www.zhihu.com";
+	public static final String URL_TEMPLATE = HOMEPAGE + "/search?type=content&q={0}";
 	
-	public ZhihuExtractor(String param) {
+	public ZhihuSearchExtractor(String param) {
 		printFetching = true;
 		useGBK();
 		String url = StrUtil.occupy(URL_TEMPLATE, encodeURLParam(param));
@@ -29,7 +30,7 @@ public class ZhihuExtractor extends Extractor<ZhihuRecord> {
 			String raw = m.group();
 			String link = StrUtil.findFirstMatchedItem(regexLink, raw);
 			if(!StrUtil.startsWith(link, "https")) {
-				link = "https://www.zhihu.com" + link;
+				link = HOMEPAGE + link;
 			}
 			String question = removeHttpStuff(StrUtil.findFirstMatchedItem(regexQuestion, raw));
 

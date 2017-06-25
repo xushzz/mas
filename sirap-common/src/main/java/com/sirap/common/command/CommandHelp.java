@@ -5,16 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexedObject;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
+import com.sirap.basic.util.ObjectUtil;
 import com.sirap.basic.util.StrUtil;
-import com.sirap.common.command.explicit.CommandShutdown;
-import com.sirap.common.extractor.WorldTimeBJTimeOrgExtractor;
 import com.sirap.common.framework.SimpleKonfig;
 
 public class CommandHelp extends CommandBase {
@@ -24,19 +22,6 @@ public class CommandHelp extends CommandBase {
 	private static final String KEY_TASK = "Task";
 	private static final String TEMPLATE_HELP = "/help/Help_{0}.txt";
 	private static final String TEMPLATE_HELP_XX = "/help/Help_{0}_{1}.txt";
-	
-	private static final Map<String, Object> DOLLAR_MEANINGS = new HashMap<>();
-	
-	static {
-		DOLLAR_MEANINGS.put("image.formats", Konstants.IMG_FORMATS);
-		DOLLAR_MEANINGS.put("guest.quits", KEY_EXIT);
-//		DOLLAR_MEANINGS.put("money.forex.url", XRatesForexRateExtractor.URL_X_RATES);
-		DOLLAR_MEANINGS.put("timeserver.bjtimes", WorldTimeBJTimeOrgExtractor.URL_TIME);
-		DOLLAR_MEANINGS.put("windows.lock", CommandShutdown.VALUE_WINDOWS_LOCK);
-		DOLLAR_MEANINGS.put("windows.off", CommandShutdown.VALUE_WINDOWS_TURNOFF);
-		DOLLAR_MEANINGS.put("windows.restart", CommandShutdown.VALUE_WINDOWS_RESTART);
-		DOLLAR_MEANINGS.put("windows.logout", CommandShutdown.VALUE_WINDOWS_LOGOUT);
-	}
 	
 	@Override
 	public boolean handle() {
@@ -49,7 +34,7 @@ public class CommandHelp extends CommandBase {
 			String temp = g().getValueOf("help.keys");
 			List<String> keys = StrUtil.splitByRegex(temp);
 			if(keys.isEmpty()) {
-				keys = generateHelpKeys();
+				keys = getCommandNames();
 			}
 			for(String key : keys) {
 				if(EmptyUtil.isNullOrEmptyOrBlank(key)) {
@@ -64,17 +49,18 @@ public class CommandHelp extends CommandBase {
 			
 			if(isEmailEnabled()) {
 				allKeys.add(KEY_EMAIL);
-			}
+ 			}
 			allKeys.add(KEY_TASK);
 			
 			List<String> results = new ArrayList<>();
 			int maxLen = StrUtil.maxLengthOf(allKeys) + 2;
+			Map<String, Object> allHelpMeanings = getAllHelpMeanings();
 			for(String key : allKeys) {
 				String fileName = getHelpFileName(key);
 				String prefix = StrUtil.extend(key, maxLen, " ");
 				List<String> items = FileUtil.readResourceFilesIntoList(fileName, prefix);
 				if(!EmptyUtil.isNullOrEmpty(items)) {
-					items = occupyDollarKeys(items);
+					items = occupyDollarKeys(items, allHelpMeanings);
 					results.addAll(items);
 				}
 			}
@@ -95,10 +81,10 @@ public class CommandHelp extends CommandBase {
 		return false;
 	}
 	
-	private List<String> occupyDollarKeys(List<String> results) {
+	private List<String> occupyDollarKeys(List<String> results, Map<String, Object> allHelpMeanings) {
 		List<String> items = new ArrayList<>();
 		for(String temp : results) {
-			String item = StrUtil.occupyKeyValues(temp, DOLLAR_MEANINGS);
+			String item = StrUtil.occupyKeyValues(temp, allHelpMeanings);
 			items.add(item);
 		}
 		
@@ -127,17 +113,19 @@ public class CommandHelp extends CommandBase {
 		return filePath;
 	}
 	
-
-	private List<String> generateHelpKeys() {
-		List<String> keys = new ArrayList<String>();
-		List<String> commandNodes = SimpleKonfig.g().getCommandNodeItems();
-		for(String node:commandNodes) {
-			String param = StrUtil.parseParam(".*?\\.Command([a-z]*?)$", node);
-			if(param == null) {
-				continue;
-			}
-			keys.add(param);
+	@SuppressWarnings("unchecked")
+	private Map<String, Object> getAllHelpMeanings() {
+		Map<String, Object> allEntries = new HashMap<>();
+		List<String> items = SimpleKonfig.g().getCommandClassNames();
+		String fieldName = "helpMeanings";
+		for(String className : items) {
+			Object obj = ObjectUtil.readFieldValue(className, fieldName);
+			allEntries.putAll((Map<String, Object>)obj);
 		}
-		return keys;
+		
+		Object obj = ObjectUtil.readFieldValue(getClass().getName(), fieldName);
+		allEntries.putAll((Map<String, Object>)obj);
+		
+		return allEntries;
 	}
 }

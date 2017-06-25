@@ -18,6 +18,9 @@ import com.sirap.common.extractor.Extractor;
 
 public class ExtractorUtil {
 
+	public static final String HOMEPAGE_SOGOU = "http://pic.sogou.com";
+	public static final String HOMEPAGE_YOUDAO = "http://image.youdao.com";
+
 	public static List<Code> getDisplayCountryCodes(Locale inLocale) {
 		List<Code> codes = new ArrayList<Code>();
 		
@@ -45,7 +48,7 @@ public class ExtractorUtil {
 	public static List<MexedObject> youdaoImageLinks(final String keyword, final int start) {
 		Extractor<MexedObject> frank = new Extractor<MexedObject>() {
 			
-			public static final String URL_TEMPLATE = "http://image.youdao.com/search?q={0}&start={1}";
+			public static final String URL_TEMPLATE = HOMEPAGE_YOUDAO + "/search?q={0}&start={1}";
 			
 			@Override
 			public String getUrl() {
@@ -78,7 +81,7 @@ public class ExtractorUtil {
 	public static List<MexedObject> sogouImageLinks(final String keyword) {
 		Extractor<MexedObject> frank = new Extractor<MexedObject>() {
 			
-			public static final String URL = "http://pic.sogou.com/pics?query=";
+			public static final String URL = HOMEPAGE_SOGOU + "/pics?query=";
 			
 			@Override
 			public String getUrl() {

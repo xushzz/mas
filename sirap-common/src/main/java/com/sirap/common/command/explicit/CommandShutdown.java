@@ -1,8 +1,10 @@
 package com.sirap.common.command.explicit;
 
+import com.sirap.basic.component.Konstants;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.PanaceaBox;
 import com.sirap.common.command.CommandBase;
+import com.sirap.common.extractor.WorldTimeBJTimeOrgExtractor;
 
 public class CommandShutdown extends CommandBase {
 
@@ -11,10 +13,17 @@ public class CommandShutdown extends CommandBase {
 	private static final String KEY_WINDOWS_TURNOFF = "off";
 	private static final String KEY_WINDOWS_RESTART = "rest";
 	
-	public static final String VALUE_WINDOWS_LOCK = "rundll32 user32.dll,LockWorkStation";
-	public static final String VALUE_WINDOWS_LOGOUT = "shutdown -l -t 1";
-	public static final String VALUE_WINDOWS_TURNOFF = "shutdown -s -t 1";
-	public static final String VALUE_WINDOWS_RESTART = "shutdown -r -t 1";
+	private static final String VALUE_WINDOWS_LOCK = "rundll32 user32.dll,LockWorkStation";
+	private static final String VALUE_WINDOWS_LOGOUT = "shutdown -l -t 1";
+	private static final String VALUE_WINDOWS_TURNOFF = "shutdown -s -t 1";
+	private static final String VALUE_WINDOWS_RESTART = "shutdown -r -t 1";
+
+	{
+		helpMeanings.put("windows.lock", CommandShutdown.VALUE_WINDOWS_LOCK);
+		helpMeanings.put("windows.off", CommandShutdown.VALUE_WINDOWS_TURNOFF);
+		helpMeanings.put("windows.restart", CommandShutdown.VALUE_WINDOWS_RESTART);
+		helpMeanings.put("windows.logout", CommandShutdown.VALUE_WINDOWS_LOGOUT);
+	}
 
 	@Override
 	public boolean handle() {

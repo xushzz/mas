@@ -14,10 +14,12 @@ import com.sirap.common.extractor.Extractor;
 import com.sirap.common.framework.command.target.TargetPDF;
 import com.sirap.extractor.domain.ZhihuRecord;
 import com.sirap.extractor.impl.EnglishDictionaryExtractor;
-import com.sirap.extractor.impl.EnglishTranslationExtractor;
+import com.sirap.extractor.impl.IcibaTranslationExtractor;
 import com.sirap.extractor.impl.MobilePhoneLocationExtractor;
+import com.sirap.extractor.impl.NationalWeatherExtractor;
 import com.sirap.extractor.impl.TulingExtractor;
-import com.sirap.extractor.impl.ZhihuExtractor;
+import com.sirap.extractor.impl.XRatesForexRateExtractor;
+import com.sirap.extractor.impl.ZhihuSearchExtractor;
 import com.sirap.extractor.manager.ForexManager;
 import com.sirap.extractor.manager.WeatherManager;
 
@@ -31,6 +33,16 @@ public class CommandCollect extends CommandBase {
 	private static final String KEY_TULING_ASK = "tl\\*";
 	private static final String KEY_ZHIHU_ASK = "\\*";
 
+	{
+		helpMeanings.put("money.forex.url", XRatesForexRateExtractor.URL_X_RATES);
+		helpMeanings.put("tuling.url", TulingExtractor.HOMEPAGE);
+		helpMeanings.put("china.weather.url", NationalWeatherExtractor.HOMEPAGE);
+		helpMeanings.put("phone.char.url", MobilePhoneLocationExtractor.HOMEPAGE);
+		helpMeanings.put("iciba.url", IcibaTranslationExtractor.HOMEPAGE);
+		helpMeanings.put("dictionary.url", EnglishDictionaryExtractor.HOMEPAGE);
+		helpMeanings.put("zhihu.url", ZhihuSearchExtractor.HOMEPAGE);
+	}
+	
 	public boolean handle() {
 
 		if(is(KEY_WEATHER + KEY_2DOTS)) {
@@ -115,7 +127,7 @@ public class CommandCollect extends CommandBase {
 		
 		singleParam = parseParam(KEY_ZHIHU_ASK + "(.+?)");
 		if(singleParam != null) {
-			Extractor<ZhihuRecord> mike = new ZhihuExtractor(singleParam);
+			Extractor<ZhihuRecord> mike = new ZhihuSearchExtractor(singleParam);
 			mike.process();
 			export(mike.getMexItems());
 			
@@ -139,7 +151,7 @@ public class CommandCollect extends CommandBase {
 	}
 	
 	public static List<MexedObject> getTranslation(String word) {
-		Extractor<MexedObject> frank = new EnglishTranslationExtractor(word);
+		Extractor<MexedObject> frank = new IcibaTranslationExtractor(word);
 		frank.process();
 		List<MexedObject> items = frank.getMexItems();
 		

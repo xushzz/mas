@@ -42,7 +42,7 @@ public class ZhihuRecord extends MexItem {
 		sb.append(pseudoOrder).append(") ").append(question);
 		sb.append(" ").append(link);
 		sb.append("\n");
-		sb.append(answer);
+		sb.append(answer).append(" (").append(answer.length()).append(" chars)");
 		sb.append("\n");
 		
 		return sb.toString();

@@ -52,6 +52,7 @@ set CP=%CP%;%deps%\poi-ooxml-3.10-FINAL.jar
 set CP=%CP%;%deps%\poi-ooxml-schemas-3.10-FINAL.jar
 set CP=%CP%;%deps%\xmlbeans-2.6.0.jar
 set CP=%CP%;%deps%\dom4j-1.6.1.jar
+set CP=%CP%;%deps%\ojdbc14-10.2.0.4.0.jar
 
 set APP=com.sirap.common.entry.AppMas
 

@@ -301,13 +301,13 @@ public class SimpleKonfig extends Konfig {
 		return items;
 	}
 
-	public List<String> getCommandNodeItems() {
-		List<String> nodes = new ArrayList<>();
+	public List<String> getCommandClassNames() {
+		List<String> items = new ArrayList<>();
 		for(CommandRecord item : commandNodes) {
-			nodes.add(item.getClassName());
+			items.add(item.getClassName());
 		}
 		
-		return nodes;
+		return items;
 	}
 	
 	public List<CommandRecord> getCommandNodes() {

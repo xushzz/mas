@@ -15,6 +15,11 @@ public class CommandNongli extends CommandBase {
 	private static final String KEY_IN_GONGLI_TODAY = "gnow";
 	private static final String KEY_24_JIEQI = "jieqi";
 
+	{
+		helpMeanings.put("nongli.url", ChinaCalendarExtractor.URL_TEMPLATE);
+		helpMeanings.put("24jieqi.url", China24JieqiExtractor.HOMEPAGE);
+	}
+	
 	public boolean handle() {
 		if(StrUtil.isRegexMatched(KEY_IN_GONGLI_NONGLI, command)) {
 			ChinaCalendarExtractor mike = new ChinaCalendarExtractor(command);

@@ -14,6 +14,8 @@ import com.sirap.extractor.ExtractorUtil;
 
 public class ExtractorPhoenix {
 	
+	public static final String HOMEPAGE = "http://news.ifeng.com";
+	
 	public static List<String> photos() {
 		List<Link> events = eventLinks();
 		List<String> allLinks = getAllLinksInEvents(events);
@@ -63,11 +65,11 @@ public class ExtractorPhoenix {
 	
 	public static List<Link> eventLinks() {
 		String[] events = {
-				"http://news.ifeng.com/photo/list_0/0.shtml",
-				"http://news.ifeng.com/photo/weiguan/list_0/0.shtml",
-				"http://news.ifeng.com/photo/tekan/list_0/0.shtml",
-				"http://news.ifeng.com/photo/zairenjian/list_0/0.shtml",
-				"http://news.ifeng.com/photo/dashijian/list_0/0.shtml",
+				HOMEPAGE + "/photo/list_0/0.shtml",
+				HOMEPAGE + "/photo/weiguan/list_0/0.shtml",
+				HOMEPAGE + "/photo/tekan/list_0/0.shtml",
+				HOMEPAGE + "/photo/zairenjian/list_0/0.shtml",
+				HOMEPAGE + "/photo/dashijian/list_0/0.shtml",
 				};
 		
 		final List<Link> items = new ArrayList<Link>();
@@ -81,7 +83,6 @@ public class ExtractorPhoenix {
 				
 				@Override
 				protected void parseContent() {
-					//href="http://news.ifeng.com/a/20140905/41882756_0.shtml"
 					String regex = "href=\"(http://news.ifeng.com/a/.*?shtml)\"";
 					Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
 					while(m.find()) {

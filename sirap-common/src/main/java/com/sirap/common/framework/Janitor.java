@@ -45,7 +45,7 @@ public class Janitor extends Checker {
 	}
 	
 	private void initCommandList() {
-		List<String> commandNodes = SimpleKonfig.g().getCommandNodeItems();
+		List<String> commandNodes = SimpleKonfig.g().getCommandClassNames();
 		
 		commandList.clear();
 		for(String className : commandNodes) {

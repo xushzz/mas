@@ -11,7 +11,8 @@ import com.sirap.common.extractor.Extractor;
 
 public class EnglishDictionaryExtractor extends Extractor<MexedObject> {
 	
-	public static final String URL_TEMPLATE = "http://www.dictionary.com/browse/{0}";
+	public static final String HOMEPAGE = "http://www.dictionary.com";
+	public static final String URL_TEMPLATE = HOMEPAGE + "/browse/{0}";
 
 	public EnglishDictionaryExtractor(String param) {
 		printFetching = true;

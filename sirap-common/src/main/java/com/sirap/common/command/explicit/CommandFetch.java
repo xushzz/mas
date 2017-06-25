@@ -18,6 +18,7 @@ import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.domain.TZRecord;
 import com.sirap.common.extractor.CommonExtractors;
+import com.sirap.common.extractor.WorldTimeBJTimeOrgExtractor;
 import com.sirap.common.framework.command.target.TargetConsole;
 import com.sirap.common.framework.command.target.TargetPDF;
 import com.sirap.common.manager.TimeZoneManager;
@@ -30,6 +31,10 @@ public class CommandFetch extends CommandBase {
 	private static final String KEY_DATETIME_GMT = "d.";
 	private static final String KEY_DATETIME_TIMEZONE = "d\\.(.{1,20})";
 
+	{
+		helpMeanings.put("timeserver.bjtimes", WorldTimeBJTimeOrgExtractor.URL_TIME);
+	}
+	
 	@Override
 	public boolean handle() {
 		
@@ -123,7 +128,7 @@ public class CommandFetch extends CommandBase {
 				serverCharset = "unclear";
 			}
 			export(content);
-			C.pl2("length: " + content.length() + ", charset in use: " + charsetInUse + ", charset on server: " + serverCharset);
+			C.pl2("chars: " + content.length() + ", charset in use: " + charsetInUse + ", charset on server: " + serverCharset);
 		}
 		
 		if(is(KEY_DATETIME_GMT)) {

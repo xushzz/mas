@@ -11,7 +11,8 @@ import com.sirap.common.extractor.Extractor;
 
 public class China24JieqiExtractor extends Extractor<MexedObject> {
 	
-	public static final String URL_TEMPLATE = "http://114.xixik.com/24jieqi";
+	public static final String HOMEPAGE = "http://114.xixik.com";
+	public static final String URL_TEMPLATE = HOMEPAGE + "/24jieqi";
 	private String year;
 	
 	public China24JieqiExtractor() {

@@ -15,7 +15,6 @@ import com.sirap.basic.util.XXXUtil;
 
 public abstract class Konfig {
 
-	protected static String SYSTEM_CONFIG_FILE_TEMPLATE = "/Config_{0}.properties";
 	public static String EXTRA_FILE = "/Extra.properties";
 	public static String KEYS_FILE = "/Keys.txt";
 	

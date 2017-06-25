@@ -10,7 +10,8 @@ import com.sirap.common.extractor.Extractor;
 
 public class NationalWeatherExtractor extends Extractor<WeatherRecord> {
 	
-	public static final String URL_TEMPLATE = "http://www.nmc.cn/publish/forecast/china.html"; 
+	public static final String HOMEPAGE = "http://www.nmc.cn";
+	public static final String URL_TEMPLATE = HOMEPAGE + "/publish/forecast/china.html"; 
 	
 	public NationalWeatherExtractor() {
 		printFetching = true;

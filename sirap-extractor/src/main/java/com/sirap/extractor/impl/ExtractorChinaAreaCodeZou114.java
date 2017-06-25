@@ -12,7 +12,7 @@ import com.sirap.common.extractor.Extractor;
 
 public class ExtractorChinaAreaCodeZou114 {
 	
-	private static final String HOMEPAGE = "http://www.zou114.com/qh";
+	public static final String HOMEPAGE = "http://www.zou114.com/qh";
 
 	public static List<MexedObject> getAllAreaCodes() {
 		

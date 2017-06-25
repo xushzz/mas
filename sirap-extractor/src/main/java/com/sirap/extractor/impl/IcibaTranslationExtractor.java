@@ -7,11 +7,12 @@ import com.sirap.basic.util.HtmlUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.extractor.Extractor;
 
-public class EnglishTranslationExtractor extends Extractor<MexedObject> {
+public class IcibaTranslationExtractor extends Extractor<MexedObject> {
 	
-	public static final String URL_TEMPLATE = "http://www.iciba.com/{0}";
+	public static final String HOMEPAGE = "http://www.iciba.com";
+	public static final String URL_TEMPLATE = HOMEPAGE + "/{0}";
 
-	public EnglishTranslationExtractor(String param) {
+	public IcibaTranslationExtractor(String param) {
 		printFetching = true;
 		String url = StrUtil.occupy(URL_TEMPLATE, encodeURLParam(param));
 		setUrl(url);

@@ -1,9 +1,11 @@
 package com.sirap.basic.util;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("rawtypes")
 public class ObjectUtil {
@@ -109,6 +111,20 @@ public class ObjectUtil {
 				Method m = clazz.getMethod(methodName, clazzArr);
 				obj = m.invoke(instanceOrClazz, args);
 			}
+			
+			return obj;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	
+	public static Object readFieldValue(String className, String fieldName) {
+		try {
+			Class<?> clazz = Class.forName(className);
+			Field f1 = clazz.getField(fieldName);
+			Object obj = f1.get(clazz.newInstance());
 			
 			return obj;
 		} catch (Exception e) {

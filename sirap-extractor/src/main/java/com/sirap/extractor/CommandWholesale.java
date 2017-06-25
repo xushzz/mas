@@ -25,9 +25,18 @@ public class CommandWholesale extends CommandBase {
 
 	private static final String KEY_SOGOU = "sg";
 	private static final String KEY_YOUDAO = "yd";
-	private static final String KEY_PHOENIX = "social";
+	private static final String KEY_PHOENIX = "fenghuang,phoenix";
 	private static final String KEY_POSTCODE = "postcode,youbian";
 	private static final String KEY_AREACODE = "areacode,quhao";
+	
+	{
+		helpMeanings.put("sogou.url", ExtractorUtil.HOMEPAGE_SOGOU);
+		helpMeanings.put("youdao.url", ExtractorUtil.HOMEPAGE_YOUDAO);
+		helpMeanings.put("163.netease.url", "http://www.163.com");
+		helpMeanings.put("phoenix.url", ExtractorPhoenix.HOMEPAGE);
+		helpMeanings.put("youbian.postcode.url", ExtractorChinaPostCodeToolcncn.HOMEPAGE);
+		helpMeanings.put("quhao.areacode.url", ExtractorChinaAreaCodeZou114.HOMEPAGE);
+	}
 	
 	public boolean handle() {
 		
@@ -59,7 +68,7 @@ public class CommandWholesale extends CommandBase {
 			return true;
 		}
 		
-		if(is(KEY_PHOENIX)) {
+		if(isIn(KEY_PHOENIX)) {
 			List<String> links = ExtractorPhoenix.photos();
 			
 			export(links);

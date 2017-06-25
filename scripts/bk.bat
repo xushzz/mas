@@ -38,10 +38,16 @@ md %where%\jars
 :mvn
 cd /d %from%
 set JAVA_HOME=%jdk%
-::goto cpy
-call mvn -Dmaven.test.skip=true clean install -P s
+set mvnResult=mvn.result.txt
+echo maven is building...
+call mvn -Dmaven.test.skip=true clean install -P s>%mvnResult%
+findstr "BUILD SUCCESS" "mvn.result.txt"&&goto cpy||goto bad
 
-::copy %from%\%%i\target\*SHOT.jar %where%\jars
+:bad
+type %mvnResult%
+echo "oops, build failed."
+goto end
+
 :cpy
 for %%i in (%what%) do copy %from%\%%i\target\*SHOT.jar %where%\jars
 copy %from%\sirap-security\target\*.jar %where%\jars

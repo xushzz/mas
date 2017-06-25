@@ -854,7 +854,7 @@ public class StrUtil {
 	}
 	
 	public static List<String> parseUrlParams(String wholeUrl) {
-		String regex = "([^\\?&]+)=([^\\?&#]*)";
+		String regex = "([^\\?&=]+)=([^\\?&#]*)";
 		Matcher ma = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(wholeUrl);
 
 		List<String> params = new ArrayList<>();

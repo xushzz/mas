@@ -10,7 +10,8 @@ import com.sirap.common.extractor.Extractor;
 
 public class MobilePhoneLocationExtractor extends Extractor<MexedObject> {
 	
-	public static final String URL_TEMPLATE = "http://www.00cha.com/shouji/?mobile={0}";
+	public static final String HOMEPAGE = "http://www.00cha.com";
+	public static final String URL_TEMPLATE = HOMEPAGE + "/shouji/?mobile={0}";
 
 	public MobilePhoneLocationExtractor(String repo) {
 		printFetching = true;

@@ -12,7 +12,7 @@ import com.sirap.common.extractor.Extractor;
 
 public class ExtractorChinaPostCodeToolcncn {
 	
-	private static final String HOMEPAGE = "http://tool.cncn.com";
+	public static final String HOMEPAGE = "http://tool.cncn.com";
 
 	public static List<MexedObject> getAllVillageCodes() {
 		
