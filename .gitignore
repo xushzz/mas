@@ -3,7 +3,7 @@
 .settings
 .project
 *.bak
-
+mvn.result.txt
 */target
 */test-output
 

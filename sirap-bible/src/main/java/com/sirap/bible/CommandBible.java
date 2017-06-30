@@ -27,7 +27,7 @@ public class CommandBible extends CommandBase {
 			return true;
 		}
 		
-		String regex = "([123][a-z]{2,}|[a-z]{3,})(\\d{1,3})";
+		String regex = "([123][\\^a-z\\$]{2,}|[\\^a-z\\$]{3,})(\\d{1,3})";
 		params = parseParams(regex);
 		if(params != null) {
 			String bookName = params[0];
