@@ -26,6 +26,7 @@ import com.sirap.common.framework.SimpleKonfig;
 import com.sirap.common.framework.command.Exporter;
 import com.sirap.common.framework.command.target.Target;
 import com.sirap.common.framework.command.target.TargetConsole;
+import com.sirap.common.framework.command.target.TargetDefault;
 import com.sirap.common.framework.command.target.TargetFolder;
 
 public abstract class CommandBase {
@@ -34,7 +35,7 @@ public abstract class CommandBase {
 	public static final String KEY_REFRESH = "r";
 	public static final String KEY_EXIT = "q,e,quit,exit";
 	public static final String KEY_HTTP_WWW = "((https?://|www\\.)[\\S]{4,}?)";
-
+	public static final String STASH_USER_INPUT_TARGET = "userInputTarget";
 	public Map<String, Object> helpMeanings = new HashMap<>();
 	
 	protected String input;
@@ -106,8 +107,20 @@ public abstract class CommandBase {
 		if(EmptyUtil.isNullOrEmpty(list)) {
 			exportEmptyMsg();
 		} else {
-			Exporter.exportList(input, list, target);
+			Exporter.exportList(input, list, whereToShot());
 		}
+	}
+	
+	private Target whereToShot() {
+		Object item = (Target)g().getStash().get(STASH_USER_INPUT_TARGET);
+		if(item != null && item instanceof Target) {
+			boolean isNotDefaultTarget = !(item instanceof TargetDefault);
+			if(isNotDefaultTarget) {
+				return (Target)item;
+			}
+		}
+		
+		return target;
 	}
 	
 	protected void exportItems(List<String> list, String criteria) {
@@ -457,7 +470,6 @@ public abstract class CommandBase {
 		}
 		return keys;
 	}
-
 	
 	protected void executeInternalCmd(String conciseCommand) {
 		boolean printAlong = target instanceof TargetConsole;

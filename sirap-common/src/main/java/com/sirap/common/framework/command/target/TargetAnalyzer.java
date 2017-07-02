@@ -27,7 +27,7 @@ public abstract class TargetAnalyzer {
 	public Target parse(String command, String targetStr, boolean isEmailEnabled) {
 		
 		if(EmptyUtil.isNullOrEmpty(targetStr)) {
-			return new TargetConsole();
+			return new TargetDefault();
 		}
 		
 		Target target = null;

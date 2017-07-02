@@ -8,6 +8,7 @@ import com.sirap.common.framework.SimpleKonfig;
 import com.sirap.common.framework.command.target.Target;
 import com.sirap.common.framework.command.target.TargetAnalyzer;
 import com.sirap.common.framework.command.target.TargetConsole;
+import com.sirap.common.framework.command.target.TargetDefault;
 
 public class InputAnalyzer {
 	
@@ -50,7 +51,7 @@ public class InputAnalyzer {
 			}
 		} else {
 			command = input;
-			target = new TargetConsole();
+			target = new TargetDefault();
 		}
 	}
 

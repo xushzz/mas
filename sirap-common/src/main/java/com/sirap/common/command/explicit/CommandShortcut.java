@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
-import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.framework.Janitor;
@@ -52,7 +51,7 @@ public class CommandShortcut extends CommandBase {
 		String app = SimpleKonfig.g().getUserValueOf(command);
 		if(app != null) {
 			C.pl(command + "=" + app);
-			Janitor.g().process(app);
+			Janitor.g().process(app, false);
 			
 			return true;
 		}

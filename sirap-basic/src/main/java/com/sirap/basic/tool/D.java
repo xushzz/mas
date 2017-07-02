@@ -9,6 +9,7 @@ import java.util.Map;
 
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
+import com.sirap.basic.util.XXXUtil;
 
 /***
  * D for Debug
@@ -58,6 +59,27 @@ public class D {
 		}
 		
 		pl(Arrays.asList(objArr));
+	}
+
+	public static void pl(char[] arr) {
+		XXXUtil.nullCheck(arr, "arr can't be null.");
+		for(int i = 0; i < arr.length; i++) {
+			C.pl(arr[i]);
+		}
+	}
+	
+	public static void pl(int[] arr) {
+		XXXUtil.nullCheck(arr, "arr can't be null.");
+		for(int i = 0; i < arr.length; i++) {
+			C.pl(arr[i]);
+		}
+	}
+	
+	public static void pl(byte[] arr) {
+		XXXUtil.nullCheck(arr, "arr can't be null.");
+		for(int i = 0; i < arr.length; i++) {
+			C.pl(arr[i]);
+		}
 	}
 	
 	public static <E extends Object > void ls(List<E> list) {

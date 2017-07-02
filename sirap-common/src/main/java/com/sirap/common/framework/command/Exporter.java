@@ -22,6 +22,7 @@ import com.sirap.common.component.FileOpener;
 import com.sirap.common.framework.SimpleKonfig;
 import com.sirap.common.framework.command.target.Target;
 import com.sirap.common.framework.command.target.TargetConsole;
+import com.sirap.common.framework.command.target.TargetDefault;
 import com.sirap.common.framework.command.target.TargetEmail;
 import com.sirap.common.framework.command.target.TargetExcel;
 import com.sirap.common.framework.command.target.TargetFolder;
@@ -33,6 +34,12 @@ public class Exporter {
 	
 	public static void exportList(String command, List<Object> records, Target target) {
 		if(EmptyUtil.isNullOrEmpty(records)) {
+			return;
+		}
+		
+		if(target instanceof TargetDefault) {
+			TargetConsole console = new TargetConsole();
+			simplePrint(records, console.getParams());
 			return;
 		}
 		
