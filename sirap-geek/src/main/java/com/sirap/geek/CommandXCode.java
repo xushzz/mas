@@ -37,6 +37,9 @@ public class CommandXCode extends CommandBase {
 	private static final String KEY_URL_DECODE = "urx";
 	private static final String KEY_ENCODE = "cde";
 	private static final String KEY_SWAP = "swap";
+	private static final String KEY_ISO = "iso";
+	private static final String KEY_CURRENCY = "ccy";
+	private static final String KEY_DATE_FORMAT_SYMBOL = "dfs";
 
 	public boolean handle() {
 		
@@ -280,6 +283,73 @@ public class CommandXCode extends CommandBase {
 			}
 			
 			export(FileUtil.getIfNormalFile(filePath));
+			
+			return true;
+		}
+		
+		if(isIn(KEY_ISO + KEY_2DOTS)) {
+			String extraLocales = g().getUserValueOf("iso.locales");
+			List<MexedObject> records = XCodeUtil.getIso3Countries(extraLocales);
+			records.add(0, new MexedObject(XCodeUtil.getIso3Header(extraLocales)));
+
+			export(records);
+			
+			return true;
+		}
+		
+		singleParam = parseParam(KEY_ISO + "\\s(.+?)");
+		if(isSingleParamNotnull()) { 
+			String extraLocales = g().getUserValueOf("iso.locales");
+			List<MexedObject> records = XCodeUtil.getIso3Countries(extraLocales);
+			
+			MexFilter<MexedObject> filter = new MexFilter<MexedObject>(singleParam, records);
+			List<MexedObject> items = filter.process();
+
+			if(!EmptyUtil.isNullOrEmpty(items)) {
+				items.add(0, new MexedObject(XCodeUtil.getIso3Header(extraLocales)));
+			}
+
+			export(items);
+			
+			return true;
+		}
+		
+		if(isIn(KEY_CURRENCY + KEY_2DOTS)) {
+			String extraLocales = g().getUserValueOf("iso.locales");
+			List<MexedObject> records = XCodeUtil.getAllCurrencies(extraLocales);
+
+			export(records);
+			
+			return true;
+		}
+		
+		singleParam = parseParam(KEY_CURRENCY + "\\s(.+?)");
+		if(isSingleParamNotnull()) { 
+			String extraLocales = g().getUserValueOf("iso.locales");
+			List<MexedObject> records = XCodeUtil.getAllCurrencies(extraLocales);
+			
+			MexFilter<MexedObject> filter = new MexFilter<MexedObject>(singleParam, records);
+			List<MexedObject> items = filter.process();
+
+			export(items);
+			
+			return true;
+		}
+		
+		if(isIn(KEY_DATE_FORMAT_SYMBOL + KEY_2DOTS)) {
+			List<String> records = XCodeUtil.getAllMonthWeekdays();
+			export(records);
+			
+			return true;
+		}
+		
+		singleParam = parseParam(KEY_DATE_FORMAT_SYMBOL + "\\s(.+?)");
+		if(isSingleParamNotnull()) { 
+			List<String> records = XCodeUtil.getAllMonthWeekdays();
+			MexFilter<MexedObject> filter = new MexFilter<MexedObject>(singleParam, CollectionUtil.toMexedObjects(records));
+			List<MexedObject> items = filter.process();
+
+			export(items);
 			
 			return true;
 		}

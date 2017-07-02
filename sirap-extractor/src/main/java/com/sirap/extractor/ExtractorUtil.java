@@ -4,80 +4,18 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.sirap.basic.domain.MexedObject;
-import com.sirap.basic.tool.C;
-import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.StrUtil;
-import com.sirap.common.domain.Code;
 import com.sirap.common.domain.Link;
 import com.sirap.common.extractor.Extractor;
 
 public class ExtractorUtil {
 
+	public static final String HOMEPAGE_QIHU360 = "http://image.so.com";
 	public static final String HOMEPAGE_SOGOU = "http://pic.sogou.com";
-	public static final String HOMEPAGE_YOUDAO = "http://image.youdao.com";
-
-	public static List<Code> getDisplayCountryCodes(Locale inLocale) {
-		List<Code> codes = new ArrayList<Code>();
-		
-		Locale[] allLocales = Locale.getAvailableLocales();
-		for(int i = 0; i < allLocales.length; i++) {
-			Locale temp = allLocales[i];
-			String name = null;
-			try {
-				name = temp.getISO3Country();
-			} catch (Exception ex) {
-				C.pl(ex);
-			}
-			if(EmptyUtil.isNullOrEmpty(name)) {
-				continue;
-			}
-			String meaning = temp.getDisplayCountry(inLocale);
-			Code code = new Code(name, "Country(ISO)", meaning);
-			codes.add(code);			
-		}
-		
-		Collections.sort(codes);
-		return codes;
-	}
-	
-	public static List<MexedObject> youdaoImageLinks(final String keyword, final int start) {
-		Extractor<MexedObject> frank = new Extractor<MexedObject>() {
-			
-			public static final String URL_TEMPLATE = HOMEPAGE_YOUDAO + "/search?q={0}&start={1}";
-			
-			@Override
-			public String getUrl() {
-				printFetching = true;
-				String param = encodeURLParam(keyword);
-				return StrUtil.occupy(URL_TEMPLATE, param, start);
-			}
-			
-			@Override
-			protected void parseContent() {
-				String regex = "logci\\('.*?',\\s*'(.*?)',\\s*'.*?'\\)";
-				Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
-				while(m.find()) {
-					String temp = m.group(1);
-					String imageUrl = decodeURLParam(temp);
-					if(imageUrl.endsWith("loading40.gif")) {
-						continue;
-					}
-					
-					mexItems.add(new MexedObject(imageUrl));
-				}
-			}
-		};
-		
-		frank.process();
-		
-		return frank.getMexItems();
-	}
-	
 	public static List<MexedObject> sogouImageLinks(final String keyword) {
 		Extractor<MexedObject> frank = new Extractor<MexedObject>() {
 			
@@ -97,6 +35,35 @@ public class ExtractorUtil {
 				while(m.find()) {
 					String imageUrl = m.group(1);
 					mexItems.add(new MexedObject(imageUrl));
+				}
+			}
+		};
+		
+		frank.process();
+		
+		return frank.getMexItems();
+	}
+	
+	public static List<MexedObject> qihu360ImageLinks(final String keyword) {
+		Extractor<MexedObject> frank = new Extractor<MexedObject>() {
+			
+			public static final String URL = HOMEPAGE_QIHU360 + "/i?q=";
+			
+			@Override
+			public String getUrl() {
+				printFetching = true;
+				String param = encodeURLParam(keyword);
+				return StrUtil.occupy(URL + param);
+			}
+			
+			@Override
+			protected void parseContent() {
+				String regex = "\"img\":\"(.*?)\"";
+				Matcher m = createMatcher(regex);
+				while(m.find()) {
+					String temp = m.group(1);
+					String item = temp.replace("\\", "");
+					mexItems.add(new MexedObject(item));
 				}
 			}
 		};

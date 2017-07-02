@@ -2,9 +2,7 @@ package com.sirap.extractor;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexedObject;
@@ -12,7 +10,6 @@ import com.sirap.basic.tool.C;
 import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
-import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.framework.command.target.TargetConsole;
@@ -24,14 +21,16 @@ import com.sirap.extractor.impl.ExtractorPhoenix;
 public class CommandWholesale extends CommandBase {
 
 	private static final String KEY_SOGOU = "sg";
-	private static final String KEY_YOUDAO = "yd";
+	private static final String KEY_QIHU360 = "so";
 	private static final String KEY_PHOENIX = "fenghuang,phoenix";
 	private static final String KEY_POSTCODE = "postcode,youbian";
 	private static final String KEY_AREACODE = "areacode,quhao";
+	private static final String FOLDER_QIHU360 = "so360";
 	
 	{
 		helpMeanings.put("sogou.url", ExtractorUtil.HOMEPAGE_SOGOU);
-		helpMeanings.put("youdao.url", ExtractorUtil.HOMEPAGE_YOUDAO);
+		helpMeanings.put("qihu360.url", ExtractorUtil.HOMEPAGE_QIHU360);
+		helpMeanings.put("qihu360.folder", FOLDER_QIHU360);
 		helpMeanings.put("163.netease.url", "http://www.163.com");
 		helpMeanings.put("phoenix.url", ExtractorPhoenix.HOMEPAGE);
 		helpMeanings.put("youbian.postcode.url", ExtractorChinaPostCodeToolcncn.HOMEPAGE);
@@ -41,22 +40,33 @@ public class CommandWholesale extends CommandBase {
 	public boolean handle() {
 		
 		singleParam = parseParam(KEY_SOGOU + "\\s(.*?)");
-		if(singleParam != null) {
-			String kw = singleParam;
-			if(!EmptyUtil.isNullOrEmptyOrBlank(kw)) {
-				return sogou(kw);
+		if(isSingleParamNotnull()) {
+			List<MexedObject> links = ExtractorUtil.sogouImageLinks(singleParam);
+			if(!EmptyUtil.isNullOrEmpty(links)) {
+				String folderName = FileUtil.generateLegalFileName(singleParam);
+				String path = pathWithSeparator("storage.sogou", Konstants.FOLDER_SOGOU);
+				String whereToSave = path + folderName + File.separator;
+				
+				batchDownload(links, whereToSave);
 			}
+			
+			return true;
 		}
 		
-		params = parseParams(KEY_YOUDAO + "\\s(.*?)(|,\\s*(\\d{1,5}))");
-		if(params != null) {
-			String kw = params[0];
-			int images = MathUtil.toInteger(params[2], 48);
-			if(!EmptyUtil.isNullOrEmptyOrBlank(kw) && images > 0) {
-				return youdao(kw.trim(), images);
+		singleParam = parseParam(KEY_QIHU360 + "\\s(.*?)");
+		if(isSingleParamNotnull()) {
+			List<MexedObject> links = ExtractorUtil.qihu360ImageLinks(singleParam);
+			if(!EmptyUtil.isNullOrEmpty(links)) {
+				String folderName = FileUtil.generateLegalFileName(singleParam);
+				String path = pathWithSeparator("storage.so360", FOLDER_QIHU360);
+				String whereToSave = path + folderName + File.separator;
+				
+				batchDownload(links, whereToSave);
 			}
+			
+			return true;
 		}
-
+		
 		String types = StrUtil.connect(new ArrayList<String>(ExtractorNetease.TYPE_METHOD.keySet()), "|");
 		singleParam = parseParam("163(" + types+ ")");
 		if(singleParam != null) {
@@ -92,19 +102,10 @@ public class CommandWholesale extends CommandBase {
 		return false;
 	}
 	
-	public boolean sogou(String param) {
+	public boolean batchDownload(List<MexedObject> links, String whereToSave) {
 		long start = System.currentTimeMillis();
-
-		List<MexedObject> links = ExtractorUtil.sogouImageLinks(param);
-		if(EmptyUtil.isNullOrEmpty(links)) {
-			return false;
-		}
 		
-		String folderName = FileUtil.generateLegalFileName(param);
-		String path = pathWithSeparator("storage.sogou", Konstants.FOLDER_SOGOU);
-		String destination = path + folderName + File.separator;
-		
-		List<String> pathList = downloadFiles(destination, links, Konstants.SUFFIX_JPG);
+		List<String> pathList = downloadFiles(whereToSave, links, Konstants.SUFFIX_JPG);
 		
 		if(!pathList.isEmpty()) {
 			String lastFile = pathList.get(pathList.size() - 1);
@@ -114,57 +115,6 @@ public class CommandWholesale extends CommandBase {
 		if(target instanceof TargetConsole) {
 			return true;
 		} 
-		
-		if(target.isFileRelated()) {
-			export(CollectionUtil.toFileList(pathList));
-		} else {
-			export(pathList);
-		}
-		
-		long end = System.currentTimeMillis();
-		C.time2(start, end);
-		
-		return true;
-	}
-	
-	public boolean youdao(String param, int amount) {
-		long start = System.currentTimeMillis();
-		int imagesPerPage = 24;
-		
-		Set<MexedObject> items = new HashSet<MexedObject>();
-		for(int i = 0; i < Integer.MAX_VALUE; i++) {
-			int startPage = i * imagesPerPage;
-			List<MexedObject> temp = ExtractorUtil.youdaoImageLinks(param, startPage);
-			if(EmptyUtil.isNullOrEmpty(temp)) {
-				break;
-			}
-			int size1 = items.size();
-			items.addAll(temp);
-			int size2 = items.size();
-			if(size1 == size2) {
-				break;
-			}
-			if(items.size() >= amount) {
-				break;
-			}
-		}
-		
-		List<MexedObject> links = new ArrayList<MexedObject>(items);
-		links = CollectionUtil.top(links, amount);
-		String folderName = FileUtil.generateLegalFileName(param);
-		String path = pathWithSeparator("storage.youdao", Konstants.FOLDER_YOUDAO);
-		String destination = path + folderName + File.separator;
-		
-		List<String> pathList = downloadFiles(destination, links, Konstants.SUFFIX_JPG);
-		
-		if(!pathList.isEmpty()) {
-			String lastFile = pathList.get(pathList.size() - 1);
-			tryToOpenGeneratedImage(lastFile);
-		}
-
-		if(target instanceof TargetConsole) {
-			return true;
-		}
 		
 		if(target.isFileRelated()) {
 			export(CollectionUtil.toFileList(pathList));

@@ -181,7 +181,7 @@ public abstract class CommandBase {
 		return StrUtil.parseParams(regex, command);
 	}
 	
-	protected boolean isParamNotnull() {
+	protected boolean isSingleParamNotnull() {
 		return singleParam != null;
 	}
 	
