@@ -10,25 +10,21 @@ public class FileSizeInputAnalyzer extends InputAnalyzer {
 	}
 	
 	@Override
-	public int whereToSplit() {
-		String source = input;
-		int indexOfGT = source.indexOf(EXPORT_FLAG);
-		while(indexOfGT >= 0) {
-			String temp = source.substring(indexOfGT + 1);
-			boolean flag = isFileSizeOpoeartor(temp);
-			if(flag) {
-				indexOfGT = source.indexOf(EXPORT_FLAG, indexOfGT + 1);
-			} else {
-				break;
-			}
+	protected boolean isMatchedEscape(String source, int indexOfGT) {
+		boolean flagA = super.isMatchedEscape(source, indexOfGT);
+		if(flagA) {
+			return true;
 		}
 		
-		return indexOfGT;
+		boolean flagB = isMatchedFileSizeOpoeartor(source, indexOfGT);
+		return flagB;
 	}
 	
-	public static boolean isFileSizeOpoeartor(String source) {
+	public static boolean isMatchedFileSizeOpoeartor(String source, int indexOfGT) {
+		String temp = source.substring(indexOfGT + 1);
+		
 		String regex = "\\s*" + Konstants.REGEX_FLOAT + "[" + Konstants.FILE_SIZE_UNIT + "]((\\s.*|&|\\|).*|>.*|$)";
-		boolean flag = StrUtil.isRegexMatched(regex, source);
+		boolean flag = StrUtil.isRegexMatched(regex, temp);
 		
 		return flag;
 	}

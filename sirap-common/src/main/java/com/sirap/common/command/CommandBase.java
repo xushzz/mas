@@ -26,7 +26,6 @@ import com.sirap.common.framework.SimpleKonfig;
 import com.sirap.common.framework.command.Exporter;
 import com.sirap.common.framework.command.target.Target;
 import com.sirap.common.framework.command.target.TargetConsole;
-import com.sirap.common.framework.command.target.TargetDefault;
 import com.sirap.common.framework.command.target.TargetFolder;
 
 public abstract class CommandBase {
@@ -112,11 +111,14 @@ public abstract class CommandBase {
 	}
 	
 	private Target whereToShot() {
-		Object item = (Target)g().getStash().get(STASH_USER_INPUT_TARGET);
-		if(item != null && item instanceof Target) {
-			boolean isNotDefaultTarget = !(item instanceof TargetDefault);
-			if(isNotDefaultTarget) {
-				return (Target)item;
+		Object item = g().getStash().get(STASH_USER_INPUT_TARGET);
+		if(item != null) {
+			g().getStash().remove(STASH_USER_INPUT_TARGET);
+			if(item instanceof Target) {
+				Target directInputTarget = (Target)item;
+				return directInputTarget;
+			} else {
+				XXXUtil.alert("Uncanny, stash non-Target stuff with key " + STASH_USER_INPUT_TARGET);
 			}
 		}
 		

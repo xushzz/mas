@@ -48,10 +48,17 @@ public class CommandShortcut extends CommandBase {
 			}
 		}
 		
-		String app = SimpleKonfig.g().getUserValueOf(command);
-		if(app != null) {
-			C.pl(command + "=" + app);
-			Janitor.g().process(app, false);
+		String shortcutCommand = SimpleKonfig.g().getUserValueOf(command);
+		if(shortcutCommand != null) {
+			C.pl(command + "=" + shortcutCommand);
+			boolean notYetStashed = g().getStash().get(CommandBase.STASH_USER_INPUT_TARGET) == null;
+			if(notYetStashed) {
+				boolean hasSpecifiedTarget = !EmptyUtil.isNullOrEmpty(target.getValue());
+				if(hasSpecifiedTarget) {
+					g().getStash().put(CommandBase.STASH_USER_INPUT_TARGET, target);
+				}
+			}
+			Janitor.g().process(shortcutCommand);
 			
 			return true;
 		}

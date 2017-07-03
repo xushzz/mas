@@ -4,19 +4,21 @@ import java.io.File;
 
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.util.FileUtil;
+import com.sirap.basic.util.StrUtil;
 import com.sirap.common.framework.SimpleKonfig;
 import com.sirap.common.framework.command.target.Target;
 import com.sirap.common.framework.command.target.TargetAnalyzer;
 import com.sirap.common.framework.command.target.TargetConsole;
-import com.sirap.common.framework.command.target.TargetDefault;
 
 public class InputAnalyzer {
-	
+
+	public static final String EXPORT_ESACPE = "!";
 	public static final String EXPORT_FLAG = ">";
 	
 	protected String input;
 	private String command;
-	private Target target = new TargetConsole();
+	private String targetStr;
+	private Target target;
 	
 	public String getInput() {
 		return input;
@@ -36,23 +38,52 @@ public class InputAnalyzer {
 	}
 	
 	public int whereToSplit() {
-		int position = input.indexOf(EXPORT_FLAG);
-		return position;
+		String source = input;
+		int indexOfGT = source.indexOf(EXPORT_FLAG);
+		while(indexOfGT >= 0) {
+			
+			boolean flagA = isMatchedEscape(source, indexOfGT);
+			if(flagA) {
+				indexOfGT = source.indexOf(EXPORT_FLAG, indexOfGT + 1);
+			} else {
+				break;
+			}
+		}
+		
+		return indexOfGT;
+	}
+	
+	protected boolean isMatchedEscape(String source, int indexOfGT) {
+		int previousIndex = indexOfGT - EXPORT_ESACPE.length();
+		if(previousIndex < 0) {
+			return false;					
+		}
+
+		String left = source.substring(0, indexOfGT);
+		boolean isMatched = StrUtil.endsWith(left, EXPORT_ESACPE);
+
+		return isMatched;
 	}
 
 	public void analyze() {
 		int idxExport = whereToSplit();
 		if(idxExport >= 0) {
-			command = input.substring(0, idxExport).trim();
-			String targetStr = input.substring(idxExport + 1).trim();
+			String temp= input.substring(0, idxExport).trim();
+			command = removeEscape(temp);
+			
+			temp = input.substring(idxExport + 1).trim();			
+			targetStr = removeEscape(temp);
+			
 			target = parseTarget(targetStr);
-			if(target != null) {
-				target.setValue(targetStr);
-			}
 		} else {
-			command = input;
-			target = new TargetDefault();
+			command = removeEscape(input);
+			target = new TargetConsole(true);
 		}
+	}
+	
+	private String removeEscape(String source) {
+		String temp = source.replace(EXPORT_ESACPE + EXPORT_FLAG, EXPORT_FLAG);
+		return temp;
 	}
 
 	private Target parseTarget(String targetStr) {
@@ -75,6 +106,11 @@ public class InputAnalyzer {
 			}
 		};
 		
-		return virgil.parse(command, targetStr, SimpleKonfig.g().isEmailEnabled());
+		Target target = virgil.parse(command, targetStr, SimpleKonfig.g().isEmailEnabled());
+		if(target != null) {
+			target.setValue(targetStr);
+		}
+		
+		return target;
 	}
 }

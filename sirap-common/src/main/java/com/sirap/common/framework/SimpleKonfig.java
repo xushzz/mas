@@ -91,6 +91,7 @@ public class SimpleKonfig extends Konfig {
 		if(!EmptyUtil.isNullOrEmpty(items)) {
 			C.pl("[Configuration] Circular items found in [" + instance.userConfigFile + "] as following:");
 			C.list(items);
+			C.pl("User configuration is set to be empty.");
 			getUserProps().getContainer().clear();
 		}
 	}

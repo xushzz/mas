@@ -44,9 +44,7 @@ public abstract class Extractor<T extends MexItem> {
 	}
 	
 	protected final Matcher createMatcher(String regex, String content) {
-		Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(content);
-
-		return m;
+		return StrUtil.createMatcher(regex, content);
 	}
 	
 	public void process() {

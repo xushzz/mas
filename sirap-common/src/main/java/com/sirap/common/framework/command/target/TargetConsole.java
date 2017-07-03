@@ -5,6 +5,21 @@ import com.sirap.basic.output.ConsoleParams;
 public class TargetConsole extends Target {
 
 	private ConsoleParams params;
+	private boolean becauseOfNoSpecifiedTarget;
+
+	public TargetConsole() {}
+	
+	public TargetConsole(boolean becauseOfNoSpecifiedTarget) {
+		this.becauseOfNoSpecifiedTarget = becauseOfNoSpecifiedTarget;
+	}
+	
+	public boolean isBecauseOfNoSpecifiedTarget() {
+		return becauseOfNoSpecifiedTarget;
+	}
+
+	public void setBecauseOfNoSpecifiedTarget(boolean becauseOfNoSpecifiedTarget) {
+		this.becauseOfNoSpecifiedTarget = becauseOfNoSpecifiedTarget;
+	}
 
 	@Override
 	public ConsoleParams getParams() {

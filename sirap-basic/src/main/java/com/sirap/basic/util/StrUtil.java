@@ -875,4 +875,10 @@ public class StrUtil {
 	public static String utf8ToWhatever(String source) {
 		return XCodeUtil.replaceHexChars(source, Konstants.CODE_UTF8);
 	}
+	
+	public static Matcher createMatcher(String regex, String content) {
+		Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(content);
+
+		return m;
+	}
 }

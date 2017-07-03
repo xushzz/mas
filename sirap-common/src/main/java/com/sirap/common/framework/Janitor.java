@@ -59,10 +59,6 @@ public class Janitor extends Checker {
 	}
 
     public void process(String source) {
-    	process(source, true);
-    }
-    
-    public void process(String source, boolean toStashTarget) {
     	long start = System.currentTimeMillis();
     	konfig.getStash().put("startInMillis", start);
     	if(EmptyUtil.isNullOrEmptyOrBlank(source)) {
@@ -83,9 +79,6 @@ public class Janitor extends Checker {
     	InputAnalyzer fara = new InputAnalyzer(input);
     	String command = fara.getCommand();
     	Target target = fara.getTarget();
-    	if(toStashTarget) {
-    		konfig.getStash().put(CommandBase.STASH_USER_INPUT_TARGET, target);
-    	}
     	
     	if(EmptyUtil.isNullOrEmpty(command)) {
     		return;

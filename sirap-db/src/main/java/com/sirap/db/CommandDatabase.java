@@ -16,7 +16,7 @@ import com.sirap.common.framework.command.target.TargetExcel;
 import com.sirap.db.parser.ConfigItemParser;
 import com.sirap.db.parser.ConfigItemParserMySQL;
 
-public class CommandSql extends CommandBase {
+public class CommandDatabase extends CommandBase {
 
 	private static final String KEY_SQL = "!";
 	private static final String KEY_TABLE = "t";
@@ -28,12 +28,11 @@ public class CommandSql extends CommandBase {
 	
 	@Override
 	public boolean handle() {
-		InputAnalyzer sean = new DBInputAnalyzer(input);
-		this.command = sean.getCommand();
-		this.target = sean.getTarget();
-		
-		singleParam = parseParam(KEY_SQL + "(.{4,})");
+		InputAnalyzer sean = new SqlInputAnalyzer(input);
+		singleParam = StrUtil.parseParam(KEY_SQL + "(.{4,})", sean.getCommand());
 		if(singleParam != null) {
+			this.command = sean.getCommand();
+			this.target = sean.getTarget();
 			File file = parseFile(singleParam);
 			if(file != null) {
 				if(FileOpener.isTextFile(file.getAbsolutePath()) && !tooBigToHanlde(file, "10M")) {
@@ -78,13 +77,11 @@ public class CommandSql extends CommandBase {
 		}
 		
 		String temp = DBHelper.SQL_RESERVED_WORDS.replaceAll(";", "|");
-		String regex = "(" + temp + ")\\s+(.+)";
-		sean = new DBInputAnalyzer(input);
-		this.command = sean.getCommand();
-		this.target = sean.getTarget();
-		params = parseParams(regex);
-		
+		sean = new SqlInputAnalyzer(input);
+		params = StrUtil.parseParams("(" + temp + ")\\s+(.+)", sean.getCommand());
 		if(params != null) {
+			this.command = sean.getCommand();
+			this.target = sean.getTarget();
 			String sql = DBHelper.rephrase(params);
 			dealWith(sql);
 			

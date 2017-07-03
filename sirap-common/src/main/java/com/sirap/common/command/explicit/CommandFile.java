@@ -281,10 +281,10 @@ public class CommandFile extends CommandBase {
 		}
 		
 		InputAnalyzer sean = new FileSizeInputAnalyzer(input);
-		this.command = sean.getCommand();
-		this.target = sean.getTarget();
-		SearchComponent jack = parseFolderPathAndCriterias(command);
+		SearchComponent jack = parseFolderPathAndCriterias(sean.getCommand());
 		if(jack != null) {
+			this.command = sean.getCommand();
+			this.target = sean.getTarget();
 			List<MexedFile> allMexedFiles = new ArrayList<>();
 			List<String> pathList = jack.getPaths();
 			for(String path : pathList) {
@@ -362,11 +362,11 @@ public class CommandFile extends CommandBase {
 		}
 		
 		sean = new FileSizeInputAnalyzer(input);
-		this.command = sean.getCommand();
-		this.target = sean.getTarget();
 		String vRegex = "(" + KEY_SHOW_DETAIL + "|)" + KEY_VERY_IMPORTANT_FOLDER + "(\\s(.*?)|)";
-		params = parseParams(vRegex);
+		params = StrUtil.parseParams(vRegex, sean.getCommand());
 		if(params != null) {
+			this.command = sean.getCommand();
+			this.target = sean.getTarget();
 			boolean detail = !params[0].isEmpty();
 			String criteria = params[1].trim();
 			List<MexedFile> records = FileManager.g().getFileRecordsByName(criteria);
@@ -662,7 +662,7 @@ public class CommandFile extends CommandBase {
 		List<String> allDisks = null;
 		List<String> paths = new ArrayList<>();
 		for(int i = 0; i < expArr.length; i++) {
-			String[] params = parseParams(expArr[i]);
+			String[] params = StrUtil.parseParams(expArr[i], input);
 			if(params != null) {
 				boolean detail = !params[0].isEmpty();
 				String sourceName = params[1];

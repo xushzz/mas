@@ -47,6 +47,7 @@ import com.sirap.common.extractor.Extractor;
 import com.sirap.common.framework.AppBase;
 import com.sirap.common.framework.Janitor;
 import com.sirap.common.framework.SimpleKonfig;
+import com.sirap.common.framework.command.InputAnalyzer;
 import com.sirap.common.framework.command.target.TargetEmail;
 import com.sirap.common.framework.command.target.TargetPDF;
 import com.sirap.common.manager.TimeZoneManager;
@@ -84,6 +85,7 @@ public class CommandSirap extends CommandBase {
 	{
 		helpMeanings.put("image.formats", Konstants.IMG_FORMATS);
 		helpMeanings.put("guest.quits", KEY_EXIT);
+		helpMeanings.put("guest.escaper", InputAnalyzer.EXPORT_ESACPE);
 	}
 	
 	@Override
