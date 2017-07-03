@@ -56,7 +56,7 @@ public class FileUtilJUnit {
 		va = ".5k";
 		va = "0.5k";
 		
-		C.pl(FileSizeInputAnalyzer.isFileSizeOpoeartor(va));
+//		C.pl(FileSizeInputAnalyzer.isFileSizeOpoeartor(va));
 		SizeCriteria so = new SizeCriteria();
 		so.parse("~" + va);
 		C.pl(so);

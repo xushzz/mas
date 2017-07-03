@@ -4,6 +4,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Currency;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import org.junit.Test;
 
@@ -15,7 +20,46 @@ import com.sirap.basic.util.XCodeUtil;
 import com.sirap.geek.manager.GeekManager;
 
 public class XCodeTest {
+
+	@Test
+	public void bug() {
+		Map ma = XCodeUtil.getCurrencyCodeAndSymbol();
+		D.pl(ma);
+		C.pl(ma.size());
+	}
 	
+	public void fran() {
+		Currency currency = Currency.getInstance(Locale.US); 
+        System.out.println("United States: " + currency.getSymbol(Locale.US));
+
+        currency = Currency.getInstance(Locale.UK);
+        System.out.println("United Kingdom: " + currency.getSymbol(Locale.UK));
+
+        currency = Currency.getInstance(Locale.FRANCE);
+        System.out.println("France: " + currency.getSymbol(Locale.FRANCE));
+	}
+	
+	public void currency() {
+		Currency ca = Currency.getInstance(Locale.UK);
+		List items = new ArrayList<>();
+		items.add(ca.getCurrencyCode());
+		items.add(ca.getSymbol());
+		items.add(ca.getSymbol(Locale.UK));
+		items.add(ca.getSymbol(Locale.CHINA));
+		items.add(ca.getSymbol(Locale.ENGLISH));
+		items.add(ca.getDisplayName(Locale.ENGLISH));
+		items.add(ca.getDisplayName());
+	
+		C.list(items);
+		
+		List list = XCodeUtil.getAllCurrencies(null);
+		C.listSome(list, 3);
+	}
+	
+	public void countrycode() {
+		List list = XCodeUtil.getIso3Countries();
+		C.list(list);
+	}
 	
 	public void codeAll() {
 		Charset code = Charset.defaultCharset();
@@ -28,7 +72,7 @@ public class XCodeTest {
 		C.list(GeekManager.g().searchCharsetNames("big5|gbk"));
 	}
 	
-	@Test
+//	@Test
 	public void utf8() {
 		String content = "\\uE59BBE\\uE781B5";
 		String code = "utf-8";

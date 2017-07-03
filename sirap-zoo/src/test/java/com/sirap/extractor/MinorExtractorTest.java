@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,14 +20,24 @@ import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XCodeUtil;
 import com.sirap.bible.BibleChapterExtractor;
 import com.sirap.common.extractor.Extractor;
-import com.sirap.common.extractor.impl.ChinaCalendarExtractor;
-import com.sirap.common.extractor.impl.EnglishTranslationExtractor;
-import com.sirap.common.extractor.impl.RemoteSecurityExtractor;
-import com.sirap.common.extractor.impl.TulingExtractor;
+import com.sirap.common.extractor.RemoteSecurityExtractor;
+import com.sirap.extractor.impl.ChinaCalendarExtractor;
+import com.sirap.extractor.impl.ExtractorChinaAreaCodeZou114;
+import com.sirap.extractor.impl.ExtractorChinaPostCodeToolcncn;
+import com.sirap.extractor.impl.ExtractorFancy;
+import com.sirap.extractor.impl.IcibaTranslationExtractor;
+import com.sirap.extractor.impl.TulingExtractor;
 
 public class MinorExtractorTest {
 	
 	@Test
+	public void so360() {
+		//http:\/\/i1.chexun.net\/images\/2013\/0411\/3503\/news_default_923142E2E1E77DBF18C3DC2AB21F5CE8.jpg
+		String kw = "360";
+		List list = ExtractorUtil.qihu360ImageLinks(kw);
+		C.list(list);
+	}
+	
 	public void tuling() {
 		String key = "e8c190a005adc401867efd1ad2602f70";
 		Extractor<MexedObject> mike = new TulingExtractor(key, "nice try");
@@ -85,7 +96,7 @@ public class MinorExtractorTest {
 	
 	public void english() {
 		String word = "你好";
-		EnglishTranslationExtractor james = new EnglishTranslationExtractor(word);
+		IcibaTranslationExtractor james = new IcibaTranslationExtractor(word);
 		james.process();
 		C.list(james.getMexItems());
 	}

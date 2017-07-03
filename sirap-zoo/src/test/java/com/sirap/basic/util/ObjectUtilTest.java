@@ -1,5 +1,6 @@
 package com.sirap.basic.util;
 
+import java.lang.reflect.Modifier;
 import java.util.List;
 
 import org.junit.Test;
@@ -13,6 +14,13 @@ public class ObjectUtilTest {
 	@Test
 	public void ming() {
 		Object obj = StrUtil.class;
+		int lianglao = obj.getClass().getModifiers();
+		C.pl(Modifier.isStatic(lianglao));
+		obj = new Object();
+		lianglao = obj.getClass().getModifiers();
+		C.pl(Modifier.isPublic(lianglao));
+
+		C.pl(obj.getClass().getName());
 		C.pl(ObjectUtil.isStaticClass(obj));
 		//C.pl(ObjectUtil.isStaticClass(new Driver()));
 	}

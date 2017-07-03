@@ -6,8 +6,8 @@ import com.sirap.basic.domain.MexedObject;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.common.extractor.Extractor;
-import com.sirap.common.extractor.impl.EnglishDictionaryExtractor;
-import com.sirap.common.extractor.impl.MobilePhoneLocationExtractor;
+import com.sirap.extractor.impl.EnglishDictionaryExtractor;
+import com.sirap.extractor.impl.MobilePhoneLocationExtractor;
 
 public class ExtractorTest {
 	

@@ -13,9 +13,9 @@ import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.common.domain.WeatherRecord;
-import com.sirap.common.extractor.impl.NationalWeatherExtractor;
-import com.sirap.common.extractor.impl.WorldTimeBJTimeOrgExtractor;
-import com.sirap.common.extractor.impl.WorldTimeExtractor;
+import com.sirap.common.extractor.WorldTimeBJTimeOrgExtractor;
+import com.sirap.common.extractor.WorldTimeExtractor;
+import com.sirap.extractor.impl.NationalWeatherExtractor;
 
 public class WorldTimeTest {
 	
