@@ -23,6 +23,8 @@ urx %E5%B8%88      decode given string from URL manner
 swap               generate random captcha, aka verification code
 iso Chinese        display locale info containing Chinese: zh_HK, HKG, Chinese, Hong Kong
 iso..              display all locale info provided by the JRE
+iso=               display all locale info provided by the JRE
+iso=zh_TW          set locale in use as zh_TW, list likely items if invalid
 ccy Chinese        display currency info containing Chinese: zh_HK, HKG, Chinese, Hong Kong
 ccy..              display all currency info provided by the JRE
 dfs zh_TW          display date format symbols info for local zh_TW

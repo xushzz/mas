@@ -60,7 +60,7 @@ public class Janitor extends Checker {
 
     public void process(String source) {
     	long start = System.currentTimeMillis();
-    	konfig.getStash().put("startInMillis", start);
+    	Stash.g().place(Stash.KEY_START_IN_MILLIS, start);
     	if(EmptyUtil.isNullOrEmptyOrBlank(source)) {
     		return;
     	}

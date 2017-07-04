@@ -3,19 +3,23 @@ package com.sirap.geek;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexItem;
+import com.sirap.basic.domain.MexedLocale;
 import com.sirap.basic.domain.MexedObject;
 import com.sirap.basic.search.MexFilter;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.XCodeUtil;
 import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
+import com.sirap.basic.util.LocaleUtil;
 import com.sirap.basic.util.SecurityUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.XCodeUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.framework.command.target.TargetConsole;
@@ -287,36 +291,9 @@ public class CommandXCode extends CommandBase {
 			return true;
 		}
 		
-		if(isIn(KEY_ISO + KEY_2DOTS)) {
-			String extraLocales = g().getUserValueOf("iso.locales");
-			List<MexedObject> records = XCodeUtil.getIso3Countries(extraLocales);
-			records.add(0, new MexedObject(XCodeUtil.getIso3Header(extraLocales)));
-
-			export(records);
-			
-			return true;
-		}
-		
-		singleParam = parseParam(KEY_ISO + "\\s(.+?)");
-		if(isSingleParamNotnull()) { 
-			String extraLocales = g().getUserValueOf("iso.locales");
-			List<MexedObject> records = XCodeUtil.getIso3Countries(extraLocales);
-			
-			MexFilter<MexedObject> filter = new MexFilter<MexedObject>(singleParam, records);
-			List<MexedObject> items = filter.process();
-
-			if(!EmptyUtil.isNullOrEmpty(items)) {
-				items.add(0, new MexedObject(XCodeUtil.getIso3Header(extraLocales)));
-			}
-
-			export(items);
-			
-			return true;
-		}
-		
 		if(isIn(KEY_CURRENCY + KEY_2DOTS)) {
 			String extraLocales = g().getUserValueOf("iso.locales");
-			List<MexedObject> records = XCodeUtil.getAllCurrencies(extraLocales);
+			List<MexedObject> records = LocaleUtil.getAllCurrencies(extraLocales);
 
 			export(records);
 			
@@ -326,7 +303,7 @@ public class CommandXCode extends CommandBase {
 		singleParam = parseParam(KEY_CURRENCY + "\\s(.+?)");
 		if(isSingleParamNotnull()) { 
 			String extraLocales = g().getUserValueOf("iso.locales");
-			List<MexedObject> records = XCodeUtil.getAllCurrencies(extraLocales);
+			List<MexedObject> records = LocaleUtil.getAllCurrencies(extraLocales);
 			
 			MexFilter<MexedObject> filter = new MexFilter<MexedObject>(singleParam, records);
 			List<MexedObject> items = filter.process();
@@ -337,7 +314,7 @@ public class CommandXCode extends CommandBase {
 		}
 		
 		if(isIn(KEY_DATE_FORMAT_SYMBOL + KEY_2DOTS)) {
-			List<String> records = XCodeUtil.getAllMonthWeekdays();
+			List<String> records = LocaleUtil.getAllMonthWeekdays();
 			export(records);
 			
 			return true;
@@ -345,7 +322,7 @@ public class CommandXCode extends CommandBase {
 		
 		singleParam = parseParam(KEY_DATE_FORMAT_SYMBOL + "\\s(.+?)");
 		if(isSingleParamNotnull()) { 
-			List<String> records = XCodeUtil.getAllMonthWeekdays();
+			List<String> records = LocaleUtil.getAllMonthWeekdays();
 			MexFilter<MexedObject> filter = new MexFilter<MexedObject>(singleParam, CollectionUtil.toMexedObjects(records));
 			List<MexedObject> items = filter.process();
 
@@ -354,6 +331,76 @@ public class CommandXCode extends CommandBase {
 			return true;
 		}
 		
+		if(isIn(KEY_ISO + KEY_2DOTS, KEY_ISO + KEY_EQUALS)) {
+			String extraLocales = g().getUserValueOf("iso.locales");
+			List<MexedLocale> records = LocaleUtil.AAM_LOCALES;
+			C.pl(LocaleUtil.getIso3Header(extraLocales));
+			
+			Map mexItemParams = creteaLocaleParams();
+			export(CollectionUtil.items2PrintRecords(records, mexItemParams));
+			
+			return true;
+		}
+		
+		singleParam = parseParam(KEY_ISO + "\\s(.+?)");
+		if(isSingleParamNotnull()) { 
+			String extraLocales = g().getUserValueOf("iso.locales");
+			MexFilter<MexedLocale> filter = new MexFilter<MexedLocale>(singleParam, LocaleUtil.AAM_LOCALES);
+			List<MexedLocale> items = filter.process();
+
+			if(!EmptyUtil.isNullOrEmpty(items)) {
+				C.pl(LocaleUtil.getIso3Header(extraLocales));
+			}
+
+			Map mexItemParams = creteaLocaleParams();
+			export(CollectionUtil.items2PrintRecords(items, mexItemParams));
+			
+			return true;
+		}
+	
+		singleParam = parseParam(KEY_ISO + "=\\s*([^|&]*?)");
+		if(singleParam != null) {
+			Locale locale = null;
+			List<MexedLocale> items = null;
+			String criteria = "^" + singleParam + "$";
+			List<MexedLocale> accurateItems = LocaleUtil.searchSimilars(criteria);
+			if(accurateItems.size() == 1) {
+				locale = accurateItems.get(0).getLocale();
+			} else {
+				criteria = singleParam.replace('_', '|');
+				items = LocaleUtil.searchSimilars(criteria);
+				if(items.size() == 1) {
+					locale = items.get(0).getLocale();
+				}
+			}
+			
+			
+			Map mexItemParams = creteaLocaleParams();
+			if(locale != null) {
+				g().setLocale(locale);
+				MexedLocale ml = new MexedLocale(locale);
+				C.pl2("Locale set as " + ml.toPrint(mexItemParams));
+			} else {
+				C.pl("[" + singleParam + "] is not a valid locale, did you mean one of these?");
+				if(EmptyUtil.isNullOrEmpty(items)) {
+					C.listSome(CollectionUtil.items2PrintRecords(LocaleUtil.AAM_LOCALES, mexItemParams), 10);
+				} else {
+					C.list(CollectionUtil.items2PrintRecords(items, mexItemParams));
+					C.pl();
+				}
+			}
+			
+			return true;
+		}
+				
 		return false;
+	}
+	
+	protected Map<String, Object> creteaLocaleParams() {
+		String multipleLocalesString = g().getUserValueOf("iso.locales");
+		List<Locale> localesInDisplay = LocaleUtil.parseLocales(multipleLocalesString);
+		Map mexItemParams = createMexItemParams("localesInDisplay", localesInDisplay);
+		
+		return mexItemParams;
 	}
 }

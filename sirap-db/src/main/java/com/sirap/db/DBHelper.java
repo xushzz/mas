@@ -11,10 +11,12 @@ import java.util.regex.Pattern;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.framework.SimpleKonfig;
+import com.sirap.common.framework.Stash;
 import com.sirap.db.parser.SchemaNameParser;
 
 public class DBHelper {
 
+	public static final String KEY_DB_CONFIG_FLY = "flydb";
 	public static final String[] KEYS_DML_ARRAY;
 	public static final List<String> KEYS_DML_LIST;
 
@@ -82,7 +84,7 @@ public class DBHelper {
 	public static Map<String, DBConfigItem> getAllDBConfigItems() {
 		Map<String, DBConfigItem> map = getDBRecordsMap(SimpleKonfig.g().getUserProps().getContainer());
 
-		DBConfigItem instash = (DBConfigItem)SimpleKonfig.g().getStash().get("flydb");
+		DBConfigItem instash = (DBConfigItem)Stash.g().read(KEY_DB_CONFIG_FLY);
 		if(instash != null) {
 			map.put(instash.getItemName(), instash);
 		}

@@ -23,6 +23,7 @@ import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.framework.SimpleKonfig;
+import com.sirap.common.framework.Stash;
 import com.sirap.common.framework.command.Exporter;
 import com.sirap.common.framework.command.target.Target;
 import com.sirap.common.framework.command.target.TargetConsole;
@@ -31,10 +32,10 @@ import com.sirap.common.framework.command.target.TargetFolder;
 public abstract class CommandBase {
 
 	public static final String KEY_2DOTS = "..";
+	public static final String KEY_EQUALS = "=";
 	public static final String KEY_REFRESH = "r";
 	public static final String KEY_EXIT = "q,e,quit,exit";
 	public static final String KEY_HTTP_WWW = "((https?://|www\\.)[\\S]{4,}?)";
-	public static final String STASH_USER_INPUT_TARGET = "userInputTarget";
 	public Map<String, Object> helpMeanings = new HashMap<>();
 	
 	protected String input;
@@ -111,14 +112,13 @@ public abstract class CommandBase {
 	}
 	
 	private Target whereToShot() {
-		Object item = g().getStash().get(STASH_USER_INPUT_TARGET);
+		Object item = Stash.g().readAndRemove(Stash.KEY_USER_INPUT_TARGET);
 		if(item != null) {
-			g().getStash().remove(STASH_USER_INPUT_TARGET);
 			if(item instanceof Target) {
 				Target directInputTarget = (Target)item;
 				return directInputTarget;
 			} else {
-				XXXUtil.alert("Uncanny, stash non-Target stuff with key " + STASH_USER_INPUT_TARGET);
+				XXXUtil.alert("Uncanny, stash non-Target stuff with key " + Stash.KEY_USER_INPUT_TARGET);
 			}
 		}
 		
@@ -181,6 +181,10 @@ public abstract class CommandBase {
 
 	public boolean isIn(String keys) {
 		String[] keyArr = keys.split(",");
+		return StrUtil.existsIgnoreCase(keyArr, command);
+	}
+
+	public boolean isIn(String... keyArr) {
 		return StrUtil.existsIgnoreCase(keyArr, command);
 	}
 
@@ -493,5 +497,12 @@ public abstract class CommandBase {
 				export(result);
 			}
 		}
+	}
+	
+	protected Map<String, Object> createMexItemParams(String key, Object value) {
+		Map<String, Object> params = new HashMap<>();
+		params.put(key, value);
+		
+		return params;
 	}
 }

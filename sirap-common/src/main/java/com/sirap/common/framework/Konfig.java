@@ -27,7 +27,6 @@ public abstract class Konfig {
 	protected String userConfigFile;
 	protected MexedMap systemProperties = new MexedMap();
 	protected MexedMap userProperties = new MexedMap();
-	private Map<String, Object> stash = new LinkedHashMap<String, Object>();
 
 	protected void loadSystemConfigDetail() {
 		systemProperties.getContainer().clear();
@@ -129,9 +128,5 @@ public abstract class Konfig {
 	
 	public String getDisplayEnableSign(boolean flag) {
 		return flag ? "+":"-";
-	}
-
-	public Map<String, Object> getStash() {
-		return stash;
 	}
 }

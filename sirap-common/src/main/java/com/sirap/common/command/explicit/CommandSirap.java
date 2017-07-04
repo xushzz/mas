@@ -7,7 +7,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
@@ -72,7 +71,6 @@ public class CommandSirap extends CommandBase {
 	private static final String KEY_GENERATEDFILE_AUTOOPEN_ONOFF_SWITCH = "ox";
 	private static final String KEY_EMAIL_ENABLED_SWITCH = "mx";
 	private static final String KEY_TIMESTAMP_ENABLED_SWITCH = "tx";
-	private static final String KEY_LOCALE = "l=";
 	private static final String KEY_PERMUTATION = "p=";
 	private static final String KEY_HOST = "host";
 	private static final String KEY_MAC = "mac";
@@ -370,24 +368,10 @@ public class CommandSirap extends CommandBase {
 			return true;
 		}
 		
-		if(is(KEY_LOCALE)) {
-			C.pl2("en,zh,en_GB, en_US, es_ES, zh_CN, zh_TW, ja_JP, it_IT");
-			return true;
-		}
-		
 		singleParam = parseParam(KEY_USER_TIMEZONE_SET);
 		if(singleParam != null) {
 			resetTimeZone(Integer.parseInt(singleParam));
 			return true;
-		}
-		
-		singleParam = parseParam(KEY_LOCALE + "(.*?)");
-		if(singleParam != null) {
-			Locale locale = DateUtil.parseLocale(singleParam);
-			if(locale != null) {
-				resetLocale(locale);
-				return true;
-			}
 		}
 		
 		String math = MexCalculator.evaluate(command, true);
@@ -812,11 +796,6 @@ public class CommandSirap extends CommandBase {
 		}
 		
 		return isChanged;
-	}
-
-	private void resetLocale(Locale locale) {
-		g().setLocale(locale);
-		C.pl2("Locale reset as " + locale);
 	}
 	
 	public String lastModified(String folderPath, final String criteria) {

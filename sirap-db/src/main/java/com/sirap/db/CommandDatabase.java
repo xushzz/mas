@@ -11,6 +11,7 @@ import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
+import com.sirap.common.framework.Stash;
 import com.sirap.common.framework.command.InputAnalyzer;
 import com.sirap.common.framework.command.target.TargetExcel;
 import com.sirap.db.parser.ConfigItemParser;
@@ -146,7 +147,7 @@ public class CommandDatabase extends CommandBase {
 			DBConfigItem db = hai.parse(command);
 			String dbName = db.getItemName();
 			if(db != null) {
-				g().getStash().put(dbName, db);
+				Stash.g().place(dbName, db);
 				g().getUserProps().put("db.active", dbName);
 				g().getUserProps().put("db.schema", null);
 				C.pl2("currently active: " + dbName + "");

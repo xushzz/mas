@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.sirap.basic.util.StrUtil;
 import com.sirap.db.DBConfigItem;
+import com.sirap.db.DBHelper;
 
 public class ConfigItemParserMySQL extends ConfigItemParser {
 
@@ -46,7 +47,7 @@ public class ConfigItemParserMySQL extends ConfigItemParser {
 		
 		String url = StrUtil.occupyKeyValues(urlTemplate, params);
 		config.setUrl(url);
-		config.setItemName("flydb");
+		config.setItemName(DBHelper.KEY_DB_CONFIG_FLY);
 		
 		return config;
 	}

@@ -20,6 +20,7 @@ import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.TrumpUtil;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.framework.SimpleKonfig;
+import com.sirap.common.framework.Stash;
 import com.sirap.common.framework.command.target.Target;
 import com.sirap.common.framework.command.target.TargetConsole;
 import com.sirap.common.framework.command.target.TargetEmail;
@@ -180,7 +181,7 @@ public class Exporter {
 				C.total(records.size());
 			}
 		} else {
-			Object startObj = SimpleKonfig.g().getStash().get("startInMillis");
+			Object startObj = Stash.g().readAndRemove(Stash.KEY_START_IN_MILLIS);
 			if(startObj instanceof Long) {
 				long start = (Long)startObj;
 				C.list(records, params.isPrintTotal(), start);

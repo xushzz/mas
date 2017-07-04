@@ -10,6 +10,7 @@ import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.framework.Janitor;
 import com.sirap.common.framework.SimpleKonfig;
+import com.sirap.common.framework.Stash;
 
 public class CommandShortcut extends CommandBase {
 	
@@ -51,11 +52,11 @@ public class CommandShortcut extends CommandBase {
 		String shortcutCommand = SimpleKonfig.g().getUserValueOf(command);
 		if(shortcutCommand != null) {
 			C.pl(command + "=" + shortcutCommand);
-			boolean notYetStashed = g().getStash().get(CommandBase.STASH_USER_INPUT_TARGET) == null;
+			boolean notYetStashed = Stash.g().read(Stash.KEY_USER_INPUT_TARGET) == null;
 			if(notYetStashed) {
 				boolean hasSpecifiedTarget = !EmptyUtil.isNullOrEmpty(target.getValue());
 				if(hasSpecifiedTarget) {
-					g().getStash().put(CommandBase.STASH_USER_INPUT_TARGET, target);
+					Stash.g().place(Stash.KEY_USER_INPUT_TARGET, target);
 				}
 			}
 			Janitor.g().process(shortcutCommand);

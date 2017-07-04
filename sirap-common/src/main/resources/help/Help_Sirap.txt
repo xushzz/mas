@@ -33,8 +33,6 @@ ox                 photo auto-open on/off switch after captured
 sx                 sound on/off switch when capturing screen
 tx                 export with or without time stamp switch
 .                  list storage with dot
-l=                 list general locales such as en,zh,en_GB, en_US, es_ES, zh_CN, zh_TW, ja_JP, it_IT
-l=zh               set locale as zh
 ver                version of this product, plus copyright and author information
 1+2.3x(4.5-_6)/8   yield 4.01875, basic calculation like add, subtract, multiply and divide
 p=20,3             permutation, like how many ways could you choose from three out of 20? 6840!
