@@ -13,7 +13,7 @@ set slogan=Dev Talks
 
 set /p privatekey=<E:\Mas\privatekey.txt
 set params=storage=E:\Mas
-set params=%params%,userConfig=D:\Gitstuff\SIRAP\mas\scripts\dev.properties
+set params=%params%,userConfig=D:\Gitstuff\SIRAP\mas\hall\dev.properties
 set params=%params%,passcode=%privatekey%
 
 if not exist "%jre%" goto nojre

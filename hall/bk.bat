@@ -5,7 +5,7 @@ title I'm backing up stuff
 set jdk=C:\Java\jdk1.8.0_05
 set from=D:\Gitstuff\SIRAP\mas
 set target=M:\BKMas
-set script=%from%\scripts
+set script=%from%\hall
 set other=E:\KDB\libs
 
 dir %target%

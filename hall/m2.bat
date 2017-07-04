@@ -11,9 +11,10 @@ set jars=D:\Gitstuff\SIRAP\masrun\jars
 set deps=%jars%\deps
 set slogan=Money Talks
 
+rem set /p privatekey=input your private key: 
 set /p privatekey=<E:\Mas\privatekey.txt
 set params=storage=E:\Mas
-set params=%params%,userConfig=D:\Gitstuff\SIRAP\mas\scripts\mas.properties
+set params=%params%,userConfig=D:\Gitstuff\SIRAP\mas\hall\mas.properties
 set params=%params%,passcode=%privatekey%
 
 if not exist "%jre%" goto nojre

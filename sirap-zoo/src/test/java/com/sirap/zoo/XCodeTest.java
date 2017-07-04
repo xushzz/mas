@@ -15,6 +15,7 @@ import org.junit.Test;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
+import com.sirap.basic.util.LocaleUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XCodeUtil;
 import com.sirap.geek.manager.GeekManager;
@@ -23,7 +24,7 @@ public class XCodeTest {
 
 	@Test
 	public void bug() {
-		Map ma = XCodeUtil.getCurrencyCodeAndSymbol();
+		Map ma = LocaleUtil.getCurrencyCodeAndSymbol();
 		D.pl(ma);
 		C.pl(ma.size());
 	}
@@ -52,12 +53,12 @@ public class XCodeTest {
 	
 		C.list(items);
 		
-		List list = XCodeUtil.getAllCurrencies(null);
+		List list = LocaleUtil.getAllCurrencies(null);
 		C.listSome(list, 3);
 	}
 	
 	public void countrycode() {
-		List list = XCodeUtil.getIso3Countries();
+		List list = LocaleUtil.getIso3Countries();
 		C.list(list);
 	}
 	
