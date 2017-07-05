@@ -38,7 +38,7 @@ public class FileManager {
 	public static FileManager g() {
 		if(instance == null) {
 			instance = Holder.instance;
-			instance.init();
+			instance.initFixedPaths();
 			instance.getAllRecords(true);
 		}
 		
@@ -46,6 +46,7 @@ public class FileManager {
 	}
 	
 	public int[] refresh() {
+		instance.initFixedPaths();
 		int before = ALL_RECORDS.size();
 		getAllRecords(true);
 		int after = ALL_RECORDS.size();
@@ -75,9 +76,9 @@ public class FileManager {
 		return ALL_RECORDS;
 	}
 	
-	private void init() {
+	private void initFixedPaths() {
 		originalPaths = getOriginalPaths();
-		
+		fixedPaths.clear();
 		for(String path:originalPaths) {
 			
 			String cleverPath = FileUtil.parseFolderPath("", path);

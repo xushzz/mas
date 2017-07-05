@@ -354,17 +354,10 @@ public class CommandFile extends CommandBase {
 			return true;
 		}
 		
-		if(is(KEY_VERY_IMPORTANT_FOLDER)) {
-			List<String> records = FileManager.g().getAllFolders();
-			export(records);
-			
-			return true;
-		}
-		
 		sean = new FileSizeInputAnalyzer(input);
 		String vRegex = "(" + KEY_SHOW_DETAIL + "|)" + KEY_VERY_IMPORTANT_FOLDER + "(\\s(.*?)|)";
 		params = StrUtil.parseParams(vRegex, sean.getCommand());
-		if(params != null) {
+		if(params != null && !EmptyUtil.isNullOrEmpty(params[1])) {
 			this.command = sean.getCommand();
 			this.target = sean.getTarget();
 			boolean detail = !params[0].isEmpty();
@@ -396,6 +389,13 @@ public class CommandFile extends CommandBase {
 			} else {
 				export(CollectionUtil.items2PrintRecords(records));
 			}
+			
+			return true;
+		}
+		
+		if(is(KEY_VERY_IMPORTANT_FOLDER + KEY_VERY_IMPORTANT_FOLDER)) {  
+			List<String> records = FileManager.g().getAllFolders();
+			export(records);
 			
 			return true;
 		}

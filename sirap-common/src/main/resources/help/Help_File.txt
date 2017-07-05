@@ -28,7 +28,7 @@ F: 3 >3.3M         size-unit criteria, = equal 0.01 diff, 3.3B, 3.3K, also for u
 ::                 similar to performing C:, D: and all other available disks all together
 ::\fire            similar to performing C:\fire, D:\fire and all other available disks all together
 ::\fire 3 txt      recursively display for all available disks
-v                  display folder names configured in v.folder nodes, "v folders"
+vv                 display folder names configured in v.folder nodes, "v folders"
 v..                list all files in v folders recursively by given depth, default 2 and configurable 
 vr                 refresh 'v folders' cache, the changes in folders will be reflected in next search
 v homeland&tower   conduct search in v folders by multiple conditions, & for 'and', | for 'or'
