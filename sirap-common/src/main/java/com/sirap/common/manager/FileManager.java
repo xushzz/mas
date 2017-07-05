@@ -102,6 +102,7 @@ public class FileManager {
 	}
 	
 	public List<String> getAllFolders() {
+		initFixedPaths();
 		List<String> folders = Arrays.asList(originalPaths);
 		Collections.sort(folders);
 		
