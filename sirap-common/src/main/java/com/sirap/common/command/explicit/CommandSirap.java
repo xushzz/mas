@@ -19,9 +19,9 @@ import com.sirap.basic.domain.MexedFile;
 import com.sirap.basic.domain.MexedObject;
 import com.sirap.basic.email.EmailCenter;
 import com.sirap.basic.math.FormulaCalculator;
-import com.sirap.basic.math.MexCalculator;
 import com.sirap.basic.math.MexColorConverter;
 import com.sirap.basic.math.MexNumberConverter;
+import com.sirap.basic.math.SimCal;
 import com.sirap.basic.math.Sudoku;
 import com.sirap.basic.output.PDFParams;
 import com.sirap.basic.search.MexFilter;
@@ -61,6 +61,7 @@ public class CommandSirap extends CommandBase {
 	private static final String KEY_DATETIME_USER = "du";
 	private static final String KEY_TIMEZONE_DISPLAY = "z\\.(.{1,20})";
 	private static final String KEY_USER_TIMEZONE_SET = "u([+-](1[0-2]|[0-9]))";
+	private static final String KEY_CALCULATE = "ca";
 	private static final String KEY_USER_SETTING = "u";
 	private static final String KEY_CONFIGURATION = "c";
 	private static final String KEY_USER_CONFIGURATION = "/";
@@ -373,16 +374,38 @@ public class CommandSirap extends CommandBase {
 			resetTimeZone(Integer.parseInt(singleParam));
 			return true;
 		}
-		
-		String math = MexCalculator.evaluate(command, true);
-		if(math != null) {
-			List<String> results = new ArrayList<String>();
-			results.add(command + "=" + math);
-			export(results);
-			return true;
+
+		String regexCalculate = "([\\s_\\d\\.+\\-x\\*/\\(\\)]{2,})";
+		singleParam = parseParam(KEY_CALCULATE + "\\s+" + regexCalculate);
+		if(singleParam != null) {
+			int scale = g().getUserNumberValueOf("calculator.scale", 2);
+			String math = SimCal.evaluate(singleParam, scale);
+			if(math != null) {
+				List<String> results = new ArrayList<String>();
+				results.add(singleParam + " = " + math);
+				if(math.length() > 9) {
+					results.add("Result contains " + math.length() + " chars.");
+				}
+				export(results);
+				return true;
+			}
+		}
+
+		try {
+			singleParam = parseParam(regexCalculate);
+			int scale = g().getUserNumberValueOf("calculator.scale", 2);
+			String math = SimCal.evaluate(singleParam, scale);
+			if(math != null) {
+				List<String> results = new ArrayList<String>();
+				results.add(singleParam + "=" + math);
+				export(results);
+				return true;
+			}
+		} catch (Exception ex) {
+			//
 		}
 		
-		math = FormulaCalculator.evaluate(command);
+		String math = FormulaCalculator.evaluate(command);
 		if(math != null) {
 			List<String> results = new ArrayList<String>();
 			results.add("x=" + math);
