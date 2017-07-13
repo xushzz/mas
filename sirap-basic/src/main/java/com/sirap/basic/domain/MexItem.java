@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.StrUtil;
@@ -13,11 +14,13 @@ public abstract class MexItem implements Serializable {
 
 	public static final String SYMBOL_CARET = "^";
 	public static final String SYMBOL_USD = "$";
+	public static final String SYMBOL_ASTERISK = "*";
 
 	protected int pseudoOrder;
 	private String wholeMatchedStr;
 	private String leftMatchedStr;
 	private String rightMatchedStr;
+	private String asteriskMatchedStr;
 	
 	public boolean parse(String record) {
 		return false;
@@ -58,6 +61,16 @@ public abstract class MexItem implements Serializable {
 		return StrUtil.endsWith(target, rightMatchedStr);
 	}
 	
+	private boolean requiresAsteriskMatched(String keyWord) {
+		asteriskMatchedStr = parseAsteriskMatched(keyWord);
+		return asteriskMatchedStr != null;
+	}
+	
+	private boolean isAsteriskMatched(String target) {
+		Matcher ma = StrUtil.createMatcher(asteriskMatchedStr, target);
+		return ma.find();
+	}
+	
 	public boolean isMatched(String keyWord) {
 		return false;
 	}
@@ -87,6 +100,14 @@ public abstract class MexItem implements Serializable {
 		return null;
 	}
 	
+	public String parseAsteriskMatched(String keyWord) {
+		if(keyWord != null && keyWord.indexOf("\\*") >= 0) {
+			return keyWord.replace("\\*", "\\w*");
+		}
+		
+		return null;
+	}
+	
 	public boolean isRegexMatched(String source, String keyWord) {
 		
 		if(requiresWholeMatched(keyWord) && isWholeMatched(source)) {
@@ -98,6 +119,10 @@ public abstract class MexItem implements Serializable {
 		}
 		
 		if(requiresRightMatched(keyWord) && isRightMatched(source)) {
+			return true;
+		}
+		
+		if(requiresAsteriskMatched(keyWord) && isAsteriskMatched(source)) {
 			return true;
 		}
 		

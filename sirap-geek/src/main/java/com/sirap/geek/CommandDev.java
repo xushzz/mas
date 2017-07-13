@@ -1,24 +1,30 @@
 package com.sirap.geek;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.sirap.basic.domain.MexItem;
+import com.sirap.basic.domain.MexedJarEntry;
 import com.sirap.basic.domain.MexedObject;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.json.JsonUtil;
+import com.sirap.basic.search.MexFilter;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
 import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.MathUtil;
+import com.sirap.basic.util.MexUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.extractor.Extractor;
 import com.sirap.common.framework.SimpleKonfig;
+import com.sirap.common.framework.command.FileSizeInputAnalyzer;
+import com.sirap.common.framework.command.InputAnalyzer;
 import com.sirap.geek.jenkins.JenkinsBuildRecord;
 import com.sirap.geek.jenkins.JenkinsManager;
 import com.sirap.geek.manager.GithubIssuesExtractor;
@@ -38,6 +44,7 @@ public class CommandDev extends CommandBase {
 	private static final String KEY_PAIR_KEY_VALUE = "pa";
 	private static final String KEY_TO_UPPERCASE = "up";
 	private static final String KEY_TO_LOWERCASE= "lo";
+	private static final String KEY_JAR= "jar";
 
 	public boolean handle() {
 		singleParam = parseParam(KEY_PATH + "\\s(.*?)");
@@ -238,6 +245,35 @@ public class CommandDev extends CommandBase {
 			C.pl("To upper case, " + singleParam.length() + " chars.");
 			String result = singleParam.toUpperCase();
 			export(result);
+			
+			return true;
+		}
+		
+		InputAnalyzer sean = new FileSizeInputAnalyzer(input);
+		regex = "(.+\\." + KEY_JAR + ")\\s(.+)";
+		String[] crazy = StrUtil.parseParams(regex, sean.getCommand());
+		if(crazy != null) {
+			String fileInfo = crazy[0];
+			String criteria = crazy[1];
+			List<String> files = FileUtil.explodeAsterisk(fileInfo);
+			List<MexedJarEntry> allItems = new ArrayList<>();
+			for(String onefile : files) {
+				File jar = parseFile(onefile);
+				if(jar != null) {
+					String filepath = jar.getAbsolutePath();
+					List<MexedJarEntry> items = MexUtil.parseJarEntries(filepath);
+					allItems.addAll(items);
+				}
+			}
+			
+			if(KEY_2DOTS.equals(criteria)) {
+				export(allItems);
+			} else {
+				MexFilter<MexedJarEntry> filter = new MexFilter<MexedJarEntry>(criteria, allItems);
+				List<MexedJarEntry> result = filter.process();
+				export(result);
+			}
+
 			
 			return true;
 		}

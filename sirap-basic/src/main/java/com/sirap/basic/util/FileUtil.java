@@ -2,6 +2,7 @@ package com.sirap.basic.util;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FilenameFilter;
 import java.io.InputStream;
 import java.math.RoundingMode;
 import java.nio.file.Files;
@@ -663,5 +664,46 @@ public class FileUtil {
 		} catch (Exception ex) {
 			throw new MexException(ex);
 		}
+	}
+	
+	public static List<String> explodeAsterisk(String filepathHavingAsterisk) {
+		String temp = filepathHavingAsterisk;
+		boolean isWindowsStyle = temp.indexOf('\\') >= 0;
+		if(isWindowsStyle) {
+			temp = temp.replace('\\', '/');
+		}
+		String regex = "(.+?)/([^/]*\\*[^/]*)(/?$|/.+)";
+		String[] params = StrUtil.parseParams(regex, temp);
+		List<String> matchedFiles = new ArrayList<>();
+		if(params == null) {
+			matchedFiles.add(temp);
+			return matchedFiles;
+		}
+		String head = params[0];
+		String body = params[1];
+		String tail = params[2];
+		final String goodTail = tail;
+		File folder = getIfNormalFolder(head);
+		if(folder != null) {
+			final String subRegex = body.replace(".", "\\.").replace("*", ".*");
+			folder.listFiles(new FilenameFilter() {
+				public boolean accept(File dir, String name) {
+					boolean isMatched = StrUtil.isRegexMatched(subRegex, name);
+					if(isMatched) {
+						String jack = dir.getAbsolutePath() + "/" + name + goodTail;
+						String james = jack.replace('/', '\\');
+						matchedFiles.add(james);
+					}
+					return isMatched;
+				}
+			});
+		}
+		
+		if(isWindowsStyle) {
+			head = head.replace('/', '\\');
+			tail = tail.replace('/', '\\');
+		}
+		
+		return matchedFiles;
 	}
 }

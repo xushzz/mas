@@ -11,15 +11,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.sirap.basic.component.MexedList;
 import com.sirap.basic.component.MexedOption;
 import com.sirap.basic.domain.MexItem;
+import com.sirap.basic.domain.MexedJarEntry;
 import com.sirap.basic.domain.MexedObject;
 import com.sirap.basic.email.EmailCenter;
+import com.sirap.basic.exception.MexException;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
 
@@ -406,5 +411,20 @@ public class MexUtil {
 		}
 		
 		return true;
+	}
+	
+	public static List<MexedJarEntry> parseJarEntries(String filepath) {
+		try(JarFile jarFile = new JarFile(filepath)) {
+			List<MexedJarEntry> items = new ArrayList<>();
+		    Enumeration<JarEntry> what = jarFile.entries();
+		    while (what.hasMoreElements()) {
+		    	JarEntry entry = what.nextElement();
+		    	items.add(new MexedJarEntry(entry));
+		    }
+		    
+		    return items;
+		} catch (Exception ex) {
+			throw new MexException(ex.getMessage());
+		}
 	}
 }

@@ -876,6 +876,13 @@ public class StrUtil {
 		return XCodeUtil.replaceHexChars(source, Konstants.CODE_UTF8);
 	}
 	
+	/***
+	 * Various regex.
+	 * http://blog.csdn.net/lcugym/article/details/22173117
+	 * @param regex
+	 * @param content
+	 * @return
+	 */
 	public static Matcher createMatcher(String regex, String content) {
 		Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(content);
 

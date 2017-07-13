@@ -20,4 +20,5 @@ rjs http://X/json  parse URL-specified content into json and display raw format
 pa http://X/json?name=jack&id=19 parse key value pairs in URL with ask and &
 lo.QwErTy21        convert given string to lower case
 up.QwErTy21        convert given string to upper case
-ver=GEEK-DEV1.0.4-ELIAS  6/12/2017, I
+E:\abc.jar a&b     list out what is inside a jar, with criteria, while .. means all
+ver=GEEK-DEV1.0.5-DAYU  7/14/2017, V
