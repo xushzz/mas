@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.sirap.basic.component.Konstants;
+import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexedObject;
+import com.sirap.basic.exception.MexException;
 import com.sirap.basic.output.ConsoleParams;
 import com.sirap.basic.search.MexFilter;
 import com.sirap.basic.tool.C;
@@ -40,6 +42,7 @@ public abstract class CommandBase {
 	
 	protected String input;
 	protected String command;
+	protected String options;
 	public Target target;
 	protected boolean collectInput = true;
 	
@@ -64,9 +67,10 @@ public abstract class CommandBase {
 		this.target = new TargetConsole();
 	}
 	
-	public void setInstructions(String input, String command, Target target) {
+	public void setInstructions(String input, String command, String options, Target target) {
 		this.input = input;
 		this.command = command;
+		this.options = options;
 		this.target = target;
 	}
 	
@@ -89,6 +93,19 @@ public abstract class CommandBase {
 			if(!flag) {
 				return false;
 			}
+		} catch (MexException ex) {
+			StringBuilder stv = new StringBuilder();
+			if(g().isPrintExceptionStackTrace()) {
+				if(ex.getOrigin() != null) {
+					stv.append(XXXUtil.getStackTrace(ex.getOrigin()));
+				} else {
+					stv.append(XXXUtil.getStackTrace(ex));
+				}
+			} else {
+				stv.append(ex.getMessage());
+			}
+			export(stv);
+			
 		} catch (Exception ex) {
 			StringBuilder stv = new StringBuilder();
 			stv.append(ex.getMessage());
@@ -100,6 +117,14 @@ public abstract class CommandBase {
 		}
 		
 		return true;
+	}
+	
+	public <T extends MexItem> void exportMexItems(List<T> list) {
+		export(CollectionUtil.items2PrintRecords(list, options));
+	}
+	
+	public <T extends MexItem> void exportMexItems(List<T> list, String niceOptions) {
+		export(CollectionUtil.items2PrintRecords(list, niceOptions));
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })

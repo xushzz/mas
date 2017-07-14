@@ -2,10 +2,8 @@ package com.sirap.extractor.manager;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.sirap.basic.domain.MexItem;
@@ -71,13 +69,14 @@ public class ForexManager {
 	
 	public List<String> convert(String baseCurrency, String amount, String criteria) {
 		List<ForexRateRecord> mexItems = fetchItems(baseCurrency, amount, criteria); 
-		
-		Map<String, Object> map = new HashMap<String, Object>();
+
 		int[] maxArr = maxLenOfFields(mexItems);
-		map.put("maxLenOfCurrency", maxArr[0] + "");
-		map.put("maxLenOfAmount", maxArr[1] + "");
+		StringBuilder sb = new StringBuilder();
+		sb.append("maxLenOfCurrency=").append(maxArr[0]);
+		sb.append(",");
+		sb.append("maxLenOfAmount=").append(maxArr[1]);
 		
-		return CollectionUtil.items2PrintRecords(mexItems, map);
+		return CollectionUtil.items2PrintRecords(mexItems, sb.toString());
 	}
 	
 	@SuppressWarnings("unchecked")

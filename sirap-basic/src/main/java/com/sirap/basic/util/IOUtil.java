@@ -24,11 +24,14 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.component.MexedMap;
 import com.sirap.basic.domain.MexedFile;
 import com.sirap.basic.domain.MexedObject;
+import com.sirap.basic.exception.MexException;
 import com.sirap.basic.output.ExcelParams;
 import com.sirap.basic.output.PDFParams;
 import com.sirap.basic.thirdparty.excel.ExcelHelper;
@@ -757,5 +760,25 @@ public class IOUtil {
 		List<String> items = StrUtil.split(path, delimiter);
 
 		return items;
+	}
+	
+	public static List<String> readZipEntry(String url, String entryName) {
+		try(ZipFile file = new ZipFile(url)) {
+		    ZipEntry entry = file.getEntry(entryName);
+		    if(entry == null) {
+		    	String msg = "The entry '{0}' doesn't exist.";
+		    	throw new MexException(StrUtil.occupy(msg, entryName));
+		    }
+		    if(entry.getSize() == 0) {
+		    	String msg = "The entry '{0}' either represents a directory or contains nothing.";
+		    	throw new MexException(StrUtil.occupy(msg, entryName));
+		    }
+		    InputStream inputStream = file.getInputStream(entry);
+		    List<String> items = readStreamIntoList(inputStream);
+		    
+		    return items;
+		} catch (Exception ex) {
+			throw new MexException(ex);
+		}
 	}
 }

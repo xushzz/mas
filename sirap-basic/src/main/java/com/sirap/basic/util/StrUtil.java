@@ -272,15 +272,27 @@ public class StrUtil {
 	}
 	
 	public static boolean contains(String source, String target) {
-		return contains(source, target, 1);
+		return contains(source, target, 1, false);
+	}
+	
+	public static boolean contains(String source, String target, boolean caseSensitive) {
+		return contains(source, target, 1, caseSensitive);
 	}
 
 	public static boolean contains(String source, String target, int minimunLength) {
+		return contains(source, target, minimunLength, false);
+	}
+	
+	public static boolean contains(String source, String target, int minimunLength, boolean caseSensitive) {
 		if(source == null || target == null || target.length() < minimunLength) {
 			return false;
 		}
-
-		return source.toLowerCase().contains(target.toLowerCase());
+		
+		if(caseSensitive) {
+			return source.contains(target);
+		} else {
+			return source.toLowerCase().contains(target.toLowerCase());
+		}
 	}
 	
 	public static boolean containsAnyChar(String source, String keyChars) {
@@ -570,6 +582,16 @@ public class StrUtil {
 		Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
 
 		if(m.matches()) {
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public static boolean isRegexFound(String regex, String source) {
+		Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
+
+		if(m.find()) {
 			return true;
 		}
 		

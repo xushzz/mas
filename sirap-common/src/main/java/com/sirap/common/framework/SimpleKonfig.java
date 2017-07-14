@@ -18,7 +18,7 @@ import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.MathUtil;
-import com.sirap.basic.util.MexUtil;
+import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.TrumpUtil;
 import com.sirap.basic.util.XXXUtil;
@@ -63,15 +63,15 @@ public class SimpleKonfig extends Konfig {
 		
 		instance.systemConfigFile = systemConfigFile;
 
-		List<MexedOption> options = MexUtil.parseOptions(params);
-		instance.originalStorage = MexUtil.readOptionString(options, KEY_STORAGE);
+		List<MexedOption> options = OptionUtil.parseOptions(params);
+		instance.originalStorage = OptionUtil.readString(options, KEY_STORAGE);
 		
-		String tempPasscode = MexUtil.readOptionString(options, KEY_PASSCODE);
+		String tempPasscode = OptionUtil.readString(options, KEY_PASSCODE);
 		if(!EmptyUtil.isNullOrEmpty(tempPasscode)) {
 			String temp2 = TrumpUtil.decodeMixedTextBySIRAP(tempPasscode, "true", true);
 			instance.securityPasscode = temp2;
 		}
-		instance.userConfigFile = MexUtil.readOptionString(options, KEY_USERCONFIG);
+		instance.userConfigFile = OptionUtil.readString(options, KEY_USERCONFIG);
 		
 		instance.loadAndSetValues();
 	}

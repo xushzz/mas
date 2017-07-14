@@ -16,6 +16,7 @@ public abstract class MexItem implements Serializable {
 	public static final String SYMBOL_USD = "$";
 	public static final String SYMBOL_ASTERISK = "*";
 
+	protected boolean caseSensitive;
 	protected int pseudoOrder;
 	private String wholeMatchedStr;
 	private String leftMatchedStr;
@@ -69,6 +70,10 @@ public abstract class MexItem implements Serializable {
 	private boolean isAsteriskMatched(String target) {
 		Matcher ma = StrUtil.createMatcher(asteriskMatchedStr, target);
 		return ma.find();
+	}
+	
+	public boolean isMatched(String keyWord, boolean caseSensitive) {
+		return isMatched(keyWord);
 	}
 	
 	public boolean isMatched(String keyWord) {
@@ -137,6 +142,10 @@ public abstract class MexItem implements Serializable {
 		return toPrint();
 	}
 	
+	public String toPrint(String options) {
+		return toPrint();
+	}
+	
 	public List<String> toPDF() {
 		List<String> list = new ArrayList<String>();
 		list.add(toPrint());
@@ -150,5 +159,9 @@ public abstract class MexItem implements Serializable {
 	
 	public void print(Map<String, Object> params) {
 		C.pl(toPrint(params));
+	}
+	
+	public void print(String options) {
+		C.pl(toPrint(options));
 	}
 }

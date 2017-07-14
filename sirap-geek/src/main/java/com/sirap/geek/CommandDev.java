@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sirap.basic.domain.MexItem;
-import com.sirap.basic.domain.MexedJarEntry;
 import com.sirap.basic.domain.MexedObject;
+import com.sirap.basic.domain.MexedZipEntry;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.search.MexFilter;
@@ -17,6 +17,7 @@ import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.MexUtil;
+import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
@@ -45,6 +46,7 @@ public class CommandDev extends CommandBase {
 	private static final String KEY_TO_UPPERCASE = "up";
 	private static final String KEY_TO_LOWERCASE= "lo";
 	private static final String KEY_JAR= "jar";
+	private static final String KEY_ZIP= "zip";
 
 	public boolean handle() {
 		singleParam = parseParam(KEY_PATH + "\\s(.*?)");
@@ -249,31 +251,53 @@ public class CommandDev extends CommandBase {
 			return true;
 		}
 		
+		regex = StrUtil.occupy("(.+\\.({0}|{1}))!/(.+)", KEY_JAR, KEY_ZIP);
+		params = parseParams(regex);
+		if(params != null) {
+			String whatfile = params[0];
+			String whatentry = params[2];
+			File jar = parseFile(whatfile);
+			if(jar != null) {
+				String filepath = jar.getAbsolutePath();
+				List<String> items = IOUtil.readZipEntry(filepath, whatentry);
+				export(items);
+			} else {
+				String msg = "Not found '{0}'";
+				C.pl2(StrUtil.occupy(msg, whatfile));
+			}
+			
+			return true;
+		}
+		
 		InputAnalyzer sean = new FileSizeInputAnalyzer(input);
-		regex = "(.+\\." + KEY_JAR + ")\\s(.+)";
+		regex = "(-?)(.+\\.(jar|zip))\\s(.+)";
 		String[] crazy = StrUtil.parseParams(regex, sean.getCommand());
 		if(crazy != null) {
-			String fileInfo = crazy[0];
-			String criteria = crazy[1];
+			this.command = sean.getCommand();
+			this.target = sean.getTarget();
+			this.options = sean.getOptions();
+			boolean showSize = !crazy[0].isEmpty();
+			String fileInfo = crazy[1];
+			String criteria = crazy[3];
 			List<String> files = FileUtil.explodeAsterisk(fileInfo);
-			List<MexedJarEntry> allItems = new ArrayList<>();
+			List<MexedZipEntry> allItems = new ArrayList<>();
 			for(String onefile : files) {
 				File jar = parseFile(onefile);
 				if(jar != null) {
 					String filepath = jar.getAbsolutePath();
-					List<MexedJarEntry> items = MexUtil.parseJarEntries(filepath);
+					List<MexedZipEntry> items = MexUtil.parseZipEntries(filepath);
 					allItems.addAll(items);
 				}
 			}
-			
-			if(KEY_2DOTS.equals(criteria)) {
-				export(allItems);
-			} else {
-				MexFilter<MexedJarEntry> filter = new MexFilter<MexedJarEntry>(criteria, allItems);
-				List<MexedJarEntry> result = filter.process();
-				export(result);
+			String tempOptions = showSize ? "+size" : "";
+			if(options != null) {
+				tempOptions += "," + options;
 			}
-
+			
+			boolean caseSensitive = OptionUtil.readBoolean(tempOptions, "case", false);
+			MexFilter<MexedZipEntry> filter = new MexFilter<MexedZipEntry>(criteria, allItems, caseSensitive);
+			List<MexedZipEntry> result = filter.process();
+			exportMexItems(result, tempOptions);
 			
 			return true;
 		}

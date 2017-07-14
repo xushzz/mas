@@ -16,6 +16,7 @@ public class MexFilter<T extends MexItem> {
 	public static final String SYMBOL_AND = "&";
 	public static final String SYMBOL_OR = "|";
 	
+	private boolean caseSensitive;
 	private String criteria;
 	private List<T> source;
 	
@@ -34,6 +35,12 @@ public class MexFilter<T extends MexItem> {
 	public MexFilter(String criteria, List<T> source) {
 		this.criteria = criteria;
 		this.source = source;
+	}
+	
+	public MexFilter(String criteria, List<T> source, boolean caseSensitive) {
+		this.criteria = criteria;
+		this.source = source;
+		this.caseSensitive = caseSensitive;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -57,7 +64,7 @@ public class MexFilter<T extends MexItem> {
 				}
 				boolean isAllMatched = true;
 				for(String keyWord:criterias) {
-					if(!item.isMatched(keyWord)) {
+					if(!item.isMatched(keyWord, caseSensitive)) {
 						isAllMatched = false;
 						break;
 					}
@@ -77,7 +84,7 @@ public class MexFilter<T extends MexItem> {
 				}
 				boolean isAnyMatched = false;
 				for(String keyWord:criterias) {
-					if(item.isMatched(keyWord)) {
+					if(item.isMatched(keyWord, caseSensitive)) {
 						isAnyMatched = true;
 						break;
 					}

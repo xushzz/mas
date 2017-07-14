@@ -9,6 +9,7 @@ import java.util.List;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.component.media.MediaFileAnalyzer;
 import com.sirap.basic.domain.MexedFile;
+import com.sirap.basic.domain.MexedZipEntry;
 import com.sirap.basic.email.EmailCenter;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.search.MexFilter;
@@ -24,6 +25,7 @@ import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.ImageUtil;
 import com.sirap.basic.util.MathUtil;
+import com.sirap.basic.util.MexUtil;
 import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
@@ -138,6 +140,12 @@ public class CommandFile extends CommandBase {
 		File file = parseFile(singleParam);
 		if(file != null) {
 			String filePath = file.getAbsolutePath();
+			
+			if(!target.isFileRelated() && FileOpener.isZipFile(filePath)) {
+				List<MexedZipEntry> items = MexUtil.parseZipEntries(filePath);
+				exportMexItems(items);
+				return true;
+			}
 			
 			if(target instanceof TargetConsole) {
 				FileOpener.open(filePath);

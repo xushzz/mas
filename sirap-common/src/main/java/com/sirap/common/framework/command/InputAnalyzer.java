@@ -14,11 +14,13 @@ public class InputAnalyzer {
 
 	public static final String EXPORT_ESACPE = "!";
 	public static final String EXPORT_FLAG = ">";
+	public static final String OPTIONS_FLAG = "$";
 	
 	protected String input;
 	private String command;
 	private String targetStr;
 	private Target target;
+	private String options;
 	
 	public String getInput() {
 		return input;
@@ -26,6 +28,10 @@ public class InputAnalyzer {
 
 	public String getCommand() {
 		return command;
+	}
+	
+	public String getOptions() {
+		return options;
 	}
 
 	public Target getTarget() {
@@ -78,6 +84,13 @@ public class InputAnalyzer {
 		} else {
 			command = removeEscape(input);
 			target = new TargetConsole(true);
+		}
+		
+		String regex = "(.+)\\$(\\S+)$";
+		String[] params = StrUtil.parseParams(regex, command);
+		if(params != null) {
+			command = params[0];
+			options = params[1];
 		}
 	}
 	

@@ -98,6 +98,12 @@ public class FileOpener {
 		
 		return flag;
 	}
+
+	public static boolean isZipFile(String fileName) {
+		boolean flag = FileUtil.isAnyTypeOf(fileName, FileUtil.SUFFIXES_ZIP);
+		
+		return flag;
+	}
 	
 	public static boolean isTextFile(String fileName) {
 		boolean flag = isAcceptableFormat(fileName, FileUtil.SUFFIXES_TEXT, KEY_TEXT);

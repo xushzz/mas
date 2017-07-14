@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.sirap.basic.component.MexedOption;
 import com.sirap.basic.domain.MexItem;
-import com.sirap.basic.util.MexUtil;
+import com.sirap.basic.util.OptionUtil;
 
 @SuppressWarnings("serial")
 public class LocalSearchEngine extends MexItem {
@@ -91,16 +91,16 @@ public class LocalSearchEngine extends MexItem {
 		String optionsStr = null;
 		if(info.length >= 4) {
 			optionsStr = info[3].trim();
-			List<MexedOption> options = MexUtil.parseOptions(optionsStr);
-			Object value = MexUtil.readOption(options, KEY_PRINTSOURCE);
+			List<MexedOption> options = OptionUtil.parseOptions(optionsStr);
+			Object value = OptionUtil.readOption(options, KEY_PRINTSOURCE);
 			if(value instanceof Boolean) {
 				setPrintSource((Boolean)value);
 			}
-			value = MexUtil.readOption(options, KEY_USECACHE);
+			value = OptionUtil.readOption(options, KEY_USECACHE);
 			if(value instanceof Boolean) {
 				setUseCache((Boolean)value);
 			}
-			value = MexUtil.readOption(options, KEY_USESPACE);
+			value = OptionUtil.readOption(options, KEY_USESPACE);
 			if(value instanceof Boolean) {
 				setUseSpace((Boolean)value);
 			}

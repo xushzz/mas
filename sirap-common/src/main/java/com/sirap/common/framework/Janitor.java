@@ -78,6 +78,7 @@ public class Janitor extends Checker {
     	
     	InputAnalyzer fara = new InputAnalyzer(input);
     	String command = fara.getCommand();
+    	String options = fara.getOptions();
     	Target target = fara.getTarget();
     	
     	if(EmptyUtil.isNullOrEmpty(command)) {
@@ -85,7 +86,7 @@ public class Janitor extends Checker {
     	}
     	
     	cmd = new CommandHelp();
-    	cmd.setInstructions(input, command, target);
+    	cmd.setInstructions(input, command, options, target);
     	if(cmd.process()) {
     		if(cmd.isToCollect()) {
     			CommandHistoryManager.g().collect(input);
@@ -102,7 +103,7 @@ public class Janitor extends Checker {
     	
     	for(Class<?> classType: commandList) {
     		cmd = ObjectUtil.createInstanceViaConstructor(classType, CommandBase.class);
-    		cmd.setInstructions(input, command, target);
+    		cmd.setInstructions(input, command, options, target);
     		
     		if(cmd.process()) {
     			if(cmd.isToCollect()) {

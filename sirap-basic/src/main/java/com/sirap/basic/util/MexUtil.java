@@ -14,14 +14,14 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import com.sirap.basic.component.MexedList;
-import com.sirap.basic.component.MexedOption;
 import com.sirap.basic.domain.MexItem;
-import com.sirap.basic.domain.MexedJarEntry;
+import com.sirap.basic.domain.MexedZipEntry;
 import com.sirap.basic.domain.MexedObject;
 import com.sirap.basic.email.EmailCenter;
 import com.sirap.basic.exception.MexException;
@@ -357,52 +357,6 @@ public class MexUtil {
 		C.pl2("Currently, " + baoan.getEmailInfo());
 	}
 	
-	public static String readOptionString(List<MexedOption> options, String targetKey) {
-		Object temp = readOption(options, targetKey, true);
-		if(temp == null) {
-			return null;
-		} else {
-			return temp.toString();
-		}
-	}
-	
-	public static Object readOption(List<MexedOption> options, String targetKey) {
-		return readOption(options, targetKey, true);
-	}
-	
-	public static Object readOption(List<MexedOption> options, String targetKey, boolean ignoreCase) {
-		for(MexedOption mo : options) {
-			String key = mo.getName();
-			Object value = mo.getValue();
-			if(ignoreCase) {
-				if(StrUtil.equals(targetKey, key)) {
-					return value;
-				}
-			} else {
-				if(StrUtil.equalsCaseSensitive(targetKey, key)) {
-					return value;
-				}
-			}
-			
-		}
-		
-		return null;
-	}
-	
-	public static List<MexedOption> parseOptions(String source) {
-		List<MexedOption> options = new ArrayList<>();
-		
-		List<String> params = StrUtil.split(source);
-		for(String param : params) {
-			MexedOption mo = new MexedOption();
-			if(mo.parse(param)) {
-				options.add(mo);
-			}
-		}
-		
-		return options;
-	}
-	
 	public static boolean isAllTrue(boolean[] flags) {
 		for(boolean flag : flags) {
 			if(!flag) {
@@ -413,13 +367,21 @@ public class MexUtil {
 		return true;
 	}
 	
-	public static List<MexedJarEntry> parseJarEntries(String filepath) {
-		try(JarFile jarFile = new JarFile(filepath)) {
-			List<MexedJarEntry> items = new ArrayList<>();
-		    Enumeration<JarEntry> what = jarFile.entries();
+	public static List<MexedZipEntry> parseZipEntries(String filepath) {
+		try(ZipFile jarFile = new ZipFile(filepath)) {
+			List<MexedZipEntry> items = new ArrayList<>();
+		    Enumeration what = jarFile.entries();
+		    String jarName = jarFile.getName();
 		    while (what.hasMoreElements()) {
-		    	JarEntry entry = what.nextElement();
-		    	items.add(new MexedJarEntry(entry));
+		    	Object obj = what.nextElement();
+		    	if(obj instanceof ZipEntry) {
+			    	ZipEntry entry = (ZipEntry)obj;
+			    	MexedZipEntry xiu = new MexedZipEntry(entry);
+			    	xiu.setJarName(jarName);
+			    	items.add(xiu);
+		    	} else {
+		    		D.ts();
+		    	}
 		    }
 		    
 		    return items;

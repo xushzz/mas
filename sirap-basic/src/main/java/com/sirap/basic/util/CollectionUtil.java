@@ -111,6 +111,18 @@ public class CollectionUtil {
 		
 		return records;
 	}
+
+	public static <E extends MexItem> List<String> items2PrintRecords(List<E> items, String options) {
+		List<String> records = new ArrayList<String>();
+		
+		for(MexItem item:items) {
+			records.add(item.toPrint(options));
+		}
+		
+		return records;
+	}
+	
+
 	
 	public static <E extends MexItem> List<List<String>> items2PDFRecords(List<E> items) {
 		List<List<String>> records = new ArrayList<>();

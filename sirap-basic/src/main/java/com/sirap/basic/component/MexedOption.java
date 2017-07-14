@@ -37,7 +37,6 @@ public class MexedOption extends MexItem {
 		String[] params = StrUtil.parseParams(regex, source);
 		
 		if(params != null) {
-			
 			value = StrUtil.equals("+", params[0]);
 			name = params[1];
 
