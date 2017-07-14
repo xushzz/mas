@@ -17,7 +17,6 @@ import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.MexUtil;
-import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
@@ -294,10 +293,13 @@ public class CommandDev extends CommandBase {
 				tempOptions += "," + options;
 			}
 			
-			boolean caseSensitive = OptionUtil.readBoolean(tempOptions, "case", false);
-			MexFilter<MexedZipEntry> filter = new MexFilter<MexedZipEntry>(criteria, allItems, caseSensitive);
-			List<MexedZipEntry> result = filter.process();
-			exportMexItems(result, tempOptions);
+			if(KEY_2DOTS.equals(criteria)) {
+				exportMexItems(allItems, tempOptions);
+			} else {
+				MexFilter<MexedZipEntry> filter = new MexFilter<MexedZipEntry>(criteria, allItems, isCaseSensitive(tempOptions));
+				List<MexedZipEntry> result = filter.process();
+				exportMexItems(result, tempOptions);
+			}
 			
 			return true;
 		}

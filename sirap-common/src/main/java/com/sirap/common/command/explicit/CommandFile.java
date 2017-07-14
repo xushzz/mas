@@ -26,6 +26,7 @@ import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.ImageUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.MexUtil;
+import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
@@ -293,6 +294,7 @@ public class CommandFile extends CommandBase {
 		if(jack != null) {
 			this.command = sean.getCommand();
 			this.target = sean.getTarget();
+			this.options = sean.getOptions();
 			List<MexedFile> allMexedFiles = new ArrayList<>();
 			List<String> pathList = jack.getPaths();
 			for(String path : pathList) {
@@ -323,7 +325,7 @@ public class CommandFile extends CommandBase {
 					depth--;
 				}
 				
-				List<MexedFile> items = scanMexedFiles(path, depth, nameCriteria);
+				List<MexedFile> items = scanMexedFiles(path, depth, nameCriteria, isCaseSensitive());
 				if(!EmptyUtil.isNullOrEmpty(items)) {
 					allMexedFiles.addAll(items);
 				}
@@ -368,9 +370,10 @@ public class CommandFile extends CommandBase {
 		if(params != null && !EmptyUtil.isNullOrEmpty(params[1])) {
 			this.command = sean.getCommand();
 			this.target = sean.getTarget();
+			this.options = sean.getOptions();
 			boolean detail = !params[0].isEmpty();
 			String criteria = params[1].trim();
-			List<MexedFile> records = FileManager.g().getFileRecordsByName(criteria);
+			List<MexedFile> records = FileManager.g().getFileRecordsByName(criteria, isCaseSensitive());
 			if(target.isFileRelated()) {
 				export(CollectionUtil.toFileList(records));
 			} else {
@@ -725,7 +728,7 @@ public class CommandFile extends CommandBase {
 		return null;
 	}
 	
-	private List<MexedFile> scanMexedFiles(String path, int depth, String criteria) {
+	private List<MexedFile> scanMexedFiles(String path, int depth, String criteria, boolean caseSensitive) {
 		List<File> allFiles = FileUtil.scanFolder(path, depth);
 		
 		List<MexedFile> allItems = new ArrayList<MexedFile>();
@@ -737,7 +740,7 @@ public class CommandFile extends CommandBase {
 		if(EmptyUtil.isNullOrEmpty(criteria)) {
 			items = allItems;
 		} else {
-			MexFilter<MexedFile> filter = new MexFilter<MexedFile>(criteria, allItems);
+			MexFilter<MexedFile> filter = new MexFilter<MexedFile>(criteria, allItems, caseSensitive);
 			items = filter.process();
 		}
 		

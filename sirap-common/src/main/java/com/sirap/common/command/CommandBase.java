@@ -19,6 +19,7 @@ import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
+import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.RandomUtil;
 import com.sirap.basic.util.StrUtil;
@@ -117,6 +118,14 @@ public abstract class CommandBase {
 		}
 		
 		return true;
+	}
+	
+	public boolean isCaseSensitive() {
+		return OptionUtil.readBoolean(options, "case", false);
+	}
+	
+	public boolean isCaseSensitive(String tempOptions) {
+		return OptionUtil.readBoolean(tempOptions, "case", false);
 	}
 	
 	public <T extends MexItem> void exportMexItems(List<T> list) {

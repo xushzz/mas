@@ -27,14 +27,14 @@ public class MexedFile extends MexItem implements Comparable<MexedFile> {
 	}
 	
 	@Override
-	public boolean isMatched(String keyWord) {
+	public boolean isMatched(String keyWord, boolean caseSensitive) {
 		String temp = getPath();
 		
 		if(isRegexMatched(temp, keyWord)) {
 			return true;
 		}
 		
-		if(StrUtil.contains(temp, keyWord)) {
+		if(StrUtil.contains(temp, keyWord, caseSensitive)) {
 			return true;
 		}
 		

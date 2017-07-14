@@ -16,6 +16,7 @@ import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.MathUtil;
+import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.framework.SimpleKonfig;
 
@@ -124,10 +125,10 @@ public class FileManager {
 		return files;
 	}
 
-	public List<MexedFile> getFileRecordsByName(String criteria) {
+	public List<MexedFile> getFileRecordsByName(String criteria, boolean caseSensitive) {
 		showTipIfNeeded();
 		List<MexedFile> files = getAllRecords(false);
-		MexFilter<MexedFile> filter = new MexFilter<MexedFile>(criteria, files);
+		MexFilter<MexedFile> filter = new MexFilter<MexedFile>(criteria, files, caseSensitive);
 		List<MexedFile> items = filter.process();
 		
 		String fixedCriteria = fixCriteria(criteria);
