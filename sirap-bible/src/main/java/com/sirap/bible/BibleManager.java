@@ -1,12 +1,19 @@
 package com.sirap.bible;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexedObject;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.search.MexFilter;
+import com.sirap.basic.thread.Master;
 import com.sirap.basic.tool.C;
+import com.sirap.basic.util.FileUtil;
+import com.sirap.basic.util.IOUtil;
+import com.sirap.basic.util.StrUtil;
 import com.sirap.common.extractor.Extractor;
 
 public class BibleManager {
@@ -127,11 +134,62 @@ public class BibleManager {
 		return book;
 	}
 	
+	public List<String> getChapterFromLocal(String bibleFolder, String fullBookName, int chapter) {
+		File folder = new File(bibleFolder);
+		List<String> content = new ArrayList<>();
+		
+		if(folder.exists()) {
+			folder.list(new FilenameFilter() {
+				@Override
+				public boolean accept(File dir, String name) {
+					if(StrUtil.contains(name, fullBookName)) {
+						String chapterName = StrUtil.extendLeftward(chapter + "", 2, "0");
+						String path = dir + File.separator + name + File.separator + chapterName + Konstants.SUFFIX_TXT;
+						if(FileUtil.exists(path)) {
+							C.pl("Reading... " + path);
+							content.addAll(IOUtil.readFileIntoList(path));
+						}
+					}
+					return false;
+				}
+			});
+		}
+		
+		return content;
+	}
+	
 	public List<MexedObject> getChapter(String fullBookName, int chapter) {
 		Extractor<MexedObject> nick = new BibleChapterExtractor(fullBookName, chapter);
 		nick.process();
 		List<MexedObject> items = nick.getMexItems();
 		
 		return items;
+	}
+	
+	public String downloadAllBooks(String bibleFolder) {
+		int index = 0;
+		List<ChapterSense> allLinks = new ArrayList<>();
+		for(BibleBook bb : BibleManager.BOOKS) {
+			index++;
+			List<ChapterSense> links = getChapterSenses(index, bb);
+			allLinks.addAll(links);
+		}
+
+		BookChapterFetcher dinesh = new BookChapterFetcher(bibleFolder);
+		Master<ChapterSense> master = new Master<ChapterSense>(allLinks, dinesh);
+
+		master.sitAndWait();
+
+		return bibleFolder;
+	}
+	
+	public List<ChapterSense> getChapterSenses(int bookNumber, BibleBook bb) {
+		List<ChapterSense> links = new ArrayList<>();
+		for(int chapter = 1; chapter <= bb.getMaxChapter(); chapter++) {
+			ChapterSense link = new ChapterSense(bb.getName(), chapter, bookNumber);
+			links.add(link);
+		}
+		
+		return links;
 	}
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.sirap.basic.domain.MexedObject;
 import com.sirap.basic.tool.C;
+import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
 
@@ -37,13 +38,30 @@ public class CommandBible extends CommandBase {
 				if(!StrUtil.equals(book.getName(), bookName)) {
 					C.pl("Looking for book " + book.getName() + " chapter " + chapter);
 				}
-				List<MexedObject> items = BibleManager.g().getChapter(book.getName(), chapter);
-				export(items);
+				List<String> content = BibleManager.g().getChapterFromLocal(pathBibleFolder(), book.getName(), chapter);
+				if(!EmptyUtil.isNullOrEmpty(content)) {
+					export(content);
+				} else {
+					List<MexedObject> items = BibleManager.g().getChapter(book.getName(), chapter);
+					export(items);
+				}
 				
 				return true;
 			}
 		}
 		
+		if(is(KEY_BIBLE + KEY_BIBLE)) {
+			BibleManager.g().downloadAllBooks(pathBibleFolder());
+			C.pl2("Done with downloading.");
+
+			return true;
+		}
+		
 		return false;
+	}
+	
+	public String pathBibleFolder() {
+		String where = miscPath() + "bible";
+		return where;
 	}
 }

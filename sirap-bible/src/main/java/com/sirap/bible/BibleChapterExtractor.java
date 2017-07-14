@@ -14,8 +14,8 @@ public class BibleChapterExtractor extends Extractor<MexedObject> {
 	public static final String URL_TEMPLATE = "https://www.biblegateway.com/passage/?search={0}&version=NIV";
 
 	public BibleChapterExtractor(String fullBookName, int chapter) {
-		String param = fullBookName + " " + chapter;
 		printFetching = true;
+		String param = fullBookName + " " + chapter;
 		String url = StrUtil.occupy(URL_TEMPLATE, encodeURLParam(param));
 		setUrl(url);
 	}
