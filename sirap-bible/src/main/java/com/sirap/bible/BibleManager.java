@@ -139,14 +139,14 @@ public class BibleManager {
 		String niceBookName = sense.getBook().getNameWithNiceOrder();
 		String chapterName = sense.getChapterNameWithNiceOrder();
 		String fileType = Konstants.SUFFIX_TXT;
-		String filePath = bibleFolder + File.separator + niceBookName + File.separator + chapterName + fileType;
+		String filePath = bibleFolder + niceBookName + File.separator + chapterName + fileType;
 		if(FileUtil.exists(filePath)) {
 			C.pl("Reading... " + filePath);
 			content.addAll(IOUtil.readFileIntoList(filePath));
 		}
 		
 		fileType = Konstants.SUFFIX_PDF;
-		filePath = bibleFolder + File.separator + niceBookName + File.separator + chapterName + fileType;
+		filePath = bibleFolder + niceBookName + File.separator + chapterName + fileType;
 		if(FileUtil.exists(filePath)) {
 			FileOpener.open(filePath);
 			content.add(filePath);
@@ -155,7 +155,7 @@ public class BibleManager {
 		return content;
 	}
 	
-	public List<MexedObject> getChapter(String fullBookName, int chapter) {
+	public List<MexedObject> fetchChapter(String fullBookName, int chapter) {
 		Extractor<MexedObject> nick = new BibleChapterExtractor(fullBookName, chapter);
 		nick.process();
 		List<MexedObject> items = nick.getMexItems();
