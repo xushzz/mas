@@ -1,7 +1,6 @@
 package com.sirap.bible;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +12,7 @@ import com.sirap.basic.thread.Master;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
-import com.sirap.basic.util.StrUtil;
+import com.sirap.common.component.FileOpener;
 import com.sirap.common.extractor.Extractor;
 
 public class BibleManager {
@@ -22,72 +21,72 @@ public class BibleManager {
 	
 	static final List<BibleBook> BOOKS = new ArrayList<>();
 	static {
-		BOOKS.add(new BibleBook("Genesis", 50));
-		BOOKS.add(new BibleBook("Exodus", 40));
-		BOOKS.add(new BibleBook("Leviticus", 27));
-		BOOKS.add(new BibleBook("Numbers", 36));
-		BOOKS.add(new BibleBook("Deuteronomy", 34));
-		BOOKS.add(new BibleBook("Joshua", 24));
-		BOOKS.add(new BibleBook("Judges", 21));
-		BOOKS.add(new BibleBook("Ruth", 4));
-		BOOKS.add(new BibleBook("1 Samuel", 31));
-		BOOKS.add(new BibleBook("2 Samuel", 24));
-		BOOKS.add(new BibleBook("1 Kings", 22));
-		BOOKS.add(new BibleBook("2 Kings", 25));
-		BOOKS.add(new BibleBook("1 Chronicles", 29));
-		BOOKS.add(new BibleBook("2 Chronicles", 36));
-		BOOKS.add(new BibleBook("Ezra", 10));
-		BOOKS.add(new BibleBook("Nehemiah", 13));
-		BOOKS.add(new BibleBook("Esther", 10));
-		BOOKS.add(new BibleBook("Job", 42));
-		BOOKS.add(new BibleBook("Psalm", 150));
-		BOOKS.add(new BibleBook("Proverbs", 31));
-		BOOKS.add(new BibleBook("Ecclesiastes", 12));
-		BOOKS.add(new BibleBook("Song of Songs", 8));
-		BOOKS.add(new BibleBook("Isaiah", 66));
-		BOOKS.add(new BibleBook("Jeremiah", 52));
-		BOOKS.add(new BibleBook("Lamentations", 5));
-		BOOKS.add(new BibleBook("Ezekiel", 48));
-		BOOKS.add(new BibleBook("Daniel", 12));
-		BOOKS.add(new BibleBook("Hosea", 14));
-		BOOKS.add(new BibleBook("Joel", 3));
-		BOOKS.add(new BibleBook("Amos", 9));
-		BOOKS.add(new BibleBook("Obadiah", 1));
-		BOOKS.add(new BibleBook("Jonah", 4));
-		BOOKS.add(new BibleBook("Micah", 7));
-		BOOKS.add(new BibleBook("Nahum", 3));
-		BOOKS.add(new BibleBook("Habakkuk", 3));
-		BOOKS.add(new BibleBook("Zephaniah", 3));
-		BOOKS.add(new BibleBook("Haggai", 2));
-		BOOKS.add(new BibleBook("Zechariah", 14));
-		BOOKS.add(new BibleBook("Malachi", 4));
-		BOOKS.add(new BibleBook("Matthew", 28));
-		BOOKS.add(new BibleBook("Mark", 16));
-		BOOKS.add(new BibleBook("Luke", 24));
-		BOOKS.add(new BibleBook("John", 21));
-		BOOKS.add(new BibleBook("Acts", 28));
-		BOOKS.add(new BibleBook("Romans", 16));
-		BOOKS.add(new BibleBook("1 Corinthians", 16));
-		BOOKS.add(new BibleBook("2 Corinthians", 13));
-		BOOKS.add(new BibleBook("Galatians", 6));
-		BOOKS.add(new BibleBook("Ephesians", 6));
-		BOOKS.add(new BibleBook("Philippians", 4));
-		BOOKS.add(new BibleBook("Colossians", 4));
-		BOOKS.add(new BibleBook("1 Thessalonians", 5));
-		BOOKS.add(new BibleBook("2 Thessalonians", 3));
-		BOOKS.add(new BibleBook("1 Timothy", 6));
-		BOOKS.add(new BibleBook("2 Timothy", 4));
-		BOOKS.add(new BibleBook("Titus", 3));
-		BOOKS.add(new BibleBook("Philemon", 1));
-		BOOKS.add(new BibleBook("Hebrews", 13));
-		BOOKS.add(new BibleBook("James", 5));
-		BOOKS.add(new BibleBook("1 Peter", 5));
-		BOOKS.add(new BibleBook("2 Peter", 3));
-		BOOKS.add(new BibleBook("1 John", 5));
-		BOOKS.add(new BibleBook("2 John", 1));
-		BOOKS.add(new BibleBook("3 John", 1));
-		BOOKS.add(new BibleBook("Jude", 1));
-		BOOKS.add(new BibleBook("Revelation", 22));
+		BOOKS.add(new BibleBook(1, "Genesis", 50));
+		BOOKS.add(new BibleBook(2, "Exodus", 40));
+		BOOKS.add(new BibleBook(3, "Leviticus", 27));
+		BOOKS.add(new BibleBook(4, "Numbers", 36));
+		BOOKS.add(new BibleBook(5, "Deuteronomy", 34));
+		BOOKS.add(new BibleBook(6, "Joshua", 24));
+		BOOKS.add(new BibleBook(7, "Judges", 21));
+		BOOKS.add(new BibleBook(8, "Ruth", 4));
+		BOOKS.add(new BibleBook(9, "1 Samuel", 31));
+		BOOKS.add(new BibleBook(10, "2 Samuel", 24));
+		BOOKS.add(new BibleBook(11, "1 Kings", 22));
+		BOOKS.add(new BibleBook(12, "2 Kings", 25));
+		BOOKS.add(new BibleBook(13, "1 Chronicles", 29));
+		BOOKS.add(new BibleBook(14, "2 Chronicles", 36));
+		BOOKS.add(new BibleBook(15, "Ezra", 10));
+		BOOKS.add(new BibleBook(16, "Nehemiah", 13));
+		BOOKS.add(new BibleBook(17, "Esther", 10));
+		BOOKS.add(new BibleBook(18, "Job", 42));
+		BOOKS.add(new BibleBook(19, "Psalm", 150));
+		BOOKS.add(new BibleBook(20, "Proverbs", 31));
+		BOOKS.add(new BibleBook(21, "Ecclesiastes", 12));
+		BOOKS.add(new BibleBook(22, "Song of Songs", 8));
+		BOOKS.add(new BibleBook(23, "Isaiah", 66));
+		BOOKS.add(new BibleBook(24, "Jeremiah", 52));
+		BOOKS.add(new BibleBook(25, "Lamentations", 5));
+		BOOKS.add(new BibleBook(26, "Ezekiel", 48));
+		BOOKS.add(new BibleBook(27, "Daniel", 12));
+		BOOKS.add(new BibleBook(28, "Hosea", 14));
+		BOOKS.add(new BibleBook(29, "Joel", 3));
+		BOOKS.add(new BibleBook(30, "Amos", 9));
+		BOOKS.add(new BibleBook(31, "Obadiah", 1));
+		BOOKS.add(new BibleBook(32, "Jonah", 4));
+		BOOKS.add(new BibleBook(33, "Micah", 7));
+		BOOKS.add(new BibleBook(34, "Nahum", 3));
+		BOOKS.add(new BibleBook(35, "Habakkuk", 3));
+		BOOKS.add(new BibleBook(36, "Zephaniah", 3));
+		BOOKS.add(new BibleBook(37, "Haggai", 2));
+		BOOKS.add(new BibleBook(38, "Zechariah", 14));
+		BOOKS.add(new BibleBook(39, "Malachi", 4));
+		BOOKS.add(new BibleBook(40, "Matthew", 28));
+		BOOKS.add(new BibleBook(41, "Mark", 16));
+		BOOKS.add(new BibleBook(42, "Luke", 24));
+		BOOKS.add(new BibleBook(43, "John", 21));
+		BOOKS.add(new BibleBook(44, "Acts", 28));
+		BOOKS.add(new BibleBook(45, "Romans", 16));
+		BOOKS.add(new BibleBook(46, "1 Corinthians", 16));
+		BOOKS.add(new BibleBook(47, "2 Corinthians", 13));
+		BOOKS.add(new BibleBook(48, "Galatians", 6));
+		BOOKS.add(new BibleBook(49, "Ephesians", 6));
+		BOOKS.add(new BibleBook(50, "Philippians", 4));
+		BOOKS.add(new BibleBook(51, "Colossians", 4));
+		BOOKS.add(new BibleBook(52, "1 Thessalonians", 5));
+		BOOKS.add(new BibleBook(53, "2 Thessalonians", 3));
+		BOOKS.add(new BibleBook(54, "1 Timothy", 6));
+		BOOKS.add(new BibleBook(55, "2 Timothy", 4));
+		BOOKS.add(new BibleBook(56, "Titus", 3));
+		BOOKS.add(new BibleBook(57, "Philemon", 1));
+		BOOKS.add(new BibleBook(58, "Hebrews", 13));
+		BOOKS.add(new BibleBook(59, "James", 5));
+		BOOKS.add(new BibleBook(60, "1 Peter", 5));
+		BOOKS.add(new BibleBook(61, "2 Peter", 3));
+		BOOKS.add(new BibleBook(62, "1 John", 5));
+		BOOKS.add(new BibleBook(63, "2 John", 1));
+		BOOKS.add(new BibleBook(64, "3 John", 1));
+		BOOKS.add(new BibleBook(65, "Jude", 1));
+		BOOKS.add(new BibleBook(66, "Revelation", 22));
 	}
 	
 	private BibleManager() {}
@@ -125,34 +124,32 @@ public class BibleManager {
 			throw new MexException(msg);
 		}
 		
-		BibleBook book = items.get(0);
-		if(chapter == 0 || chapter > book.getMaxChapter()) {
-			String msg = "chapter " + chapter + " doesn't exist, max chapter of " + book.getName() + " is " + book.getMaxChapter();
+		BibleBook theBook = items.get(0);
+
+		if(chapter == 0 || chapter > theBook.getMaxChapter()) {
+			String msg = "chapter " + chapter + " doesn't exist, max chapter of " + theBook.getName() + " is " + theBook.getMaxChapter();
 			throw new MexException(msg);
 		}
 		
-		return book;
+		return theBook;
 	}
 	
-	public List<String> getChapterFromLocal(String bibleFolder, String fullBookName, int chapter) {
-		File folder = new File(bibleFolder);
+	public List<String> getChapterFromLocal(String bibleFolder, ChapterSense sense) {
 		List<String> content = new ArrayList<>();
+		String niceBookName = sense.getBook().getNameWithNiceOrder();
+		String chapterName = sense.getChapterNameWithNiceOrder();
+		String fileType = Konstants.SUFFIX_TXT;
+		String filePath = bibleFolder + File.separator + niceBookName + File.separator + chapterName + fileType;
+		if(FileUtil.exists(filePath)) {
+			C.pl("Reading... " + filePath);
+			content.addAll(IOUtil.readFileIntoList(filePath));
+		}
 		
-		if(folder.exists()) {
-			folder.list(new FilenameFilter() {
-				@Override
-				public boolean accept(File dir, String name) {
-					if(StrUtil.contains(name, fullBookName)) {
-						String chapterName = StrUtil.extendLeftward(chapter + "", 2, "0");
-						String path = dir + File.separator + name + File.separator + chapterName + Konstants.SUFFIX_TXT;
-						if(FileUtil.exists(path)) {
-							C.pl("Reading... " + path);
-							content.addAll(IOUtil.readFileIntoList(path));
-						}
-					}
-					return false;
-				}
-			});
+		fileType = Konstants.SUFFIX_PDF;
+		filePath = bibleFolder + File.separator + niceBookName + File.separator + chapterName + fileType;
+		if(FileUtil.exists(filePath)) {
+			FileOpener.open(filePath);
+			content.add(filePath);
 		}
 		
 		return content;
@@ -166,16 +163,14 @@ public class BibleManager {
 		return items;
 	}
 	
-	public String downloadAllBooks(String bibleFolder) {
-		int index = 0;
+	public String downloadAllBooks(String bibleFolder, String fileType) {
 		List<ChapterSense> allLinks = new ArrayList<>();
 		for(BibleBook bb : BibleManager.BOOKS) {
-			index++;
-			List<ChapterSense> links = getChapterSenses(index, bb);
+			List<ChapterSense> links = getChapterSenses(bb);
 			allLinks.addAll(links);
 		}
 
-		BookChapterFetcher dinesh = new BookChapterFetcher(bibleFolder);
+		BookChapterFetcher dinesh = new BookChapterFetcher(bibleFolder, fileType);
 		Master<ChapterSense> master = new Master<ChapterSense>(allLinks, dinesh);
 
 		master.sitAndWait();
@@ -183,10 +178,10 @@ public class BibleManager {
 		return bibleFolder;
 	}
 	
-	public List<ChapterSense> getChapterSenses(int bookNumber, BibleBook bb) {
+	public List<ChapterSense> getChapterSenses(BibleBook bb) {
 		List<ChapterSense> links = new ArrayList<>();
 		for(int chapter = 1; chapter <= bb.getMaxChapter(); chapter++) {
-			ChapterSense link = new ChapterSense(bb.getName(), chapter, bookNumber);
+			ChapterSense link = new ChapterSense(bb, chapter);
 			links.add(link);
 		}
 		

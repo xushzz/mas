@@ -5,6 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.sirap.basic.domain.MexedObject;
+import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.HtmlUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.extractor.Extractor;
@@ -13,9 +14,11 @@ public class BibleChapterExtractor extends Extractor<MexedObject> {
 
 	public static final String URL_TEMPLATE = "https://www.biblegateway.com/passage/?search={0}&version=NIV";
 
+	private String baseInfo;
 	public BibleChapterExtractor(String fullBookName, int chapter) {
 		printFetching = true;
 		String param = fullBookName + " " + chapter;
+		baseInfo = fullBookName + chapter;
 		String url = StrUtil.occupy(URL_TEMPLATE, encodeURLParam(param));
 		setUrl(url);
 	}
@@ -40,6 +43,10 @@ public class BibleChapterExtractor extends Extractor<MexedObject> {
 				}
 				mexItems.add(new MexedObject(temp));
 			}
+		}
+		
+		if(!EmptyUtil.isNullOrEmpty(mexItems)) {
+			mexItems.add(0, new MexedObject(baseInfo));
 		}
 	}
 }

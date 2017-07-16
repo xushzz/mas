@@ -2,5 +2,6 @@ bible              display all bible book names and max chapter number respectiv
 bible job          display all bible book names and max chapter number matching given name
 job23              display the verses in given book and chapter, gen23 means Genesis 23
 luke23             display verses, courtesy of https://www.biblegateway.com
-biblebible         download all bible to storage/bible, ignore if exists
-ver=SIRAP-BIBLE1.0.2-WALKER  7/15/2017, VI
+biblebible         download all bible to storage/bible as txt files, ignore if exists
+biblebible pdf     download all bible to storage/bible as pdf files, ignore if exists
+ver=SIRAP-BIBLE1.0.3-WALKER  7/17/2017, I

@@ -733,11 +733,15 @@ public class IOUtil {
 		return master.getValidStringResults();
 	}
 	
-	public static boolean saveAsPDF(List<Object> objList, String fullFileName, PDFParams params) {
+	public static boolean saveAsPDF(List objList, String fullFileName, PDFParams params) {
 		return PdfHelper.export(objList, fullFileName, params);
 	}
 	
-	public static boolean saveAsExcel(List<Object> objList, String fullFileName, ExcelParams params) {
+	public static boolean saveAsPDF(List objList, String fullFileName) {
+		return PdfHelper.export(objList, fullFileName, new PDFParams());
+	}
+	
+	public static boolean saveAsExcel(List objList, String fullFileName, ExcelParams params) {
 		return ExcelHelper.export(objList, fullFileName, params);
 	}
 	

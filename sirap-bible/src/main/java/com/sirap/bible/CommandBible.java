@@ -2,6 +2,7 @@ package com.sirap.bible;
 
 import java.util.List;
 
+import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexedObject;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
@@ -38,7 +39,8 @@ public class CommandBible extends CommandBase {
 				if(!StrUtil.equals(book.getName(), bookName)) {
 					C.pl("Looking for book " + book.getName() + " chapter " + chapter);
 				}
-				List<String> content = BibleManager.g().getChapterFromLocal(pathBibleFolder(), book.getName(), chapter);
+				ChapterSense sense = new ChapterSense(book, chapter);
+				List<String> content = BibleManager.g().getChapterFromLocal(pathBibleFolder(), sense);
 				if(!EmptyUtil.isNullOrEmpty(content)) {
 					export(content);
 				} else {
@@ -50,9 +52,14 @@ public class CommandBible extends CommandBase {
 			}
 		}
 		
-		if(is(KEY_BIBLE + KEY_BIBLE)) {
-			BibleManager.g().downloadAllBooks(pathBibleFolder());
-			C.pl2("Done with downloading.");
+		singleParam = parseParam(KEY_BIBLE + KEY_BIBLE + "(\\s(pdf|txt)|)");
+		if(singleParam != null) {
+			String fileType = Konstants.SUFFIX_TXT;
+			if(!singleParam.isEmpty()) {
+				fileType = "." + singleParam;
+			}
+			BibleManager.g().downloadAllBooks(pathBibleFolder(), fileType);
+			C.pl2("Done with downloading as " + fileType);
 
 			return true;
 		}
@@ -61,7 +68,7 @@ public class CommandBible extends CommandBase {
 	}
 	
 	public String pathBibleFolder() {
-		String where = miscPath() + "bible";
+		String where = pathWithSeparator("storage.bible", miscPath() + "bible");
 		return where;
 	}
 }

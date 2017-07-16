@@ -1,41 +1,32 @@
 package com.sirap.bible;
 
 import com.sirap.basic.domain.MexItem;
+import com.sirap.basic.util.StrUtil;
 
 @SuppressWarnings("serial")
 public class ChapterSense extends MexItem {
-	private int bookNumber;
-	private String bookName;
+	private BibleBook book;
 	private int chapterNumber;
 	
 	public ChapterSense() {
 		
 	}
 	
-	public ChapterSense(String bookName, int chapterNumber, int bookNumber) {
-		this.bookName = bookName;
+	public ChapterSense(BibleBook book, int chapterNumber) {
+		this.book = book;
 		this.chapterNumber = chapterNumber;
-		this.bookNumber = bookNumber;
 	}
 	
-	public int getBookNumber() {
-		return bookNumber;
+	public BibleBook getBook() {
+		return book;
 	}
 
-	public void setBookNumber(int bookNumber) {
-		this.bookNumber = bookNumber;
+	public String getChapterNameWithNiceOrder() {
+		String value = StrUtil.extendLeftward(chapterNumber + "", 2, "0");
+		return value;
 	}
 
-	public String getBookName() {
-		return bookName;
-	}
-	public void setBookName(String bookName) {
-		this.bookName = bookName;
-	}
 	public int getChapterNumber() {
 		return chapterNumber;
-	}
-	public void setChapterNumber(int chapterNumber) {
-		this.chapterNumber = chapterNumber;
 	}
 }

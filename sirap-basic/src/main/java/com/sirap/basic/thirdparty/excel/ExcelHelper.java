@@ -112,7 +112,7 @@ public class ExcelHelper {
 		return data;
 	}
 
-	public static boolean export(List<Object> list, String fullFileName,
+	public static boolean export(List list, String fullFileName,
 			ExcelParams params) {
 		Workbook wb = new HSSFWorkbook();
 		Sheet she = wb.createSheet("sheet1");
