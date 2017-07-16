@@ -44,7 +44,7 @@ public class CommandBible extends CommandBase {
 				if(!EmptyUtil.isNullOrEmpty(content)) {
 					export(content);
 				} else {
-					List<MexedObject> items = BibleManager.g().getChapter(book.getName(), chapter);
+					List<MexedObject> items = BibleManager.g().fetchChapter(book.getName(), chapter);
 					export(items);
 				}
 				
