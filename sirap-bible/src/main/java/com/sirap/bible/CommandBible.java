@@ -63,12 +63,13 @@ public class CommandBible extends CommandBase {
 
 			return true;
 		}
-		
+
 		return false;
 	}
 	
 	public String pathBibleFolder() {
-		String where = pathWithSeparator("storage.bible", miscPath() + "bible");
+		String where = pathWithSeparator("storage.bible", "misc/bible");
+		
 		return where;
 	}
 }
