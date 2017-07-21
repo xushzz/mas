@@ -38,7 +38,7 @@ import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
-import com.sirap.common.domain.LocalSearchEngine;
+import com.sirap.common.domain.TextSearchEngine;
 import com.sirap.common.domain.SiteSearchEngine;
 import com.sirap.common.domain.TZRecord;
 import com.sirap.common.extractor.Extractor;
@@ -539,9 +539,9 @@ public class CommandSirap extends CommandBase {
 			}
 		}
 		
-		List<LocalSearchEngine> locals = getLocalSearchEngines();
-		for(LocalSearchEngine engine:locals) {
-			boolean isMatched = conductLocalSearch(engine);
+		List<TextSearchEngine> locals = getTextSearchEngines();
+		for(TextSearchEngine engine:locals) {
+			boolean isMatched = conductTextSearch(engine);
 			if(isMatched) {
 				return true;
 			}
@@ -651,13 +651,11 @@ public class CommandSirap extends CommandBase {
 		return engines;
 	}
 	
-	private List<LocalSearchEngine> getLocalSearchEngines() {
-		List<LocalSearchEngine> engines = new ArrayList<LocalSearchEngine>();
-		List<String> engineRecords = g().getValuesByKeyword("local.search.");
-		List<String> userDefinedEngines = g().getUserValuesByKeyword("local.search.");
-		engineRecords.addAll(userDefinedEngines);
-		for(String engineInfo:engineRecords) {
-			LocalSearchEngine se = new LocalSearchEngine();
+	private List<TextSearchEngine> getTextSearchEngines() {
+		List<TextSearchEngine> engines = new ArrayList<TextSearchEngine>();
+		List<String> items = g().getUserValuesByKeyword("text.search.");
+		for(String engineInfo : items) {
+			TextSearchEngine se = new TextSearchEngine();
 			boolean flag = se.parse(engineInfo);
 			if(flag) {
 				engines.add(se);
@@ -687,20 +685,20 @@ public class CommandSirap extends CommandBase {
 		return false;
 	}
 	
-	private boolean conductLocalSearch(LocalSearchEngine engine) {
+	private boolean conductTextSearch(TextSearchEngine engine) {
 		String engineName = engine.getPrefix();
 		boolean isSpaceMandatory = engine.isUseSpace();
 		String regex = engineName + (isSpaceMandatory ? "\\s(.+?)" : "(.+?)");
-		String criteria = parseParam(regex);
-		if(criteria != null) {
+		String contentCriteria = parseParam(regex);
+		if(contentCriteria != null) {
 			String folders = engine.getFolders();
-			String suffixes = engine.getSuffixes();
+			String fileCriteria = engine.getFileCriteria();
 			boolean useCache = engine.isUseCache();
 			List<MexObject> list = null;
 			if(useCache) {
-				list = TextSearcher.searchWithCache(engineName, folders, suffixes, criteria, g().getCharsetInUse());
+				list = TextSearcher.searchWithCache(engineName, folders, fileCriteria, contentCriteria, g().getCharsetInUse());
 			} else {
-				list = TextSearcher.search(folders, suffixes, criteria, g().getCharsetInUse());
+				list = TextSearcher.search(folders, fileCriteria, contentCriteria, g().getCharsetInUse());
 			}
 			
 			exportMexItems(list, options);

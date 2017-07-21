@@ -57,10 +57,10 @@ public class VFileManager {
 	}
 	
 	public synchronized List<MexFile> getAllRecords(boolean isForcibly) {
+		if(fixedPaths != null)
 		if(EmptyUtil.isNullOrEmpty(ALL_RECORDS) || isForcibly) {
 			setSyncFlag(true);
-			int depth = SimpleKonfig.g().getUserNumberValueOf("v.depth", 2);
-			List<MexFile> allFiles = FileUtil.scanFolders(fixedPaths, depth, false);
+			List<MexFile> allFiles = FileUtil.scanFolders(fixedPaths, false);
 			ALL_RECORDS.clear();
 			ALL_RECORDS.addAll(new HashSet<MexFile>(allFiles));
 			setSyncFlag(false);
@@ -73,13 +73,7 @@ public class VFileManager {
 		originalPaths = getOriginalPaths();
 		fixedPaths.clear();
 		for(String path:originalPaths) {
-			
-			String cleverPath = FileUtil.parseFolderPath("", path);
-			if(cleverPath == null) {
-				continue;
-			}
-			
-			fixedPaths.add(cleverPath);
+			fixedPaths.add(path);
 		}
 	}
 	

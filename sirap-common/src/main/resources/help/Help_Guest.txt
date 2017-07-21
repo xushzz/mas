@@ -9,7 +9,7 @@ fire\*water        display any record containing a word, as in _1-9a-z, between 
 search             the aforementioned rules apply for any other searching commands
 search             such as 'ch fire', 'F: water' and so on
 quit               ${guest.quits}
-ABC>$              the yielded files will be copied to folder export
+ABC>$              the yielded files will be copied to folder export,!> escape export, !$ escape options
 ABC>$E:            export escaper is ${guest.escaper}, the yielded files will be copied to E:
 ABC>$E:=           the yielded files will be copied to E:\ABC
 ABC>$max           the yielded files will be copied to export\max, say max is not a folder in storage

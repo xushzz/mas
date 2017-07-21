@@ -180,17 +180,26 @@ public class FileUtil {
 		return items;
 	}
 
-	public static List<MexFile> scanFolders(List<String> paths, int depth, boolean includeFolder) {
-		return scanFolders(paths, depth, includeFolder, null);
+	public static List<MexFile> scanFolders(List<String> paths, boolean includeFolder) {
+		return scanFolders(paths, includeFolder, null);
 	}
 	
-	public static List<MexFile> scanFolders(List<String> paths, int depth, boolean includeFolder, String fileCriteria) {
-		XXXUtil.nullOrEmptyCheck(paths, "paths");
+	public static List<MexFile> scanFolders(List<String> paths, boolean includeFolder, String fileCriteria) {
+		XXXUtil.nullCheck(paths, "paths");
 
 		List<MexFile> allFiles = new ArrayList<>();
 		
-		for (String directory : paths) {
-			allFiles.addAll(scanSingleFolder(directory, depth, includeFolder));
+		for (String path : paths) {
+			String target = path;
+			int depth = 0;
+
+			String regexPathDepth = "(.+?)\\$(\\d{1,2})$";
+			String[] params = StrUtil.parseParams(regexPathDepth, target);
+			if(params != null) {
+				target = params[0];
+				depth = MathUtil.toInteger(params[1], depth);
+			}
+			allFiles.addAll(scanSingleFolder(target, depth, includeFolder));
 		}
 		
 		if(EmptyUtil.isNullOrEmpty(fileCriteria)) {

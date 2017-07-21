@@ -49,25 +49,25 @@ public class TextSearcher {
 		return result;
 	}
 	
-	public static List<MexObject> searchWithCache(String engineName, String foldersStr, String fileNameCriteria, String criteria, String charset) {
+	public static List<MexObject> searchWithCache(String engineName, String foldersStr, String fileNameCriteria, String contentCriteria, String charset) {
 		List<String> folders = StrUtil.splitByRegex(foldersStr);
-		return searchWithCache(engineName, folders, fileNameCriteria, criteria, charset);
+		return searchWithCache(engineName, folders, fileNameCriteria, contentCriteria, charset);
 	}
 	
-	public static List<MexObject> searchWithCache(String engineName, List<String> folders, String fileNameCriteria, String criteria, String charset) {
+	public static List<MexObject> searchWithCache(String engineName, List<String> folders, String fileNameCriteria, String contentCriteria, String charset) {
 		TextSearcher wang = getInstance(engineName, folders, fileNameCriteria, charset);
-		List<MexObject> result = CollectionUtil.filter(wang.allItems, criteria);
+		List<MexObject> result = CollectionUtil.filter(wang.allItems, contentCriteria);
 		
 		return result;
 	}
 	
 	private List<MexObject> readAllItems(List<String> folders, String fileCriteria, String charset) {
-		List<MexFile> allMexFiles = FileUtil.scanFolders(folders, 99, false, fileCriteria);
+		List<MexFile> allMexFiles = FileUtil.scanFolders(folders, false, fileCriteria);
 		
 		List<MexObject> allItems = new ArrayList<>();
 		for(MexFile file : allMexFiles) {
 			String fileName = file.getPath();
-			List<MexObject> items = readEachFile(fileName, charset);
+			List<MexTextSearchRecord> items = readEachFile(fileName, charset);
 			allItems.addAll(items);
 		}
 		
@@ -75,20 +75,18 @@ public class TextSearcher {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private List<MexObject> readEachFile(String filename, String charset) {
+	private List<MexTextSearchRecord> readEachFile(String filename, String charset) {
 		if(!FileUtil.isNormalFile(filename)) {
 			return Collections.EMPTY_LIST;
 		}
 		
 		List<String> items = IOUtil.readFileIntoList(filename, charset);
 		
-		String shortFilename = FileUtil.extractFilenameWithoutExtension(filename);
-		List<MexObject> mexItems = new ArrayList<>();
+		List<MexTextSearchRecord> mexItems = new ArrayList<>();
 		for(int i = 0; i < items.size(); i++) {
 			String item = items.get(i);
 			MexTextSearchRecord mo = new MexTextSearchRecord(item.trim());
 			mo.setLineNumber(i + 1);
-			mo.setShortFilename(shortFilename);
 			mo.setFullFilename(filename);
 			
 			mexItems.add(mo);

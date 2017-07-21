@@ -3,16 +3,13 @@ package com.sirap.basic.domain;
 import java.util.List;
 
 import com.sirap.basic.component.MexedOption;
-import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 
 @SuppressWarnings("serial")
 public class MexTextSearchRecord extends MexObject {
 	
-	private String shortFilename;
 	private String fullFilename;
-	private boolean printSource;
 	private int lineNumber;
 	
 	public MexTextSearchRecord() {
@@ -22,22 +19,6 @@ public class MexTextSearchRecord extends MexObject {
 	public MexTextSearchRecord(Object obj) {
 		this.obj = obj;
 	}
-	
-	public boolean isPrintSource() {
-		return printSource;
-	}
-
-	public void setPrintSource(boolean printSource) {
-		this.printSource = printSource;
-	}
-
-	public String getShortFilename() {
-		return shortFilename;
-	}
-
-	public void setShortFilename(String shortFilename) {
-		this.shortFilename = shortFilename;
-	}
 
 	public String getFullFilename() {
 		return fullFilename;
@@ -45,16 +26,6 @@ public class MexTextSearchRecord extends MexObject {
 
 	public void setFullFilename(String fullFilename) {
 		this.fullFilename = fullFilename;
-	}
-
-	@Override
-	public String getString() {
-		String temp = String.valueOf(obj);
-		if(printSource) {
-			temp = fullFilename + " " + getPseudoOrder() + " " + obj;
-		}
-		
-		return temp;
 	}
 	
 	public int getLineNumber() {
@@ -66,25 +37,15 @@ public class MexTextSearchRecord extends MexObject {
 	}
 
 	@Override
-	public boolean isMatched(String keyWord) {
+	public boolean isMatched(String keyWord, boolean caseSensitive) {
 		String source = String.valueOf(obj);
 		
 		if(isRegexMatched(source, keyWord)) {
 			return true;
 		}
 		
-		if(StrUtil.contains(source, keyWord)) {
+		if(StrUtil.contains(source, keyWord, caseSensitive)) {
 			return true;
-		}
-		
-		if(printSource && !EmptyUtil.isNullOrEmpty(shortFilename)) {
-			if(isRegexMatched(shortFilename, keyWord)) {
-				return true;
-			}
-			
-			if(StrUtil.contains(shortFilename, keyWord)) {
-				return true;
-			}
 		}
 		
 		return false; 
@@ -108,11 +69,11 @@ public class MexTextSearchRecord extends MexObject {
 	
 	@Override
 	public String toString() {
-		String temp = String.valueOf(obj);
-		if(printSource) {
-			temp = fullFilename + " " + lineNumber + " " + obj;
-		}
+		StringBuilder sb = new StringBuilder("$$$");
+		sb.append(fullFilename).append("  ");
+		sb.append("#" + lineNumber).append("  ");
+		sb.append(obj.toString());
 		
-		return temp;
+		return sb.toString();
 	}
 }
