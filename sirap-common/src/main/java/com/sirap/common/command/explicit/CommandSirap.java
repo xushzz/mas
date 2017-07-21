@@ -15,8 +15,8 @@ import java.util.regex.Pattern;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.component.MatrixCalendar;
 import com.sirap.basic.component.RioCalendar;
-import com.sirap.basic.domain.MexedFile;
-import com.sirap.basic.domain.MexedObject;
+import com.sirap.basic.domain.MexFile;
+import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.email.EmailCenter;
 import com.sirap.basic.math.FormulaCalculator;
 import com.sirap.basic.math.MexColorConverter;
@@ -24,7 +24,6 @@ import com.sirap.basic.math.MexNumberConverter;
 import com.sirap.basic.math.SimCal;
 import com.sirap.basic.math.Sudoku;
 import com.sirap.basic.output.PDFParams;
-import com.sirap.basic.search.MexFilter;
 import com.sirap.basic.search.TextSearcher;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.CollectionUtil;
@@ -357,7 +356,7 @@ public class CommandSirap extends CommandBase {
 			if(file != null) {
 				String path = file.getAbsolutePath();
 				if(path != null) {
-					List<String> records = listDirectory(path);
+					List<String> records = FileUtil.listDirectory(path);
 					export(records);
 				}
 				return true;
@@ -696,16 +695,15 @@ public class CommandSirap extends CommandBase {
 		if(criteria != null) {
 			String folders = engine.getFolders();
 			String suffixes = engine.getSuffixes();
-			boolean printSource = engine.isPrintSource();
 			boolean useCache = engine.isUseCache();
-			List<MexedObject> list = null;
+			List<MexObject> list = null;
 			if(useCache) {
-				list = TextSearcher.searchWithCache(engineName, folders, suffixes, criteria, printSource, g().getCharsetInUse());
+				list = TextSearcher.searchWithCache(engineName, folders, suffixes, criteria, g().getCharsetInUse());
 			} else {
-				list = TextSearcher.search(folders, suffixes, criteria, printSource, g().getCharsetInUse());
+				list = TextSearcher.search(folders, suffixes, criteria, g().getCharsetInUse());
 			}
 			
-			export(list);
+			exportMexItems(list, options);
 			
 			return true;
 		}
@@ -823,7 +821,7 @@ public class CommandSirap extends CommandBase {
 	
 	public String lastModified(String folderPath, final String criteria) {
 		TreeMap<String, String> mapDateStr = new TreeMap<String, String>();
-		TreeMap<Long, MexedObject> mapLastModified = new TreeMap<Long, MexedObject>();
+		TreeMap<Long, MexObject> mapLastModified = new TreeMap<Long, MexObject>();
 		File folder = FileUtil.getIfNormalFolder(folderPath);
 		if(folder == null) {
 			String msg = "Invalid path [" + folderPath + "].";
@@ -831,7 +829,7 @@ public class CommandSirap extends CommandBase {
 			return null;
 		}
 		
-		List<MexedFile> list = new ArrayList<MexedFile>();
+		List<MexFile> list = new ArrayList<MexFile>();
 		folder.listFiles(new FileFilter() {
 			
 			@Override
@@ -840,9 +838,9 @@ public class CommandSirap extends CommandBase {
 					return false;
 				}
 				
-				list.add(new MexedFile(file));
+				list.add(new MexFile(file));
 				
-				mapLastModified.put(file.lastModified(), new MexedObject(file.getAbsolutePath()));
+				mapLastModified.put(file.lastModified(), new MexObject(file.getAbsolutePath()));
 								
 				return true;
 			}
@@ -853,7 +851,7 @@ public class CommandSirap extends CommandBase {
 			String regex = "^\\d{8}_\\d{6}";
 			Pattern ptn = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
 			
-			for(MexedFile file : list) {
+			for(MexFile file : list) {
 				String fileName = file.getName();
 				String fileAbsPath = file.getPath();
 				Matcher m = ptn.matcher(fileName);
@@ -868,7 +866,7 @@ public class CommandSirap extends CommandBase {
 				filePath = entry.getValue();
 				C.pl(filePath);
 			} else {
-				Map.Entry<Long,  MexedObject> entry2 = mapLastModified.lastEntry();
+				Map.Entry<Long,  MexObject> entry2 = mapLastModified.lastEntry();
 				if(entry2 != null) {
 					filePath = entry2.getValue().getString();
 					C.pl(filePath);
@@ -877,8 +875,7 @@ public class CommandSirap extends CommandBase {
 				}
 			}
 		} else {
-			MexFilter<MexedObject> filter = new MexFilter<MexedObject>(criteria, new ArrayList<MexedObject>(mapLastModified.values()));
-			List<MexedObject> filePaths = filter.process();
+			List<MexObject> filePaths = CollectionUtil.filter(new ArrayList<MexObject>(mapLastModified.values()), criteria);
 			
 			int size = filePaths.size();
 			if(size == 1) {

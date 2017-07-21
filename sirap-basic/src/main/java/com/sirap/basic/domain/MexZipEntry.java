@@ -10,12 +10,12 @@ import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 
 @SuppressWarnings("serial")
-public class MexedZipEntry extends MexItem {
+public class MexZipEntry extends MexItem {
 
 	protected String jarName;
 	protected ZipEntry entry;
 	
-	public MexedZipEntry(ZipEntry entry) {
+	public MexZipEntry(ZipEntry entry) {
 		this.entry = entry;
 	}
 	

@@ -11,7 +11,7 @@ import com.sirap.common.command.CommandBase;
 import com.sirap.common.command.CommandQuit;
 import com.sirap.common.manager.AlarmManager;
 import com.sirap.common.manager.CommandHistoryManager;
-import com.sirap.common.manager.FileManager;
+import com.sirap.common.manager.VFileManager;
 import com.sirap.common.manager.LoginHistoryManager;
 import com.sirap.common.manager.RemoteCommandManager;
 
@@ -31,7 +31,7 @@ public abstract class AppBase extends MexedTimer {
 	protected void loadAppData() {
 		ThreadUtil.executeInNewThread(LoginHistoryManager.class, "g", true);
 		ThreadUtil.executeInNewThread(RemoteCommandManager.class, "g", true);
-		ThreadUtil.executeInNewThread(FileManager.class, "g", true);
+		ThreadUtil.executeInNewThread(VFileManager.class, "g", true);
 	}
     protected abstract Janitor getJanitor();
     protected abstract String prompt();

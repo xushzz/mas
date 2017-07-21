@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sirap.basic.domain.MexItem;
-import com.sirap.basic.domain.MexedObject;
-import com.sirap.basic.domain.MexedZipEntry;
+import com.sirap.basic.domain.MexObject;
+import com.sirap.basic.domain.MexZipEntry;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.search.MexFilter;
@@ -51,7 +51,7 @@ public class CommandDev extends CommandBase {
 		singleParam = parseParam(KEY_PATH + "\\s(.*?)");
 		if(singleParam != null) {
 			List<String> items = IOUtil.echoPath();
-			List<MexedObject> result = CollectionUtil.search(items, singleParam);
+			List<MexObject> result = CollectionUtil.search(items, singleParam);
 			
 			export(result);
 			
@@ -279,12 +279,12 @@ public class CommandDev extends CommandBase {
 			String fileInfo = crazy[1];
 			String criteria = crazy[3];
 			List<String> files = FileUtil.explodeAsterisk(fileInfo);
-			List<MexedZipEntry> allItems = new ArrayList<>();
+			List<MexZipEntry> allItems = new ArrayList<>();
 			for(String onefile : files) {
 				File jar = parseFile(onefile);
 				if(jar != null) {
 					String filepath = jar.getAbsolutePath();
-					List<MexedZipEntry> items = MexUtil.parseZipEntries(filepath);
+					List<MexZipEntry> items = MexUtil.parseZipEntries(filepath);
 					allItems.addAll(items);
 				}
 			}
@@ -296,8 +296,8 @@ public class CommandDev extends CommandBase {
 			if(KEY_2DOTS.equals(criteria)) {
 				exportMexItems(allItems, tempOptions);
 			} else {
-				MexFilter<MexedZipEntry> filter = new MexFilter<MexedZipEntry>(criteria, allItems, isCaseSensitive(tempOptions));
-				List<MexedZipEntry> result = filter.process();
+				MexFilter<MexZipEntry> filter = new MexFilter<MexZipEntry>(criteria, allItems, isCaseSensitive(tempOptions));
+				List<MexZipEntry> result = filter.process();
 				exportMexItems(result, tempOptions);
 			}
 			

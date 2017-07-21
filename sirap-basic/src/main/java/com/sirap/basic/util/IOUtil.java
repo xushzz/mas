@@ -29,8 +29,8 @@ import java.util.zip.ZipFile;
 
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.component.MexedMap;
-import com.sirap.basic.domain.MexedFile;
-import com.sirap.basic.domain.MexedObject;
+import com.sirap.basic.domain.MexFile;
+import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.output.ExcelParams;
 import com.sirap.basic.output.PDFParams;
@@ -694,12 +694,12 @@ public class IOUtil {
 	
 
 	
-	public static int[] copyMexedFiles(List<MexedFile> sourcefiles, String targetFolder) {
+	public static int[] copyMexedFiles(List<MexFile> sourcefiles, String targetFolder) {
 		return copyMexedFiles(sourcefiles, targetFolder, -1);
 	}
 	
-	public static int[] copyMexedFiles(List<MexedFile> sourcefiles, String targetFolder, final int threads) {
-		Master<MexedFile> george = new Master<MexedFile>(sourcefiles, new NormalFileMover(targetFolder)) {
+	public static int[] copyMexedFiles(List<MexFile> sourcefiles, String targetFolder, final int threads) {
+		Master<MexFile> george = new Master<MexFile>(sourcefiles, new NormalFileMover(targetFolder)) {
 			@Override
 			protected int countOfThread() {
 				int temp = threads <= 0 ? super.countOfThread() : threads;
@@ -711,17 +711,17 @@ public class IOUtil {
 		return null;
 	}
 	
-	public static List<String> downloadFiles(String storage, List<MexedObject> links, String suffixWhenObscure, final int threads) {
+	public static List<String> downloadFiles(String storage, List<MexObject> links, String suffixWhenObscure, final int threads) {
 		return downloadFiles(storage, links, suffixWhenObscure, threads, false);
 	}
 	
-	public static List<String> downloadFiles(String storage, List<MexedObject> links, String suffixWhenObscure, final int threads, boolean useUniqueFilename) {
+	public static List<String> downloadFiles(String storage, List<MexObject> links, String suffixWhenObscure, final int threads, boolean useUniqueFilename) {
 		FileUtil.makeDirectoriesIfNonExist(storage);
 		
 		InternetFileFetcher dinesh = new InternetFileFetcher(storage, suffixWhenObscure);
 		dinesh.setUseUniqueFilename(useUniqueFilename);
 		
-		MasterGeneralItemOriented<MexedObject> master = new MasterGeneralItemOriented<MexedObject>(links, dinesh){
+		MasterGeneralItemOriented<MexObject> master = new MasterGeneralItemOriented<MexObject>(links, dinesh){
 			@Override
 			protected int countOfThread() {
 				int temp = threads <= 0 ? super.countOfThread() : threads;

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import com.sirap.basic.component.MexedMap;
+import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.output.PDFParams;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.CollectionUtil;
@@ -314,12 +315,11 @@ public class CommandMonitor extends CommandBase {
 			List<String> folders = StrUtil.splitByRegex(singleParam);
 			String methods = g().getValueOf("keys.reader.methods");
 			List<String> methodList = StrUtil.splitByRegex(methods);
-			String[] suffixes = {".java"};
 			List<String> keys = new ArrayList<String>();
 			if(!methodList.isEmpty()) {
-				List<File> files = FileUtil.scanFolder(folders, depth, suffixes, false);
-				for(File sourceFile : files) {
-					KeysReader pycelle = new KeysReader(sourceFile, methodList);
+				List<MexFile> mexItems = FileUtil.scanFolders(folders, depth, false, ".java$");
+				for(MexFile item : mexItems) {
+					KeysReader pycelle = new KeysReader(item.getFile(), methodList);
 					keys.addAll(pycelle.readKeysFromFile(g().getCharsetInUse()));
 				}
 			}

@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.sirap.basic.domain.MexItem;
-import com.sirap.basic.domain.MexedFile;
-import com.sirap.basic.domain.MexedObject;
+import com.sirap.basic.domain.MexFile;
+import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.search.MexFilter;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -178,20 +178,20 @@ public class CollectionUtil {
 		return records;
 	}
 	
-	public static List<MexedObject> toMexedObjects(List items) {
-		List<MexedObject> records = new ArrayList<MexedObject>();
+	public static List<MexObject> toMexedObjects(List items) {
+		List<MexObject> records = new ArrayList<MexObject>();
 		
 		for(Object item:items) {
-			records.add(new MexedObject(item));
+			records.add(new MexObject(item));
 		}
 		
 		return records;
 	}
 	
-	public static List<Object> toRegularObjects(List<MexedObject> items) {
+	public static List<Object> toRegularObjects(List<MexObject> items) {
 		List<Object> records = new ArrayList<Object>();
 		
-		for(MexedObject item:items) {
+		for(MexObject item:items) {
 			records.add(item.getObj());
 		}
 		
@@ -218,8 +218,8 @@ public class CollectionUtil {
 			}
 			
 			File file = null;
-			if(obj instanceof MexedFile) {
-				file = ((MexedFile)obj).getFile();
+			if(obj instanceof MexFile) {
+				file = ((MexFile)obj).getFile();
 			} else {
 				file = FileUtil.getIfNormalFile(obj.toString());
 			}
@@ -230,12 +230,23 @@ public class CollectionUtil {
 		
 		return files;
 	}
+
+	public static <T extends MexItem> List<T> filter(List<T> mexItems, String mexCriteria) {
+		return filter(mexItems, mexCriteria, false);
+	}
 	
-	public static List<MexedObject> search(List items, String criteria) {
-		List<MexedObject> mexItems = toMexedObjects(items);
+	public static <T extends MexItem> List<T> filter(List<T> mexItems, String mexCriteria, boolean isCaseSensitive) {
+		MexFilter<T> filter = new MexFilter<T>(mexCriteria, mexItems, isCaseSensitive);
+		List<T> result = filter.process();
 		
-		MexFilter<MexedObject> filter = new MexFilter<MexedObject>(criteria, mexItems);
-		List<MexedObject> result = filter.process();	
+		return result;
+	}
+	
+	public static List<MexObject> search(List items, String criteria) {
+		List<MexObject> mexItems = toMexedObjects(items);
+		
+		MexFilter<MexObject> filter = new MexFilter<MexObject>(criteria, mexItems);
+		List<MexObject> result = filter.process();	
 		
 		return result;
 	}

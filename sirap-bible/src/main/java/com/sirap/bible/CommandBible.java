@@ -3,9 +3,10 @@ package com.sirap.bible;
 import java.util.List;
 
 import com.sirap.basic.component.Konstants;
-import com.sirap.basic.domain.MexedObject;
+import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
+import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
 
@@ -23,7 +24,7 @@ public class CommandBible extends CommandBase {
 		
 		singleParam = parseParam(KEY_BIBLE + "\\s(.*?)");
 		if(singleParam != null) {
-			List<BibleBook> items = BibleManager.g().listBooksByName(singleParam);
+			List<BibleBook> items = BibleManager.g().listBooksByName(singleParam, isCaseSensitive());
 			export(items);
 			
 			return true;
@@ -34,18 +35,24 @@ public class CommandBible extends CommandBase {
 		if(params != null) {
 			String bookName = params[0];
 			int chapter = Integer.parseInt(params[1]);
-			BibleBook book = BibleManager.g().searchByName(bookName, chapter);
+			BibleBook book = BibleManager.g().searchByName(bookName, chapter, isCaseSensitive());
 			if(book != null) {
 				if(!StrUtil.equals(book.getName(), bookName)) {
 					C.pl("Looking for book " + book.getName() + " chapter " + chapter);
 				}
-				ChapterSense sense = new ChapterSense(book, chapter);
-				List<String> content = BibleManager.g().getChapterFromLocal(pathBibleFolder(), sense);
-				if(!EmptyUtil.isNullOrEmpty(content)) {
-					export(content);
-				} else {
-					List<MexedObject> items = BibleManager.g().fetchChapter(book.getName(), chapter);
+				boolean fetchForcibly = OptionUtil.readBoolean(options, "force", false);
+				if(fetchForcibly) {
+					List<MexObject> items = BibleManager.g().fetchChapter(book.getName(), chapter);
 					export(items);
+				} else {
+					ChapterSense sense = new ChapterSense(book, chapter);
+					List<String> content = BibleManager.g().getChapterFromLocal(pathBibleFolder(), sense);
+					if(EmptyUtil.isNullOrEmpty(content)) {
+						List<MexObject> items = BibleManager.g().fetchChapter(book.getName(), chapter);
+						export(items);
+					} else {
+						export(content);
+					}
 				}
 				
 				return true;

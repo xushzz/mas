@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.sirap.basic.domain.MexedObject;
+import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.extractor.Extractor;
 
-public class China24JieqiExtractor extends Extractor<MexedObject> {
+public class China24JieqiExtractor extends Extractor<MexObject> {
 	
 	public static final String HOMEPAGE = "http://114.xixik.com";
 	public static final String URL_TEMPLATE = HOMEPAGE + "/24jieqi";
@@ -46,7 +46,7 @@ public class China24JieqiExtractor extends Extractor<MexedObject> {
 			String english = removeHttpStuff(m.group(2));
 			String dates = removeHttpStuff(m.group(3));
 			String info = point + " " + setLen(dates) + " " + english;
-			mexItems.add(new MexedObject(info));
+			mexItems.add(new MexObject(info));
 		}
 	}
 	
@@ -67,15 +67,15 @@ public class China24JieqiExtractor extends Extractor<MexedObject> {
 		}
 	}
 	
-	private List<MexedObject> parse24Points(String contentByYear) {
+	private List<MexObject> parse24Points(String contentByYear) {
 		String regex = "<td bgcolor=\"#EFEFEF\">(.+?)</td><td>(.+?)</td>";
 		Matcher m = createMatcher(regex, contentByYear);
-		List<MexedObject> items = new ArrayList<>();
+		List<MexObject> items = new ArrayList<>();
 		while(m.find()) {
 			String point = removeHttpStuff(m.group(1));
 			String datetime = removeHttpStuff(m.group(2));
 			String item = point + " " + datetime;
-			items.add(new MexedObject(item));
+			items.add(new MexObject(item));
 		}
 		
 		return items;

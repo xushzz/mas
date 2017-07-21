@@ -10,14 +10,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import com.sirap.basic.domain.MexedLocale;
-import com.sirap.basic.domain.MexedObject;
+import com.sirap.basic.domain.MexLocale;
+import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.search.MexFilter;
 
 public class LocaleUtil {
 
 	public static final List<Locale> AA_LOCALES = Arrays.asList(Locale.getAvailableLocales());
-	public static final List<MexedLocale> AAM_LOCALES = new ArrayList<>();
+	public static final List<MexLocale> AAM_LOCALES = new ArrayList<>();
 	static {
 		for(Locale item : AA_LOCALES) {
 			if(EmptyUtil.isNullOrEmpty(item.getLanguage())) {
@@ -27,7 +27,7 @@ public class LocaleUtil {
 			if(StrUtil.contains(item.toString(), "#")) {
 				continue;
 			}
-			AAM_LOCALES.add(new MexedLocale(item));
+			AAM_LOCALES.add(new MexLocale(item));
 		}
 		Collections.sort(AAM_LOCALES);
 	}
@@ -60,9 +60,9 @@ public class LocaleUtil {
 		return flag;
 	}
 	
-	public static List<MexedLocale> searchSimilars(String criteria) {
-		MexFilter<MexedLocale> filter = new MexFilter<MexedLocale>(criteria, AAM_LOCALES);
-		List<MexedLocale> mexItems = filter.process();	
+	public static List<MexLocale> searchSimilars(String criteria) {
+		MexFilter<MexLocale> filter = new MexFilter<MexLocale>(criteria, AAM_LOCALES);
+		List<MexLocale> mexItems = filter.process();	
 		
 		return mexItems;
 	}
@@ -115,7 +115,7 @@ public class LocaleUtil {
 	 *                4) xx
 	 * @return
 	 */
-	public static List<MexedObject> getIso3Countries() {
+	public static List<MexObject> getIso3Countries() {
 		return getIso3Countries(null);
 	}
 	
@@ -145,20 +145,20 @@ public class LocaleUtil {
         return item;
 	}
 	
-	public static List<MexedObject> getIso3Countries(String multipleLocalesString) {
+	public static List<MexObject> getIso3Countries(String multipleLocalesString) {
 		Locale[] allLocales = Locale.getAvailableLocales();
-		List<MexedObject> records = new ArrayList<>();
+		List<MexObject> records = new ArrayList<>();
 		for(int i = 0; i < allLocales.length; i++) {
 			String item = getIso3CountryInfo(allLocales[i], multipleLocalesString);
-            records.add(new MexedObject(item));
+            records.add(new MexObject(item));
 		}
 		
 		return records;
 	}
 	
-	public static List<MexedObject> getAllCurrencies(String multipleLocalesString) {
+	public static List<MexObject> getAllCurrencies(String multipleLocalesString) {
 		List<Currency> items = new ArrayList<>(Currency.getAvailableCurrencies());
-		List<MexedObject> records = new ArrayList<>();
+		List<MexObject> records = new ArrayList<>();
 		List<Locale> extraLocales = parseLocales(multipleLocalesString);
 		Map<String, String> ma = getCurrencyCodeAndSymbol();
 		
@@ -180,7 +180,7 @@ public class LocaleUtil {
             	}
             }
             String temp = sb.toString().replaceAll(",\\s*$", "");
-            records.add(new MexedObject(temp));
+            records.add(new MexObject(temp));
 		}
 		
 		return records;

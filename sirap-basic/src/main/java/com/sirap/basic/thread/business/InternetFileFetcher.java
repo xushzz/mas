@@ -1,13 +1,13 @@
 package com.sirap.basic.thread.business;
 
-import com.sirap.basic.domain.MexedObject;
+import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.thread.WorkerGeneralItemOriented;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.RandomUtil;
 
-public class InternetFileFetcher extends WorkerGeneralItemOriented<MexedObject> {
+public class InternetFileFetcher extends WorkerGeneralItemOriented<MexObject> {
 	private String storage;
 	private String suffixWhenObscure;
 	private boolean useUniqueFilename;
@@ -30,7 +30,7 @@ public class InternetFileFetcher extends WorkerGeneralItemOriented<MexedObject> 
 	}
 
 	@Override
-	public Object process(MexedObject link) {
+	public Object process(MexObject link) {
 		Object tempObj = link.getObj();
 		if(tempObj == null) {
 			return null;

@@ -3,7 +3,7 @@ package com.sirap.extractor;
 import java.util.List;
 
 import com.sirap.basic.component.Konstants;
-import com.sirap.basic.domain.MexedObject;
+import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.output.PDFParams;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.MathUtil;
@@ -78,7 +78,7 @@ public class CommandCollect extends CommandBase {
 				
 		singleParam = parseParam(KEY_TRANSLATE + "\\s+(.+?)");
 		if(singleParam != null) {
-			List<MexedObject> items = getTranslation(singleParam);
+			List<MexObject> items = getTranslation(singleParam);
 			export(items);
 			
 			return true;
@@ -86,7 +86,7 @@ public class CommandCollect extends CommandBase {
 		
 		singleParam = parseParam(KEY_DICTONARY + "\\s+(.+?)");
 		if(singleParam != null) {
-			List<MexedObject> items = lookupDictionary(singleParam);
+			List<MexObject> items = lookupDictionary(singleParam);
 			export(items);
 			
 			return true;
@@ -117,7 +117,7 @@ public class CommandCollect extends CommandBase {
 		singleParam = parseParam(KEY_TULING_ASK + "(.+?)");
 		if(singleParam != null) {
 			String key = g().getUserValueOf("tuling.key", "e8c190a005adc401867efd1ad2602f70");
-			Extractor<MexedObject> mike = new TulingExtractor(key, singleParam);
+			Extractor<MexObject> mike = new TulingExtractor(key, singleParam);
 			mike.process();
 			String tulingInChinese = StrUtil.utf8ToWhatever("\\uE59BBE\\uE781B5");
 			export(tulingInChinese + ": " + mike.getMexItem());
@@ -138,9 +138,9 @@ public class CommandCollect extends CommandBase {
 	}
 	
 	public static String getMobilePhoneLocation(String phoneNumber) {
-		Extractor<MexedObject> frank = new MobilePhoneLocationExtractor(phoneNumber);
+		Extractor<MexObject> frank = new MobilePhoneLocationExtractor(phoneNumber);
 		frank.process();
-		MexedObject mo = frank.getMexItem();
+		MexObject mo = frank.getMexItem();
 		
 		String value = null;
 		if(mo != null) {
@@ -150,18 +150,18 @@ public class CommandCollect extends CommandBase {
 		return value;
 	}
 	
-	public static List<MexedObject> getTranslation(String word) {
-		Extractor<MexedObject> frank = new IcibaTranslationExtractor(word);
+	public static List<MexObject> getTranslation(String word) {
+		Extractor<MexObject> frank = new IcibaTranslationExtractor(word);
 		frank.process();
-		List<MexedObject> items = frank.getMexItems();
+		List<MexObject> items = frank.getMexItems();
 		
 		return items;
 	}
 	
-	public static List<MexedObject> lookupDictionary(String word) {
-		Extractor<MexedObject> frank = new EnglishDictionaryExtractor(word);
+	public static List<MexObject> lookupDictionary(String word) {
+		Extractor<MexObject> frank = new EnglishDictionaryExtractor(word);
 		frank.process();
-		List<MexedObject> items = frank.getMexItems();
+		List<MexObject> items = frank.getMexItems();
 		
 		return items;
 	}

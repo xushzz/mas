@@ -2,7 +2,7 @@ package com.sirap.common.framework;
 
 import java.util.Date;
 
-import com.sirap.basic.domain.MexedObject;
+import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.MexUtil;
@@ -15,16 +15,16 @@ public abstract class Checker {
 
 	private Date serverTimeWhenLogin;
 	private Date expirationDate;
-	private MexedObject wrappedWorldTimeWhenLogin;
-	private MexedObject wrappedExpirationDate;
+	private MexObject wrappedWorldTimeWhenLogin;
+	private MexObject wrappedExpirationDate;
 	
 	protected void initLoginTime() {
 		serverTimeWhenLogin = new Date();
-		wrappedWorldTimeWhenLogin = new MexedObject(new Date());
+		wrappedWorldTimeWhenLogin = new MexObject(new Date());
 		CommonExtractors.setWorldTime(wrappedWorldTimeWhenLogin);
 		
 		Date expDate = null;
-		wrappedExpirationDate = new MexedObject(expDate);
+		wrappedExpirationDate = new MexObject(expDate);
 		CommonExtractors.setUserExpiration(wrappedExpirationDate, AppBase.USERNAME);
 	}
 

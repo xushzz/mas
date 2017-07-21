@@ -20,6 +20,6 @@ rjs http://X/json  parse URL-specified content into json and display raw format
 pa http://X/json?name=jack&id=19 parse key value pairs in URL with ask and &
 lo.QwErTy21        convert given string to lower case
 up.QwErTy21        convert given string to upper case
-E:\abc.jar a&b     list out what is inside a jar with criteria, option:+full,+size,+case
+E:\abc.jar a&b     list out what is inside a jar with criteria, $+full,+size,+case
 E:\abc.jar!/a.txt  list out the content of given entry in given zip file, entry better be ascii file
 ver=GEEK-DEV1.0.5-DAYU  7/14/2017, V

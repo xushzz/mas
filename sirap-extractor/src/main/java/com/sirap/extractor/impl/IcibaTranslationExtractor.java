@@ -2,12 +2,12 @@ package com.sirap.extractor.impl;
 
 import java.util.List;
 
-import com.sirap.basic.domain.MexedObject;
+import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.util.HtmlUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.extractor.Extractor;
 
-public class IcibaTranslationExtractor extends Extractor<MexedObject> {
+public class IcibaTranslationExtractor extends Extractor<MexObject> {
 	
 	public static final String HOMEPAGE = "http://www.iciba.com";
 	public static final String URL_TEMPLATE = HOMEPAGE + "/{0}";
@@ -28,7 +28,7 @@ public class IcibaTranslationExtractor extends Extractor<MexedObject> {
 			temp = StrUtil.reduceMultipleSpacesToOne(temp);
 
 			order++;
-			mexItems.add(new MexedObject(order + ") " + temp));
+			mexItems.add(new MexObject(order + ") " + temp));
 		}
 	}
 }

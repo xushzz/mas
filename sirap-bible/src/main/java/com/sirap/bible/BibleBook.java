@@ -38,13 +38,13 @@ public class BibleBook extends MexItem {
 		return maxChapter;
 	}
 
-	public boolean isMatched(String keyWord) {
+	public boolean isMatched(String keyWord, boolean caseSensitive) {
 		String temp = name.replaceAll("\\s+", "");
 		if(isRegexMatched(temp, keyWord)) {
 			return true;
 		}
 		
-		if(StrUtil.contains(temp, keyWord)) {
+		if(StrUtil.contains(temp, keyWord, caseSensitive)) {
 			return true;
 		}
 		
@@ -52,7 +52,7 @@ public class BibleBook extends MexItem {
 			return true;
 		}
 		
-		if(StrUtil.contains(name, keyWord)) {
+		if(StrUtil.contains(name, keyWord, caseSensitive)) {
 			return true;
 		}
 		
@@ -61,7 +61,7 @@ public class BibleBook extends MexItem {
 			return true;
 		}
 		
-		if(StrUtil.contains(temp, keyWord)) {
+		if(StrUtil.contains(temp, keyWord, caseSensitive)) {
 			return true;
 		}
 		

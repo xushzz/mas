@@ -21,8 +21,8 @@ import java.util.zip.ZipFile;
 
 import com.sirap.basic.component.MexedList;
 import com.sirap.basic.domain.MexItem;
-import com.sirap.basic.domain.MexedZipEntry;
-import com.sirap.basic.domain.MexedObject;
+import com.sirap.basic.domain.MexZipEntry;
+import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.email.EmailCenter;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.tool.C;
@@ -91,7 +91,7 @@ public class MexUtil {
 			if(obj instanceof MexItem) {
 				mexItems.add((MexItem)obj);
 			} else {
-				mexItems.add(new MexedObject(obj));
+				mexItems.add(new MexObject(obj));
 			}
 		}
 
@@ -367,16 +367,16 @@ public class MexUtil {
 		return true;
 	}
 	
-	public static List<MexedZipEntry> parseZipEntries(String filepath) {
+	public static List<MexZipEntry> parseZipEntries(String filepath) {
 		try(ZipFile jarFile = new ZipFile(filepath)) {
-			List<MexedZipEntry> items = new ArrayList<>();
+			List<MexZipEntry> items = new ArrayList<>();
 		    Enumeration what = jarFile.entries();
 		    String jarName = jarFile.getName();
 		    while (what.hasMoreElements()) {
 		    	Object obj = what.nextElement();
 		    	if(obj instanceof ZipEntry) {
 			    	ZipEntry entry = (ZipEntry)obj;
-			    	MexedZipEntry xiu = new MexedZipEntry(entry);
+			    	MexZipEntry xiu = new MexZipEntry(entry);
 			    	xiu.setJarName(jarName);
 			    	items.add(xiu);
 		    	} else {

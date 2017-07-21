@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.sirap.basic.domain.MexedObject;
+import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.output.PDFParams;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.CollectionUtil;
@@ -44,7 +44,7 @@ public class CommandFetch extends CommandBase {
 				return true;
 			}
 
-			List<MexedObject> links = new ArrayList<MexedObject>();
+			List<MexObject> links = new ArrayList<MexObject>();
 			List<String> records = new ArrayList<String>();
 			File file = parseFile(singleParam);
 			if(file != null) {
@@ -62,7 +62,7 @@ public class CommandFetch extends CommandBase {
 				String url = StrUtil.parseParam(KEY_HTTP_WWW, temp);
 				url = equiHttpProtoclIfNeeded(url);
 				if(url != null && FileOpener.isPossibleNormalFile(url)) {
-					links.add(new MexedObject(url));
+					links.add(new MexObject(url));
 				}
 			}
 			

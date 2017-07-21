@@ -1,12 +1,13 @@
 package com.sirap.basic.search;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 import com.sirap.basic.domain.MexItem;
+import com.sirap.basic.exception.MexException;
+import com.sirap.basic.util.XXXUtil;
 
 public class MexFilter<T extends MexItem> {
 	
@@ -43,20 +44,23 @@ public class MexFilter<T extends MexItem> {
 		this.caseSensitive = caseSensitive;
 	}
 	
-	@SuppressWarnings("unchecked")
 	public List<T> process() {
-		if(source == null) return Collections.EMPTY_LIST;
-
+		XXXUtil.nullCheck(source, "source");
+		XXXUtil.nullCheck(criteria, "criteria");
+		
 		List<T> matchedList = new ArrayList<T>();
 		
 		MexCriteria mex = parseCriteria();
-		if(mex == null) return Collections.EMPTY_LIST;
+		if(mex == null) {
+			throw new MexException("'{0}' is not a valid criteria.", criteria);
+		}
 		
 		String logic = mex.getLogic();
 		List<String> criterias = mex.getCriterias();
 		
 		if(LOGIC_AND.equalsIgnoreCase(logic)) {
 			int count = 0;
+			Set<T> set = new LinkedHashSet<T>();
 			for(T item:source) {
 				count++;
 				if(item == null) {
@@ -71,9 +75,10 @@ public class MexFilter<T extends MexItem> {
 				}
 				if(isAllMatched) {
 					item.setPseudoOrder(count);
-					matchedList.add(item);
+					set.add(item);
 				}
 			}
+			matchedList.addAll(set);
 		} else if(LOGIC_OR.equalsIgnoreCase(logic)) {
 			int count = 0;
 			Set<T> set = new LinkedHashSet<T>();
@@ -101,10 +106,6 @@ public class MexFilter<T extends MexItem> {
 	}
 	
 	public MexCriteria parseCriteria() {
-		if(criteria == null) {
-			return null;
-		}
-		
 		List<String> list = new ArrayList<String>(); 
 		
 		if(criteria.indexOf(SYMBOL_AND) != -1) {

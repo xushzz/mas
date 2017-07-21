@@ -1,16 +1,20 @@
 package com.sirap.basic.domain;
 
 import java.io.File;
+import java.util.Date;
 
 import com.sirap.basic.search.SizeCriteria;
+import com.sirap.basic.util.DateUtil;
+import com.sirap.basic.util.FileUtil;
+import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 
 @SuppressWarnings("serial")
-public class MexedFile extends MexItem implements Comparable<MexedFile> {
+public class MexFile extends MexItem implements Comparable<MexFile> {
 	
 	protected File file;
 	
-	public MexedFile(File file) {
+	public MexFile(File file) {
 		this.file = file;
 	}
 	
@@ -60,6 +64,24 @@ public class MexedFile extends MexItem implements Comparable<MexedFile> {
 		return file.getAbsolutePath();
 	}
 	
+	public String toPrint(String optionsStr) {
+		StringBuilder sb = new StringBuilder(file.getAbsolutePath());
+		boolean showSize = OptionUtil.readBoolean(optionsStr, "size", false);
+		if(showSize) {
+			sb.append("  ");
+			sb.append(FileUtil.formatFileSize(file.length()));
+		}
+
+		boolean showDate = OptionUtil.readBoolean(optionsStr, "date", false);
+		if(showDate) {
+			sb.append("  ");
+			Date lastmodified = new Date(file.lastModified());
+			sb.append(DateUtil.displayDate(lastmodified));
+		}
+		
+		return sb.toString();
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -76,7 +98,7 @@ public class MexedFile extends MexItem implements Comparable<MexedFile> {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		MexedFile other = (MexedFile) obj;
+		MexFile other = (MexFile) obj;
 		if (getPath() == null) {
 			if (other.getPath() != null)
 				return false;
@@ -87,7 +109,7 @@ public class MexedFile extends MexItem implements Comparable<MexedFile> {
 	}
 
 	@Override
-	public int compareTo(MexedFile o) {
+	public int compareTo(MexFile o) {
 		String path = file.getAbsolutePath();
 		String path2 = o.file.getAbsolutePath();
 		

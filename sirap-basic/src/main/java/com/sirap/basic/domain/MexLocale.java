@@ -9,11 +9,11 @@ import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.StrUtil;
 
 @SuppressWarnings("serial")
-public class MexedLocale extends MexItem implements Comparable<MexedLocale> {
+public class MexLocale extends MexItem implements Comparable<MexLocale> {
 
 	protected Locale locale;
 	
-	public MexedLocale(Locale locale) {
+	public MexLocale(Locale locale) {
 		this.locale = locale;
 	}
 	
@@ -41,7 +41,7 @@ public class MexedLocale extends MexItem implements Comparable<MexedLocale> {
 	}
 
 	@Override
-	public int compareTo(MexedLocale o) {
+	public int compareTo(MexLocale o) {
 		return locale.toString().compareTo(o.locale.toString());
 	}
 

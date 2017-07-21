@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sirap.basic.component.html.HtmlExporter;
-import com.sirap.basic.domain.MexedFile;
+import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.email.EmailCenter;
 import com.sirap.basic.output.ConsoleParams;
 import com.sirap.basic.output.ExcelParams;
@@ -135,13 +135,13 @@ public class Exporter {
 		if(target instanceof TargetFolder) {
 			TargetFolder folder = (TargetFolder)target;
 			String filePath = folder.getPath();
-			List<MexedFile> mexedFiles = new ArrayList<MexedFile>();
+			List<MexFile> mexedFiles = new ArrayList<MexFile>();
 			for(Object item: records) {
 				if(item instanceof File) {
 					File file = (File)item;
-					mexedFiles.add(new MexedFile(file));
-				} else if (item instanceof MexedFile) {
-					mexedFiles.add((MexedFile)item);
+					mexedFiles.add(new MexFile(file));
+				} else if (item instanceof MexFile) {
+					mexedFiles.add((MexFile)item);
 				}
 			}
 			

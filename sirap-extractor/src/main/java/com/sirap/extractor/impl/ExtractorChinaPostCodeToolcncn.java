@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.sirap.basic.domain.MexedObject;
+import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.thread.MasterMexItemsOriented;
 import com.sirap.basic.thread.WorkerMexItemsOritented;
 import com.sirap.common.extractor.Extractor;
@@ -14,21 +14,21 @@ public class ExtractorChinaPostCodeToolcncn {
 	
 	public static final String HOMEPAGE = "http://tool.cncn.com";
 
-	public static List<MexedObject> getAllVillageCodes() {
+	public static List<MexObject> getAllVillageCodes() {
 		
-		List<MexedObject> cityNamePostCodes = new ArrayList<>();
-		List<MexedObject> countyLinks = getAllCountyLinks(cityNamePostCodes);
+		List<MexObject> cityNamePostCodes = new ArrayList<>();
+		List<MexObject> countyLinks = getAllCountyLinks(cityNamePostCodes);
 		
-		MasterMexItemsOriented<MexedObject, MexedObject> master = new MasterMexItemsOriented<MexedObject, MexedObject>(countyLinks, new WorkerMexItemsOritented<MexedObject, MexedObject>() {
+		MasterMexItemsOriented<MexObject, MexObject> master = new MasterMexItemsOriented<MexObject, MexObject>(countyLinks, new WorkerMexItemsOritented<MexObject, MexObject>() {
 
 			/***
 			 * /youbian/hechi-jinchengjiang
 			 */
 			@Override
-			public List<MexedObject> process(MexedObject countyLink) {
+			public List<MexObject> process(MexObject countyLink) {
 				final String url = HOMEPAGE + countyLink;
 				
-				Extractor<MexedObject> frank = new Extractor<MexedObject>() {
+				Extractor<MexObject> frank = new Extractor<MexObject>() {
 					
 					@Override
 					public String getUrl() {
@@ -56,7 +56,7 @@ public class ExtractorChinaPostCodeToolcncn {
 							String locations = mat.group(1);
 							String temp = townName + " " +  code + " " + locations;
 							
-							mexItems.add(new MexedObject(temp));
+							mexItems.add(new MexObject(temp));
 						}
 					}
 				};
@@ -72,7 +72,7 @@ public class ExtractorChinaPostCodeToolcncn {
 		});
 		
 		master.sitAndWait();
-		List<MexedObject> allItems = master.getAllMexItems();
+		List<MexObject> allItems = master.getAllMexItems();
 		allItems.addAll(cityNamePostCodes);
 		
 		return allItems;
@@ -82,21 +82,21 @@ public class ExtractorChinaPostCodeToolcncn {
 	 * 3090 counties
 	 * @return /youbian/hechi-jinchengjiang
 	 */
-	public static List<MexedObject> getAllCountyLinks(List<MexedObject> cityNamePostCodes) {
+	public static List<MexObject> getAllCountyLinks(List<MexObject> cityNamePostCodes) {
 		
-		List<MexedObject> cityLinks = getAllCityLinks();
+		List<MexObject> cityLinks = getAllCityLinks();
 		
-		MasterMexItemsOriented<MexedObject, MexedObject> master = new MasterMexItemsOriented<MexedObject, MexedObject>(cityLinks, new WorkerMexItemsOritented<MexedObject, MexedObject>() {
+		MasterMexItemsOriented<MexObject, MexObject> master = new MasterMexItemsOriented<MexObject, MexObject>(cityLinks, new WorkerMexItemsOritented<MexObject, MexObject>() {
 
 			/***
 			 * /zibo-youbian
 			 */
 			@Override
-			public List<MexedObject> process(MexedObject cityLink) {
+			public List<MexObject> process(MexObject cityLink) {
 				
 				String url = HOMEPAGE + cityLink;
 				
-				Extractor<MexedObject> frank = new Extractor<MexedObject>() {
+				Extractor<MexObject> frank = new Extractor<MexObject>() {
 					
 					@Override
 					public String getUrl() {
@@ -123,14 +123,14 @@ public class ExtractorChinaPostCodeToolcncn {
 						if(mat.find()) {
 							String cityPostCode = mat.group(1);
 							String temp = cityName + "通用邮编 " + cityPostCode;
-							cityNamePostCodes.add(new MexedObject(temp));
+							cityNamePostCodes.add(new MexObject(temp));
 						}
 
 						regex = "href=\"(/youbian/[^\"]+-[^\"]+)\"";
 						mat = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
 						while(mat.find()) {
 							String temp = mat.group(1);
-							mexItems.add(new MexedObject(temp));
+							mexItems.add(new MexObject(temp));
 						}
 					}
 				};
@@ -154,9 +154,9 @@ public class ExtractorChinaPostCodeToolcncn {
 	 * 343 cities
 	 * @return aba-youbian
 	 */
-	public static List<MexedObject> getAllCityLinks() {
+	public static List<MexObject> getAllCityLinks() {
 		
-		Extractor<MexedObject> frank = new Extractor<MexedObject>() {
+		Extractor<MexObject> frank = new Extractor<MexObject>() {
 			
 			@Override
 			public String getUrl() {
@@ -172,7 +172,7 @@ public class ExtractorChinaPostCodeToolcncn {
 				Matcher mat = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
 				while(mat.find()) {
 					String temp = mat.group(1);
-					mexItems.add(new MexedObject(temp));
+					mexItems.add(new MexObject(temp));
 				}
 			}
 		};

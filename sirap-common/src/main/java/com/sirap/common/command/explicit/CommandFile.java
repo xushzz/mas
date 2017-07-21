@@ -1,18 +1,21 @@
 package com.sirap.common.command.explicit;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FilenameFilter;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.component.media.MediaFileAnalyzer;
-import com.sirap.basic.domain.MexedFile;
-import com.sirap.basic.domain.MexedZipEntry;
+import com.sirap.basic.domain.MexFile;
+import com.sirap.basic.domain.MexObject;
+import com.sirap.basic.domain.MexZipEntry;
 import com.sirap.basic.email.EmailCenter;
 import com.sirap.basic.exception.MexException;
-import com.sirap.basic.search.MexFilter;
 import com.sirap.basic.thirdparty.excel.ExcelHelper;
 import com.sirap.basic.thirdparty.pdf.PdfHelper;
 import com.sirap.basic.tool.C;
@@ -26,7 +29,6 @@ import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.ImageUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.MexUtil;
-import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
@@ -37,8 +39,8 @@ import com.sirap.common.framework.command.FileSizeInputAnalyzer;
 import com.sirap.common.framework.command.InputAnalyzer;
 import com.sirap.common.framework.command.target.TargetAnalyzer;
 import com.sirap.common.framework.command.target.TargetConsole;
-import com.sirap.common.manager.FileManager;
 import com.sirap.common.manager.MemorableDayManager;
+import com.sirap.common.manager.VFileManager;
 
 public class CommandFile extends CommandBase {
 
@@ -143,7 +145,7 @@ public class CommandFile extends CommandBase {
 			String filePath = file.getAbsolutePath();
 			
 			if(!target.isFileRelated() && FileOpener.isZipFile(filePath)) {
-				List<MexedZipEntry> items = MexUtil.parseZipEntries(filePath);
+				List<MexZipEntry> items = MexUtil.parseZipEntries(filePath);
 				exportMexItems(items);
 				return true;
 			}
@@ -233,7 +235,7 @@ public class CommandFile extends CommandBase {
 			if(!EmptyUtil.isNullOrEmpty(paths)) {
 				List<String> allRecords = new ArrayList<>();
 				for(String pathItem: paths) {
-					List<String> records = listDirectory(pathItem);
+					List<String> records = FileUtil.listDirectory(pathItem);
 					if(!EmptyUtil.isNullOrEmpty(records)) {
 						allRecords.addAll(records);
 					}
@@ -274,8 +276,9 @@ public class CommandFile extends CommandBase {
 			String criteria = filepathAndCriteria[1];
 			
 			if(FileOpener.isTextFile(filePath)) {
-				List<String> records = IOUtil.readFileIntoList(filePath); 
-				exportItems(records, criteria);
+				List<MexObject> all = readFileIntoList(filePath, g().getCharsetInUse());
+				List<MexObject> items = CollectionUtil.filter(all, criteria, isCaseSensitive());
+				export(CollectionUtil.items2PrintRecords(items, options));
 			} else if(FileUtil.isAnyTypeOf(filePath, FileUtil.SUFFIXES_EXCEL)) {
 				Integer index = MathUtil.toInteger(criteria);
 				if(index == null) {
@@ -295,14 +298,14 @@ public class CommandFile extends CommandBase {
 			this.command = sean.getCommand();
 			this.target = sean.getTarget();
 			this.options = sean.getOptions();
-			List<MexedFile> allMexedFiles = new ArrayList<>();
+			List<MexFile> allMexedFiles = new ArrayList<>();
 			List<String> pathList = jack.getPaths();
 			for(String path : pathList) {
 				String criterias = jack.getCriteria().trim();
 				
 				int idxOfSeparator = criterias.indexOf(' ');
 				String nameCriteria = null;
-				Integer depth = 0;
+				Integer depth = -1;
 				
 				String regexDepth = "\\d{1,2}";
 				if(idxOfSeparator < 0) {
@@ -321,12 +324,23 @@ public class CommandFile extends CommandBase {
 					}
 				}
 				
+				if(depth == -1) {
+					String negate = StrUtil.parseParam("!(.+)", nameCriteria);
+					if(negate != null) {
+						nameCriteria = negate;
+					}
+					depth = 0;
+				}
+				
 				if(depth > 0) {
 					depth--;
 				}
 				
-				List<MexedFile> items = scanMexedFiles(path, depth, nameCriteria, isCaseSensitive());
-				if(!EmptyUtil.isNullOrEmpty(items)) {
+				List<MexFile> allFiles = FileUtil.scanSingleFolder(path, depth, true);
+				if(EmptyUtil.isNullOrEmpty(nameCriteria)) {
+					allMexedFiles.addAll(allFiles);
+				} else {
+					List<MexFile> items = CollectionUtil.filter(allFiles, nameCriteria, isCaseSensitive());
 					allMexedFiles.addAll(items);
 				}
 			}
@@ -336,7 +350,7 @@ public class CommandFile extends CommandBase {
 			} else {
 				if(target.isFileRelated()) {
 					List<File> files = new ArrayList<File>();
-					for(MexedFile mf:allMexedFiles) {
+					for(MexFile mf:allMexedFiles) {
 						File fileItem = mf.getFile();
 						if(fileItem.isFile()) {
 							files.add(fileItem);
@@ -345,19 +359,12 @@ public class CommandFile extends CommandBase {
 					
 					export(files);
 				} else {
-					List<String> allRecords = CollectionUtil.items2PrintRecords(allMexedFiles);
-					Collections.sort(allRecords);
-					
-					if(jack.isShowDetail()) {
-						List<String> items = new ArrayList<>();
-						for(String record : allRecords) {
-							String temp = detailFileInfo(record);
-							items.add(temp);
-						}
-						export(items);
-					} else {
-						export(allRecords);
+					Collections.sort(allMexedFiles);
+					String tempOptions = jack.isShowDetail() ? "+size" : "";
+					if(options != null) {
+						tempOptions += "," + options;
 					}
+					exportMexItems(allMexedFiles, tempOptions);
 				}
 			}
 			
@@ -373,28 +380,22 @@ public class CommandFile extends CommandBase {
 			this.options = sean.getOptions();
 			boolean detail = !params[0].isEmpty();
 			String criteria = params[1].trim();
-			List<MexedFile> records = FileManager.g().getFileRecordsByName(criteria, isCaseSensitive());
+			List<MexFile> records = VFileManager.g().getFileRecordsByName(criteria, isCaseSensitive());
 			if(target.isFileRelated()) {
 				export(CollectionUtil.toFileList(records));
 			} else {
-				if(detail) {
-					List<String> items = new ArrayList<>();
-					for(MexedFile mFile : records) {
-						String record = mFile.toString();
-						String temp = detailFileInfo(record);
-						items.add(temp);
-					}
-					export(items);
-				} else {
-					export(records);
+				String tempOptions = detail ? "+size" : "";
+				if(options != null) {
+					tempOptions += "," + options;
 				}
+				exportMexItems(records, tempOptions);
 			}
 			
 			return true;
 		}
 		
 		if(is(KEY_VERY_IMPORTANT_FOLDER + KEY_2DOTS)) {
-			List<MexedFile> records = FileManager.g().getAllFileRecords();
+			List<MexFile> records = VFileManager.g().getAllFileRecords();
 			if(target.isFileRelated()) {
 				export(CollectionUtil.toFileList(records));
 			} else {
@@ -405,14 +406,14 @@ public class CommandFile extends CommandBase {
 		}
 		
 		if(is(KEY_VERY_IMPORTANT_FOLDER + KEY_VERY_IMPORTANT_FOLDER)) {  
-			List<String> records = FileManager.g().getAllFolders();
+			List<String> records = VFileManager.g().getAllFolders();
 			export(records);
 			
 			return true;
 		}
 		
 		if(is(KEY_VERY_IMPORTANT_FOLDER + KEY_REFRESH)) {
-			int[] size = FileManager.g().refresh();
+			int[] size = VFileManager.g().refresh();
 			C.pl2("Refreshed, " + size[1] + " records, before " + size[0] + ".");
 			
 			return true;
@@ -658,6 +659,33 @@ public class CommandFile extends CommandBase {
 		return false;
 	}
 	
+	public static List<MexObject> readFileIntoList(String fileName, String charset) {
+		List<MexObject> list = new ArrayList<>();
+		try {
+			InputStreamReader isr = null;
+			if(charset != null) {
+				isr = new InputStreamReader(new FileInputStream(fileName), charset);
+			} else {
+				isr = new InputStreamReader(new FileInputStream(fileName));
+			}
+			BufferedReader br = new BufferedReader(isr);
+			String record = br.readLine();
+			int line = 0;
+			while (record != null) {
+				line++;
+				MexObject mo = new MexObject(record);
+				mo.setPseudoOrder(line);
+				list.add(mo);
+				record = br.readLine();
+			}
+			br.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+	
 	private String detailFileInfo(String filepath) {
 		File file = parseFile(filepath);
 		if(file != null) {
@@ -726,25 +754,6 @@ public class CommandFile extends CommandBase {
 		}
 		
 		return null;
-	}
-	
-	private List<MexedFile> scanMexedFiles(String path, int depth, String criteria, boolean caseSensitive) {
-		List<File> allFiles = FileUtil.scanFolder(path, depth);
-		
-		List<MexedFile> allItems = new ArrayList<MexedFile>();
-		for(File file:allFiles) {
-			allItems.add(new MexedFile(file));
-		}
-		
-		List<MexedFile> items = null;
-		if(EmptyUtil.isNullOrEmpty(criteria)) {
-			items = allItems;
-		} else {
-			MexFilter<MexedFile> filter = new MexFilter<MexedFile>(criteria, allItems, caseSensitive);
-			items = filter.process();
-		}
-		
-		return items;
 	}
 	
 	abstract class MemoryKeeper {

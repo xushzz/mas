@@ -3,13 +3,13 @@ package com.sirap.extractor.impl;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.sirap.basic.domain.MexedObject;
+import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.HtmlUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.extractor.Extractor;
 
-public class EnglishDictionaryExtractor extends Extractor<MexedObject> {
+public class EnglishDictionaryExtractor extends Extractor<MexObject> {
 	
 	public static final String HOMEPAGE = "http://www.dictionary.com";
 	public static final String URL_TEMPLATE = HOMEPAGE + "/browse/{0}";
@@ -42,7 +42,7 @@ public class EnglishDictionaryExtractor extends Extractor<MexedObject> {
 		String header = StrUtil.findFirstMatchedItem(regexHeader, section);
 		String wordType = HtmlUtil.removeHttpTag(header);
 		wordType = StrUtil.reduceMultipleSpacesToOne(wordType).trim();
-		mexItems.add(new MexedObject(wordType));
+		mexItems.add(new MexObject(wordType));
 		
 		String regexStuff = "<span class=\"def-number\">(.*?)</span>(.*?)</div>";
 		Matcher m = Pattern.compile(regexStuff, Pattern.CASE_INSENSITIVE).matcher(section);
@@ -50,7 +50,7 @@ public class EnglishDictionaryExtractor extends Extractor<MexedObject> {
 			String order = m.group(1).trim();
 			String more = HtmlUtil.removeHttpTag(m.group(2));
 			more = StrUtil.reduceMultipleSpacesToOne(more).trim();
-			mexItems.add(new MexedObject(order + " " + more));
+			mexItems.add(new MexObject(order + " " + more));
 		}
 	}
 }

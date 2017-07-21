@@ -3,12 +3,12 @@ package com.sirap.extractor.impl;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.sirap.basic.domain.MexedObject;
+import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.util.HtmlUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.extractor.Extractor;
 
-public class MobilePhoneLocationExtractor extends Extractor<MexedObject> {
+public class MobilePhoneLocationExtractor extends Extractor<MexObject> {
 	
 	public static final String HOMEPAGE = "http://www.00cha.com";
 	public static final String URL_TEMPLATE = HOMEPAGE + "/shouji/?mobile={0}";
@@ -32,6 +32,6 @@ public class MobilePhoneLocationExtractor extends Extractor<MexedObject> {
 			sb.append(" " + temp);
 		}
 		
-		mexItem = new MexedObject(sb.toString());
+		mexItem = new MexObject(sb.toString());
 	}
 }

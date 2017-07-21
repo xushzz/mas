@@ -5,11 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sirap.basic.component.Konstants;
-import com.sirap.basic.domain.MexedObject;
+import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.search.MexFilter;
 import com.sirap.basic.thread.Master;
 import com.sirap.basic.tool.C;
+import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.common.component.FileOpener;
@@ -103,16 +104,14 @@ public class BibleManager {
 		return BOOKS;
 	}
 	
-	public List<BibleBook> listBooksByName(String criteria) {
-		MexFilter<BibleBook> filter = new MexFilter<BibleBook>(criteria, BOOKS);
-		List<BibleBook> items = filter.process();	
+	public List<BibleBook> listBooksByName(String criteria, boolean caseSensitive) {
+		List<BibleBook> items = CollectionUtil.filter(BOOKS, criteria, caseSensitive);	
 
 		return items;
 	}
 	
-	public BibleBook searchByName(String name, int chapter) {
-		MexFilter<BibleBook> filter = new MexFilter<BibleBook>(name, BOOKS);
-		List<BibleBook> items = filter.process();
+	public BibleBook searchByName(String name, int chapter, boolean caseSensitive) {
+		List<BibleBook> items = CollectionUtil.filter(BOOKS, name, caseSensitive);
 		
 		if(items.size() == 0) {
 			return null;
@@ -155,10 +154,10 @@ public class BibleManager {
 		return content;
 	}
 	
-	public List<MexedObject> fetchChapter(String fullBookName, int chapter) {
-		Extractor<MexedObject> nick = new BibleChapterExtractor(fullBookName, chapter);
+	public List<MexObject> fetchChapter(String fullBookName, int chapter) {
+		Extractor<MexObject> nick = new BibleChapterExtractor(fullBookName, chapter);
 		nick.process();
-		List<MexedObject> items = nick.getMexItems();
+		List<MexObject> items = nick.getMexItems();
 		
 		return items;
 	}

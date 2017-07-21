@@ -1,42 +1,39 @@
 package com.sirap.common.manager;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.sirap.basic.domain.MexedFile;
-import com.sirap.basic.search.MexFilter;
+import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.tool.C;
+import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.MathUtil;
-import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.framework.SimpleKonfig;
 
-public class FileManager {
+public class VFileManager {
 
-	private static FileManager instance;
-	private static List<MexedFile> ALL_RECORDS = new ArrayList<MexedFile>();
+	private static VFileManager instance;
+	private static List<MexFile> ALL_RECORDS = new ArrayList<MexFile>();
 	private String[] originalPaths;
 	private List<String> fixedPaths = new ArrayList<String>();
 	
 	private volatile boolean isSynchronizing = false;
 	
-	private FileManager() {
+	private VFileManager() {
 	}
 	
 	private static class Holder {
-		private static FileManager instance = new FileManager();
+		private static VFileManager instance = new VFileManager();
 	}
 	
-	public static FileManager g() {
+	public static VFileManager g() {
 		if(instance == null) {
 			instance = Holder.instance;
 			instance.initFixedPaths();
@@ -59,18 +56,13 @@ public class FileManager {
 		isSynchronizing = flag;
 	}
 	
-	public synchronized List<MexedFile> getAllRecords(boolean isForcibly) {
+	public synchronized List<MexFile> getAllRecords(boolean isForcibly) {
 		if(EmptyUtil.isNullOrEmpty(ALL_RECORDS) || isForcibly) {
 			setSyncFlag(true);
 			int depth = SimpleKonfig.g().getUserNumberValueOf("v.depth", 2);
-			List<File> allFiles = FileUtil.scanFolder(fixedPaths, depth, null, false);
-			Set<MexedFile> set = new HashSet<MexedFile>();
-			for(File file:allFiles) {
-				set.add(new MexedFile(file));
-			}
-			
+			List<MexFile> allFiles = FileUtil.scanFolders(fixedPaths, depth, false);
 			ALL_RECORDS.clear();
-			ALL_RECORDS.addAll(set);
+			ALL_RECORDS.addAll(new HashSet<MexFile>(allFiles));
 			setSyncFlag(false);
 		}
 		
@@ -116,24 +108,24 @@ public class FileManager {
 		}
 	}
 	
-	public List<MexedFile> getAllFileRecords() {
+	public List<MexFile> getAllFileRecords() {
 		showTipIfNeeded();
-		List<MexedFile> files = new ArrayList<MexedFile>(ALL_RECORDS);
+		List<MexFile> files = new ArrayList<MexFile>(ALL_RECORDS);
 		
 		Collections.sort(files);
 		
 		return files;
 	}
 
-	public List<MexedFile> getFileRecordsByName(String criteria, boolean caseSensitive) {
+	public List<MexFile> getFileRecordsByName(String criteria, boolean caseSensitive) {
 		showTipIfNeeded();
-		List<MexedFile> files = getAllRecords(false);
-		MexFilter<MexedFile> filter = new MexFilter<MexedFile>(criteria, files, caseSensitive);
-		List<MexedFile> items = filter.process();
+		List<MexFile> files = getAllRecords(false);
+		List<MexFile> items = CollectionUtil.filter(files, criteria, caseSensitive);
 		
 		String fixedCriteria = fixCriteria(criteria);
-		filter = new MexFilter<MexedFile>(fixedCriteria, files);
-		items.addAll(filter.process());
+		if(!EmptyUtil.isNullOrEmpty(fixedCriteria)) {
+			items.addAll(CollectionUtil.filter(files, fixedCriteria));
+		}
 
 		Collections.sort(items);
 		

@@ -2,13 +2,13 @@ package com.sirap.extractor.impl;
 
 import java.util.Map;
 
-import com.sirap.basic.domain.MexedObject;
+import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.extractor.Extractor;
 
 @SuppressWarnings("rawtypes")
-public class TulingExtractor extends Extractor<MexedObject> {
+public class TulingExtractor extends Extractor<MexObject> {
 	
 	public static final String HOMEPAGE = "http://www.tuling123.com";
 	public static final String CODE_SUCCESS = "100000";
@@ -24,9 +24,9 @@ public class TulingExtractor extends Extractor<MexedObject> {
 		Map naive = JsonUtil.toMap(source);
 		Object code = naive.get("code");
 		if(StrUtil.equals(CODE_SUCCESS, code + "")) {
-			mexItem = new MexedObject(naive.get("text"));
+			mexItem = new MexObject(naive.get("text"));
 		} else {
-			mexItem = new MexedObject(source);
+			mexItem = new MexObject(source);
 		}
 	}
 }

@@ -1,7 +1,7 @@
 package com.sirap.extractor;
 
 
-import com.sirap.basic.domain.MexedObject;
+import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
@@ -42,7 +42,7 @@ public class CommandNongli extends CommandBase {
 		params = parseParams(regex);
 		if(params != null) {
 			String year = params[0];
-			Extractor<MexedObject> mike = new China24JieqiExtractor(year);
+			Extractor<MexObject> mike = new China24JieqiExtractor(year);
 			mike.process();
 			export(mike.getMexItems());
 			
@@ -50,7 +50,7 @@ public class CommandNongli extends CommandBase {
 		}
 		
 		if(is(KEY_24_JIEQI)) {
-			Extractor<MexedObject> mike = new China24JieqiExtractor();
+			Extractor<MexObject> mike = new China24JieqiExtractor();
 			mike.process();
 			export(mike.getMexItems());
 			

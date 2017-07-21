@@ -3,18 +3,19 @@ package com.sirap.basic.domain;
 import java.util.Date;
 import java.util.List;
 
+import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 
 @SuppressWarnings({"serial","rawtypes"})
-public class MexedObject extends MexItem {
+public class MexObject extends MexItem {
 	
 	protected Object obj;
 	
-	public MexedObject() {
+	public MexObject() {
 		
 	}
 	
-	public MexedObject(Object obj) {
+	public MexObject(Object obj) {
 		this.obj = obj;
 	}
 
@@ -56,17 +57,30 @@ public class MexedObject extends MexItem {
 		this.obj = record;
 		return true;
 	}
-	
+
 	@Override
-	public boolean isMatched(String keyWord) {
+	public boolean isMatched(String keyWord, boolean caseSensitive) {
 		String source = getString();
 		
 		if(isRegexMatched(source, keyWord)) {
 			return true;
 		}
 		
-		boolean flag = StrUtil.contains(source, keyWord); 
+		boolean flag = StrUtil.contains(source, keyWord, caseSensitive); 
 		return flag; 
+	}
+	
+	@Override
+	public String toPrint(String options) {
+		boolean showOrder = OptionUtil.readBoolean(options, "order", false);
+		boolean showLineNumber = OptionUtil.readBoolean(options, "line", false);
+		StringBuilder sb = new StringBuilder();
+		if(showOrder || showLineNumber) {
+			sb.append("#" + getPseudoOrder() + "  ");
+		}
+		sb.append(getString());
+		
+		return sb.toString();
 	}
 	
 	@Override

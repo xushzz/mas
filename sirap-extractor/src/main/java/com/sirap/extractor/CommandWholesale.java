@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sirap.basic.component.Konstants;
-import com.sirap.basic.domain.MexedObject;
+import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.EmptyUtil;
@@ -41,7 +41,7 @@ public class CommandWholesale extends CommandBase {
 		
 		singleParam = parseParam(KEY_SOGOU + "\\s(.*?)");
 		if(isSingleParamNotnull()) {
-			List<MexedObject> links = ExtractorUtil.sogouImageLinks(singleParam);
+			List<MexObject> links = ExtractorUtil.sogouImageLinks(singleParam);
 			if(!EmptyUtil.isNullOrEmpty(links)) {
 				String folderName = FileUtil.generateLegalFileName(singleParam);
 				String path = pathWithSeparator("storage.sogou", Konstants.FOLDER_SOGOU);
@@ -55,7 +55,7 @@ public class CommandWholesale extends CommandBase {
 		
 		singleParam = parseParam(KEY_QIHU360 + "\\s(.*?)");
 		if(isSingleParamNotnull()) {
-			List<MexedObject> links = ExtractorUtil.qihu360ImageLinks(singleParam);
+			List<MexObject> links = ExtractorUtil.qihu360ImageLinks(singleParam);
 			if(!EmptyUtil.isNullOrEmpty(links)) {
 				String folderName = FileUtil.generateLegalFileName(singleParam);
 				String path = pathWithSeparator("storage.so360", FOLDER_QIHU360);
@@ -86,14 +86,14 @@ public class CommandWholesale extends CommandBase {
 		}
 		
 		if(isIn(KEY_POSTCODE)) {
-			List<MexedObject> items = ExtractorChinaPostCodeToolcncn.getAllVillageCodes();
+			List<MexObject> items = ExtractorChinaPostCodeToolcncn.getAllVillageCodes();
 			export(items);
 			
 			return true;
 		}
 		
 		if(isIn(KEY_AREACODE)) {
-			List<MexedObject> items = ExtractorChinaAreaCodeZou114.getAllAreaCodes();
+			List<MexObject> items = ExtractorChinaAreaCodeZou114.getAllAreaCodes();
 			export(items);
 			
 			return true;
@@ -102,7 +102,7 @@ public class CommandWholesale extends CommandBase {
 		return false;
 	}
 	
-	public boolean batchDownload(List<MexedObject> links, String whereToSave) {
+	public boolean batchDownload(List<MexObject> links, String whereToSave) {
 		long start = System.currentTimeMillis();
 		
 		List<String> pathList = downloadFiles(whereToSave, links, Konstants.SUFFIX_JPG);

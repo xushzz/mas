@@ -16,16 +16,16 @@ F:\fire<           for a folder with 'less than' character, open Windows resourc
 <                  open Windows resource manager at storage
 E:\Fly mp3&fire    display the files/folders whose name contains 'mp3' and 'fire' in the folder 
 E:\Fly txt|kid     display the files/folders which name contains 'txt' or 'kid' in the folder
-F:\fire 3          this will recursively list the stuff in the folder and its subs till layer three 
-F:\fire 3 txt      this will recursively list the txt files in the folder and its subs till layer three
+F:\fire 3          recursively list the stuff in the folder and its subs till layer 3, !3 escape layer, $+case
+F:\fire 3 txt      recursively list the txt files in the folder and its subs till layer three
 F:\Lon Don, 3 txt  this will recursively list the txt files in the folder and its subs till layer three
-F:\fly.txt fi&wa   conduct search in given text file with given criteria and print out
+F:\fly.txt fi&wa   conduct search in given text file with given criteria and print out, $+order,+line,+case
 F:\D o\a.txt, f&w  conduct search in given text file with given criteria and print out, path has spaces
 F:\fly.xls 0       print index-designated excel sheet
 F:\D o\a.xlsx, 1   print index-designated excel sheet
 F: 3 >3.3M         file search by size-unit criteria, > great than, < less than, ~ about 0.1 difference
 F: 3 >3.3M         size-unit criteria, = equal 0.01 diff, 3.3B, 3.3K, also for units like M,G,T,P and E
-:                  list out all available disks in detail manner
+:                  list out all available disks in detail manner, $+size,+date
 ::                 similar to performing C:, D: and all other available disks all together
 ::\fire            similar to performing C:\fire, D:\fire and all other available disks all together
 ::\fire 3 txt      recursively display for all available disks

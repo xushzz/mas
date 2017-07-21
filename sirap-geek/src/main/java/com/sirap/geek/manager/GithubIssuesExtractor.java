@@ -4,7 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.sirap.basic.domain.MexItem;
-import com.sirap.basic.domain.MexedObject;
+import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.extractor.Extractor;
 
@@ -26,7 +26,7 @@ public class GithubIssuesExtractor extends Extractor<MexItem> {
 			String issue = m.group(1);
 			String content = m.group(2).trim();
 			String result = "#" + issue + " " + content;
-			mexItems.add(new MexedObject(result));
+			mexItems.add(new MexObject(result));
 		}
 	}
 }

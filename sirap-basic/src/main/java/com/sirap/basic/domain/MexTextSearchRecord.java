@@ -1,21 +1,25 @@
 package com.sirap.basic.domain;
 
+import java.util.List;
+
+import com.sirap.basic.component.MexedOption;
 import com.sirap.basic.util.EmptyUtil;
+import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 
 @SuppressWarnings("serial")
-public class MexedTextSearchRecord extends MexedObject {
+public class MexTextSearchRecord extends MexObject {
 	
 	private String shortFilename;
 	private String fullFilename;
 	private boolean printSource;
 	private int lineNumber;
 	
-	public MexedTextSearchRecord() {
+	public MexTextSearchRecord() {
 		
 	}
 	
-	public MexedTextSearchRecord(Object obj) {
+	public MexTextSearchRecord(Object obj) {
 		this.obj = obj;
 	}
 	
@@ -43,14 +47,6 @@ public class MexedTextSearchRecord extends MexedObject {
 		this.fullFilename = fullFilename;
 	}
 
-	public int getLineNumber() {
-		return lineNumber;
-	}
-
-	public void setLineNumber(int lineNumber) {
-		this.lineNumber = lineNumber;
-	}
-
 	@Override
 	public String getString() {
 		String temp = String.valueOf(obj);
@@ -61,6 +57,14 @@ public class MexedTextSearchRecord extends MexedObject {
 		return temp;
 	}
 	
+	public int getLineNumber() {
+		return lineNumber;
+	}
+
+	public void setLineNumber(int lineNumber) {
+		this.lineNumber = lineNumber;
+	}
+
 	@Override
 	public boolean isMatched(String keyWord) {
 		String source = String.valueOf(obj);
@@ -84,6 +88,22 @@ public class MexedTextSearchRecord extends MexedObject {
 		}
 		
 		return false; 
+	}
+
+	public String toPrint(String optionsStr) {
+		List<MexedOption> options = OptionUtil.parseOptions(optionsStr);
+		boolean showFullFilename = OptionUtil.readBoolean(options, "full", false);
+		boolean showLineNumber = OptionUtil.readBoolean(options, "line", false);
+		StringBuilder sb = new StringBuilder();
+		if(showFullFilename) {
+			sb.append(fullFilename).append("  ");
+		}
+		if(showLineNumber) {
+			sb.append("#" + lineNumber).append("  ");
+		}
+		sb.append(obj.toString());
+		
+		return sb.toString();
 	}
 	
 	@Override

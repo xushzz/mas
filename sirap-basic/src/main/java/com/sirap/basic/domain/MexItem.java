@@ -113,7 +113,7 @@ public abstract class MexItem implements Serializable {
 		return null;
 	}
 	
-	public boolean isRegexMatched(String source, String keyWord) {
+	protected boolean isRegexMatched(String source, String keyWord) {
 		
 		if(requiresWholeMatched(keyWord) && isWholeMatched(source)) {
 			return true;

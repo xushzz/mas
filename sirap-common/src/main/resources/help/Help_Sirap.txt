@@ -67,3 +67,4 @@ p fire&water       conduct text search example, p#D:/SF#.txt#+usecache,+printsou
 gbk                set File or HTTP Request charset as GBK, the same goes for UTF8,UTF-8,GB2312
 max                display maximal and minimum values for long, integer, short and byte
 min                display maximal and minimum values for long, integer, short and byte
+local text search  local.search.5=id#E:/KDB/statics/life#.txt#-usespace, $+size,+full

@@ -8,10 +8,9 @@ import java.util.Map;
 
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexItem;
-import com.sirap.basic.domain.MexedObject;
+import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.output.ConsoleParams;
-import com.sirap.basic.search.MexFilter;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
 import com.sirap.basic.util.CollectionUtil;
@@ -160,10 +159,9 @@ public abstract class CommandBase {
 	}
 	
 	protected void exportItems(List<String> list, String criteria) {
-		List<MexedObject> records = CollectionUtil.toMexedObjects(list);
+		List<MexObject> records = CollectionUtil.toMexedObjects(list);
 		if(criteria != null) {
-			MexFilter<MexedObject> filter = new MexFilter<MexedObject>(criteria, CollectionUtil.toMexedObjects(records));
-			List<MexedObject> items = filter.process();
+			List<MexObject> items = CollectionUtil.filter(records, criteria);
 			export(items);
 		} else {
 			export(records);
@@ -273,10 +271,6 @@ public abstract class CommandBase {
 	
 	public String pathWithSeparator(String key, String defFolderName) {
 		return g().pathWithSeparator(key, defFolderName);
-	}
-	
-	public List<String> listDirectory(String dir) {
-		return FileUtil.listDirectory(dir);
 	}
 	
 	public void tryToOpenGeneratedImage(String filePath) {
@@ -473,11 +467,11 @@ public abstract class CommandBase {
 		return null;
 	}
 	
-	protected List<String> downloadFiles(String destination, List<MexedObject> links) {
+	protected List<String> downloadFiles(String destination, List<MexObject> links) {
 		return downloadFiles(destination, links, null);
 	}
 	
-	protected List<String> downloadFiles(String destination, List<MexedObject> links, String suffixWhenObscure) {
+	protected List<String> downloadFiles(String destination, List<MexObject> links, String suffixWhenObscure) {
 		int threads = SimpleKonfig.g().getUserNumberValueOf("threads.download");
 		boolean useUniqueFilename = g().isExportWithTimestampEnabled();
 		return IOUtil.downloadFiles(destination, links, suffixWhenObscure, threads, useUniqueFilename);

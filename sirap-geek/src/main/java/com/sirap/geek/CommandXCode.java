@@ -8,8 +8,8 @@ import java.util.Map;
 
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexItem;
-import com.sirap.basic.domain.MexedLocale;
-import com.sirap.basic.domain.MexedObject;
+import com.sirap.basic.domain.MexLocale;
+import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.search.MexFilter;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.CollectionUtil;
@@ -94,7 +94,7 @@ public class CommandXCode extends CommandBase {
 		
 		if(is(KEY_ASCII_SHORT)) {
 			List<MexItem> items = new ArrayList<>();
-			MexedObject header = new MexedObject((AsciiRecord.getHeader()));
+			MexObject header = new MexObject((AsciiRecord.getHeader()));
 			items.add(header);
 			
 			int[][] ranges= {{'0', '9'}, {'A', 'Z'}, {'a', 'z'}};
@@ -113,7 +113,7 @@ public class CommandXCode extends CommandBase {
 		
 		if(isIn(KEY_ASCII_ALL + "," + KEY_ASCII_SHORT + KEY_2DOTS)) {
 			List<MexItem> items = GeekManager.g().asciiAll();
-			MexedObject header = new MexedObject((AsciiRecord.getHeader()));
+			MexObject header = new MexObject((AsciiRecord.getHeader()));
 			items.add(0, header);
 			items.add(header);
 			
@@ -126,11 +126,11 @@ public class CommandXCode extends CommandBase {
 		if(singleParam != null) {
 			List<MexItem> records = GeekManager.g().asciiAll();
 			
-			MexFilter<MexedObject> filter = new MexFilter<MexedObject>(singleParam, CollectionUtil.toMexedObjects(records));
-			List<MexedObject> items = filter.process();
+			MexFilter<MexObject> filter = new MexFilter<MexObject>(singleParam, CollectionUtil.toMexedObjects(records));
+			List<MexObject> items = filter.process();
 			
 			if(!EmptyUtil.isNullOrEmpty(items)) {
-				items.add(0, new MexedObject((AsciiRecord.getHeader())));
+				items.add(0, new MexObject((AsciiRecord.getHeader())));
 			}
 
 			export(items);
@@ -293,7 +293,7 @@ public class CommandXCode extends CommandBase {
 		
 		if(isIn(KEY_CURRENCY + KEY_2DOTS)) {
 			String extraLocales = g().getUserValueOf("iso.locales");
-			List<MexedObject> records = LocaleUtil.getAllCurrencies(extraLocales);
+			List<MexObject> records = LocaleUtil.getAllCurrencies(extraLocales);
 
 			export(records);
 			
@@ -303,10 +303,10 @@ public class CommandXCode extends CommandBase {
 		singleParam = parseParam(KEY_CURRENCY + "\\s(.+?)");
 		if(isSingleParamNotnull()) { 
 			String extraLocales = g().getUserValueOf("iso.locales");
-			List<MexedObject> records = LocaleUtil.getAllCurrencies(extraLocales);
+			List<MexObject> records = LocaleUtil.getAllCurrencies(extraLocales);
 			
-			MexFilter<MexedObject> filter = new MexFilter<MexedObject>(singleParam, records);
-			List<MexedObject> items = filter.process();
+			MexFilter<MexObject> filter = new MexFilter<MexObject>(singleParam, records);
+			List<MexObject> items = filter.process();
 
 			export(items);
 			
@@ -323,8 +323,8 @@ public class CommandXCode extends CommandBase {
 		singleParam = parseParam(KEY_DATE_FORMAT_SYMBOL + "\\s(.+?)");
 		if(isSingleParamNotnull()) { 
 			List<String> records = LocaleUtil.getAllMonthWeekdays();
-			MexFilter<MexedObject> filter = new MexFilter<MexedObject>(singleParam, CollectionUtil.toMexedObjects(records));
-			List<MexedObject> items = filter.process();
+			MexFilter<MexObject> filter = new MexFilter<MexObject>(singleParam, CollectionUtil.toMexedObjects(records));
+			List<MexObject> items = filter.process();
 
 			export(items);
 			
@@ -333,7 +333,7 @@ public class CommandXCode extends CommandBase {
 		
 		if(isIn(KEY_ISO + KEY_2DOTS, KEY_ISO + KEY_EQUALS)) {
 			String extraLocales = g().getUserValueOf("iso.locales");
-			List<MexedLocale> records = LocaleUtil.AAM_LOCALES;
+			List<MexLocale> records = LocaleUtil.AAM_LOCALES;
 			C.pl(LocaleUtil.getIso3Header(extraLocales));
 			
 			Map mexItemParams = creteaLocaleParams();
@@ -345,8 +345,8 @@ public class CommandXCode extends CommandBase {
 		singleParam = parseParam(KEY_ISO + "\\s(.+?)");
 		if(isSingleParamNotnull()) { 
 			String extraLocales = g().getUserValueOf("iso.locales");
-			MexFilter<MexedLocale> filter = new MexFilter<MexedLocale>(singleParam, LocaleUtil.AAM_LOCALES);
-			List<MexedLocale> items = filter.process();
+			MexFilter<MexLocale> filter = new MexFilter<MexLocale>(singleParam, LocaleUtil.AAM_LOCALES);
+			List<MexLocale> items = filter.process();
 
 			if(!EmptyUtil.isNullOrEmpty(items)) {
 				C.pl(LocaleUtil.getIso3Header(extraLocales));
@@ -361,9 +361,9 @@ public class CommandXCode extends CommandBase {
 		singleParam = parseParam(KEY_ISO + "=\\s*([^|&]*?)");
 		if(singleParam != null) {
 			Locale locale = null;
-			List<MexedLocale> items = null;
+			List<MexLocale> items = null;
 			String criteria = "^" + singleParam + "$";
-			List<MexedLocale> accurateItems = LocaleUtil.searchSimilars(criteria);
+			List<MexLocale> accurateItems = LocaleUtil.searchSimilars(criteria);
 			if(accurateItems.size() == 1) {
 				locale = accurateItems.get(0).getLocale();
 			} else {
@@ -378,7 +378,7 @@ public class CommandXCode extends CommandBase {
 			Map mexItemParams = creteaLocaleParams();
 			if(locale != null) {
 				g().setLocale(locale);
-				MexedLocale ml = new MexedLocale(locale);
+				MexLocale ml = new MexLocale(locale);
 				C.pl2("Locale set as " + ml.toPrint(mexItemParams));
 			} else {
 				C.pl("[" + singleParam + "] is not a valid locale, did you mean one of these?");

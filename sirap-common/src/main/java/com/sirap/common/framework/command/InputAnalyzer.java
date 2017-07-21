@@ -86,12 +86,13 @@ public class InputAnalyzer {
 			target = new TargetConsole(true);
 		}
 		
-		String regex = "(.+)\\$(\\S+)$";
+		String regex = "(.+)\\s\\$(\\S+)$";
 		String[] params = StrUtil.parseParams(regex, command);
 		if(params != null) {
 			command = params[0];
 			options = params[1];
 		}
+		command = command.replace("!$", "$");
 	}
 	
 	private String removeEscape(String source) {

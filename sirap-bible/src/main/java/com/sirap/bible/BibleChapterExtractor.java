@@ -4,13 +4,13 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.sirap.basic.domain.MexedObject;
+import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.HtmlUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.extractor.Extractor;
 
-public class BibleChapterExtractor extends Extractor<MexedObject> {
+public class BibleChapterExtractor extends Extractor<MexObject> {
 
 	public static final String URL_TEMPLATE = "https://www.biblegateway.com/passage/?search={0}&version=NIV";
 
@@ -41,12 +41,12 @@ public class BibleChapterExtractor extends Extractor<MexedObject> {
 				if(error != null) {
 					temp = item.replace(error, " ");
 				}
-				mexItems.add(new MexedObject(temp));
+				mexItems.add(new MexObject(temp));
 			}
 		}
 		
 		if(!EmptyUtil.isNullOrEmpty(mexItems)) {
-			mexItems.add(0, new MexedObject(baseInfo));
+			mexItems.add(0, new MexObject(baseInfo));
 		}
 	}
 }

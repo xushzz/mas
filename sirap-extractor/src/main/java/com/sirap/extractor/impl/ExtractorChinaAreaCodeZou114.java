@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.sirap.basic.domain.MexedObject;
+import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.thread.MasterMexItemsOriented;
 import com.sirap.basic.thread.WorkerMexItemsOritented;
 import com.sirap.basic.util.HtmlUtil;
@@ -14,17 +14,17 @@ public class ExtractorChinaAreaCodeZou114 {
 	
 	public static final String HOMEPAGE = "http://www.zou114.com/qh";
 
-	public static List<MexedObject> getAllAreaCodes() {
+	public static List<MexObject> getAllAreaCodes() {
 		
-		List<MexedObject> areaLinks = getAllAreaLinks();
-		MasterMexItemsOriented<MexedObject, MexedObject> master = new MasterMexItemsOriented<MexedObject, MexedObject>(areaLinks, new WorkerMexItemsOritented<MexedObject, MexedObject>() {
+		List<MexObject> areaLinks = getAllAreaLinks();
+		MasterMexItemsOriented<MexObject, MexObject> master = new MasterMexItemsOriented<MexObject, MexObject>(areaLinks, new WorkerMexItemsOritented<MexObject, MexObject>() {
 
 			@Override
-			public List<MexedObject> process(MexedObject areaLink) {
+			public List<MexObject> process(MexObject areaLink) {
 				
 				String url = HOMEPAGE + "/" + areaLink;
 				
-				Extractor<MexedObject> frank = new Extractor<MexedObject>() {
+				Extractor<MexObject> frank = new Extractor<MexObject>() {
 					
 					@Override
 					public String getUrl() {
@@ -44,7 +44,7 @@ public class ExtractorChinaAreaCodeZou114 {
 							temp = temp.replace("、)", ")").trim();
 							temp = temp.replaceAll("&nbsp;&nbsp;", " ");
 							temp = temp.replaceAll("&nbsp;", "");
-							mexItems.add(new MexedObject(temp));
+							mexItems.add(new MexObject(temp));
 						}
 					}
 				};
@@ -69,9 +69,9 @@ public class ExtractorChinaAreaCodeZou114 {
 	 * @param
 	 * @return gd.html
 	 */
-	public static List<MexedObject> getAllAreaLinks() {
+	public static List<MexObject> getAllAreaLinks() {
 		
-		Extractor<MexedObject> frank = new Extractor<MexedObject>() {
+		Extractor<MexObject> frank = new Extractor<MexObject>() {
 			
 			@Override
 			public String getUrl() {
@@ -87,7 +87,7 @@ public class ExtractorChinaAreaCodeZou114 {
 				Matcher mat = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
 				while(mat.find()) {
 					String temp = mat.group(1);
-					mexItems.add(new MexedObject(temp));
+					mexItems.add(new MexObject(temp));
 				}
 			}
 		};

@@ -2,12 +2,12 @@ package com.sirap.common.extractor;
 
 import java.util.Date;
 
-import com.sirap.basic.domain.MexedObject;
+import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.util.ThreadUtil;
 
 public class CommonExtractors {
 	
-	public static void setWorldTime(final MexedObject mDate) {
+	public static void setWorldTime(final MexObject mDate) {
 		final WorldTimeExtractor frank = new WorldTimeBJTimeOrgExtractor();
 		ThreadUtil.executeInNewThread(new Runnable() {
 			@Override
@@ -19,7 +19,7 @@ public class CommonExtractors {
 		});
 	}
 
-	public static void setUserExpiration(final MexedObject mDate, String username) {
+	public static void setUserExpiration(final MexObject mDate, String username) {
 		final RemoteSecurityExtractor frank = new RemoteSecurityExtractor(username);
 		ThreadUtil.executeInNewThread(new Runnable() {
 			@Override

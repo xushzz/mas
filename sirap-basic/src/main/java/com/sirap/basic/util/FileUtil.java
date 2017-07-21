@@ -21,6 +21,7 @@ import javax.swing.filechooser.FileSystemView;
 
 import com.sirap.basic.component.CleverFolder;
 import com.sirap.basic.component.Konstants;
+import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.tool.FileWalker;
 
@@ -43,8 +44,6 @@ public class FileUtil {
 
 	public static final char[] BAD_CHARS_FOR_FILENAME_WINDOWS = {'/','\\',':','\"','*','?','|','>','<'};
 	public static final char[] BAD_CHARS_FOR_FILENAME_MAC = {'/','?','~','^','&','*'};
-	public static final String FOLDER_TRASH = "$";
-	public static final String FILE_THUMBS = "Thumbs.db";
 	
 	public static final String SLASH_DOUBLE = "\\\\";
 	
@@ -156,59 +155,50 @@ public class FileUtil {
 		return isAnyTypeOf(fileName, Konstants.SUFFIX_SIRAP);
 	}
 
-	public static List<File> scanFolder(String path, int depth) {
-		return scanFolder(path, depth, null);
+	public static List<MexFile> scanSingleFolder(String directory, int depth) {
+		return scanSingleFolder(directory, depth, true);
 	}
 	
-	public static List<File> scanFolder(String path, int depth, String[] suffixes) {
-		List<String> paths = new ArrayList<String>();
-		paths.add(path);
-		return scanFolder(paths, depth, suffixes);
-	}
-
-	public static List<File> scanFolder(String path, int depth, String[] suffixes, boolean includeFolder) {
-		List<String> paths = new ArrayList<String>();
-		paths.add(path);
-		return scanFolder(paths, depth, suffixes, includeFolder);
-	}
-
-	public static List<File> scanFolder(List<String> paths, int depth, String[] suffixes) {
-		return scanFolder(paths, depth, suffixes, true);
-	}
-	
-	public static List<File> scanFolder(List<String> paths, int depth, String[] suffixes, boolean includeFolder) {
-		List<File> allFiles = new ArrayList<File>();
+	public static List<MexFile> scanSingleFolder(String directory, int depth, boolean includeFolder) {
+		XXXUtil.nullOrEmptyCheck(directory, "directory");
 		
-		if(EmptyUtil.isNullOrEmpty(paths)) {
-			return Collections.EMPTY_LIST;
+		String temp = directory.trim();
+		if(FileUtil.isMaliciousPath(temp)) {
+			throw new MexException("'{0}' is not a specific directory.", temp);
 		}
-
-		for (String temp:paths) {
-			if(EmptyUtil.isNullOrEmpty(temp)) {
-				continue;
-			}
-			
-			if(isUndesiredFile(temp)) {
-				continue;
-			}
-			
-			temp = temp.trim();
-			if(FileUtil.isMaliciousPath(temp)) {
-				continue;
-			}
-			
-			File file = FileUtil.getIfNormalFolder(temp);
-			if(file == null) {
-				continue;
-			}
-			
-			String path = file.getAbsolutePath();
-			FileWalker mary = new FileWalker(path, suffixes);
-			mary.setIncludeFolder(includeFolder);
-			allFiles.addAll(mary.listFilesRecursively(depth));
+		
+		File file = FileUtil.getIfNormalFolder(temp);
+		if(file == null) {
+			throw new MexException("'{0}' is not a valid directory.", temp);
 		}
+		
+		String path = file.getAbsolutePath();
+		FileWalker mary = new FileWalker(path, includeFolder);
+		
+		List<MexFile> items = mary.listFilesRecursively(depth);
+		
+		return items;
+	}
 
-		return allFiles;
+	public static List<MexFile> scanFolders(List<String> paths, int depth, boolean includeFolder) {
+		return scanFolders(paths, depth, includeFolder, null);
+	}
+	
+	public static List<MexFile> scanFolders(List<String> paths, int depth, boolean includeFolder, String fileCriteria) {
+		XXXUtil.nullOrEmptyCheck(paths, "paths");
+
+		List<MexFile> allFiles = new ArrayList<>();
+		
+		for (String directory : paths) {
+			allFiles.addAll(scanSingleFolder(directory, depth, includeFolder));
+		}
+		
+		if(EmptyUtil.isNullOrEmpty(fileCriteria)) {
+			return allFiles;
+		} else {
+			List<MexFile> items = CollectionUtil.filter(allFiles, fileCriteria);
+			return items;
+		}
 	}
 
 	public static String generateLegalFileName(String source) {
@@ -291,14 +281,6 @@ public class FileUtil {
 		return null;
 	}
 	
-	public static boolean isUndesiredFile(String name) {
-		if(name.startsWith(FOLDER_TRASH) || name.equalsIgnoreCase(FILE_THUMBS)) {
-			return true;
-		}
-		
-		return false;
-	}
-	
 	public static List<String> listDirectory(String dir) {
 		File file = new File(dir);
 		List<String> records = new ArrayList<String>();
@@ -306,19 +288,14 @@ public class FileUtil {
 		final List<String> subFolders = new ArrayList<String>();
 		file.listFiles(new FileFilter() {
 			@Override
-			public boolean accept(File filePath) {
-				String name = filePath.getName();
-				if(isUndesiredFile(name)) {
-					return false;
-				}
-				
-				if(filePath.isDirectory()) {
-					String[] files = filePath.list();
+			public boolean accept(File currentFile) {
+				if(currentFile.isDirectory()) {
+					String[] files = currentFile.list();
 					if(files != null) {
-						subFolders.add(filePath.getAbsolutePath() + "(" + files.length + ")");
+						subFolders.add(currentFile.getAbsolutePath() + "(" + files.length + ")");
 					}
 				} else {
-					normalFiles.add(filePath.getAbsolutePath());
+					normalFiles.add(currentFile.getAbsolutePath());
 				}
 				
 				return true;
