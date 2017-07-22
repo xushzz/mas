@@ -17,6 +17,7 @@ public class HtmlUtil {
 		String temp = source.replaceAll("&amp;", "&");
 		temp = temp.replaceAll("&nbsp;", "");
 		temp = temp.replaceAll("&ndash;", "-");
+		temp = temp.replace("&quot;", "\"");
 		
 		Matcher m = Pattern.compile("&([A-Za-z])([A-Za-z]{3,}).*?;", Pattern.CASE_INSENSITIVE).matcher(temp);
 		while(m.find()) {

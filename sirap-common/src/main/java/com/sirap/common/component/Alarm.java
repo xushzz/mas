@@ -3,6 +3,7 @@ package com.sirap.common.component;
 import java.util.Date;
 import java.util.Locale;
 
+import com.sirap.basic.component.Konstants;
 import com.sirap.basic.component.MexedTimer;
 import com.sirap.basic.component.MomentCalculator;
 import com.sirap.basic.tool.C;
@@ -15,14 +16,14 @@ public abstract class Alarm extends MexedTimer implements Comparable<Alarm> {
 
 	public static final String TYPE_DELAY = "+";
 	public static final String TYPE_FIXED = "@";
-	public static final String TYPE_REPEAT_NO_DELAY = "#";
+	public static final String TYPE_REPEAT_NOW = "#";
 	public static final String TYPE_REPEAT_DELAY = "##";
 	
 	private boolean isActive = true; 
 	private String order;
 	private String action;
 	private String type;
-	private String source;
+	private String face;
 	private MomentCalculator jamie = null;
 	private Date targetMoment;
 	
@@ -42,13 +43,23 @@ public abstract class Alarm extends MexedTimer implements Comparable<Alarm> {
 		this.order = order;
 	}
 
-	public Alarm(String type, String source, String action) {
-		this.action = action;
+	public Alarm(String type, String face, String action) {
 		this.type = type;
-		this.source = source;
-		boolean toCheckRange = TYPE_FIXED.equals(type);
-		this.targetMoment = parseMoment(toCheckRange, source);
+		this.face = face;
+		this.action = action;
+		
+		if(sharpHourAlarm()) {
+			this.targetMoment = DateUtil.nextSharpHour(1);
+		} else {
+			boolean toCheckRange = TYPE_FIXED.equals(type);
+			this.targetMoment = parseMoment(toCheckRange, face);
+		}
 		tick();
+	}
+	
+	public boolean sharpHourAlarm() {
+		boolean flag = face.isEmpty() && ("#".equals(type) || "##".equals(type));
+		return flag;
 	}
 	
 	public Alarm(Date theMoment, String action) {
@@ -56,15 +67,15 @@ public abstract class Alarm extends MexedTimer implements Comparable<Alarm> {
 		this.targetMoment = theMoment;
 	}
 
-	private Date parseMoment(boolean isRangeCheck, String source) {
-		jamie = new MomentCalculator(isRangeCheck, source);
+	private Date parseMoment(boolean isRangeCheck, String face) {
+		jamie = new MomentCalculator(isRangeCheck, face);
 		Date theMoment = jamie.getTargetMoment();
 		
 		return theMoment;
 	}
 	
 	private boolean isRepeat() {
-		boolean flag = TYPE_REPEAT_NO_DELAY.equals(type) || TYPE_REPEAT_DELAY.equals(type);
+		boolean flag = TYPE_REPEAT_NOW.equals(type) || TYPE_REPEAT_DELAY.equals(type);
 		return flag;
 	}
 	
@@ -74,22 +85,29 @@ public abstract class Alarm extends MexedTimer implements Comparable<Alarm> {
 		}
 		
 		long diffInMilli = targetMoment.getTime() - (new Date()).getTime();
-		if(isRepeat()) {
-			int min = 3000;
-			if(diffInMilli < min) {
-				C.pl("Minimum repeat interval would be changed to " + min + " milliseconds.");
-				diffInMilli = min;
-			}
-			setPeriodMills(diffInMilli);
+		if(sharpHourAlarm()) {
 			setDelayMillis(diffInMilli);
-			if(TYPE_REPEAT_NO_DELAY.equals(type)) {
-				execute();
+			if("##".equals(type)) {
+				setPeriodMills(Konstants.MILLI_PER_HOUR);
 			}
 		} else {
-			if(diffInMilli < 0) {
-				diffInMilli = 0;
+			if(isRepeat()) {
+				int least = 3000;
+				if(diffInMilli < least) {
+					C.pl("Minimum repeat interval would be changed to " + least + " milliseconds.");
+					diffInMilli = least;
+				}
+				setPeriodMills(diffInMilli);
+				setDelayMillis(diffInMilli);
+				if(TYPE_REPEAT_NOW.equals(type)) {
+					execute();
+				}
+			} else {
+				if(diffInMilli < 0) {
+					diffInMilli = 0;
+				}
+				setDelayMillis(diffInMilli);
 			}
-			setDelayMillis(diffInMilli);
 		}
 		
 		startTimer();
@@ -126,7 +144,7 @@ public abstract class Alarm extends MexedTimer implements Comparable<Alarm> {
 		StringBuffer sb = new StringBuffer();
 		sb.append(order).append(") ");
 		sb.append(DateUtil.displayDate(targetMoment, DateUtil.HOUR_Min_Sec_AM_WEEK_DATE, locale));
-		sb.append(" ").append(type).append(source).append(" => ").append(action);
+		sb.append(" ").append(type).append(face).append(" => ").append(action);
 		return sb.toString();
 	}
 

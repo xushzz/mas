@@ -69,6 +69,19 @@ public class DateUtil {
 		return calendarToDate(cal);
 	}
 	
+	public static Date nextSharpHour(int diff) {
+		Calendar cal = Calendar.getInstance();
+		int hour = cal.get(Calendar.HOUR_OF_DAY);
+		int next = hour + diff;
+
+		cal.set(Calendar.HOUR_OF_DAY, next);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+				
+		return calendarToDate(cal);
+	}
+	
 	public static Date add(Date date, int field, int value) {
 		Calendar cal = dateToCalendar(date);
 		cal.add(field, value);
