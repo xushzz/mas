@@ -16,6 +16,7 @@ public class ExtractorUtil {
 
 	public static final String HOMEPAGE_QIHU360 = "http://image.so.com";
 	public static final String HOMEPAGE_SOGOU = "http://pic.sogou.com";
+
 	public static List<MexObject> sogouImageLinks(final String keyword) {
 		Extractor<MexObject> frank = new Extractor<MexObject>() {
 			

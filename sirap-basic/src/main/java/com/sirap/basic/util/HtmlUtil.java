@@ -27,6 +27,7 @@ public class HtmlUtil {
 	}
 
 	public static String removeHttpTag(String source) {
+		XXXUtil.nullCheck(source, "source");
 		String temp = source;
 		Matcher m = Pattern.compile("<.*?>").matcher(temp);
 		while(m.find()) {

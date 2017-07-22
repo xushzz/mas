@@ -5,6 +5,7 @@ import java.util.List;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.output.PDFParams;
+import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.StrUtil;
@@ -18,8 +19,10 @@ import com.sirap.extractor.impl.IcibaTranslationExtractor;
 import com.sirap.extractor.impl.MobilePhoneLocationExtractor;
 import com.sirap.extractor.impl.NationalWeatherExtractor;
 import com.sirap.extractor.impl.TulingExtractor;
+import com.sirap.extractor.impl.WikiSummaryExtractor;
 import com.sirap.extractor.impl.XRatesForexRateExtractor;
 import com.sirap.extractor.impl.ZhihuSearchExtractor;
+import com.sirap.extractor.manager.BaiduRssManager;
 import com.sirap.extractor.manager.ForexManager;
 import com.sirap.extractor.manager.WeatherManager;
 
@@ -32,6 +35,9 @@ public class CommandCollect extends CommandBase {
 	private static final String KEY_FOREX = "\\$([a-z]{3})" + Konstants.REGEX_FLOAT + "(|/|[a-z,]+)";
 	private static final String KEY_TULING_ASK = "tl\\*";
 	private static final String KEY_ZHIHU_ASK = "\\*";
+	private static final String KEY_BAIDU_BAIKE_SUMMARY = "bk";
+	private static final String KEY_WIKI_SUMMARY = "wk";
+	private static final String KEY_BAIDU_RSS = "rss";
 
 	{
 		helpMeanings.put("money.forex.url", XRatesForexRateExtractor.URL_X_RATES);
@@ -130,6 +136,52 @@ public class CommandCollect extends CommandBase {
 			Extractor<ZhihuRecord> mike = new ZhihuSearchExtractor(singleParam);
 			mike.process();
 			export(mike.getMexItems());
+			
+			return true;
+		}
+		
+		singleParam = parseParam(KEY_BAIDU_BAIKE_SUMMARY + "\\s(.+?)");
+		if(singleParam != null) {
+			List<MexObject> items = BaiduRssManager.g().fetchBaiduSummary(singleParam);
+			export(items);
+			
+			return true;
+		}
+		
+		singleParam = parseParam(KEY_WIKI_SUMMARY + "\\s(.+?)");
+		if(singleParam != null) {
+			Extractor<MexObject> mike = new WikiSummaryExtractor(singleParam);
+			mike.process();
+			export(mike.getMexItems());
+			
+			return true;
+		}
+		
+		if(is(KEY_BAIDU_RSS)) {
+			List<MexObject> items = BaiduRssManager.g().readAllRss();
+			export(items);
+			
+			return true;
+		}
+		
+		singleParam = parseParam(KEY_BAIDU_RSS + "\\s(.+?)");
+		if(singleParam != null) {
+			List<MexObject> items = BaiduRssManager.g().readAllRss();
+			export(CollectionUtil.filter(items, singleParam));
+			
+			return true;
+		}
+		
+		regex = KEY_BAIDU_RSS + "\\.(4?)(\\w+)";
+		params = parseParams(regex);
+		if(params != null) {
+			String code = params[0];
+			if(code.isEmpty()) {
+				code = "1";
+			}
+			String type = params[1];
+			List<MexObject> items = BaiduRssManager.g().fetchRssByType(type, code);
+			export(items);
 			
 			return true;
 		}
