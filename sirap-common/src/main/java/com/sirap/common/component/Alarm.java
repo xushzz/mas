@@ -126,7 +126,9 @@ public abstract class Alarm extends MexedTimer implements Comparable<Alarm> {
 	@Override
 	protected void timerAction()  {
 		execute();
-		if(isRepeat()) {
+		if(sharpHourAlarm() && "##".equals(type)) {
+			targetMoment = DateUtil.hourDiff(targetMoment, 1);
+		} else if(isRepeat()) {
 			targetMoment = jamie.recalculateTargetMoment();
 		} else {
 			cancel();

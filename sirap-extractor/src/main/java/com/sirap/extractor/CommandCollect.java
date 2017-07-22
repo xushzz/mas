@@ -8,6 +8,7 @@ import com.sirap.basic.output.PDFParams;
 import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.MathUtil;
+import com.sirap.basic.util.ObjectUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.domain.WeatherRecord;
@@ -22,8 +23,10 @@ import com.sirap.extractor.impl.TulingExtractor;
 import com.sirap.extractor.impl.WikiSummaryExtractor;
 import com.sirap.extractor.impl.XRatesForexRateExtractor;
 import com.sirap.extractor.impl.ZhihuSearchExtractor;
-import com.sirap.extractor.manager.BaiduRssManager;
+import com.sirap.extractor.manager.BaiduExtractorManager;
+import com.sirap.extractor.manager.FinancialTimesChineseExtractorManager;
 import com.sirap.extractor.manager.ForexManager;
+import com.sirap.extractor.manager.RssExtractorManager;
 import com.sirap.extractor.manager.WeatherManager;
 
 public class CommandCollect extends CommandBase {
@@ -37,7 +40,7 @@ public class CommandCollect extends CommandBase {
 	private static final String KEY_ZHIHU_ASK = "\\*";
 	private static final String KEY_BAIDU_BAIKE_SUMMARY = "bk";
 	private static final String KEY_WIKI_SUMMARY = "wk";
-	private static final String KEY_BAIDU_RSS = "rss";
+	private static final String KEY_RSS = "rss";
 
 	{
 		helpMeanings.put("money.forex.url", XRatesForexRateExtractor.URL_X_RATES);
@@ -142,7 +145,7 @@ public class CommandCollect extends CommandBase {
 		
 		singleParam = parseParam(KEY_BAIDU_BAIKE_SUMMARY + "\\s(.+?)");
 		if(singleParam != null) {
-			List<MexObject> items = BaiduRssManager.g().fetchBaiduSummary(singleParam);
+			List<MexObject> items = BaiduExtractorManager.g().fetchBaiduSummary(singleParam);
 			export(items);
 			
 			return true;
@@ -156,31 +159,36 @@ public class CommandCollect extends CommandBase {
 			
 			return true;
 		}
-		
-		if(is(KEY_BAIDU_RSS)) {
-			List<MexObject> items = BaiduRssManager.g().readAllRss();
+//ObjectUtil.execute(instanceOrClazz, methodName, tempClazz, tempArgs);
+//		Class[] clazzArr = new Class[0];
+//		Object[] args = new Object[0];
+
+		if(is(KEY_RSS)) {
+			Object result = ObjectUtil.execute(sourceOfRss(), "readAllRss", new Class[0], new Object[0]);
+			List<MexObject> items = (List<MexObject>)result;
+			items = CollectionUtil.reverseOrder(items);
 			export(items);
 			
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_BAIDU_RSS + "\\s(.+?)");
+		singleParam = parseParam(KEY_RSS + "\\s(.+?)");
 		if(singleParam != null) {
-			List<MexObject> items = BaiduRssManager.g().readAllRss();
-			export(CollectionUtil.filter(items, singleParam));
+			Object result = ObjectUtil.execute(sourceOfRss(), "readAllRss", new Class[0], new Object[0]);
+			List<MexObject> items = (List<MexObject>)result;
+			items = CollectionUtil.reverseOrder(CollectionUtil.filter(items, singleParam));
+			export(items);
 			
 			return true;
 		}
 		
-		regex = KEY_BAIDU_RSS + "\\.(4?)(\\w+)";
-		params = parseParams(regex);
-		if(params != null) {
-			String code = params[0];
-			if(code.isEmpty()) {
-				code = "1";
-			}
-			String type = params[1];
-			List<MexObject> items = BaiduRssManager.g().fetchRssByType(type, code);
+		regex = KEY_RSS + "\\.(\\w+)";
+		singleParam = parseParam(regex);
+		if(singleParam != null) {
+			Object result = ObjectUtil.execute(sourceOfRss(), "fetchRssByType", new Class[]{String.class}, new Object[]{singleParam});
+			List<MexObject> items = (List<MexObject>)result;
+			items = CollectionUtil.reverseOrder(items);
+			
 			export(items);
 			
 			return true;
@@ -216,5 +224,17 @@ public class CommandCollect extends CommandBase {
 		List<MexObject> items = frank.getMexItems();
 		
 		return items;
+	}
+	
+	private RssExtractorManager sourceOfRss() {
+		String where = g().getUserValueOf("rss.source", "baidu");
+		RssExtractorManager instance;
+		if(StrUtil.equals("baidu", where)) {
+			instance = BaiduExtractorManager.g();
+		} else {
+			instance = FinancialTimesChineseExtractorManager.g();
+		}
+		
+		return  instance;
 	}
 }

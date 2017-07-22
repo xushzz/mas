@@ -39,7 +39,7 @@ public class CommandTask extends CommandBase {
 				@Override
 				public void execute() {
 					C.pl("==================== START of alarm task => " + actionStr + " ====================");
-					List<String> actions = StrUtil.split(actionStr, ';');
+					List<String> actions = StrUtil.split(actionStr);
 					executeActions(actions);
 					C.pl("==================== END of alarm task => " + actionStr + " ====================");
 				}
@@ -87,7 +87,7 @@ public class CommandTask extends CommandBase {
 		if(singleParam != null) {
 			List<String> tasks = readRecordsFromFile(singleParam);
 			if(tasks == null) {
-				List<String> actions = StrUtil.split(singleParam, ';');
+				List<String> actions = StrUtil.split(singleParam);
 				executeActions(actions);
 			} else {
 				executeActions(tasks);

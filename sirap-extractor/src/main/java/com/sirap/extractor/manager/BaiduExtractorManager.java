@@ -10,12 +10,12 @@ import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.extractor.Extractor;
 
-public class BaiduRssManager {
-	private static BaiduRssManager instance;
+public class BaiduExtractorManager extends RssExtractorManager {
+	private static BaiduExtractorManager instance;
 	
-	public static BaiduRssManager g() {
+	public static BaiduExtractorManager g() {
 		if(instance == null) {
-			instance = new BaiduRssManager();
+			instance = new BaiduExtractorManager();
 		}
 		
 		return instance;
@@ -26,6 +26,7 @@ public class BaiduRssManager {
 			
 			@Override
 			public String getUrl() {
+				printFetching = true;
 				useGBK();
 				return "https://www.baidu.com/search/rss.html";
 			}
@@ -51,10 +52,21 @@ public class BaiduRssManager {
 		return justin.getMexItems();
 	}
 	
-	public List<MexObject> fetchRssByType(final String type, final String code) {
-		XXXUtil.nullCheck(type, "type");
-		XXXUtil.nullCheck(code, ":Code can only be 1 or 4.");
-
+	public List<MexObject> fetchRssByType(final String typeInfo) {
+		XXXUtil.nullCheck(typeInfo, "type");
+		
+		String regex = "([14])(\\w+)";
+		String[] params = StrUtil.parseParams(regex, typeInfo);
+		String type;
+		String code;
+		if(params != null) {
+			code = params[0];
+			type = params[1];
+		} else {
+			code = "1";
+			type = typeInfo;
+		}
+		
 		Extractor<MexObject> justin = new Extractor<MexObject>() {
 			
 			@Override

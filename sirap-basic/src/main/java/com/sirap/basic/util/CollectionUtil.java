@@ -17,6 +17,17 @@ import com.sirap.basic.search.MexFilter;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class CollectionUtil {
 
+	public static List reverseOrder(List list) {
+		XXXUtil.nullCheck(list, "list");
+		List newList = new ArrayList();
+		
+		for(int i = list.size() - 1; i >= 0; i--) {
+			newList.add(list.get(i));
+		}
+		
+		return newList;
+	}
+
 	public static <T> List<T> convert(List list) {
 		List<T> newList = new ArrayList<T>();
 		
