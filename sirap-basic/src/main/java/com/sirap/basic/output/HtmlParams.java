@@ -1,7 +1,7 @@
 package com.sirap.basic.output;
 
 
-public class HtmlParams implements OuputParams {
+public class HtmlParams implements OutputParams {
 
 	private boolean isPrintGreyRow = true;
 	private boolean isPrintTopInfo = true;

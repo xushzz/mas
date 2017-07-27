@@ -1,5 +1,5 @@
 package com.sirap.basic.output;
 
-public interface OuputParams {
+public interface OutputParams {
 
 }

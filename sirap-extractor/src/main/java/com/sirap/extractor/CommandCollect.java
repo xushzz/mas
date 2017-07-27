@@ -182,7 +182,7 @@ public class CommandCollect extends CommandBase {
 			return true;
 		}
 		
-		regex = KEY_RSS + "\\.(\\w+)";
+		regex = KEY_RSS + "\\.(.+?)";
 		singleParam = parseParam(regex);
 		if(singleParam != null) {
 			Object result = ObjectUtil.execute(sourceOfRss(), "fetchRssByType", new Class[]{String.class}, new Object[]{singleParam});

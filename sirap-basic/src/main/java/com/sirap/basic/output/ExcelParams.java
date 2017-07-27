@@ -1,7 +1,7 @@
 package com.sirap.basic.output;
 
 
-public class ExcelParams implements OuputParams {
+public class ExcelParams implements OutputParams {
 
 	private boolean isPrintGreyRow = true;
 	private boolean isPrintTopInfo = true;

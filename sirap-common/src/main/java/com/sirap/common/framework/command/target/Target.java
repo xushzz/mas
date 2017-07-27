@@ -1,18 +1,18 @@
 package com.sirap.common.framework.command.target;
 
-import com.sirap.basic.output.OuputParams;
+import com.sirap.basic.output.OutputParams;
 
 public class Target {
 	
 	private boolean flag;
 	private String value;
-	protected OuputParams params;
+	protected OutputParams params;
 	
-	public OuputParams getParams() {
+	public OutputParams getParams() {
 		return params;
 	}
 
-	public void setParams(OuputParams params) {
+	public void setParams(OutputParams params) {
 		this.params = params;
 	}
 

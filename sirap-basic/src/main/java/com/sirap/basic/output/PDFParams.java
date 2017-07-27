@@ -1,7 +1,7 @@
 package com.sirap.basic.output;
 
 
-public class PDFParams implements OuputParams {
+public class PDFParams implements OutputParams {
 
 	private boolean isPrintGreyRow = true;
 	private boolean isPrintTopInfo = true;

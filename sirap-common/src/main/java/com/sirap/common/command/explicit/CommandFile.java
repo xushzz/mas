@@ -29,6 +29,7 @@ import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.ImageUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.MexUtil;
+import com.sirap.basic.util.ObjectUtil;
 import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
@@ -147,6 +148,12 @@ public class CommandFile extends CommandBase {
 			if(!target.isFileRelated() && FileOpener.isZipFile(filePath)) {
 				List<MexZipEntry> items = MexUtil.parseZipEntries(filePath);
 				exportMexItems(items);
+				return true;
+			}
+			
+			if(!target.isFileRelated() && StrUtil.endsWith(filePath, Konstants.SUFFIX_CLASS)) {
+				Class glass = IOUtil.loadClassFile(filePath);
+				export(ObjectUtil.getClassDetail(glass));
 				return true;
 			}
 			

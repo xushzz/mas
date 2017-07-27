@@ -30,6 +30,8 @@ public class Konstants {
 	public static final String SUFFIX_MEX = ".mex";
 	public static final String SUFFIX_SIRAP = ".sirap";
 	public static final String SUFFIX_JPG = ".jpg";
+	public static final String SUFFIX_CLASS = ".class";
+
 	public static final String SHITED_FACE = "^=^";
 	public static final String HYPHEN = "-";
 	public static final String NEWLINE = "\n";

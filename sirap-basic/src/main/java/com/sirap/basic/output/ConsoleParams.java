@@ -1,6 +1,6 @@
 package com.sirap.basic.output;
 
-public class ConsoleParams implements OuputParams {
+public class ConsoleParams implements OutputParams {
 	
 	private boolean isPrintTotal = true;
 	private boolean isToSplit;

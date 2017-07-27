@@ -17,6 +17,7 @@ import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.MexUtil;
+import com.sirap.basic.util.ObjectUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
@@ -46,6 +47,7 @@ public class CommandDev extends CommandBase {
 	private static final String KEY_TO_LOWERCASE= "lo";
 	private static final String KEY_JAR= "jar";
 	private static final String KEY_ZIP= "zip";
+	private static final String KEY_PRINT_CLASS = "class";
 
 	public boolean handle() {
 		singleParam = parseParam(KEY_PATH + "\\s(.*?)");
@@ -300,6 +302,16 @@ public class CommandDev extends CommandBase {
 				List<MexZipEntry> result = filter.process();
 				exportMexItems(result, tempOptions);
 			}
+			
+			return true;
+		}
+
+		regex = KEY_PRINT_CLASS + "\\s+([a-zA-Z\\d_\\.\\$]+)";
+		singleParam = parseParam(regex);
+		if(singleParam != null) {
+			Class glass = ObjectUtil.forName(singleParam);
+			List<String> items = ObjectUtil.getClassDetail(glass);
+			export(items);
 			
 			return true;
 		}

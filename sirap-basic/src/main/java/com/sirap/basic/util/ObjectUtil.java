@@ -6,11 +6,22 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sirap.basic.exception.MexException;
+import com.sirap.basic.tool.ClassDetail;
+
 @SuppressWarnings("rawtypes")
 public class ObjectUtil {
 	
 	public static final String TOP_CLASS = "java.lang.Class";
 
+	public static Class forName(String className) {
+		try {
+			return Class.forName(className);
+		} catch (Exception ex) {
+			throw new MexException(ex);
+		}
+	}
+	
 	public static Object createInstance(String className) {
 		return createInstance(className, true);
 	}
@@ -77,6 +88,9 @@ public class ObjectUtil {
 		}
 		
 		Class father = source.getSuperclass();
+		if(father == null) {
+			return;
+		}
 		list.add(father);
 		readSuperClassIntoList(list, father);
 	}
@@ -131,5 +145,10 @@ public class ObjectUtil {
 		}
 		
 		return null;
+	}
+	
+	public static List<String> getClassDetail(Class glass) {
+		ClassDetail xiu = new ClassDetail(glass);
+		return xiu.getAllParts();
 	}
 }

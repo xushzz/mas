@@ -16,8 +16,13 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.URI;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -777,10 +782,62 @@ public class IOUtil {
 		    	String msg = "The entry '{0}' either represents a directory or contains nothing.";
 		    	throw new MexException(StrUtil.occupy(msg, entryName));
 		    }
-		    InputStream inputStream = file.getInputStream(entry);
-		    List<String> items = readStreamIntoList(inputStream);
+		    if(StrUtil.endsWith(entryName, Konstants.SUFFIX_CLASS)) {
+		    	Class glass = loadClassFromJarFile(url, entryName);
+		    	return ObjectUtil.getClassDetail(glass);
+		    } else {
+			    InputStream inputStream = file.getInputStream(entry);
+			    return readStreamIntoList(inputStream);
+		    }
+		} catch (Exception ex) {
+			throw new MexException(ex);
+		}
+	}
+	
+	public static Class loadClassFromJarFile(String jarLocation, String className) {
+		String regex = "^[\\w]{2,}:";
+		String tempLocation = jarLocation.replace('\\', '/');
+		if(!StrUtil.isRegexFound(regex, tempLocation)) {
+			tempLocation = "file:" + tempLocation;
+		}
+		
+		try {
+			URL url = new URL(tempLocation);
+			ClassLoader loader = Thread.currentThread().getContextClassLoader();
+		    URLClassLoader myClassLoader = new URLClassLoader(new URL[]{url}, loader);
+		    String tempClassName = className.replaceAll(".class$", "");
+		    tempClassName = tempClassName.replaceAll("/", ".");
+		    Class glass = myClassLoader.loadClass(tempClassName);
 		    
-		    return items;
+		    return glass;
+		} catch (Exception ex) {
+			throw new MexException(ex);
+		}
+	}
+	
+	public static Class loadClassFile(final String fileLocation) {
+		String regex = "^[\\w]{2,}:";
+		String tempLocation = fileLocation.replace('\\', '/');
+		if(!StrUtil.isRegexFound(regex, tempLocation)) {
+			tempLocation = "file:///" + tempLocation;
+		}
+		ClassLoader wood = new ClassLoader() {
+			protected Class<?> findClass(String uri) throws ClassNotFoundException {
+				byte[] bytes = null;
+				try {
+					Path path = Paths.get(new URI(uri));
+					bytes = Files.readAllBytes(path);
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+				
+				 Class tang = defineClass(bytes, 0, bytes.length);  
+				 return tang;
+			}
+		};
+		
+		try {
+			return wood.loadClass(tempLocation);
 		} catch (Exception ex) {
 			throw new MexException(ex);
 		}
