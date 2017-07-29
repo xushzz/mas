@@ -16,6 +16,7 @@ import com.sirap.common.extractor.Extractor;
 import com.sirap.common.framework.command.target.TargetPDF;
 import com.sirap.extractor.domain.ZhihuRecord;
 import com.sirap.extractor.impl.EnglishDictionaryExtractor;
+import com.sirap.extractor.impl.FindJarExtractor;
 import com.sirap.extractor.impl.IcibaTranslationExtractor;
 import com.sirap.extractor.impl.MobilePhoneLocationExtractor;
 import com.sirap.extractor.impl.NationalWeatherExtractor;
@@ -41,6 +42,7 @@ public class CommandCollect extends CommandBase {
 	private static final String KEY_BAIDU_BAIKE_SUMMARY = "bk";
 	private static final String KEY_WIKI_SUMMARY = "wk";
 	private static final String KEY_RSS = "rss";
+	private static final String KEY_JAR= "jar";
 
 	{
 		helpMeanings.put("money.forex.url", XRatesForexRateExtractor.URL_X_RATES);
@@ -159,9 +161,6 @@ public class CommandCollect extends CommandBase {
 			
 			return true;
 		}
-//ObjectUtil.execute(instanceOrClazz, methodName, tempClazz, tempArgs);
-//		Class[] clazzArr = new Class[0];
-//		Object[] args = new Object[0];
 
 		if(is(KEY_RSS)) {
 			Object result = ObjectUtil.execute(sourceOfRss(), "readAllRss", new Class[0], new Object[0]);
@@ -190,6 +189,15 @@ public class CommandCollect extends CommandBase {
 			items = CollectionUtil.reverseOrder(items);
 			
 			export(items);
+			
+			return true;
+		}
+		
+		singleParam = parseParam(KEY_JAR + "\\s+(.+?)");
+		if(singleParam != null) {
+			Extractor<MexObject> mike = new FindJarExtractor(singleParam);
+			mike.process();
+			export(mike.getMexItems());
 			
 			return true;
 		}

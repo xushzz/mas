@@ -11,10 +11,11 @@ tl*Alan Turing     ask tuling question, start with asterisk, courtesy of ${tulin
 *Zhihu Wenda       ask zhihu question, start with pound, courtesy of ${zhihu.url}
 bk James           fetch summay of baidu baike with keyword James, courtesy of https://baike.baidu.com
 wk James           fetch summay of wikipedia with keyword James, courtesy of https://en.wikipedia.org
+jar DaoSupport     fetch jar info with keyword DaoSupport, courtesy of http://www.findjar.com
 rss                list all rss feeds provided by baidu, courtesy of https://www.baidu.com/search/rss.html
 rss                list all rss feeds provided by financial times, courtesy of http://www.ftchinese.com/channel/rss.html
 rss news           list matching rss feeds provided by baidu, courtesy of https://www.baidu.com/search/rss.html
 rss.civilnews      list all news items provide by baidu rss with type of civilnews
 rss.4civilnews     list all news items provide by baidu rss with type of civilnews
 rss.column/007000012,news,feed,letter, provided by ftchinese
-ver=EXTRACTOR-COLLECT1.0.4-BAOBAO  7/22/2017, VI
+ver=EXTRACTOR-COLLECT1.0.5-BAOBAO  7/29/2017, VI

@@ -47,7 +47,7 @@ public class CommandDev extends CommandBase {
 	private static final String KEY_TO_LOWERCASE= "lo";
 	private static final String KEY_JAR= "jar";
 	private static final String KEY_ZIP= "zip";
-	private static final String KEY_PRINT_CLASS = "class";
+	private static final String KEY_PRINT_CLASS = "cl";
 
 	public boolean handle() {
 		singleParam = parseParam(KEY_PATH + "\\s(.*?)");
@@ -306,11 +306,13 @@ public class CommandDev extends CommandBase {
 			return true;
 		}
 
-		regex = KEY_PRINT_CLASS + "\\s+([a-zA-Z\\d_\\.\\$]+)";
+		regex = KEY_PRINT_CLASS + "\\s+([a-zA-Z\\d_\\.\\/\\$]+)";
 		singleParam = parseParam(regex);
 		if(singleParam != null) {
-			Class glass = ObjectUtil.forName(singleParam);
-			List<String> items = ObjectUtil.getClassDetail(glass);
+			String name = singleParam.replace('/', '.');
+			name = name.replace('\\', '.');
+			name = name.replaceAll("\\.class$", "");
+			List<String> items = ObjectUtil.getClassDetail(ObjectUtil.forName(name));
 			export(items);
 			
 			return true;

@@ -22,5 +22,8 @@ lo.QwErTy21        convert given string to lower case
 up.QwErTy21        convert given string to upper case
 E:\abc.jar a&b     list out what is inside a jar with criteria, $+full,+size,+case
 E:\abc.jar!/a.txt  list out the content of given entry in given zip file, entry better be ascii file
-class com.a.Fury   display class detail of class Fury if exists
-ver=GEEK-DEV1.0.27-MIFU  7/27/2017, IV
+cl com.a.Fury      display class detail of class Fury if exists
+cl com/a/Fury      display class detail of class Fury if exists
+cl com/Fury.class  display class detail of class Fury if exists
+cl com\\a\\Fury    display class detail of class Fury if exists
+ver=GEEK-DEV1.0.28-MIFU  7/29/2017, VI

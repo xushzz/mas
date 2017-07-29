@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
+import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,13 +27,18 @@ public class ClassDetail {
 	private List<String> content = new ArrayList<>();
 	
 	public List<String> getAllParts() {
+		String location = getLocation();
 		String packageInfo = readPackageInfo();
 		String definition = readClassDefinition();
 		List<String> constructors = readConstructors();
 		List<String> fields = readFields();
 		List<String> methods = readMethods();
 		List<String> importInfo = createImportSentences();
-		
+
+		if(!EmptyUtil.isNullOrEmpty(location)) {
+			content.add(location);
+			content.add("");
+		}
 		content.add(packageInfo);
 		if(!EmptyUtil.isNullOrEmpty(importInfo)) {
 			content.add("");
@@ -64,6 +70,16 @@ public class ClassDetail {
 		}
 		
 		return items;
+	}
+	
+	private String getLocation() {
+		CodeSource source = glass.getProtectionDomain().getCodeSource();
+		if(source != null) {
+			String temp = source.getLocation().toString().replaceAll("^file:/", "");
+			return temp;
+		}
+		
+		return null;
 	}
 	
 	private String readPackageInfo() {
