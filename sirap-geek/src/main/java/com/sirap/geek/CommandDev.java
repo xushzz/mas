@@ -11,7 +11,6 @@ import com.sirap.basic.exception.MexException;
 import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.search.MexFilter;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.tool.D;
 import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
@@ -155,7 +154,6 @@ public class CommandDev extends CommandBase {
 		
 		singleParam = parseParam(KEY_JSON + " " + KEY_HTTP_WWW);
 		if(singleParam != null) {
-			D.ts(singleParam);
 			String source = IOUtil.readURL(singleParam);
 			String text = JsonUtil.getPrettyText(source);
 			export(text);
@@ -306,7 +304,7 @@ public class CommandDev extends CommandBase {
 			return true;
 		}
 
-		regex = KEY_PRINT_CLASS + "\\s+([a-zA-Z\\d_\\.\\/\\$]+)";
+		regex = KEY_PRINT_CLASS + "\\s+([a-zA-Z\\d_\\.\\$/\\\\]+)";
 		singleParam = parseParam(regex);
 		if(singleParam != null) {
 			String name = singleParam.replace('/', '.');

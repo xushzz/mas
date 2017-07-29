@@ -46,10 +46,18 @@ public class RandomUtil {
 		
 		return sb.toString();
 	}
-	
-	public static int number(int value) {
+
+	public static int number(int minValue, int maxValue) {
 		Random xian = new Random();
-		int result = xian.nextInt(value);
+		int range = Math.abs(minValue - maxValue) + 1;
+		int result = xian.nextInt(range) + Math.min(minValue, maxValue);
+		
+		return result;
+	}
+	
+	public static int number(int maxValue) {
+		Random xian = new Random();
+		int result = xian.nextInt(maxValue) + 1;
 		
 		return result;
 	}

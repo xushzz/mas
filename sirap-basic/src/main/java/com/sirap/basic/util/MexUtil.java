@@ -379,8 +379,6 @@ public class MexUtil {
 			    	MexZipEntry xiu = new MexZipEntry(entry);
 			    	xiu.setJarName(jarName);
 			    	items.add(xiu);
-		    	} else {
-		    		D.ts();
 		    	}
 		    }
 		    

@@ -126,6 +126,27 @@ public class ClassDetail {
 		
 		return sb.toString();
 	}
+	
+	private Object getFieldValue(Field item) {
+		Class type = item.getType();
+		try {
+			Object value = item.get(glass);
+			String arrValue = StrUtil.arrayToString(value);
+			if(arrValue != null) {
+				return arrValue;
+			} else if("char".equals(type.toString()) || Character.class.equals(type)) {
+				return "\'" + value + "\'";
+			} else if(String.class.equals(type)) {
+				return "\"" + value + "\"";
+			} else {
+				return value;
+			}
+		} catch (IllegalAccessException ex) {
+			//throw new MexException(ex);
+		}
+		
+		return null;
+	}
 
 	private List<String> readFields() {
 		Field[] fields= glass.getDeclaredFields(); 
@@ -141,7 +162,12 @@ public class ClassDetail {
             	sb.append(modifier).append(" ");
             }
             sb.append(type.getSimpleName()).append(" ");
+
             sb.append(item.getName());
+            Object value = getFieldValue(item);
+            if(value != null) {
+                sb.append(" = ").append(value);
+            }
             sb.append(";");
             
             items.add(sb.toString());

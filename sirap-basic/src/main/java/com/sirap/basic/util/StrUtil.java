@@ -910,4 +910,36 @@ public class StrUtil {
 
 		return m;
 	}
+	
+	public static String arrayToString(Object arr) {
+		String temp = null;
+		if(arr instanceof boolean[]) {
+			temp = Arrays.toString((boolean[])arr);
+		} else if(arr instanceof byte[]) {
+			temp = Arrays.toString((byte[])arr);
+		} else if(arr instanceof byte[]) {
+			temp = Arrays.toString((byte[])arr);
+		} else if(arr instanceof char[]) {
+			temp = Arrays.toString((char[])arr);
+		} else if(arr instanceof double[]) {
+			temp = Arrays.toString((double[])arr);
+		} else if(arr instanceof float[]) {
+			temp = Arrays.toString((float[])arr);
+		} else if(arr instanceof int[]) {
+			temp = Arrays.toString((int[])arr);
+		} else if(arr instanceof long[]) {
+			temp = Arrays.toString((long[])arr);
+		} else if(arr instanceof short[]) {
+			temp = Arrays.toString((short[])arr);
+		} else if(arr instanceof Object[]) {
+			temp = Arrays.toString((Object[])arr);
+		}
+		
+		if(temp != null) {
+			temp = temp.replaceAll("^\\[", "{");
+			temp = temp.replaceAll("\\]$", "}");
+		}
+		
+		return temp;
+	}
 }

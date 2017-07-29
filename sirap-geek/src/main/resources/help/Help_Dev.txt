@@ -25,5 +25,5 @@ E:\abc.jar!/a.txt  list out the content of given entry in given zip file, entry 
 cl com.a.Fury      display class detail of class Fury if exists
 cl com/a/Fury      display class detail of class Fury if exists
 cl com/Fury.class  display class detail of class Fury if exists
-cl com\\a\\Fury    display class detail of class Fury if exists
+cl com\a\Fury    display class detail of class Fury if exists
 ver=GEEK-DEV1.0.28-MIFU  7/29/2017, VI

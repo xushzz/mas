@@ -32,7 +32,6 @@ public class FindJarExtractor extends Extractor<MexObject> {
 			String value = HtmlUtil.removeHttpTag(ma.group(3));
 			String item = type + " " + value + " " + href;
 			MexObject mo = new MexObject(item);
-//			D.pl(type, href, value);
 			if(!mexItems.contains(mo)) {
 				mexItems.add(mo);
 			}
