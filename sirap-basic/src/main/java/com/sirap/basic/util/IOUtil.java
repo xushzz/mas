@@ -51,6 +51,7 @@ import com.sirap.basic.tool.D;
 import com.sirap.basic.tool.MexedAudioPlayer;
 import com.sirap.basic.tool.ScreenCaptor;
 
+@SuppressWarnings({"rawtypes","unchecked"})
 public class IOUtil {
 	
 	public static String readURL(String address) {
@@ -509,22 +510,18 @@ public class IOUtil {
 		return false;
 	}
 	
-	@SuppressWarnings("rawtypes")
 	public static boolean saveAsTxtWithHeaderAndTotal(List objList, String fullFileName) {
 		return saveAsTxt(objList, fullFileName, true, true);
 	}
 	
-	@SuppressWarnings("rawtypes")
 	public static boolean saveAsTxtWithHeaderOnly(List objList, String fullFileName) {
 		return saveAsTxt(objList, fullFileName, true, false);
 	}
 	
-	@SuppressWarnings("rawtypes")
 	public static boolean saveAsTxt(List objList, String fullFileName) {
 		return saveAsTxt(objList, fullFileName, false, false);
 	}
 	
-	@SuppressWarnings("rawtypes")
 	public static boolean saveAsTxt(List objList, String fullFileName, boolean printSimpleHeader, boolean printTotal) {
 		if(objList == null) {
 			objList = Collections.EMPTY_LIST;
@@ -543,7 +540,6 @@ public class IOUtil {
 		return saveAsTxt(objList, fullFileName, header, footer);
 	}
 	
-	@SuppressWarnings("rawtypes")
 	public static boolean saveAsTxt(List objList, String fullFileName, List<String> header, List<String> footer) {
 		XXXUtil.nullCheck(objList, "List objList");
 		
@@ -793,7 +789,8 @@ public class IOUtil {
 			throw new MexException(ex);
 		}
 	}
-	
+
+	@SuppressWarnings("resource")
 	public static Class loadClassFromJarFile(String jarLocation, String className) {
 		String regex = "^[\\w]{2,}:";
 		String tempLocation = jarLocation.replace('\\', '/');
@@ -804,13 +801,14 @@ public class IOUtil {
 		try {
 			URL url = new URL(tempLocation);
 			ClassLoader loader = Thread.currentThread().getContextClassLoader();
-		    URLClassLoader myClassLoader = new URLClassLoader(new URL[]{url}, loader);
+			URLClassLoader myClassLoader = new URLClassLoader(new URL[]{url}, loader);
 		    String tempClassName = className.replaceAll(".class$", "");
 		    tempClassName = tempClassName.replaceAll("/", ".");
+
 		    Class glass = myClassLoader.loadClass(tempClassName);
 		    
 		    return glass;
-		} catch (Exception ex) {
+		} catch (Throwable ex) {
 			throw new MexException(ex);
 		}
 	}
@@ -822,6 +820,7 @@ public class IOUtil {
 			tempLocation = "file:///" + tempLocation;
 		}
 		ClassLoader wood = new ClassLoader() {
+			@SuppressWarnings("deprecation")
 			protected Class<?> findClass(String uri) throws ClassNotFoundException {
 				byte[] bytes = null;
 				try {
@@ -831,7 +830,7 @@ public class IOUtil {
 					ex.printStackTrace();
 				}
 				
-				 Class tang = defineClass(bytes, 0, bytes.length);  
+				Class tang = defineClass(bytes, 0, bytes.length);  
 				 return tang;
 			}
 		};

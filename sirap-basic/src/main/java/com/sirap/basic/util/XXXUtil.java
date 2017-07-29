@@ -75,7 +75,7 @@ public class XXXUtil {
 		C.pl(msg);
 	}
 	
-	public static String getStackTrace(Exception ex) {
+	public static String getStackTrace(Throwable ex) {
 		 StringWriter sw = new StringWriter();  
          PrintWriter pw = new PrintWriter(sw);  
          ex.printStackTrace(pw);

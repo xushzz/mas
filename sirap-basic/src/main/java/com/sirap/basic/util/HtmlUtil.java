@@ -18,10 +18,20 @@ public class HtmlUtil {
 		temp = temp.replaceAll("&nbsp;", "");
 		temp = temp.replaceAll("&ndash;", "-");
 		temp = temp.replace("&quot;", "\"");
+		temp = temp.replace("&apos;", "\'");
 		
-		Matcher m = Pattern.compile("&([A-Za-z])([A-Za-z]{3,}).*?;", Pattern.CASE_INSENSITIVE).matcher(temp);
-		while(m.find()) {
-			temp = temp.replace(m.group(0), m.group(1)); 
+		//&#39; => '
+		Matcher ma = StrUtil.createMatcher("&#(\\d{1,3});", temp);
+		while(ma.find()) {
+			String whole = ma.group(0);
+			String part = ma.group(1);
+			char ch = (char)(Integer.parseInt(part));
+			temp = temp.replace(whole, ch + "");
+		}
+		
+		ma = StrUtil.createMatcher("&([A-Za-z])([A-Za-z]{3,}).*?;", temp);
+		while(ma.find()) {
+			temp = temp.replace(ma.group(0), ma.group(1)); 
 		}
 		
 		return temp;
@@ -29,12 +39,7 @@ public class HtmlUtil {
 
 	public static String removeHttpTag(String source) {
 		XXXUtil.nullCheck(source, "source");
-		String temp = source;
-		Matcher m = Pattern.compile("<.*?>").matcher(temp);
-		while(m.find()) {
-			String tagContent = m.group();
-			temp = temp.replace(tagContent, "");
-		}
+		String temp = source.replaceAll("<.*?>", "");
 		
 		return temp;
 	}

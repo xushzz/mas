@@ -5,17 +5,17 @@ import com.sirap.basic.util.StrUtil;
 @SuppressWarnings("serial")
 public class MexException extends RuntimeException {
 	
-	private Exception origin;
+	private Throwable origin;
 	
-	public Exception getOrigin() {
+	public Throwable getOrigin() {
 		return origin;
 	}
 
-	public void setOrigin(Exception origin) {
+	public void setOrigin(Throwable origin) {
 		this.origin = origin;
 	}
 
-	public MexException(Exception ex) {
+	public MexException(Throwable ex) {
 		super(ex);
 		origin = ex;
 	}
