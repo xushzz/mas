@@ -2,4 +2,5 @@ l                  lock computer, same as ${windows.lock}
 out                log out computer immediately, same as ${windows.logout} 
 off                turn off computer immediately, same as ${windows.off}
 rest               restart computer immediately, same as ${windows.restart}
-sleep              computer sleeps immediately, same as ${windows.sleep}
+sleee              computer sleeps immediately, same as ${windows.sleep}
+sleeeeeeeeee       computer sleeps immediately, same as ${windows.sleep}

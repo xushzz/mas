@@ -141,7 +141,7 @@ public class ClassDetail {
 			} else {
 				return value;
 			}
-		} catch (IllegalAccessException ex) {
+		} catch (Exception ex) {
 			//throw new MexException(ex);
 		}
 		

@@ -84,4 +84,9 @@ public class XXXUtil {
          
          return value;
 	}
+	
+	public static void printStackTrace(String msg) {
+		Exception ex = new Exception(msg);
+		ex.printStackTrace();
+	}
 }

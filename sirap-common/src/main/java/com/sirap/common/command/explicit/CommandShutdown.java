@@ -2,6 +2,7 @@ package com.sirap.common.command.explicit;
 
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.PanaceaBox;
+import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
 
 public class CommandShutdown extends CommandBase {
@@ -10,7 +11,7 @@ public class CommandShutdown extends CommandBase {
 	private static final String KEY_WINDOWS_LOGOUT = "out";
 	private static final String KEY_WINDOWS_TURNOFF = "off";
 	private static final String KEY_WINDOWS_RESTART = "rest";
-	private static final String KEY_WINDOWS_SLEEP = "sleep";
+	private static final String KEY_WINDOWS_SLEEP = "sle{3,}";
 	
 	private static final String VALUE_WINDOWS_LOCK = "rundll32 user32.dll,LockWorkStation";
 	private static final String VALUE_WINDOWS_LOGOUT = "shutdown -l -t 1";
@@ -56,7 +57,7 @@ public class CommandShutdown extends CommandBase {
 			return true;
 		}
 		
-		if(is(KEY_WINDOWS_SLEEP)) {
+		if(StrUtil.isRegexMatched(KEY_WINDOWS_SLEEP, command)) {
 			PanaceaBox.execute(VALUE_WINDOWS_SLEEP);
 			C.pl2("computer sleeps immediately.");
 			

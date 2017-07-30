@@ -164,12 +164,16 @@ public class FileUtil {
 		
 		String temp = directory.trim();
 		if(FileUtil.isMaliciousPath(temp)) {
-			throw new MexException("'{0}' is not a specific directory.", temp);
+			String msg = StrUtil.occupy("'{0}' is not a specific directory.", directory);
+			XXXUtil.printStackTrace(msg);
+			return Collections.EMPTY_LIST;
 		}
 		
 		File file = FileUtil.getIfNormalFolder(temp);
 		if(file == null) {
-			throw new MexException("'{0}' is not a valid directory.", temp);
+			String msg = StrUtil.occupy("'{0}' is not a valid directory.", directory);
+			XXXUtil.printStackTrace(msg);
+			return Collections.EMPTY_LIST;
 		}
 		
 		String path = file.getAbsolutePath();
