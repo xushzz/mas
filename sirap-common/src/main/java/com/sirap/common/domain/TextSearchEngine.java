@@ -10,7 +10,7 @@ import com.sirap.basic.util.OptionUtil;
 public class TextSearchEngine extends MexItem {
 	private String prefix;
 	private String folders;
-	private String fileCriteria;
+	private String fileNameCriteria;
 	private boolean useCache;
 	private boolean useSpace = true;
 
@@ -24,7 +24,7 @@ public class TextSearchEngine extends MexItem {
 	public TextSearchEngine(String prefix, String folders, String fileCriteria) {
 		this.prefix = prefix;
 		this.folders = folders;
-		this.fileCriteria = fileCriteria;
+		this.fileNameCriteria = fileCriteria;
 	}
 	
 	public String getPrefix() {
@@ -36,11 +36,11 @@ public class TextSearchEngine extends MexItem {
 	}
 	
 	public String getFileCriteria() {
-		return fileCriteria;
+		return fileNameCriteria;
 	}
 
 	public void setFileCriteria(String fileCriteria) {
-		this.fileCriteria = fileCriteria;
+		this.fileNameCriteria = fileCriteria;
 	}
 
 	public String getFolders() {
@@ -70,13 +70,16 @@ public class TextSearchEngine extends MexItem {
 	@Override
 	public boolean parse(String source) {
 		String[] info = source.split("#");
-		if(info.length < 3) {
+		if(info.length < 2) {
 			return false;
 		}
 
 		setPrefix(info[0].trim());
 		setFolders(info[1].trim());
-		setFileCriteria(info[2].trim());
+		
+		if(info.length >= 3) {
+			setFileCriteria(info[2].trim());
+		}
 		
 		String optionsStr = null;
 		if(info.length >= 4) {
@@ -100,7 +103,8 @@ public class TextSearchEngine extends MexItem {
 		StringBuffer sb = new StringBuffer();
 		sb.append(prefix).append("\t");
 		sb.append(folders).append("\t");
-		sb.append(fileCriteria);
+		sb.append(fileNameCriteria).append("\t");
+		sb.append("useCache:" + useCache).append(",").append("useSpace:" + useSpace);
 		
 		return sb.toString(); 
 	}

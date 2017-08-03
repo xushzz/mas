@@ -32,7 +32,7 @@ import com.sirap.common.framework.command.target.TargetConsole;
 import com.sirap.common.framework.command.target.TargetFolder;
 
 public abstract class CommandBase {
-
+	
 	public static final String KEY_2DOTS = "..";
 	public static final String KEY_EQUALS = "=";
 	public static final String KEY_REFRESH = "r";

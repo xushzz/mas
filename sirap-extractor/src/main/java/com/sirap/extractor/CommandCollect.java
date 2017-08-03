@@ -9,6 +9,7 @@ import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.ObjectUtil;
+import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.domain.WeatherRecord;
@@ -145,9 +146,11 @@ public class CommandCollect extends CommandBase {
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_BAIDU_BAIKE_SUMMARY + "\\s(.+?)");
-		if(singleParam != null) {
-			List<MexObject> items = BaiduExtractorManager.g().fetchBaiduSummary(singleParam);
+		params = parseParams(KEY_BAIDU_BAIKE_SUMMARY + "\\s(\\*?)(.+?)");
+		if(params != null) {
+			boolean withOtherSameNames = !params[0].isEmpty() || OptionUtil.readBoolean(options, "all", false);
+			String keywordOrUrl = params[1];
+			List<MexObject> items = BaiduExtractorManager.g().fetchBaiduSummary(keywordOrUrl, withOtherSameNames);
 			export(items);
 			
 			return true;

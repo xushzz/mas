@@ -1,5 +1,6 @@
 package com.sirap.extractor.manager;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 
@@ -11,6 +12,8 @@ import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.extractor.Extractor;
 
 public class BaiduExtractorManager extends RssExtractorManager {
+	
+	public static final String HOME_BAIDU_BAIKE = "https://baike.baidu.com";
 	private static BaiduExtractorManager instance;
 	
 	public static BaiduExtractorManager g() {
@@ -116,25 +119,52 @@ public class BaiduExtractorManager extends RssExtractorManager {
 		return justin.getMexItems();
 	}
 	
-	public List<MexObject> fetchBaiduSummary(final String keyword) {
+	public List<MexObject> fetchBaiduSummary(final String keywordOrUrl, boolean withOtherSameNames) {
+		if(StrUtil.isRegexFound("^https?://", keywordOrUrl)) {
+			return fetchBaiduSummaryByURL(keywordOrUrl, withOtherSameNames);
+		}
+		
+		if(StrUtil.isRegexFound("^(subview|item)/", keywordOrUrl)) {
+			String fullUrl = HOME_BAIDU_BAIKE + "/" + keywordOrUrl;
+			return fetchBaiduSummaryByURL(fullUrl, withOtherSameNames);
+		}
+		
+		String realUrl = StrUtil.occupy(HOME_BAIDU_BAIKE + "/item/{0}", Extractor.encodeURLParam(keywordOrUrl));
+		return fetchBaiduSummaryByURL(realUrl, withOtherSameNames);
+	}
+	
+	public List<MexObject> fetchBaiduSummaryByURL(final String encodedUrl, boolean withOtherSameNames) {
 		
 		Extractor<MexObject> justin = new Extractor<MexObject>() {
-			public static final String URL_TEMPLATE = "https://baike.baidu.com/item/{0}";
+			
 			
 			@Override
 			public String getUrl() {
 				printFetching = true;
-				return StrUtil.occupy(URL_TEMPLATE, encodeURLParam(keyword));
+				return encodedUrl;
 			}
 
 			@Override
 			protected void parseContent() {
+				String regexError = "<p class=\"sorryCont\">(.+?)</p>";
+				String error = StrUtil.findFirstMatchedItem(regexError, source);
+				if(error != null) {
+					String temp = HtmlUtil.removeHttpTag(error).trim();
+					mexItems.add(new MexObject(temp));
+					return;
+				}
+				
 				String regexSolid = "label-module=\"lemmaSummary\">(.+?)<div([^<>]+)class=\"basic-info cmn-clearfix\">";
 				String solid = StrUtil.findFirstMatchedItem(regexSolid, source);
 				if(EmptyUtil.isNullOrEmpty(solid)) {
 					regexSolid = "label-module=\"lemmaSummary\">(.+?)<h2 class=\"block-title\">";
 					solid = StrUtil.findFirstMatchedItem(regexSolid, source);
+					if(EmptyUtil.isNullOrEmpty(solid)) {
+						regexSolid = "label-module=\"lemmaSummary\">(.+?)<dl class=\"lemma-reference";
+						solid = StrUtil.findFirstMatchedItem(regexSolid, source);
+					}
 				}
+				
 				XXXUtil.nullCheck(solid, ":something must be wrong with " + getUrl());
 				
 				String regex = "<div class=\"para\"[^<>]+>(.+?)</div>";
@@ -149,6 +179,25 @@ public class BaiduExtractorManager extends RssExtractorManager {
 					mexItems.add(new MexObject(temp));
 					if(i != items.size() - 1) {
 						mexItems.add(new MexObject(""));
+					}
+				}
+				
+				if(withOtherSameNames) {
+					String regexOthers = "<li class=\"item\">[^<>]*<a title=['\"]([^'\"]+)['\"] href=['\"]([^'\"]+)['\"].+?</li>";
+					Matcher ma = createMatcher(regexOthers);
+					List<MexObject> others = new ArrayList<>();
+					int count = 0;
+					while(ma.find()) {
+						count++;
+						String title = ma.group(1);
+						String href = HOME_BAIDU_BAIKE + ma.group(2).replace("#viewPageContent", "");
+						others.add(new MexObject("#" + count + " " + title + " " + href));
+					}
+					
+					if(!others.isEmpty()) {
+						mexItems.add(new MexObject(""));
+						mexItems.add(new MexObject(StrUtil.occupy("Others {0}:", others.size())));
+						mexItems.addAll(others);
 					}
 				}
 			}
