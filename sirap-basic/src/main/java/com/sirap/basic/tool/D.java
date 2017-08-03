@@ -1,6 +1,5 @@
 package com.sirap.basic.tool;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
@@ -9,6 +8,7 @@ import java.util.Map;
 
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
+import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 
 /***
@@ -27,59 +27,33 @@ public class D {
 		return true;
 	}
 	
-	public static void pr(Object obj) {
-		System.out.print(obj);
+	public static void pr(Object... obj) {
+		System.out.print(convert(obj));
 	}
 
-	public static void pl(Object obj) {
-		System.out.println(obj);
+	private static Object convert(Object... obj) {
+		Object temp = null;
+		if(obj.length == 1) {
+			temp = StrUtil.arrayToString(obj[0]);
+			if(temp == null) {
+				temp = obj[0];
+			}
+		} else {
+			temp = Arrays.toString(obj);
+			if(temp == null) {
+				temp = obj;
+			}
+		}
+		
+		return temp;
 	}
-	public static void pll(Object obj) {
-		System.out.println("[" + obj + "]");
+	
+	public static void pl(Object... obj) {
+		System.out.println(convert(obj));
 	}
 
 	public static void pl() {
 		System.out.println();
-	}
-	
-	public static void nl() {
-		System.out.println("Null param.");
-	}
-
-	public static void arr(int[] arr) {
-		for(int i = 0; i < arr.length; i++) {
-			pl(arr[i]);
-		}
-	}
-	
-	public static <E extends Object > void pl(E... objArr) {
-		if(objArr == null) {
-			nl();
-			return;
-		}
-		
-		pl(Arrays.asList(objArr));
-	}
-
-	public static void pl(char[] arr) {
-		XXXUtil.nullCheck(arr, "arr can't be null.");
-		for(int i = 0; i < arr.length; i++) {
-			C.pl(arr[i]);
-		}
-	}
-	
-	public static void pl(int[] arr) {
-		XXXUtil.nullCheck(arr, "arr can't be null.");
-		for(int i = 0; i < arr.length; i++) {
-			C.pl(arr[i]);
-		}
-	}
-	
-	public static void pl(byte[] arr) {
-		XXXUtil.nullCheck(arr, "arr can't be null.");
-		for(int i = 0; i < arr.length; i++) {
-			C.pl(arr[i]);
-		}
 	}
 	
 	public static <E extends Object > void ls(List<E> list) {
@@ -87,10 +61,7 @@ public class D {
 	}
 	
 	public static <E extends Object > void ls(List<E> list, boolean neverShowTotal) {
-		if(list == null) {
-			nl();
-			return;
-		}
+		XXXUtil.nullCheck(list, "list");
 		
 		for(Object obj: list) {
 			C.pl(obj);
@@ -149,14 +120,5 @@ public class D {
 			D.pl(obj);
 		}
 		D.pl("D.list end");
-	}
-	
-	public static List toList(byte[] bs) {
-		List items = new ArrayList();
-		for(int i = 0; i < bs.length; i++) {
-			items.add(bs[i]);
-		}
-		
-		return items;
 	}
 }

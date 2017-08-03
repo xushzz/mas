@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexLocale;
 import com.sirap.basic.domain.MexObject;
@@ -189,8 +188,8 @@ public class CommandXCode extends CommandBase {
 		
 		singleParam = parseParam(KEY_URL_ENCODE + "\\s(.+?)");
 		if(singleParam != null) {
-			String charset = Konstants.CODE_UTF8;
-			String value = XCodeUtil.urlEncodeUTF8(singleParam);
+			String charset = g().getCharsetInUse();
+			String value = XCodeUtil.urlEncode(singleParam, charset);
 			C.pl("Encode with charset: " + charset);
 			export(value);
 			
@@ -199,8 +198,8 @@ public class CommandXCode extends CommandBase {
 		
 		singleParam = parseParam(KEY_URL_DECODE + "\\s(.+?)");
 		if(singleParam != null) {
-			String charset = Konstants.CODE_UTF8;
-			String value = XCodeUtil.urlDecodeUTF8(singleParam);
+			String charset = g().getCharsetInUse();
+			String value = XCodeUtil.urlDecode(singleParam, charset);
 			C.pl("Decode with charset: " + charset);
 			export(value);
 			
