@@ -67,7 +67,7 @@ public class MexFile extends MexItem implements Comparable<MexFile> {
 	public String toPrint(String optionsStr) {
 		StringBuilder sb = new StringBuilder(file.getAbsolutePath());
 		boolean showSize = OptionUtil.readBoolean(optionsStr, "size", false);
-		if(showSize) {
+		if(showSize && file.isFile()) {
 			sb.append("  ");
 			sb.append(FileUtil.formatFileSize(file.length()));
 		}

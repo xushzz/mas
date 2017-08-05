@@ -44,8 +44,7 @@ public class CommandDev extends CommandBase {
 	private static final String KEY_PAIR_KEY_VALUE = "pa";
 	private static final String KEY_TO_UPPERCASE = "up";
 	private static final String KEY_TO_LOWERCASE= "lo";
-	private static final String KEY_JAR= "jar";
-	private static final String KEY_ZIP= "zip";
+	private static final String KEY_ZIP = FileUtil.SUFFIXES_ZIP.replace(';', '|');
 	private static final String KEY_PRINT_CLASS = "cl";
 
 	public boolean handle() {
@@ -250,7 +249,7 @@ public class CommandDev extends CommandBase {
 			return true;
 		}
 		
-		regex = StrUtil.occupy("(.+\\.({0}|{1}))!/(.+)", KEY_JAR, KEY_ZIP);
+		regex = StrUtil.occupy("(.+\\.({0}))!/(.+)", KEY_ZIP);
 		params = parseParams(regex);
 		if(params != null) {
 			String whatfile = params[0];
@@ -269,7 +268,7 @@ public class CommandDev extends CommandBase {
 		}
 		
 		InputAnalyzer sean = new FileSizeInputAnalyzer(input);
-		regex = "(-?)(.+\\.(jar|zip))\\s(.+)";
+		regex = StrUtil.occupy("(-?)(.+\\.({0}))\\s+(.+)", KEY_ZIP);
 		String[] crazy = StrUtil.parseParams(regex, sean.getCommand());
 		if(crazy != null) {
 			this.command = sean.getCommand();

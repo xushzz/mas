@@ -32,7 +32,7 @@ public class FileUtil {
 	public static final String SUFFIXES_AUDIO = "mp3;wma;wav;mid;midi;mpa;aac";
 	public static final String SUFFIXES_VIDEO = "3gp;avi;wmv;wmp;asf;rm;ram;rmvb;ra;mpg;mpeg;mp4;mpa;mkv";
 	public static final String SUFFIXES_TEXT = "txt;properties;java;js;css;xml;log;pom;bat;cpp;h;sh";
-	public static final String SUFFIXES_ZIP = "jar;zip";
+	public static final String SUFFIXES_ZIP = "zip;jar;war;ear;rar";
 	public static final String SUFFIXES_PDF = "pdf";
 	public static final String SUFFIXES_WORD = "doc;docx";
 	public static final String SUFFIXES_EXCEL = "xls;xlsx";
