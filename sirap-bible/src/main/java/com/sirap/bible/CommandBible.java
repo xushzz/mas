@@ -13,6 +13,7 @@ import com.sirap.common.command.CommandBase;
 public class CommandBible extends CommandBase {
 
 	private static final String KEY_BIBLE = "bible";
+	private static final String KEY_VERSE = "verse";
 
 	public boolean handle() {
 		if(is(KEY_BIBLE)) {
@@ -22,12 +23,13 @@ public class CommandBible extends CommandBase {
 			return true;
 		}
 
-		if(is(KEY_BIBLE + KEY_ASTERISK)) {
+		if(is(KEY_VERSE)) {
 			ChapterSense sense = BibleManager.g().randomChapterSense();
 			List items = readChapterDetail(sense);
 			XXXUtil.nullOrEmptyCheck(items);
-			String verse = BibleManager.g().readVerseRandom(items);
-			export(verse);
+			String chapterInfo = sense.getBook().getName() + sense.getChapterNumber();
+			String item = chapterInfo + ":" +  BibleManager.g().readVerseRandom(items);
+			export(item);
 			
 			return true;
 		}

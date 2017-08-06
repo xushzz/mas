@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import com.sirap.basic.tool.C;
+import com.sirap.basic.tool.D;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.StrUtil;
@@ -88,11 +89,12 @@ public class CommandTask extends CommandBase {
 		singleParam = StrUtil.parseParam(KEY_TASK + "\\s(.*?)", input);
 		if(singleParam != null) {
 			File file = parseFile(singleParam);
-			if(FileOpener.isTextFile(file.getAbsolutePath())) {
+			if(file != null && FileOpener.isTextFile(file.getAbsolutePath())) {
 				List<String> tasks = FileOpener.readTextContent(file.getAbsolutePath());
 				executeActions(tasks);
 			} else {
 				List<String> actions = StrUtil.split(singleParam);
+				D.pl(actions);
 				executeActions(actions);
 			}
 

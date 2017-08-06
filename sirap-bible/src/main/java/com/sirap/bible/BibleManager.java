@@ -121,23 +121,29 @@ public class BibleManager {
 	}
 	
 	public BibleBook searchByName(String name, int chapter, boolean caseSensitive) {
-		List<BibleBook> items = CollectionUtil.filter(BOOKS, name, caseSensitive);
-		
-		if(items.size() == 0) {
-			return null;
+		String wholeWord = "^" + name + "$";
+		List<BibleBook> items = CollectionUtil.filter(BOOKS, wholeWord, caseSensitive);
+		BibleBook theBook = null;
+		if(items.size() == 1) {
+			theBook = items.get(0);
+		} else {
+			items = CollectionUtil.filter(BOOKS, name, caseSensitive);
+			
+			if(items.size() == 0) {
+				return null;
+			}
+			
+			if(items.size() > 1) {
+				String msg = "more than one book found by name " + name;
+				C.list(items);
+				throw new MexException(msg);
+			}
+			
+			theBook = items.get(0);
 		}
-		
-		if(items.size() > 1) {
-			String msg = "more than one book found by " + name;
-			C.list(items);
-			throw new MexException(msg);
-		}
-		
-		BibleBook theBook = items.get(0);
 
 		if(chapter == 0 || chapter > theBook.getMaxChapter()) {
-			String msg = "chapter " + chapter + " doesn't exist, max chapter of " + theBook.getName() + " is " + theBook.getMaxChapter();
-			throw new MexException(msg);
+			throw new MexException("chapter {0} doesn't exist, max chapter of {1} is {2}.", chapter, theBook.getName(), theBook.getMaxChapter());
 		}
 		
 		return theBook;
@@ -198,32 +204,42 @@ public class BibleManager {
 	}
 	
 	public String readVerse(List<String> items, int verseYouWant) {
-		List<String> verses = getPureVerses(items);
+		List<VerseSake> verses = getPureVerses(items);
 		int maxVerse = verses.size();
 		if(verseYouWant > maxVerse) {
 			throw new MexException("Not found verse {0}, the max verse is {1}", verseYouWant, maxVerse);
 		}
 		
-		return verses.get(verseYouWant - 1);
+		return findByVerseNumber(verses, verseYouWant);
 	}
-	
-	public String readVerseRandom(List<String> items) {
-		List<String> verses = getPureVerses(items);
-		int random = RandomUtil.number(1, verses.size());
-
-		return verses.get(random - 1);
-	}
-	
 	
 	@SuppressWarnings("rawtypes")
-	public List<String> getPureVerses(List items) {
-		List<String> verses = new ArrayList<>();
+	public String readVerseRandom(List items) {
+		List<VerseSake> verses = getPureVerses(items);
+		int random = RandomUtil.number(1, verses.size());
+
+		return findByVerseNumber(verses, random);
+	}
+	
+	public String findByVerseNumber(List<VerseSake> items, int verseYouWant) {
+		for(VerseSake item : items) {
+			if(item.getVerseNumber() == verseYouWant) {
+				return item.toPrint();
+			}
+		}
+		
+		throw new MexException("Verse {0} not found.", verseYouWant);
+	}
+	
+	public List<VerseSake> getPureVerses(List items) {
+		List<VerseSake> verses = new ArrayList<>();
 		for(int i = 1; i < items.size(); i++) {
 			String item = items.get(i) + "";
-			String regex = "(^\\d+)\\s+";
-			String verseStr = StrUtil.findFirstMatchedItem(regex, item);
-			if(verseStr != null) {
-				verses.add(item);
+			String regex = "(^\\d+)\\s+(.+)";
+			String[] params = StrUtil.parseParams(regex, item);
+			if(params != null) {
+				int number = Integer.parseInt(params[0]);
+				verses.add(new VerseSake(number, params[1]));
 			}
 		}
 		
