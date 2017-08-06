@@ -7,12 +7,13 @@ import java.util.List;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.exception.MexException;
-import com.sirap.basic.search.MexFilter;
 import com.sirap.basic.thread.Master;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
+import com.sirap.basic.util.RandomUtil;
+import com.sirap.basic.util.StrUtil;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.extractor.Extractor;
 
@@ -110,6 +111,15 @@ public class BibleManager {
 		return items;
 	}
 	
+	public ChapterSense randomChapterSense() {
+		int bookIndex = RandomUtil.number(1, BOOKS.size());
+		BibleBook book = BOOKS.get(bookIndex);
+		int chapter = RandomUtil.number(1, book.getMaxChapter());
+		ChapterSense sense = new ChapterSense(book, chapter);
+		
+		return sense;
+	}
+	
 	public BibleBook searchByName(String name, int chapter, boolean caseSensitive) {
 		List<BibleBook> items = CollectionUtil.filter(BOOKS, name, caseSensitive);
 		
@@ -185,5 +195,38 @@ public class BibleManager {
 		}
 		
 		return links;
+	}
+	
+	public String readVerse(List<String> items, int verseYouWant) {
+		List<String> verses = getPureVerses(items);
+		int maxVerse = verses.size();
+		if(verseYouWant > maxVerse) {
+			throw new MexException("Not found verse {0}, the max verse is {1}", verseYouWant, maxVerse);
+		}
+		
+		return verses.get(verseYouWant - 1);
+	}
+	
+	public String readVerseRandom(List<String> items) {
+		List<String> verses = getPureVerses(items);
+		int random = RandomUtil.number(1, verses.size());
+
+		return verses.get(random - 1);
+	}
+	
+	
+	@SuppressWarnings("rawtypes")
+	public List<String> getPureVerses(List items) {
+		List<String> verses = new ArrayList<>();
+		for(int i = 1; i < items.size(); i++) {
+			String item = items.get(i) + "";
+			String regex = "(^\\d+)\\s+";
+			String verseStr = StrUtil.findFirstMatchedItem(regex, item);
+			if(verseStr != null) {
+				verses.add(item);
+			}
+		}
+		
+		return verses;
 	}
 }

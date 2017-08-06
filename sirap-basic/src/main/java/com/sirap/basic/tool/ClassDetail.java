@@ -74,7 +74,7 @@ public class ClassDetail {
 	
 	private String getLocation() {
 		CodeSource source = glass.getProtectionDomain().getCodeSource();
-		if(source != null) {
+		if(source != null && source.getLocation() != null) {
 			String temp = source.getLocation().toString().replaceAll("^file:/", "");
 			return temp;
 		}

@@ -16,7 +16,6 @@ public class XXXUtil {
 		nullOrEmptyCheck(obj, null);
 	}
 	
-	
 	public static void nullOrEmptyCheck(Object obj, String info) {
 		if(obj instanceof String) {
 			String str = (String)obj;
@@ -53,6 +52,12 @@ public class XXXUtil {
 		}
 	}
 	
+	public static void shouldBePositive(long value) {
+		if(value <= 0) {
+			throw new MexException("value {0} should be positive.", value);
+		}
+	}
+	
 	public static void shouldBeEqual(Object a, Object b) {
 		if(a == null && b == null) {
 			return;
@@ -61,6 +66,11 @@ public class XXXUtil {
 		if(a == null || !a.equals(b)) {
 			throw new MexException("Should be equal for [" + a + "] and [" + b + "]");
 		}
+	}
+	
+	public static void alert(String msgTemplate, Object... params) {
+		String msg = StrUtil.occupy(msgTemplate, params);
+		alert(msg);
 	}
 
 	public static void alert(String msg) {

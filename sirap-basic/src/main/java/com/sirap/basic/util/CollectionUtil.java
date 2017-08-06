@@ -336,7 +336,7 @@ public class CollectionUtil {
 					markIndex++;
 				}
 				occurentIndex++;
-				String occurent = count > 2 ? (occurentIndex + "") : "";
+				String occurent = count > 5 ? (occurentIndex + "") : "";
 				String mark = marks[markIndex%marks.length] + occurent + " ";
 				records.add(mark + origin);
 			}

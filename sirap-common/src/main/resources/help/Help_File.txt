@@ -1,9 +1,10 @@
 -F:\fire.abc       print detail like size, creation time, last modified time, lines if text                 
 -F:\fire.mp3       print detail like width*height if image/video, duration if audio/video
 -F:\fire.mkv       print video detail by FFMpeg, ffmpeg -i "F:\fire.mkv"
--F:\fire.xls       print detail like size, creation time, excel sheet names                 
-=F:\fly.txt        print target file in text manner, $+sort,+uniq,+mark,+line,+case,+one
-=F:\fly.txt        print target file in text manner, file size limit is ${text.max} by default
+-F:\fire.xls       print detail like size, creation time, excel sheet names    
+F:\fly.txt         open the text file if no options at all             
+F:\fly.txt $+line  print target file in text manner, $+sort,+uniq,+mark,+line,+case,+one
+F:\fly.txt $+line  print target file in text manner, file size limit is ${text.max} by default
 &F:\fly.txt        print target file in text manner in single one line, aka $+one with =F:\fly.txt
 #F:\fly.txt        print target file in text manner with line number, aka $+line with =F:\fly.txt
 #F:\folderA        list the names of folder or file at the deepest level

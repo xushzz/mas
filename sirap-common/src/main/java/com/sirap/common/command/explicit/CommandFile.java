@@ -54,7 +54,6 @@ public class CommandFile extends CommandBase {
 	private static final String KEY_OPEN_EXPLORER = "<";
 	private static final String KEY_ALL_DISKS_SINGLE_COLON = ":";
 	private static final String KEY_ALL_DISKS_DOUBLE_COLON = "::";
-	private static final String KEY_PRINT_TXT = "=";
 	private static final String KEY_PRINT_TXT_ONELINE = "&";
 	private static final String KEY_PRINT_TXT_LINENUMBER = "#";
 	private static final String KEY_SHOW_DETAIL = "-";
@@ -108,7 +107,7 @@ public class CommandFile extends CommandBase {
 				if(file != null) {
 					String filePath = file.getAbsolutePath();
 					if(FileOpener.isTextFile(filePath)) {
-						List<String> txtContent = readRecordsFromFile(filePath);
+						List<String> txtContent = FileOpener.readTextContent(filePath);
 						if(type.length() == 1) {
 							objs.add(file);
 						} else if(type.length() == 2) {
@@ -167,16 +166,57 @@ public class CommandFile extends CommandBase {
 				return true;
 			}
 			
+			if(!target.isFileRelated() && FileOpener.isTextFile(filePath) && options != null) {
+				List<String> records = FileOpener.readTextContent(filePath, true);
+				if(OptionUtil.readBoolean(options, "one", false)) {
+					String temp = IOUtil.readFileWithoutLineSeparator(filePath, g().getCharsetInUse());
+					String result = StrUtil.reduceMultipleSpacesToOne(temp);
+					export(result);
+				} else {
+					boolean sensitive = isCaseSensitive();
+					if(OptionUtil.readBoolean(options, "sort", false)) {
+						CollectionUtil.sort(records, sensitive);
+					}
+
+					if(OptionUtil.readBoolean(options, "mark", false)) {
+						records = CollectionUtil.sortAndMarkSame(records, sensitive);
+					}
+
+					if(OptionUtil.readBoolean(options, "uniq", false)) {
+						if(sensitive) {
+							Set<String> taiwan = new LinkedHashSet<>(records);
+							records = new ArrayList<>(taiwan);
+						} else {
+							Set<String> taiwan = new HashSet<>();
+							List<String> uniq = new ArrayList<>();
+							for(String origin : records) {
+								String item = origin.toLowerCase();
+								if(taiwan.contains(item)) {
+									continue;
+								}
+								taiwan.add(item);
+								uniq.add(origin);
+							}
+							records = new ArrayList<>(uniq);
+						}
+					}
+
+					if(OptionUtil.readBoolean(options, "line", false)) {
+						records = CollectionUtil.lineNumber(records, true);
+					}
+
+					export(records);	
+				}
+				
+				return true;
+			}
+			
 			if(target instanceof TargetConsole) {
 				FileOpener.open(filePath);
 				return true;
 			}
 			
-			if(!target.isFileRelated() && FileOpener.isTextFile(filePath)) {
-				export(readRecordsFromFile(filePath));
-			} else {
-				export(file);
-			}
+			export(file);
 
 			return true;
 		}
@@ -468,7 +508,7 @@ public class CommandFile extends CommandBase {
 				String filePath = tempFile.getAbsolutePath();
 				if(FileOpener.isTextFile(filePath)) {
 					List<String> items = new ArrayList<String>();
-					List<String> txtContent = readRecordsFromFile(filePath);
+					List<String> txtContent = FileOpener.readTextContent(filePath);
 					int line = 0;
 					int maxLen = (txtContent.size() + "").length();
 					for(String record:txtContent) {
@@ -548,41 +588,6 @@ public class CommandFile extends CommandBase {
 				} else if(StrUtil.equals(KEY_PRINT_TXT_LINENUMBER, type)) {
 					List<String> records = FileOpener.readTextContent(filePath, true);
 					export(CollectionUtil.lineNumber(records, true));
-				} else if(StrUtil.equals(KEY_PRINT_TXT, type)) {
-					List<String> records = FileOpener.readTextContent(filePath, true);
-					boolean sensitive = isCaseSensitive();
-					if(OptionUtil.readBoolean(options, "sort", false)) {
-						CollectionUtil.sort(records, sensitive);
-					}
-					
-					if(OptionUtil.readBoolean(options, "mark", false)) {
-						records = CollectionUtil.sortAndMarkSame(records, sensitive);
-					}
-					
-					if(OptionUtil.readBoolean(options, "uniq", false)) {
-						if(sensitive) {
-							Set<String> taiwan = new LinkedHashSet<>(records);
-							records = new ArrayList<>(taiwan);
-						} else {
-							Set<String> taiwan = new HashSet<>();
-							List<String> uniq = new ArrayList<>();
-							for(String origin : records) {
-								String item = origin.toLowerCase();
-								if(taiwan.contains(item)) {
-									continue;
-								}
-								taiwan.add(item);
-								uniq.add(origin);
-							}
-							records = new ArrayList<>(uniq);
-						}
-					}
-					
-					if(OptionUtil.readBoolean(options, "line", false)) {
-						records = CollectionUtil.lineNumber(records, true);
-					}
-
-					export(records);
 				}
 				
 				return true;

@@ -32,7 +32,8 @@ import com.sirap.common.framework.command.target.TargetConsole;
 import com.sirap.common.framework.command.target.TargetFolder;
 
 public abstract class CommandBase {
-	
+
+	public static final String KEY_ASTERISK = "*";
 	public static final String KEY_2DOTS = "..";
 	public static final String KEY_EQUALS = "=";
 	public static final String KEY_REFRESH = "r";
@@ -290,21 +291,6 @@ public abstract class CommandBase {
 		String version = g().getValueOf("version", "Version info unavailable.");
 		String copyright = g().getValueOf("copyright", "Copyright info unavailable.");
 		return version + ". " + copyright;
-	}
-	
-	public List<String> readRecordsFromFile(String param) {
-		File file = parseFile(param);
-		if(file == null) {
-			return null;
-		}
-		
-		List<String> records = new ArrayList<String>();
-		String filePath = file.getAbsolutePath();
-		if(FileOpener.isTextFile(filePath)) {
-			records = FileOpener.readTextContent(filePath);
-		}
-		
-		return records;
 	}
 	
 	public String miscPath() {

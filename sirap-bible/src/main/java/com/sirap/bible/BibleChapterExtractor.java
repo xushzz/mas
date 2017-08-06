@@ -35,11 +35,18 @@ public class BibleChapterExtractor extends Extractor<MexObject> {
 			section = StrUtil.reduceMultipleSpacesToOne(section);
 			String regexVerse = "(\\d+|#).*?([^\\d#]+)";
 			List<String> items = StrUtil.findAllMatchedItems(regexVerse, section);
+			boolean firstVerseMarked = false;
 			for(String item : items) {
 				String temp = item;
+				if(!firstVerseMarked) {
+					if(StrUtil.isRegexFound("^\\d+", temp)) {
+						temp = temp.replaceAll("^\\d+", "1");
+						firstVerseMarked = true;
+					}
+				}
 				String error = StrUtil.findFirstMatchedItem("^\\d+(.)", temp);
 				if(error != null) {
-					temp = item.replace(error, " ");
+					temp = temp.replace(error, " ");
 				}
 				mexItems.add(new MexObject(temp));
 			}
