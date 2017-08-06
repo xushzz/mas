@@ -1,5 +1,6 @@
 !sql_sentence      issue sql command against configured database and display result
-!D:\onesql.txt     read sql file and issue sql command against configured database and display result
+!D:\onesql.txt     read sql file, connect all items to single one line then issue sql command
+!D:\onesql.txt     read sql file, file size limit is ${sql.max} by default, check key ${sql.max.key}
 from customer      issue sql "select * from customer"
 desc customer      issue sql "desc customer"
 SQL_KEYWORDS       select,show,desc,describe,from,insert,delete,update,into,count,cnt
@@ -9,4 +10,4 @@ tbs                tables, show tables in current schema
 dbs                databases, show databases on the server
 sma=schemaName     change schema, like 'use databaseName' in mysql
 mysql -uroot -p    use cmd connection string to create solid mysql connection
-ver=SIRAP-DB1.0.11-TEVES  7/4/2017, II
+ver=SIRAP-DB1.0.12-NEYMAR  8/6/2017, VII

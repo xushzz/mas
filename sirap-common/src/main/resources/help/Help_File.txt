@@ -2,9 +2,10 @@
 -F:\fire.mp3       print detail like width*height if image/video, duration if audio/video
 -F:\fire.mkv       print video detail by FFMpeg, ffmpeg -i "F:\fire.mkv"
 -F:\fire.xls       print detail like size, creation time, excel sheet names                 
-=F:\fly.txt        print target file in text manner, no matter it is a text file or not
-&F:\fly.txt        print target file in text manner in single one line
-#F:\fly.txt        print target file in text manner with line number
+=F:\fly.txt        print target file in text manner, $+sort,+uniq,+mark,+line,+case,+one
+=F:\fly.txt        print target file in text manner, file size limit is ${text.max} by default
+&F:\fly.txt        print target file in text manner in single one line, aka $+one with =F:\fly.txt
+#F:\fly.txt        print target file in text manner with line number, aka $+line with =F:\fly.txt
 #F:\folderA        list the names of folder or file at the deepest level
 F:\fire\fly.mp3    for an audio file, the sound will be played by the configured audio player, same goes 
                    for video/photo/doc/docx/xls/xlsx/PDF files with their players/viewers respectively, 

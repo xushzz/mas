@@ -477,18 +477,14 @@ public abstract class CommandBase {
 		return IOUtil.downloadFiles(destination, links, suffixWhenObscure, threads, useUniqueFilename);
 	}
 	
-	protected boolean tooBigToHanlde(File file, String size) {
+	protected void checkTooBigToHandle(File file, String maxSize) {
 		long fileSize = file.length();
-		long limitSizeInByte = FileUtil.parseFileSize(size);
+		long limitSizeInByte = FileUtil.parseFileSize(maxSize);
 		if(file.length() > limitSizeInByte) {
-			String msgTemp = "File size {0} is larger than {1}, refuse to handle.";
+			String msgTemp = "File size {0} is larger than maximum {1}, refuse to handle.";
 			String msg = StrUtil.occupy(msgTemp, FileUtil.formatFileSize(fileSize), FileUtil.formatFileSize(limitSizeInByte));
-			C.pl2(msg);
-			
-			return true;
+			XXXUtil.alert(msg);
 		}
-		
-		return false;
 	}
 	
 

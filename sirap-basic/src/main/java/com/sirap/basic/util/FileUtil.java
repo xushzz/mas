@@ -592,7 +592,7 @@ public class FileUtil {
 		String regex = Konstants.REGEX_FLOAT + "([" + units + "])";
 		String[] params = StrUtil.parseParams(regex, source.toUpperCase());
 		if(params == null) {
-			throw new MexException("can't parse file size, try legal examples like 2B, 12M, 38.8G and so on.");
+			throw new MexException("can't parse file size [{0}], try legal examples like 2B, 12M, 38.8G and so on.", source);
 		}
 		
 		return parseFileSize(params[0], params[1].charAt(0));

@@ -9,8 +9,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.sirap.basic.domain.MexItem;
+import com.sirap.basic.component.StringSenseComparator;
 import com.sirap.basic.domain.MexFile;
+import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.search.MexFilter;
 
@@ -271,5 +272,77 @@ public class CollectionUtil {
 		}
 
 		return list;
+	}
+	
+	public static void sort(List<String> items, boolean sensitive) {
+		Collections.sort(items, new StringSenseComparator(sensitive));
+	}
+	
+	public static void sortIgnoreCase(List<String> items) {
+		Collections.sort(items, new StringSenseComparator());
+	}
+	
+	public static List lineNumber(List<String> records, boolean align) {
+		List<String> items = new ArrayList<>();
+		int maxLen = (records.size() + "").length();
+		for(int i = 0; i < records.size(); i++) {
+			int lineNumber = i + 1;
+			String line = "#" + lineNumber;
+			if(align) {
+				line = StrUtil.extend(line, maxLen + 1);
+			}
+			
+			items.add(line + " " + records.get(i));
+		}
+		
+		return items;
+	}
+
+	public static List<String> sortAndMarkSame(List<String> items, boolean sensitive) {
+		List<String> sortedItems = new ArrayList<>(items);
+		sort(sortedItems, sensitive);
+
+		char[] marks = {'#', '*'};
+		Map<String, Integer> box = new HashMap<>();
+		
+		for(String origin : sortedItems) {
+			String item = origin;
+			if(!sensitive) {
+				item = origin.toLowerCase();
+			}
+			Integer count = box.get(item);
+			if(count == null) {
+				box.put(item, 1);
+			} else {
+				box.put(item, count + 1);
+			}
+		}
+
+		int markIndex = -1;
+		List<String> records = new ArrayList<>();
+		String lastKey = null;
+		int occurentIndex = 0;
+		for(String origin : sortedItems) {
+			String key = origin;
+			if(!sensitive) {
+				key = origin.toLowerCase();
+			}
+			int count = box.get(key);
+			if(count == 1) {
+				occurentIndex = 0;
+				records.add(origin);
+			} else if(count > 1) {
+				if(!key.equals(lastKey)) {
+					markIndex++;
+				}
+				occurentIndex++;
+				String occurent = count > 2 ? (occurentIndex + "") : "";
+				String mark = marks[markIndex%marks.length] + occurent + " ";
+				records.add(mark + origin);
+			}
+			lastKey = key;
+		}
+		
+		return records;
 	}
 }

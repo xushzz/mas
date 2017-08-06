@@ -7,7 +7,10 @@ import java.io.FilenameFilter;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.component.media.MediaFileAnalyzer;
@@ -30,6 +33,7 @@ import com.sirap.basic.util.ImageUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.MexUtil;
 import com.sirap.basic.util.ObjectUtil;
+import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
@@ -58,6 +62,12 @@ public class CommandFile extends CommandBase {
 	private static final String KEY_PDF = "pdf";
 	private static final String KEY_DAY_CHECK = "dc";
 	private static final String KEY_MEMORABLE = "mm";
+	
+	public static final String DEFAULT_TEXT_MAX_SIZE = "2M";
+
+	{
+		helpMeanings.put("text.max", DEFAULT_TEXT_MAX_SIZE);
+	}
 	
 	@SuppressWarnings("all")
 	@Override
@@ -529,26 +539,50 @@ public class CommandFile extends CommandBase {
 					return true;
 				} 
 				
-				if(tooBigToHanlde(file, "2M")) {
-					return true;
-				}
+				checkTooBigToHandle(file, g().getUserValueOf("text.max", DEFAULT_TEXT_MAX_SIZE));
 				
 				if(StrUtil.equals(KEY_PRINT_TXT_ONELINE, type)) {
 					String temp = IOUtil.readFileWithoutLineSeparator(filePath, g().getCharsetInUse());
 					String result = StrUtil.reduceMultipleSpacesToOne(temp);
 					export(result);
-				} else if(StrUtil.equals(KEY_PRINT_TXT, type)) {
-					List<String> records = FileOpener.readTextContent(filePath, true);
-					export(records);
 				} else if(StrUtil.equals(KEY_PRINT_TXT_LINENUMBER, type)) {
 					List<String> records = FileOpener.readTextContent(filePath, true);
-					List<String> items = new ArrayList<>();
-					int maxLen = (records.size() + "").length();
-					for(int i = 0; i < records.size(); i++) {
-						String lineNumber = StrUtil.extend(i + 1 + "", maxLen);
-						items.add(lineNumber + " " + records.get(i));
+					export(CollectionUtil.lineNumber(records, true));
+				} else if(StrUtil.equals(KEY_PRINT_TXT, type)) {
+					List<String> records = FileOpener.readTextContent(filePath, true);
+					boolean sensitive = isCaseSensitive();
+					if(OptionUtil.readBoolean(options, "sort", false)) {
+						CollectionUtil.sort(records, sensitive);
 					}
-					export(items);
+					
+					if(OptionUtil.readBoolean(options, "mark", false)) {
+						records = CollectionUtil.sortAndMarkSame(records, sensitive);
+					}
+					
+					if(OptionUtil.readBoolean(options, "uniq", false)) {
+						if(sensitive) {
+							Set<String> taiwan = new LinkedHashSet<>(records);
+							records = new ArrayList<>(taiwan);
+						} else {
+							Set<String> taiwan = new HashSet<>();
+							List<String> uniq = new ArrayList<>();
+							for(String origin : records) {
+								String item = origin.toLowerCase();
+								if(taiwan.contains(item)) {
+									continue;
+								}
+								taiwan.add(item);
+								uniq.add(origin);
+							}
+							records = new ArrayList<>(uniq);
+						}
+					}
+					
+					if(OptionUtil.readBoolean(options, "line", false)) {
+						records = CollectionUtil.lineNumber(records, true);
+					}
+
+					export(records);
 				}
 				
 				return true;

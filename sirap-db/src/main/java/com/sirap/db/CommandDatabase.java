@@ -26,6 +26,14 @@ public class CommandDatabase extends CommandBase {
 	private static final String KEY_SHOW_TABLES = "tbs";
 	private static final String KEY_SHOW_DATABSES = "dbs";
 	private static final String KEY_MYSQL = "mysql";
+
+	public static final String SQL_MAX_SIZE_DEFAULT = "10M";
+	public static final String SQL_MAX_SIZE_KEY = "sql.max";
+	
+	{
+		helpMeanings.put("sql.max", SQL_MAX_SIZE_DEFAULT);
+		helpMeanings.put("sql.max.key", SQL_MAX_SIZE_KEY);
+	}
 	
 	@Override
 	public boolean handle() {
@@ -36,9 +44,11 @@ public class CommandDatabase extends CommandBase {
 			this.target = sean.getTarget();
 			File file = parseFile(singleParam);
 			if(file != null) {
-				if(FileOpener.isTextFile(file.getAbsolutePath()) && !tooBigToHanlde(file, "10M")) {
+				if(FileOpener.isTextFile(file.getAbsolutePath())) {
+					checkTooBigToHandle(file, g().getUserValueOf(SQL_MAX_SIZE_KEY, SQL_MAX_SIZE_DEFAULT));
 					String filePath = file.getAbsolutePath();
-					String temp = IOUtil.readFileWithLineSeparator(filePath, " ", "--");
+					String charset = g().getCharsetInUse();
+					String temp = IOUtil.readFileWithLineSeparator(filePath, " ", charset, "--");
 					String sql = StrUtil.reduceMultipleSpacesToOne(temp).trim();
 					dealWith(sql);
 				}
