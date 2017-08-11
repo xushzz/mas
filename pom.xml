@@ -11,7 +11,6 @@
 	<url>http://maven.apache.org</url>
 	<modules>
 		<module>sirap-basic</module>
-		<module>sirap-bible</module>
 		<module>sirap-common</module>
 		<module>sirap-db</module>
 		<module>sirap-executor</module>
@@ -19,6 +18,7 @@
 		<module>sirap-geek</module>
 		<module>sirap-ldap</module>
 		<module>sirap-security</module>
+		<module>sirap-titus</module>
 	<!-- 
 		<module>sirap-basic</module>
 		<module>sirap-common</module>

@@ -1,4 +1,4 @@
-package com.sirap.bible;
+package com.sirap.titus;
 
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.util.StrUtil;

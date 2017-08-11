@@ -52,6 +52,12 @@ public class XXXUtil {
 		}
 	}
 	
+	public static void shouldBeTrue(boolean flag) {
+		if(!flag) {
+			throw new MexException("variable should be true.");
+		}
+	}
+	
 	public static void shouldBePositive(long value) {
 		if(value <= 0) {
 			throw new MexException("value {0} should be positive.", value);

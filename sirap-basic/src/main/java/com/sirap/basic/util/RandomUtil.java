@@ -57,7 +57,7 @@ public class RandomUtil {
 	
 	public static int number(int maxValue) {
 		Random xian = new Random();
-		int result = xian.nextInt(maxValue) + 1;
+		int result = xian.nextInt(maxValue);
 		
 		return result;
 	}

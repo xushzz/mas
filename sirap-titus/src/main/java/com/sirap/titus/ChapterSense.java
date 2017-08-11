@@ -1,4 +1,4 @@
-package com.sirap.bible;
+package com.sirap.titus;
 
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.util.StrUtil;
@@ -22,11 +22,17 @@ public class ChapterSense extends MexItem {
 	}
 
 	public String getChapterNameWithNiceOrder() {
-		String value = StrUtil.extendLeftward(chapterNumber + "", 2, "0");
+		int maxLen = (book.getMaxChapter() + "").length();
+		String value = StrUtil.extendLeftward(chapterNumber + "", maxLen, "0");
 		return value;
 	}
 
 	public int getChapterNumber() {
 		return chapterNumber;
+	}
+	
+	public String getChapterHref() {
+		String url = book.getHref() + chapterNumber + ".html";
+		return url;
 	}
 }

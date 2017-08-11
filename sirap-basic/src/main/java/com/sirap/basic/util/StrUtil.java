@@ -1,5 +1,6 @@
 package com.sirap.basic.util;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -794,7 +795,7 @@ public class StrUtil {
 	
 	public static String reduceMultipleSpacesToOne(String source) {
 		String temp = source.replaceAll("\t", " ");
-		temp = source.replaceAll("\\s{2,}", " ");
+		temp = temp.replaceAll("\\s{2,}", " ");
 		
 		return temp;
 	}
@@ -941,5 +942,41 @@ public class StrUtil {
 		}
 		
 		return temp;
+	}
+
+	public static String useSeparator(Object... items) {
+		StringBuffer sb = new StringBuffer();
+		for(int i = 0; i < items.length; i++) {
+			String item = items[i] + "";
+			sb.append(item);
+			
+			if(i == items.length - 1) {
+				break;
+			}
+
+			if(!item.endsWith("/") && !item.endsWith("\\")) {
+				sb.append(File.separator);
+			}
+		}
+		
+		return sb.toString();
+	}
+	
+	public static String useSlash(Object... items) {
+		StringBuffer sb = new StringBuffer();
+		for(int i = 0; i < items.length; i++) {
+			String item = items[i] + "";
+			sb.append(item);
+			
+			if(i == items.length - 1) {
+				break;
+			}
+
+			if(!item.endsWith("/")) {
+				sb.append("/");
+			}
+		}
+		
+		return sb.toString();
 	}
 }

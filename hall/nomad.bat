@@ -30,7 +30,7 @@ set CP=%CP%;%jars%\sirap-ldap-%alpha_version%.jar
 set CP=%CP%;%jars%\sirap-db-%alpha_version%.jar
 set CP=%CP%;%jars%\sirap-security-1.0.jar
 set CP=%CP%;%jars%\sirap-geek-%alpha_version%.jar
-set CP=%CP%;%jars%\sirap-bible-%alpha_version%.jar
+set CP=%CP%;%jars%\sirap-titus-%alpha_version%.jar
 
 set CP=%CP%;%deps%\mail-1.4.jar
 set CP=%CP%;%deps%\itextpdf-5.5.8.jar

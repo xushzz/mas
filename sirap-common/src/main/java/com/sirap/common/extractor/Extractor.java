@@ -3,7 +3,6 @@ package com.sirap.common.extractor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexItem;
@@ -47,7 +46,7 @@ public abstract class Extractor<T extends MexItem> {
 		return StrUtil.createMatcher(regex, content);
 	}
 	
-	public void process() {
+	public Extractor<T> process() {
 		readSource();
 		
 		if(source != null || sourceList != null) {
@@ -58,6 +57,8 @@ public abstract class Extractor<T extends MexItem> {
 		} else {
 			isAllBeingWell = false;
 		}
+		
+		return this;
 	}
 	
 	protected void readSource() {
@@ -162,5 +163,4 @@ public abstract class Extractor<T extends MexItem> {
 	public void setRequestParams(String requestParams) {
 		this.requestParams = requestParams;
 	}
-	
 }

@@ -1,0 +1,143 @@
+package com.sirap.titus;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.sirap.basic.util.TrumpUtil;
+
+public class BibleData {
+	static final Map<Integer, int[]> CHAPTERS_OLD_NEW_ALL = new HashMap<>();
+	static {
+		CHAPTERS_OLD_NEW_ALL.put(39, new int[] {1, 39});
+		CHAPTERS_OLD_NEW_ALL.put(27, new int[] {40, 66});
+		CHAPTERS_OLD_NEW_ALL.put(66, new int[] {1, 66});
+	}
+	
+	public static final List<BibleBook> BOOKS = new ArrayList<>();
+	static {
+		BOOKS.add(new BibleBook(1, "Genesis", 50));
+		BOOKS.add(new BibleBook(2, "Exodus", 40));
+		BOOKS.add(new BibleBook(3, "Leviticus", 27));
+		BOOKS.add(new BibleBook(4, "Numbers", 36));
+		BOOKS.add(new BibleBook(5, "Deuteronomy", 34));
+		BOOKS.add(new BibleBook(6, "Joshua", 24));
+		BOOKS.add(new BibleBook(7, "Judges", 21));
+		BOOKS.add(new BibleBook(8, "Ruth", 4));
+		BOOKS.add(new BibleBook(9, "1 Samuel", 31));
+		BOOKS.add(new BibleBook(10, "2 Samuel", 24));
+		BOOKS.add(new BibleBook(11, "1 Kings", 22));
+		BOOKS.add(new BibleBook(12, "2 Kings", 25));
+		BOOKS.add(new BibleBook(13, "1 Chronicles", 29));
+		BOOKS.add(new BibleBook(14, "2 Chronicles", 36));
+		BOOKS.add(new BibleBook(15, "Ezra", 10));
+		BOOKS.add(new BibleBook(16, "Nehemiah", 13));
+		BOOKS.add(new BibleBook(17, "Esther", 10));
+		BOOKS.add(new BibleBook(18, "Job", 42));
+		BOOKS.add(new BibleBook(19, "Psalms", 150));
+		BOOKS.add(new BibleBook(20, "Proverbs", 31));
+		BOOKS.add(new BibleBook(21, "Ecclesiastes", 12));
+		BOOKS.add(new BibleBook(22, "Song of Songs", 8));
+		BOOKS.add(new BibleBook(23, "Isaiah", 66));
+		BOOKS.add(new BibleBook(24, "Jeremiah", 52));
+		BOOKS.add(new BibleBook(25, "Lamentations", 5));
+		BOOKS.add(new BibleBook(26, "Ezekiel", 48));
+		BOOKS.add(new BibleBook(27, "Daniel", 12));
+		BOOKS.add(new BibleBook(28, "Hosea", 14));
+		BOOKS.add(new BibleBook(29, "Joel", 3));
+		BOOKS.add(new BibleBook(30, "Amos", 9));
+		BOOKS.add(new BibleBook(31, "Obadiah", 1));
+		BOOKS.add(new BibleBook(32, "Jonah", 4));
+		BOOKS.add(new BibleBook(33, "Micah", 7));
+		BOOKS.add(new BibleBook(34, "Nahum", 3));
+		BOOKS.add(new BibleBook(35, "Habakkuk", 3));
+		BOOKS.add(new BibleBook(36, "Zephaniah", 3));
+		BOOKS.add(new BibleBook(37, "Haggai", 2));
+		BOOKS.add(new BibleBook(38, "Zechariah", 14));
+		BOOKS.add(new BibleBook(39, "Malachi", 4));
+		BOOKS.add(new BibleBook(40, "Matthew", 28));
+		BOOKS.add(new BibleBook(41, "Mark", 16));
+		BOOKS.add(new BibleBook(42, "Luke", 24));
+		BOOKS.add(new BibleBook(43, "John", 21));
+		BOOKS.add(new BibleBook(44, "Acts", 28));
+		BOOKS.add(new BibleBook(45, "Romans", 16));
+		BOOKS.add(new BibleBook(46, "1 Corinthians", 16));
+		BOOKS.add(new BibleBook(47, "2 Corinthians", 13));
+		BOOKS.add(new BibleBook(48, "Galatians", 6));
+		BOOKS.add(new BibleBook(49, "Ephesians", 6));
+		BOOKS.add(new BibleBook(50, "Philippians", 4));
+		BOOKS.add(new BibleBook(51, "Colossians", 4));
+		BOOKS.add(new BibleBook(52, "1 Thessalonians", 5));
+		BOOKS.add(new BibleBook(53, "2 Thessalonians", 3));
+		BOOKS.add(new BibleBook(54, "1 Timothy", 6));
+		BOOKS.add(new BibleBook(55, "2 Timothy", 4));
+		BOOKS.add(new BibleBook(56, "Titus", 3));
+		BOOKS.add(new BibleBook(57, "Philemon", 1));
+		BOOKS.add(new BibleBook(58, "Hebrews", 13));
+		BOOKS.add(new BibleBook(59, "James", 5));
+		BOOKS.add(new BibleBook(60, "1 Peter", 5));
+		BOOKS.add(new BibleBook(61, "2 Peter", 3));
+		BOOKS.add(new BibleBook(62, "1 John", 5));
+		BOOKS.add(new BibleBook(63, "2 John", 1));
+		BOOKS.add(new BibleBook(64, "3 John", 1));
+		BOOKS.add(new BibleBook(65, "Jude", 1));
+		BOOKS.add(new BibleBook(66, "Revelation", 22));
+	}
+
+	public static final String HOMEPAGE = TrumpUtil.decodeBySIRAP("263A2C2C1959252B4942A1EAD51F1FF11A44D72D594157FA1FD35A89376AE669", "ezra", true);
+	public static final List<BibleVersion> VERSIONS = new ArrayList<>();
+	static {
+		VERSIONS.add(new BibleVersion("asv", "ASV", "American Standard Version"));
+		VERSIONS.add(new BibleVersion("ceb", "CEB", "Common English Bible"));
+		VERSIONS.add(new BibleVersion("esv", "ESV", "English Standard Version"));
+		VERSIONS.add(new BibleVersion("gw", "GW", "GOD'S WORD Translation"));
+		VERSIONS.add(new BibleVersion("gnt", "GNT", "Good News Translation"));
+		VERSIONS.add(new BibleVersion("csb", "CSB", "Holman Christian Standard Bible"));
+		VERSIONS.add(new BibleVersion("jub", "JUB", "Jubilee Bible 2000"));
+		VERSIONS.add(new BibleVersion("kjv", "KJV", "King James Version"));
+		VERSIONS.add(new BibleVersion("leb", "LEB", "Lexham English Bible"));
+		VERSIONS.add(new BibleVersion("rhe", "RHE", "Douay-Rheims Catholic Bible"));
+		VERSIONS.add(new BibleVersion("nas", "NAS", "New American Standard Bible"));
+		VERSIONS.add(new BibleVersion("niv", "NIV", "New International Version"));
+		VERSIONS.add(new BibleVersion("nkjv", "NKJV", "New King James Version"));
+		VERSIONS.add(new BibleVersion("nlt", "NLT", "New Living Translation"));
+		VERSIONS.add(new BibleVersion("nrs", "NRS", "New Revised Standard"));
+		VERSIONS.add(new BibleVersion("rsv", "RSV", "Revised Standard Version"));
+		VERSIONS.add(new BibleVersion("msg", "MSG", "The Message Bible"));
+		VERSIONS.add(new BibleVersion("hnv", "HNV", "Hebrew Names Version"));
+		VERSIONS.add(new BibleVersion("ncv", "NCV", "New Century Version"));
+		VERSIONS.add(new BibleVersion("nirv", "NIRV", "New International Reader's Version"));
+		VERSIONS.add(new BibleVersion("ojb", "OJB", "Orthodox Jewish Bible"));
+		VERSIONS.add(new BibleVersion("bbe", "BBE", "The Bible in Basic English"));
+		VERSIONS.add(new BibleVersion("cjb", "CJB", "The Complete Jewish Bible"));
+		VERSIONS.add(new BibleVersion("tmb", "TMB", "Third Millennium Bible"));
+		VERSIONS.add(new BibleVersion("web", "WEB", "World English Bible"));
+		VERSIONS.add(new BibleVersion("ylt", "YLT", "Young's Literal Translation"));
+		VERSIONS.add(new BibleVersion("dby", "DBY", "The Darby Translation"));
+		VERSIONS.add(new BibleVersion("vul", "VUL", "The Latin Vulgate"));
+		VERSIONS.add(new BibleVersion("wbt", "WBT", "The Webster Bible"));
+		VERSIONS.add(new BibleVersion("tyn", "TYN", "Tyndale"));
+		VERSIONS.add(new BibleVersion("wyc", "WYC", "Wycliffe"));
+		VERSIONS.add(new BibleVersion("sblg", "SBLGNT", "SBL Greek New Testament"));
+		VERSIONS.add(new BibleVersion("wnt", "WNT", "Weymouth New Testament"));
+		VERSIONS.add(new BibleVersion("bla", "BLA", "La Biblia de las Américas (Español)"));
+		VERSIONS.add(new BibleVersion("jbs", "JBS", "La Biblia del Jubileo 2000"));
+		VERSIONS.add(new BibleVersion("rvr", "RVR", "La Biblia Reina-Valera (Español)"));
+		VERSIONS.add(new BibleVersion("ntv", "NTV", "Nueva Traducción Viviente"));
+		VERSIONS.add(new BibleVersion("nvi", "NVI", "Nueva Versión Internacional"));
+		VERSIONS.add(new BibleVersion("sev", "SEV", "Sagradas Escrituras (1569) (Español)"));
+		VERSIONS.add(new BibleVersion("aa", "AA", "Almeida Atualizada (Portuguese)"));
+		VERSIONS.add(new BibleVersion("nvip", "NVI-PT", "Nova Versão Internacional"));
+		VERSIONS.add(new BibleVersion("lsg", "LSG", "Louis Segond 1910 (French)"));
+		VERSIONS.add(new BibleVersion("ost", "OST", "Ostervald (French)"));
+		VERSIONS.add(new BibleVersion("elb", "ELB", "Elberfelder 1905 (German)"));
+		VERSIONS.add(new BibleVersion("lut", "LUT", "Luther Bible 1912 (German)"));
+		VERSIONS.add(new BibleVersion("gdb", "GDB", "Giovanni Diodati 1649 (Italian)"));
+		VERSIONS.add(new BibleVersion("riv", "RIV", "Riveduta 1927 (Italian)"));
+		VERSIONS.add(new BibleVersion("svv", "SVV", "Statenvertaling (Dutch)"));
+		VERSIONS.add(new BibleVersion("cuvp", "CUVP", "Chinese Union Version - Pinyin"));
+		VERSIONS.add(new BibleVersion("cuvs", "CUVS", "Chinese Union Version - Simplified"));
+		VERSIONS.add(new BibleVersion("cuv", "CUV", "Chinese Union Version - Traditional"));
+	}
+}

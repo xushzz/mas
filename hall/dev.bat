@@ -51,7 +51,7 @@ set CP=%CP%;%where%\sirap-executor\target\classes
 set CP=%CP%;%where%\sirap-ldap\target\classes
 set CP=%CP%;%where%\sirap-geek\target\classes
 set CP=%CP%;%where%\sirap-security\target\classes
-set CP=%CP%;%where%\sirap-bible\target\classes
+set CP=%CP%;%where%\sirap-titus\target\classes
 
 set APP=com.sirap.common.entry.AppMas
 

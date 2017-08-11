@@ -1,4 +1,4 @@
-package com.sirap.bible;
+package com.sirap.titus;
 
 import java.io.File;
 import java.util.List;
@@ -12,6 +12,7 @@ import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.extractor.Extractor;
+import com.sirap.titus.extractor.BibleChapterExtractor;
 
 public class BookChapterFetcher extends Worker<ChapterSense> {
 	private String storage;
@@ -40,7 +41,7 @@ public class BookChapterFetcher extends Worker<ChapterSense> {
 
 		int count = countOfTasks - tasks.size();
 		status(STATUS_FILE_COPY, count, countOfTasks, "Downloading...", sense.getBook().getName() + " " + sense.getChapterNumber(), storage);
-		Extractor<MexObject> nick = new BibleChapterExtractor(sense.getBook().getName(), sense.getChapterNumber());
+		Extractor<MexObject> nick = new BibleChapterExtractor(sense.getChapterHref());
 		nick.process();
 		List<MexObject> items = nick.getMexItems();
 		if(StrUtil.equals(Konstants.SUFFIX_TXT, fileType)) {

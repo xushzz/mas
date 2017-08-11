@@ -9,9 +9,9 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<artifactId>sirap-bible</artifactId>
+	<artifactId>sirap-titus</artifactId>
 	<version>1.0-SNAPSHOT</version>
-	<name>sirap-bible</name>
+	<name>sirap-titus</name>
 	
 	<description>established in April 20th, 2017</description>
 	<properties>
@@ -25,4 +25,5 @@
 			<version>${project.parent.version}</version>
 		</dependency>
 	</dependencies>
+
 </project>

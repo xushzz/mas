@@ -1,14 +1,17 @@
-package com.sirap.bible;
+package com.sirap.titus;
 
 import com.sirap.basic.domain.MexItem;
+import com.sirap.basic.exception.MexException;
 import com.sirap.basic.util.StrUtil;
 
 @SuppressWarnings("serial")
-public class BibleBook extends MexItem {
+public class BibleBook extends MexItem implements Cloneable {
 	
 	private int order;
-	private String name;
 	private int maxChapter;
+	private String version;
+	private String name;
+	private String href;
 	
 	public BibleBook(String name, int maxChapter) {
 		this.name = name;
@@ -23,6 +26,26 @@ public class BibleBook extends MexItem {
 	
 	public int getOrder() {
 		return order;
+	}
+	
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getHref() {
+		return href;
+	}
+
+	public void setHref(String href) {
+		this.href = href;
 	}
 
 	public String getNameWithNiceOrder() {
@@ -65,10 +88,28 @@ public class BibleBook extends MexItem {
 			return true;
 		}
 		
+		temp = "#" + order;
+		if(StrUtil.equalsCaseSensitive(temp, keyWord)) {
+			return true;
+		}
+		
+		temp = "" + order;
+		if(StrUtil.equalsCaseSensitive(temp, keyWord)) {
+			return true;
+		}
+		
 		return false;
 	}
 	
+	public BibleBook clone() { 
+		try {
+	        return (BibleBook)super.clone();  
+		} catch (Exception ex) {
+			throw new MexException(ex);
+		}
+    }
+	
 	public String toString() {
-		return name + ", " + maxChapter;
+		return "#" + order + " " + name + ", " + maxChapter + " chapters";
 	}
 }
