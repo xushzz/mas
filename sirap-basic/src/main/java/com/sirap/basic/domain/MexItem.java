@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
 
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.StrUtil;
@@ -15,13 +14,10 @@ public abstract class MexItem implements Serializable {
 	public static final String SYMBOL_CARET = "^";
 	public static final String SYMBOL_USD = "$";
 	public static final String SYMBOL_ASTERISK = "*";
+	public static final String CHARS_REGEX_ESCAPE = "\\$()*+.[]?^{}|";
 
 	protected boolean caseSensitive;
 	protected int pseudoOrder;
-	private String wholeMatchedStr;
-	private String leftMatchedStr;
-	private String rightMatchedStr;
-	private String asteriskMatchedStr;
 	
 	public boolean parse(String record) {
 		return false;
@@ -34,43 +30,6 @@ public abstract class MexItem implements Serializable {
 	public void setPseudoOrder(int pseudoOrder) {
 		this.pseudoOrder = pseudoOrder;
 	}
-
-	private boolean requiresWholeMatched(String keyWord) {
-		wholeMatchedStr = parseWholeMatched(keyWord);
-		return wholeMatchedStr != null;
-	}
-	
-	private boolean isWholeMatched(String target) {
-		return StrUtil.equals(wholeMatchedStr, target);
-	}
-	
-	private boolean requiresLeftMatched(String keyWord) {
-		leftMatchedStr = parseLeftMatched(keyWord);
-		return leftMatchedStr != null;
-	}
-	
-	private boolean isLeftMatched(String target) {
-		return StrUtil.startsWith(target, leftMatchedStr);
-	}
-	
-	private boolean requiresRightMatched(String keyWord) {
-		rightMatchedStr = parseRightMatched(keyWord);
-		return rightMatchedStr != null;
-	}
-	
-	private boolean isRightMatched(String target) {
-		return StrUtil.endsWith(target, rightMatchedStr);
-	}
-	
-	private boolean requiresAsteriskMatched(String keyWord) {
-		asteriskMatchedStr = parseAsteriskMatched(keyWord);
-		return asteriskMatchedStr != null;
-	}
-	
-	private boolean isAsteriskMatched(String target) {
-		Matcher ma = StrUtil.createMatcher(asteriskMatchedStr, target);
-		return ma.find();
-	}
 	
 	public boolean isMatched(String keyWord, boolean caseSensitive) {
 		return isMatched(keyWord);
@@ -80,7 +39,7 @@ public abstract class MexItem implements Serializable {
 		return false;
 	}
 	
-	public String parseWholeMatched(String keyWord) {
+	protected String parseWholeMatched(String keyWord) {
 		if(keyWord != null && keyWord.length() > 2 && keyWord.startsWith(SYMBOL_CARET) && keyWord.endsWith(SYMBOL_USD)) {
 			String temp = keyWord.substring(1, keyWord.length() - 1);
 			return temp;
@@ -89,7 +48,7 @@ public abstract class MexItem implements Serializable {
 		return null;
 	}
 
-	public String parseLeftMatched(String keyWord) {
+	protected String parseLeftMatched(String keyWord) {
 		if(keyWord != null && keyWord.length() > 1 && keyWord.startsWith(SYMBOL_CARET) && !keyWord.endsWith(SYMBOL_USD)) {
 			return keyWord.substring(1);
 		}
@@ -97,7 +56,7 @@ public abstract class MexItem implements Serializable {
 		return null;
 	}
 	
-	public String parseRightMatched(String keyWord) {
+	protected String parseRightMatched(String keyWord) {
 		if(keyWord != null && keyWord.length() > 1 && keyWord.endsWith(SYMBOL_USD) && !keyWord.startsWith(SYMBOL_CARET)) {
 			return keyWord.substring(0, keyWord.length() - 1);
 		}
@@ -105,29 +64,25 @@ public abstract class MexItem implements Serializable {
 		return null;
 	}
 	
-	public String parseAsteriskMatched(String keyWord) {
-		if(keyWord != null && keyWord.indexOf("\\*") >= 0) {
-			return keyWord.replace("\\*", "\\w*");
-		}
-		
-		return null;
-	}
-	
 	protected boolean isRegexMatched(String source, String keyWord) {
 		
-		if(requiresWholeMatched(keyWord) && isWholeMatched(source)) {
+		String wholeMatchedStr = parseWholeMatched(keyWord);
+		if(wholeMatchedStr != null && StrUtil.equals(wholeMatchedStr, source)) {
 			return true;
 		}
 		
-		if(requiresLeftMatched(keyWord) && isLeftMatched(source)) {
+		String leftMatchedStr = parseLeftMatched(keyWord);
+		if(leftMatchedStr != null && StrUtil.startsWith(source, leftMatchedStr)) {
 			return true;
 		}
 		
-		if(requiresRightMatched(keyWord) && isRightMatched(source)) {
+		String rightMatchedStr = parseRightMatched(keyWord);
+		if(rightMatchedStr != null && StrUtil.endsWith(source, rightMatchedStr)) {
 			return true;
 		}
 		
-		if(requiresAsteriskMatched(keyWord) && isAsteriskMatched(source)) {
+		String genuineRegex = StrUtil.parseParam("rx:(.+)", keyWord);
+		if(genuineRegex != null && StrUtil.isRegexFound(genuineRegex, source)) {
 			return true;
 		}
 		

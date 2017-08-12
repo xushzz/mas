@@ -57,10 +57,10 @@ public class MexTextSearchRecord extends MexObject {
 		boolean showLineNumber = OptionUtil.readBoolean(options, "line", false);
 		StringBuilder sb = new StringBuilder();
 		if(showFullFilename) {
-			sb.append(fullFilename).append("  ");
+			sb.append(fullFilename).append(" ");
 		}
 		if(showLineNumber) {
-			sb.append("#" + lineNumber).append("  ");
+			sb.append("L" + lineNumber).append(" ");
 		}
 		sb.append(obj.toString());
 		

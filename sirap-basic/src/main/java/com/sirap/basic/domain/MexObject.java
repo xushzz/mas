@@ -72,11 +72,14 @@ public class MexObject extends MexItem {
 	
 	@Override
 	public String toPrint(String options) {
-		boolean showOrder = OptionUtil.readBoolean(options, "order", false);
-		boolean showLineNumber = OptionUtil.readBoolean(options, "line", false);
 		StringBuilder sb = new StringBuilder();
-		if(showOrder || showLineNumber) {
+		boolean showOrder = OptionUtil.readBoolean(options, "order", false);
+		if(showOrder) {
 			sb.append("#" + getPseudoOrder() + "  ");
+		}
+		boolean showLineNumber = OptionUtil.readBoolean(options, "line", false);
+		if(showLineNumber) {
+			sb.append("L" + getPseudoOrder() + "  ");
 		}
 		sb.append(getString());
 		

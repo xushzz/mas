@@ -29,7 +29,7 @@ public class RandomUtil {
 		return result;
 	}
 	public static String alphanumeric(int countOfChars) {
-		String result = chars(countOfChars, StrUtil.DIGITS_LETTERS);
+		String result = chars(countOfChars, StrUtil.ALPHANUMERIC);
 		
 		return result;
 	}

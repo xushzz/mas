@@ -6,6 +6,7 @@ luke23             display verses, courtesy of https://www.biblegateway.com, $+f
 #2.3.5             display book no. 2, chapter 3 and verse 5, also for #2.3, #2-3
 verse              display random verse from bible library. $+force
 bball              display all bible versions and its links
+bball chinese      display bible versions matching given criteria
 bb.kjv             display all book links with version KJV, fetch
 bb.kjv.load        download given version bible to storage/bible as txt files, ignore if exists, $+force
 ver=SIRAP-BIBLE1.0.6-TITUS  8/11/2017, V

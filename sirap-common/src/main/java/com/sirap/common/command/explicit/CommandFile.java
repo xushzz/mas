@@ -476,20 +476,25 @@ public class CommandFile extends CommandBase {
 			return true;
 		}
 		
+		//list regex matched items in given website
 		params = parseParams("(.+)@" + KEY_HTTP_WWW);
 		if(params != null) {
 			String regex = params[0].trim();
 			String pageUrl = equiHttpProtoclIfNeeded(params[1].trim());
 			String source = IOUtil.readURL(pageUrl, g().getCharsetInUse(), true);
 			if(source != null) {
-				List<List<String>> allItems = StrUtil.findAllMatchedListedItems(regex, source);
+				boolean showOrder = OptionUtil.readBoolean(options, "order", false);
+				List<List<String>> allItems = StrUtil.findAllMatchedListedItems(regex, source, isCaseSensitive());
 				List tempList = new ArrayList();
+				int count = 0;
 				for(List<String> list : allItems) {
+					count++;
+					String lineNumber = showOrder ? StrUtil.occupy("#{0} ", count) : "";
 					boolean singleItem = list.size() == 1;
 					if(singleItem) {
-						tempList.add(list.get(0));
+						tempList.add(lineNumber + list.get(0));
 					} else {
-						tempList.add(list);
+						tempList.add(lineNumber + list);
 					}
 				}
 				
@@ -499,6 +504,7 @@ public class CommandFile extends CommandBase {
 			}
 		}
 		
+		//list regex matched items in local text file
 		params = parseParams("(.+)@(.+)");
 		if(params != null) {
 			String regex = params[0].trim();
@@ -507,27 +513,30 @@ public class CommandFile extends CommandBase {
 			if(tempFile != null) {
 				String filePath = tempFile.getAbsolutePath();
 				if(FileOpener.isTextFile(filePath)) {
+					boolean showLineNumber = OptionUtil.readBoolean(options, "line", false);
+					String connector = OptionUtil.readString(options, "conn", "; ").replace("\\s", " ");
+					
 					List<String> items = new ArrayList<String>();
 					List<String> txtContent = FileOpener.readTextContent(filePath);
 					int line = 0;
 					int maxLen = (txtContent.size() + "").length();
 					for(String record:txtContent) {
 						line++;
-						List<List<String>> allItems = StrUtil.findAllMatchedListedItems(regex, record);
+						List<List<String>> allItems = StrUtil.findAllMatchedListedItems(regex, record, isCaseSensitive());
 
 						if(EmptyUtil.isNullOrEmpty(allItems)) {
 							continue;
 						}
 						
-						String lineNumber = StrUtil.extend(line + "", maxLen);
 						boolean singleItem = allItems.size() == 1;
 						String temp = null;
 						if(singleItem) {
-							temp = StrUtil.connect(allItems.get(0), ", ");
+							temp = StrUtil.connect(allItems.get(0), connector);
 						} else {
-							temp = StrUtil.connect(allItems, ", ");
+							temp = StrUtil.connect(allItems, connector);
 						}
-						items.add(lineNumber + " " + temp);
+						String lineNumber = showLineNumber ? StrUtil.occupy("L{0} ", StrUtil.extend(line + "", maxLen)) : "";
+						items.add(lineNumber + temp);
 					}
 					
 					export(items);

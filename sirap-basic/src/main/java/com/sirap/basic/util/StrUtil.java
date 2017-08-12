@@ -17,8 +17,8 @@ public class StrUtil {
 	public static final String DIGITS = "0123456789";
 	public static final String LETTERS = "abcdefghijklmnopqrstuvwxyz";
 	public static final String LETTERS_UPPERCASED = LETTERS.toUpperCase();
-	public static final String DIGITS_LETTERS = DIGITS + LETTERS;
-	
+	public static final String ALPHANUMERIC = DIGITS + LETTERS;
+
 	public static boolean isDigitsOnly(String str) {
 		if(str == null) return false;
 		
@@ -590,8 +590,7 @@ public class StrUtil {
 	}
 	
 	public static boolean isRegexFound(String regex, String source) {
-		Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
-
+		Matcher m = createMatcher(regex, source);
 		if(m.find()) {
 			return true;
 		}
@@ -619,14 +618,14 @@ public class StrUtil {
 		return list;
 	}
 
-	public static List<List<String>> findAllMatchedListedItems(String regex, String source) {
+	public static List<List<String>> findAllMatchedListedItems(String regex, String source, boolean caseSensitive) {
 		if(regex == null || source == null) {
 			return null;
 		}
 
 		List<List<String>> allItems = new ArrayList<>();
 		
-		Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
+		Matcher m = createMatcher(regex, source, caseSensitive);
 		while(m.find()) {
 			int count = m.groupCount();
 			
@@ -907,9 +906,20 @@ public class StrUtil {
 	 * @return
 	 */
 	public static Matcher createMatcher(String regex, String content) {
-		Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(content);
+		return createMatcher(regex, content, false);
+	}
+	
+	public static Matcher createMatcher(String regex, String content, boolean caseSensitive) {
+		Pattern pa = null;
+		try {
+			pa = caseSensitive ? Pattern.compile(regex) : Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+		} catch (Exception ex) {
+			throw new MexException(ex);
+		}
+		
+		Matcher ma = pa.matcher(content);
 
-		return m;
+		return ma;
 	}
 	
 	public static String arrayToString(Object arr) {
@@ -978,5 +988,9 @@ public class StrUtil {
 		}
 		
 		return sb.toString();
+	}
+	
+	public static StringBuffer sb() {
+		return new StringBuffer();
 	}
 }

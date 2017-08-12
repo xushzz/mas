@@ -36,8 +36,8 @@ v..                list all files in v folders recursively by given depth, defau
 vr                 refresh 'v folders' cache, the changes in folders will be reflected in next search
 v homeland&tower   conduct search in v folders by multiple conditions, & for 'and', | for 'or'
 v 5.3              the number-format criteria would be additionally read as season 05 episode 03
-(wi\d+)@http://a.cn  filter out those records matching the specified java regex
-(wi\d+)@E:\a.txt   filter out those records matching the specified java regex
+(wi\d+)@http://a.cn  filter out those records matching the specified java regex. $+order,+case
+(wi\d+)@E:\a.txt   filter out those records matching the specified java regex. $+line,+case,conn=\s;\s
 pdf1,4-7 E:\A.pdf  select specified pages from give PDF and export to a new PDF file
 pdf A.pdf,B.pdf    merge all PDF files and export to a new PDF file
 dc                 day check, display memory entries that would happen within 30 days

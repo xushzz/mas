@@ -36,6 +36,18 @@ public class BibleVersion extends MexItem {
 			return true;
 		}
 		
+		if(StrUtil.equals(name, keyWord)) {
+			return true;
+		}
+		
+		if(StrUtil.contains(full, keyWord)) {
+			return true;
+		}
+		
+		if(isRegexMatched(full, keyWord)) {
+			return true;
+		}
+		
 		return false;
 	}
 	
