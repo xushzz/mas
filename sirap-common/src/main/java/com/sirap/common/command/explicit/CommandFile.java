@@ -596,7 +596,12 @@ public class CommandFile extends CommandBase {
 					export(result);
 				} else if(StrUtil.equals(KEY_PRINT_TXT_LINENUMBER, type)) {
 					List<String> records = FileOpener.readTextContent(filePath, true);
-					export(CollectionUtil.lineNumber(records, true));
+					boolean showLineNumber = OptionUtil.readBoolean(options, "line", true);
+					if(OptionUtil.readBoolean(options, "line", true)) {
+						export(CollectionUtil.lineNumber(records, true));
+					} else {
+						export(records);
+					}
 				}
 				
 				return true;

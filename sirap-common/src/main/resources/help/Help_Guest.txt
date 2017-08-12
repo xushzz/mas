@@ -5,6 +5,7 @@
 fire\*water        display any record containing a word, as in _1-9a-z, between fire and water
 ?fire&water        display any record containing both fire and water
 ?fire|water        display any record containing fire or water
+'rx:\d+            full regular expression matched, aka regex matched, start with rx:whatever
 'fire              the single quote behaves exactly the same as question mark, and i prefer '
 search             the aforementioned rules apply for any other searching commands
 search             such as 'ch fire', 'F: water' and so on
