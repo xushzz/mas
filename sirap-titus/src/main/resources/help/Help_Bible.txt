@@ -9,4 +9,4 @@ bball              display all bible versions and its links
 bball chinese      display bible versions matching given criteria
 bb.kjv             display all book links with version KJV, fetch
 bb.kjv.load        download given version bible to storage/bible as txt files, ignore if exists, $+force
-ver=SIRAP-BIBLE1.0.6-TITUS  8/11/2017, V
+ver=SIRAP-BIBLE1.0.6-TITUS  9/9/2017, VI

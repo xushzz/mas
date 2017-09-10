@@ -18,6 +18,7 @@ mvn.result.txt
 !**/Config_Mas.properties
 !**/Extra.properties
 /sirap-email
+/sirap-zoo
 
 # Windows image file caches
 Thumbs.db
