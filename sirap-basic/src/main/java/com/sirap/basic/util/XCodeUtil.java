@@ -200,8 +200,9 @@ public class XCodeUtil {
 		Unicode: \u4E07\u0041
 		UTF-8  : #E4B887#41
 		GBK    : \gCDF2\g41
-	 * @param source
-	 * @return
+	 * @param source \u4E07\u0041
+	 * 		  code unicode
+	 * @return 万A
 	 */
 	public static String replaceHexChars(String source, String code) {
 		if(source == null) {

@@ -126,6 +126,18 @@ public class DateUtil {
 		return parse(format, dateStr, true);
 	}
 	
+	public static String wrapTightYMD(String source) {
+		if(!StrUtil.isRegexMatched("\\d{1,8}", source)) {
+			XXXUtil.alert("Illegal date string ", source);
+		}
+		
+		String current = displayNow(DATE_TIGHT);
+		int len = DATE_TIGHT.length() -source.length();
+		String value = current.substring(0, len) + source;
+		
+		return value;
+	}
+	
 	private static String wrapZero(String datetimeItems) {
 		int len = DATETIME_ALL_TIGHT.length() - datetimeItems.length();
 		StringBuffer sb = new StringBuffer();
