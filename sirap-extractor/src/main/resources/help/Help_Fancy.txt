@@ -1,7 +1,7 @@
 lady[iga,pinder,carver]  display URLs of lady-related photos from corresponding original web-sites
 mei..                    list all organizations in library
 mei.orgs                 list all organizations in library
-mei....                  list all lass items in library
+mei....                  list all lass items in library, options:$m=3, m means max items
 mei.lass                 list all lass items in library
 mei t/284                list image links for specified lass
 mei s/59                 list image links for specified category

@@ -7,7 +7,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 import com.sirap.basic.domain.MexObject;
+import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.IOUtil;
+import com.sirap.basic.util.MathUtil;
+import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
@@ -40,10 +43,15 @@ public class CommandFancy extends CommandBase {
 			MeituImageLinksExtractor justin = new MeituImageLinksExtractor(singleParam);
 			justin.process();
 			items.addAll(justin.getMexItems());
-
-			List<MexObject> morePages = MeituManager.g().explode(singleParam, justin.getCountOfAlbum());
-			items.addAll(MeituManager.g().getImageLinks(morePages));
-
+			
+			Integer value = MathUtil.toInteger(OptionUtil.readString(options, "m", null));
+			if(value != null) {
+				items = CollectionUtil.top(items, value);
+			} else {
+				List<MexObject> morePages = MeituManager.g().explode(singleParam, justin.getCountOfAlbum());
+				items.addAll(MeituManager.g().getImageLinks(morePages));
+			}
+			
 			export(items);
 
 			return true;
