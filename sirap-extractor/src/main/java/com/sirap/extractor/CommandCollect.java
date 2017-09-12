@@ -6,6 +6,7 @@ import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.output.PDFParams;
 import com.sirap.basic.util.CollectionUtil;
+import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.ObjectUtil;
@@ -16,6 +17,7 @@ import com.sirap.common.domain.WeatherRecord;
 import com.sirap.common.extractor.Extractor;
 import com.sirap.common.framework.command.target.TargetPDF;
 import com.sirap.extractor.domain.ZhihuRecord;
+import com.sirap.extractor.impl.CCTVProgramExtractor;
 import com.sirap.extractor.impl.EnglishDictionaryExtractor;
 import com.sirap.extractor.impl.FindJarExtractor;
 import com.sirap.extractor.impl.IcibaTranslationExtractor;
@@ -44,6 +46,7 @@ public class CommandCollect extends CommandBase {
 	private static final String KEY_WIKI_SUMMARY = "wk";
 	private static final String KEY_RSS = "rss";
 	private static final String KEY_JAR= "jar";
+	private static final String KEY_CCTV = "cctv(1|2|3|4asia|4europe|4america|5|6|7|8|9|documentary|10|11|12|13|14|15|news|espanol|french|arabic|russian|5plus)";
 
 	{
 		helpMeanings.put("money.forex.url", XRatesForexRateExtractor.URL_X_RATES);
@@ -199,6 +202,23 @@ public class CommandCollect extends CommandBase {
 		singleParam = parseParam(KEY_JAR + "\\s+(.+?)");
 		if(singleParam != null) {
 			Extractor<MexObject> mike = new FindJarExtractor(singleParam);
+			mike.process();
+			export(mike.getMexItems());
+			
+			return true;
+		}
+		
+		params = parseParams(KEY_CCTV + "(|\\s\\d{1,8})");
+		if(params != null) {
+			String channel = params[0];
+			String date = params[1];
+			if(date.isEmpty()) {
+				date = DateUtil.displayNow(DateUtil.DATE_TIGHT);
+			} else {
+				date = DateUtil.wrapTightYMD(date);
+			}
+			
+			Extractor<MexObject> mike = new CCTVProgramExtractor(channel, date);
 			mike.process();
 			export(mike.getMexItems());
 			

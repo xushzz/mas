@@ -9,7 +9,6 @@ import java.util.List;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.IOUtil;
-import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
@@ -44,12 +43,13 @@ public class CommandFancy extends CommandBase {
 			justin.process();
 			items.addAll(justin.getMexItems());
 			
-			Integer value = MathUtil.toInteger(OptionUtil.readString(options, "m", null));
-			if(value != null) {
-				items = CollectionUtil.top(items, value);
-			} else {
+			boolean showAll = OptionUtil.readBoolean(options, "all", false);
+			if(showAll) {
 				List<MexObject> morePages = MeituManager.g().explode(singleParam, justin.getCountOfAlbum());
 				items.addAll(MeituManager.g().getImageLinks(morePages));
+			} else {
+				int sample = g().getUserNumberValueOf("mei.some", 7);
+				items = CollectionUtil.top(items, sample);
 			}
 			
 			export(items);
@@ -81,7 +81,6 @@ public class CommandFancy extends CommandBase {
 				if(FileOpener.isTextFile(filePath)) {
 					List<String> records = IOUtil.readFileIntoList(filePath, g().getCharsetInUse());
 					List<MexObject> items = MeituManager.g().readLassPath(records);
-//					items = CollectionUtil.top(items, 1000);
 					List<MeituLassItem> intros = MeituManager.g().getAllLassIntros(items);
 					Collections.sort(intros);
 					export(intros);

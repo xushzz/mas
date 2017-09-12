@@ -3,6 +3,7 @@ package com.sirap.geek;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexObject;
@@ -46,6 +47,7 @@ public class CommandDev extends CommandBase {
 	private static final String KEY_TO_LOWERCASE= "lo";
 	private static final String KEY_ZIP = FileUtil.SUFFIXES_ZIP.replace(';', '|');
 	private static final String KEY_PRINT_CLASS = "cl";
+	private static final String KEY_UUID = "uuid";
 
 	public boolean handle() {
 		singleParam = parseParam(KEY_PATH + "\\s(.*?)");
@@ -312,6 +314,25 @@ public class CommandDev extends CommandBase {
 			List<String> items = ObjectUtil.getClassDetail(ObjectUtil.forName(name));
 			export(items);
 			
+			return true;
+		}
+		
+		if(is(KEY_UUID)) {
+			String value = UUID.randomUUID().toString().replace("-", "");
+			export(value);
+			
+			return true;
+		}
+		
+		singleParam = parseParam(KEY_UUID + "(\\d{1,3})");
+		if(singleParam != null) {
+			List<String> items = new ArrayList<>();
+			int count = Integer.parseInt(singleParam);
+			for(int i = 0; i < count; i++) {
+				items.add(UUID.randomUUID().toString().replace("-", ""));
+			}
+			
+			export(items);
 			return true;
 		}
 		

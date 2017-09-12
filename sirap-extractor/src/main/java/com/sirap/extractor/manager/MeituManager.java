@@ -52,7 +52,6 @@ public class MeituManager {
 	
 	public List<MeituLassItem> getAllLassItems() {
 		List<MeituOrgItem> items = getAllOrgItems(true);
-//		items = CollectionUtil.top(items, 2);
 		MasterMexItemsOriented<MeituOrgItem, MeituLassItem> master = new MasterMexItemsOriented<MeituOrgItem, MeituLassItem>(items, new WorkerMexItemsOritented<MeituOrgItem, MeituLassItem>() {
 
 			@Override
