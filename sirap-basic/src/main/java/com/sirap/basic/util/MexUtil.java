@@ -387,4 +387,14 @@ public class MexUtil {
 			throw new MexException(ex.getMessage());
 		}
 	}
+	
+	public static String print(Object obj) {
+		if(obj instanceof MexItem) {
+			return ((MexItem)obj).toPrint();
+		} else {
+			return obj + "";
+		}
+		
+		
+	}
 }

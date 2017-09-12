@@ -119,4 +119,35 @@ public abstract class MexItem implements Serializable {
 	public void print(String options) {
 		C.pl(toPrint(options));
 	}
+	
+	public String printAll(Object... values) {
+		StringBuffer sb = new StringBuffer();
+		for(int i = 0; i < values.length; i++) {
+			Object obj = values[i];
+			
+			sb.append(obj);
+			if(i != values.length - 1) {
+				sb.append(" ");
+			}
+		}
+		
+		return sb.toString();
+	}
+	
+	public String printAllButNull(Object... values) {
+		StringBuffer sb = new StringBuffer();
+		for(int i = 0; i < values.length; i++) {
+			Object obj = values[i];
+			if(obj == null) {
+				continue;
+			}
+			
+			sb.append(obj);
+			if(i != values.length - 1) {
+				sb.append(" ");
+			}
+		}
+		
+		return sb.toString();
+	}
 }

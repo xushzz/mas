@@ -555,7 +555,7 @@ public class IOUtil {
 			}
 			
 			for(Object member: objList) {
-				thomas.write(member + "");
+				thomas.write(MexUtil.print(member));
 				thomas.newLine();
 			}
 			

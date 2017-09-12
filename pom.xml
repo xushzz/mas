@@ -17,7 +17,6 @@
 		<module>sirap-extractor</module>
 		<module>sirap-geek</module>
 		<module>sirap-ldap</module>
-		<module>sirap-security</module>
 		<module>sirap-titus</module>
 	<!-- 
 		<module>sirap-basic</module>
@@ -31,7 +30,7 @@
 		<module>sirap-geek</module>
 		<module>sirap-ldap</module>
 		<module>sirap-qrcode</module>
-		<module>sirap-security</module>
+		<module>../maspri/sirap-security</module>
 		<module>sirap-zoo</module>
 		-->
 	</modules>

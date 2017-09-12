@@ -67,7 +67,11 @@ public class C {
 		}
 		
 		for(Object obj: list) {
-			C.pl(obj);
+			if(obj instanceof MexItem) {
+				((MexItem)obj).print();
+			} else {
+				C.pl(obj);
+			}
 		}
 		
 		if(showTotal && list.size() > 5) {

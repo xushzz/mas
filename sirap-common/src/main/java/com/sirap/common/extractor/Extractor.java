@@ -25,8 +25,8 @@ public abstract class Extractor<T extends MexItem> {
 	protected String source;
 	protected List<String> sourceList;
 	protected T mexItem;
-	protected List<T> mexItems = new ArrayList<T>();
-	protected List<Object> objItems = new ArrayList<Object>();
+	protected List<T> mexItems = new ArrayList<>();
+	protected List<Object> objItems = new ArrayList<>();
 	private boolean isMethodPost;
 	private String requestParams;
 	

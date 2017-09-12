@@ -27,6 +27,7 @@ import com.sirap.basic.exception.MexException;
 import com.sirap.basic.output.PDFParams;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.MathUtil;
+import com.sirap.basic.util.MexUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 
@@ -110,7 +111,7 @@ public class PdfHelper {
 				List items = (List)record;
 				for(int k = 0; k < items.size(); k++) {
 					Object item = items.get(k);
-					String stuff = item + "";
+					String stuff = MexUtil.print(item);
 					if(stuff.isEmpty()) {
 						stuff = " ";
 					}
