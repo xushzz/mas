@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.util.DateUtil;
-import com.sirap.basic.util.StrUtil;
 import com.sirap.common.extractor.Extractor;
 import com.sirap.extractor.impl.CCTVProgramExtractor;
 
@@ -58,8 +57,7 @@ public class CCTVManager {
 			String apiId = CCTVManager.g().findApiIdByName(channel);
 			Extractor<MexObject> mike = new CCTVProgramExtractor(apiId, date, false);
 			mike.process();
-			String lead = "CCTV" + StrUtil.extend(channel, 2, " ");
-			items.add(lead + " " + mike.getMexItem());
+			items.add(mike.getMexItem() + "");
 		}
 		
 		return items;

@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
@@ -36,6 +37,7 @@ public class DateUtil {
 	public static final String TIME_ONLY = "HH:mm:ss";
 	public static final String TIME_TIGHT = "HHmmss";
 	public static final String[] ROMAN_NUMBERS = {"VII", "I", "II", "III", "IV", "V", "VI"};
+	public static final List WEEK_DAY_NUMBERS = StrUtil.split("Mon,Tue,Wed,Thu,Fri,Sat,Sun");
 	
 	public static Date calendarToDate(Calendar cal) {
 		if(cal == null) {
@@ -107,6 +109,18 @@ public class DateUtil {
 	public static int getHour() {
 		Calendar cal = Calendar.getInstance();
 		return cal.get(Calendar.HOUR_OF_DAY);
+	}
+	
+	public static int getDayOfWeek(Date date) {
+		int index = WEEK_DAY_NUMBERS.indexOf(displayDate(date, "E")) + 1;
+		
+		return index;
+	}
+	
+	public static int getDayOfWeek() {
+		int index = WEEK_DAY_NUMBERS.indexOf(displayNow("E")) + 1;
+		
+		return index;
 	}
 	
 	/***

@@ -47,7 +47,6 @@ public class CommandCollect extends CommandBase {
 	private static final String KEY_WIKI_SUMMARY = "wk";
 	private static final String KEY_RSS = "rss";
 	private static final String KEY_JAR= "jar";
-	private static final String KEY_CCTV = "cctv";
 
 	{
 		helpMeanings.put("money.forex.url", XRatesForexRateExtractor.URL_X_RATES);
@@ -203,37 +202,6 @@ public class CommandCollect extends CommandBase {
 		singleParam = parseParam(KEY_JAR + "\\s+(.+?)");
 		if(singleParam != null) {
 			Extractor<MexObject> mike = new FindJarExtractor(singleParam);
-			mike.process();
-			export(mike.getMexItems());
-			
-			return true;
-		}
-
-		if(is(KEY_CCTV)) {
-			export(CCTVManager.g().allChannels());
-			
-			return true;
-		}
-
-		if(is(KEY_CCTV + KEY_2DOTS)) {
-			export(CCTVManager.g().currentProgrammesInAllChannels());
-			
-			return true;
-		}
-		
-		String regex = KEY_CCTV + "(" + StrUtil.connect(CCTVManager.g().allChannels(), "|") + ")(|\\s\\d{1,8})";
-		params = parseParams(regex);
-		if(params != null) {
-			String channel = params[0];
-			String date = params[1];
-			if(date.isEmpty()) {
-				date = DateUtil.displayNow(DateUtil.DATE_TIGHT);
-			} else {
-				date = DateUtil.wrapTightYMD(date);
-			}
-			
-			String apiId = CCTVManager.g().findApiIdByName(channel);
-			Extractor<MexObject> mike = new CCTVProgramExtractor(apiId, date);
 			mike.process();
 			export(mike.getMexItems());
 			

@@ -25,8 +25,9 @@ public class CCTVProgramExtractor extends Extractor<MexObject> {
 	
 	@Override
 	protected void parseContent() {
-		String regexAliveStart = "\"liveSt\":(\\d+)";
-		String aliveStart = StrUtil.findFirstMatchedItem(regexAliveStart, source);
+		String aliveStart = StrUtil.findFirstMatchedItem("\"liveSt\":(\\d+)", source);
+		String tempChannel = StrUtil.findFirstMatchedItem("\"channelName\":\"([^\"]+)\"", source);
+		String channelName = XCodeUtil.replaceHexChars(tempChannel, Konstants.CODE_UNICODE).replace("\\", "");
 		
 		String regex = "\\{\"t\":\"([^\"]+)\",\"st\":(\\d+),[^\\{\\}]+,\"showTime\":\"([^\"]+)\",[^\\{\\}]+\\}";
 		Matcher ma = createMatcher(regex);
@@ -41,7 +42,7 @@ public class CCTVProgramExtractor extends Extractor<MexObject> {
 				prefix = "*";
 			}
 			
-			MexObject mo = new MexObject(prefix + time + " " + what);
+			MexObject mo = new MexObject(channelName + " " + prefix + time + " " + what);
 			if(isAlive) {
 				mexItem = mo;
 			}
