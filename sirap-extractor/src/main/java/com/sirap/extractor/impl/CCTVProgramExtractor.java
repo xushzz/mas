@@ -11,21 +11,40 @@ import com.sirap.common.extractor.Extractor;
 public class CCTVProgramExtractor extends Extractor<MexObject> {
 	public static final String TEMP = "http://api.cntv.cn/epg/epginfo?serviceId=tvcctv&c=cctv{0}&d={1}";
 	
-	public CCTVProgramExtractor(String channel, String yyyyhhmmDate) {
-		printFetching = true;
-		String url = StrUtil.occupy(TEMP, channel, yyyyhhmmDate);
+	public CCTVProgramExtractor(String apiId, String yyyyhhmmDate, boolean printFetching) {
+		this.printFetching = printFetching;
+		String url = StrUtil.occupy(TEMP, apiId, yyyyhhmmDate);
 		setUrl(url);
 	}
-
+	
+	public CCTVProgramExtractor(String apiId, String yyyyhhmmDate) {
+		printFetching = true;
+		String url = StrUtil.occupy(TEMP, apiId, yyyyhhmmDate);
+		setUrl(url);
+	}
+	
 	@Override
 	protected void parseContent() {
-		String regex = "\\{\"t\":\"([^\"]+)\",[^\\{\\}]+,\"showTime\":\"([^\"]+)\",[^\\{\\}]+\\}";
+		String regexAliveStart = "\"liveSt\":(\\d+)";
+		String aliveStart = StrUtil.findFirstMatchedItem(regexAliveStart, source);
+		
+		String regex = "\\{\"t\":\"([^\"]+)\",\"st\":(\\d+),[^\\{\\}]+,\"showTime\":\"([^\"]+)\",[^\\{\\}]+\\}";
 		Matcher ma = createMatcher(regex);
 		while(ma.find()) {
-			String time = ma.group(2);
-			String what = ma.group(1);
-			String temp = XCodeUtil.replaceHexChars(what, Konstants.CODE_UNICODE).replace("\\", "");
-			MexObject mo = new MexObject(time + " " + temp);
+			String temp = ma.group(1);
+			String what = XCodeUtil.replaceHexChars(temp, Konstants.CODE_UNICODE).replace("\\", "");
+			String start = ma.group(2);
+			String time = ma.group(3);
+			String prefix = " ";
+			boolean isAlive = StrUtil.equals(start, aliveStart);
+			if(isAlive) {
+				prefix = "*";
+			}
+			
+			MexObject mo = new MexObject(prefix + time + " " + what);
+			if(isAlive) {
+				mexItem = mo;
+			}
 			mexItems.add(mo);
 		}
 	}

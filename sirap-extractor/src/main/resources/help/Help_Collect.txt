@@ -18,4 +18,9 @@ rss news           list matching rss feeds provided by baidu, courtesy of https:
 rss.civilnews      list all news items provide by baidu rss with type of civilnews
 rss.4civilnews     list all news items provide by baidu rss with type of civilnews
 rss.column/007000012,news,feed,letter, provided by ftchinese
+cctv               list all CCTV channels, 1-15, and 5p
+cctv..             list current programs in all channels 
+cctv5              list programs in CCTV5 all day today
+cctv5 20170913     list programs in CCTV5 in specific day
+cctv 15            list programs in CCTV5 in current year+month+15
 ver=EXTRACTOR-COLLECT1.0.5-BAOBAO  7/29/2017, VI

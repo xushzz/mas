@@ -28,6 +28,7 @@ import com.sirap.extractor.impl.WikiSummaryExtractor;
 import com.sirap.extractor.impl.XRatesForexRateExtractor;
 import com.sirap.extractor.impl.ZhihuSearchExtractor;
 import com.sirap.extractor.manager.BaiduExtractorManager;
+import com.sirap.extractor.manager.CCTVManager;
 import com.sirap.extractor.manager.FinancialTimesChineseExtractorManager;
 import com.sirap.extractor.manager.ForexManager;
 import com.sirap.extractor.manager.RssExtractorManager;
@@ -46,7 +47,7 @@ public class CommandCollect extends CommandBase {
 	private static final String KEY_WIKI_SUMMARY = "wk";
 	private static final String KEY_RSS = "rss";
 	private static final String KEY_JAR= "jar";
-	private static final String KEY_CCTV = "cctv(1|2|3|4asia|4europe|4america|5|6|7|8|9|documentary|10|11|12|13|14|15|news|espanol|french|arabic|russian|5plus)";
+	private static final String KEY_CCTV = "cctv";
 
 	{
 		helpMeanings.put("money.forex.url", XRatesForexRateExtractor.URL_X_RATES);
@@ -207,8 +208,21 @@ public class CommandCollect extends CommandBase {
 			
 			return true;
 		}
+
+		if(is(KEY_CCTV)) {
+			export(CCTVManager.g().allChannels());
+			
+			return true;
+		}
+
+		if(is(KEY_CCTV + KEY_2DOTS)) {
+			export(CCTVManager.g().currentProgrammesInAllChannels());
+			
+			return true;
+		}
 		
-		params = parseParams(KEY_CCTV + "(|\\s\\d{1,8})");
+		String regex = KEY_CCTV + "(" + StrUtil.connect(CCTVManager.g().allChannels(), "|") + ")(|\\s\\d{1,8})";
+		params = parseParams(regex);
 		if(params != null) {
 			String channel = params[0];
 			String date = params[1];
@@ -218,7 +232,8 @@ public class CommandCollect extends CommandBase {
 				date = DateUtil.wrapTightYMD(date);
 			}
 			
-			Extractor<MexObject> mike = new CCTVProgramExtractor(channel, date);
+			String apiId = CCTVManager.g().findApiIdByName(channel);
+			Extractor<MexObject> mike = new CCTVProgramExtractor(apiId, date);
 			mike.process();
 			export(mike.getMexItems());
 			
