@@ -972,7 +972,7 @@ public class StrUtil {
 		return sb.toString();
 	}
 	
-	public static String useSlash(Object... items) {
+	public static String useDelimiter(String what, Object... items) {
 		StringBuffer sb = new StringBuffer();
 		for(int i = 0; i < items.length; i++) {
 			String item = items[i] + "";
@@ -982,12 +982,17 @@ public class StrUtil {
 				break;
 			}
 
-			if(!item.endsWith("/")) {
-				sb.append("/");
+			if(!item.endsWith(what)) {
+				sb.append(what);
 			}
 		}
 		
 		return sb.toString();
+	}
+	
+	public static String useSlash(Object... items) {
+		String delimiter = "/";
+		return useDelimiter(delimiter, items);
 	}
 	
 	public static StringBuffer sb() {

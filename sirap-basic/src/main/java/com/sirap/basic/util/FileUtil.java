@@ -697,4 +697,20 @@ public class FileUtil {
 		
 		return matchedFiles;
 	}
+	
+	public static void removeEntireFolder(String filepath) {  
+		File file = new File(filepath);
+	    if (!file.exists()) {
+	        return;  
+	    }
+	    if (file.isFile()) {  
+	    	file.delete();  
+	        return;  
+	    }
+	    File[] files = file.listFiles();  
+	    for (int i = 0; i < files.length; i++) {  
+	        removeEntireFolder(files[i].getAbsolutePath());  
+	    }  
+	    file.delete();  
+	}  
 }

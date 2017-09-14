@@ -1,0 +1,24 @@
+import java.io.*;
+import java.math.*;
+import java.text.*;
+import java.text.spi.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.*;
+import java.util.concurrent.locks.*;
+import java.util.function.*;
+import java.util.jar.*;
+import java.util.logging.*;
+import java.util.prefs.*;
+import java.util.regex.*;
+import java.util.spi.*;
+import java.util.stream.*;
+import java.util.zip.*;
+//${auto.imports}
+//${manual.imports}
+
+public class ARIS {
+	public static void main(String[] args) {
+		//${manual.javacode}
+	}
+}

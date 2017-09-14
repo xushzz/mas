@@ -46,8 +46,9 @@ public class CommandDev extends CommandBase {
 	private static final String KEY_TO_UPPERCASE = "up";
 	private static final String KEY_TO_LOWERCASE= "lo";
 	private static final String KEY_ZIP = FileUtil.SUFFIXES_ZIP.replace(';', '|');
-	private static final String KEY_PRINT_CLASS = "cl";
+	private static final String KEY_PRINT_CLASS = "(cl|class)";
 	private static final String KEY_UUID = "uuid";
+	private static final String KEY_CHANGE_FILESEPARATOR = "sw";
 
 	public boolean handle() {
 		singleParam = parseParam(KEY_PATH + "\\s(.*?)");
@@ -306,9 +307,9 @@ public class CommandDev extends CommandBase {
 		}
 
 		regex = KEY_PRINT_CLASS + "\\s+([a-zA-Z\\d_\\.\\$/\\\\]+)";
-		singleParam = parseParam(regex);
-		if(singleParam != null) {
-			String name = singleParam.replace('/', '.');
+		params = parseParams(regex);
+		if(params != null) {
+			String name = params[1].replace('/', '.');
 			name = name.replace('\\', '.');
 			name = name.replaceAll("\\.class$", "");
 			List<String> items = ObjectUtil.getClassDetail(ObjectUtil.forName(name));
@@ -334,6 +335,24 @@ public class CommandDev extends CommandBase {
 			
 			export(items);
 			return true;
+		}
+		
+		singleParam = parseParam(KEY_CHANGE_FILESEPARATOR + "\\s+(.+)");
+		if(singleParam != null) {
+			char windows = '\\';
+			char unix = '/';
+			List<String> items = new ArrayList<>();
+			String temp = singleParam.replace(windows, unix);
+			if(!StrUtil.equals(temp, singleParam)) {
+				items.add(temp);
+			}
+			
+			temp = singleParam.replace(unix, windows);
+			if(!StrUtil.equals(temp, singleParam)) {
+				items.add(temp);
+			}
+			
+			export(items);
 		}
 		
 		return false;

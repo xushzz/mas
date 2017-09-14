@@ -1,0 +1,3 @@
+ar java code       compile and execute java code, method level 
+ar =42+323         compile and execute java code, System.out.println(42+323);
+ver=GEEK-ARIS1.0.1-PILOT  9/14/2017, IV
