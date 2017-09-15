@@ -177,7 +177,31 @@ public class PanaceaBox {
 		items.add(Konstants.OS_UNIX);
 		items.add(Konstants.OS_MAC);
 		boolean flag = StrUtil.containsIgnoreCase(name, items);
-		
+
 		return flag;
 	}
+	
+	public static String runtimeJarLocation() {
+		String path = System.getenv("PATH");
+		String what = isMacOrLinuxOrUnix() ? ":" : ";";
+		List<String> items = StrUtil.split(path, what);
+		for(String item : items) {
+			String regex = "jre.*(/|\\\\)bin$";
+			if(StrUtil.isRegexFound(regex, item)) {
+				String jrePath = item.replaceAll("bin$", "");
+				String rtJarPath = StrUtil.useSeparator(jrePath, "lib", "rt.jar");
+				if(FileUtil.exists(rtJarPath)) {
+					if(isMacOrLinuxOrUnix()) {
+						rtJarPath = rtJarPath.replace("\\", "/");
+					} else {
+						rtJarPath = rtJarPath.replace("/", "\\");
+					}
+					return rtJarPath;
+				}
+			}
+		}
+		
+		throw new MexException("JRE not found, uncanny.");
+	}
+
 }

@@ -4,11 +4,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 
-import com.sirap.basic.component.MexedMap;
 import com.sirap.basic.domain.MexFile;
+import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.output.PDFParams;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.CollectionUtil;
@@ -58,35 +56,34 @@ public class CommandMonitor extends CommandBase {
 	public boolean handle() {
 		singleParam = parseParam(KEY_ECHO + "\\s(.+?)");
 		if(singleParam != null) {
-			Properties props = System.getProperties();
-			MexedMap mapProps = IOUtil.createMexedMapByProperties(props);
+			List<String> sysProps = new ArrayList(System.getProperties().entrySet());
+			List<String> sysEnvis = new ArrayList(System.getenv().entrySet());
 			
-			Map<String, String> envs = System.getenv();
-			MexedMap mapEnvs = new MexedMap(envs);
-			
-			String temp = singleParam;
-			if(temp.equalsIgnoreCase("s")) {
-				List<String> items = mapProps.listEntries();
-				items.add("processors=" + Runtime.getRuntime().availableProcessors());
-				items.add("threads.copy=" + SimpleKonfig.g().getUserValueOf("threads.copy"));
-				items.add("threads.download=" + SimpleKonfig.g().getUserValueOf("threads.download"));
-				export(items);
+			String criteria = singleParam;
+			if(criteria.equalsIgnoreCase("-s")) {
+				export(sysProps);
 				return true;
-			} else if(temp.equalsIgnoreCase("e")) {
-				List<String> items = mapEnvs.listEntries();
-				export(items);
+			} else if(criteria.equalsIgnoreCase("-e")) {
+				export(sysEnvis);
 				return true;
 			}
 			
 			List<String> records = new ArrayList<String>();
-			records.addAll(mapProps.getValuesByKeyword(singleParam, true));
-			records.addAll(mapEnvs.getValuesByKeyword(singleParam, true));
+			records.addAll(sysProps);
+			records.addAll(sysEnvis);
 			
-			if(records.isEmpty()) {
-				records = StrUtil.split(temp, '\\');
+			if(StrUtil.isRegexMatched("-(se|es)", criteria)) {
+				export(records);
+			} else {
+				List<MexObject> items = CollectionUtil.filter(CollectionUtil.toMexedObjects(records), criteria);
+				
+				if(!items.isEmpty()) {
+					export(items);
+				} else {
+					export(StrUtil.split(criteria, '\\'));
+				}
 			}
 			
-			export(records);
 			return true;
 		}
 		

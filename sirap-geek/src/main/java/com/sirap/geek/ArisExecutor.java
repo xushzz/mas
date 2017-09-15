@@ -18,35 +18,27 @@ import com.sirap.basic.tool.C;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
-import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.RandomUtil;
 import com.sirap.basic.util.StrUtil;
 
 public class ArisExecutor {
 	
-	public static final String FINAL_JAVA_FILE_SHORT_NAME = "ARIS";
-	public static final String TEMPLATE_FILEPATH = "/" + FINAL_JAVA_FILE_SHORT_NAME + ".java.txt";
-	public static final String FLAG_AUTO_IMPORTS = "//${auto.imports}";
-	public static final String FLAG_MANUAL_IMPORTS = "//${manual.imports}";
-	public static final String FLAG_MANUAL_JAVACODE = "//${manual.javacode}";
+	public static final String FINAL_CLASS_NAME = "ARIS";
+	private static final String AUTO_INCLUDE_IMPORTS = "java.io,java.math,java.text,java.util,java.net";
 
 	public static ArisExecutor g = new ArisExecutor();
 
 	private List<String> sourceCode;
 	private String finalJavaFileFullPath;
 	private String whereToGenerate;
-	private List<String> consoleOutput = new ArrayList<>();
-	private List<String> autoImports;
+	private List<String> consoleOutput;
 	private List<String> manualJavacode;
 	private String configClasspath;
 	
 	private void init() {
-		sourceCode = IOUtil.readResourceIntoList(TEMPLATE_FILEPATH);
 		finalJavaFileFullPath = null;
 		whereToGenerate = null;
-		consoleOutput = new ArrayList<>();
-		autoImports = new ArrayList<>();
 	}
 	
 	public List<String> execute(List<String> manualJavacode, String configClasspath, boolean keepGeneratedFiles) {
@@ -55,8 +47,7 @@ public class ArisExecutor {
 		this.manualJavacode = manualJavacode;
 		this.configClasspath = configClasspath;
 		
-		generateConfigImportsFromClassPath();
-		injectImportsAndJavacode();
+		generateSourceCode();		
 		saveSourceCode();
 		compileAndRun();
 		if(!keepGeneratedFiles) {
@@ -66,9 +57,40 @@ public class ArisExecutor {
 		return consoleOutput;
 	}
 	
-	private void generateConfigImportsFromClassPath() {
+	private void generateSourceCode() {
+		sourceCode = new ArrayList<>();
+		sourceCode.add("");
+		
+		//add runtimeImports;
+		sourceCode.addAll(genearteRuntimeImportsFromJRELibrary(AUTO_INCLUDE_IMPORTS));
+		sourceCode.add("");
+		
+		//add configImports;
+		sourceCode.addAll(generateConfigImportsFromClassPath());
+		//add manualImports;
+		sourceCode.add("");
+		
+		sourceCode.add("public class " + FINAL_CLASS_NAME + " {");
+		sourceCode.add("");
+		sourceCode.add("\tpublic static void main(String[] args) {");
+		//add manual java code;
+		for(String item : manualJavacode) {
+			sourceCode.add("\t\t" + item + (item.endsWith(";") ? "":";"));
+		}
+		sourceCode.add("\t}");
+		sourceCode.add("}");
+	}
+	
+	private List<String> genearteRuntimeImportsFromJRELibrary(String desiredPackages) {
+		String runtimeJarPath = PanaceaBox.runtimeJarLocation();
+		return generateImportsByJarFile(runtimeJarPath, StrUtil.split(desiredPackages));
+	}
+	
+	private List<String> generateConfigImportsFromClassPath() {
+		List<String> imports = new ArrayList<>();
+		
 		if(EmptyUtil.isNullOrEmpty(configClasspath)) {
-			return;
+			return imports;
 		}
 		
 		List<String> items = StrUtil.split(configClasspath, ';');
@@ -78,11 +100,13 @@ public class ArisExecutor {
 			}
 			
 			if(StrUtil.endsWith(item, ".jar")) {
-				autoImports.addAll(generateImportsByJarFile(item));
+				imports.addAll(generateImportsByJarFile(item));
 			} else {
-				autoImports.addAll(generateImportsByFolder(item));
+				imports.addAll(generateImportsByFolder(item));
 			}
 		}
+		
+		return imports;
 	}
 	
 	private void cleanGeneratedFiles() {
@@ -90,9 +114,9 @@ public class ArisExecutor {
 	}
 	
 	private void compileAndRun() {
+		consoleOutput = new ArrayList<>();
 		String javacCommand = "javac -cp \"{0}\" {1}";
 		javacCommand = StrUtil.occupy(javacCommand, configClasspath, finalJavaFileFullPath);
-//		C.pl(javacCommand);
 		List<String> errors = PanaceaBox.executeAndRead(javacCommand);
 		consoleOutput.addAll(errors);
 		if(!EmptyUtil.isNullOrEmpty(errors)) {
@@ -102,34 +126,8 @@ public class ArisExecutor {
 		
 		String javaCommand = "java -cp \"{0}\" {1}";
 		String classpath = StrUtil.useDelimiter(";", whereToGenerate, configClasspath);
-		javaCommand = StrUtil.occupy(javaCommand, classpath, FINAL_JAVA_FILE_SHORT_NAME);
-//		C.pl(javaCommand);
+		javaCommand = StrUtil.occupy(javaCommand, classpath, FINAL_CLASS_NAME);
 		consoleOutput.addAll(PanaceaBox.executeAndRead(javaCommand));
-	}
-	
-	private void injectImportsAndJavacode() {
-		sourceCode = new ArrayList<>();
-		List<String> template = IOUtil.readResourceIntoList(TEMPLATE_FILEPATH);
-		for(String line : template) {
-			if(line.contains(FLAG_AUTO_IMPORTS) && !EmptyUtil.isNullOrEmpty(autoImports)) {
-				for(String item : autoImports) {
-					sourceCode.add(item);
-				}
-				sourceCode.add("");
-				continue;
-			}
-			
-			if(line.contains(FLAG_MANUAL_JAVACODE) && !EmptyUtil.isNullOrEmpty(manualJavacode)) {
-				for(String item : manualJavacode) {
-					sourceCode.add(item + (item.endsWith(";") ? "":";"));
-				}
-				sourceCode.add("");
-
-				continue;
-			}
-			
-			sourceCode.add(line);
-		}
 	}
 	
 	private void saveSourceCode() {
@@ -138,7 +136,7 @@ public class ArisExecutor {
 		File target = new File(whereToGenerate);
 		target.mkdirs();
 		
-		finalJavaFileFullPath = StrUtil.useSeparator(whereToGenerate, FINAL_JAVA_FILE_SHORT_NAME + ".java");
+		finalJavaFileFullPath = StrUtil.useSeparator(whereToGenerate, FINAL_CLASS_NAME + ".java");
 		
 		try(BufferedWriter thomas = new BufferedWriter(new FileWriter(finalJavaFileFullPath))) {
 			for(String item : sourceCode) {
@@ -184,6 +182,10 @@ public class ArisExecutor {
 	}
 	
 	public static List<String> generateImportsByJarFile(String jarFilepath) {
+		return generateImportsByJarFile(jarFilepath, null);
+	}
+	
+	public static List<String> generateImportsByJarFile(String jarFilepath, List<String> desiredPkgNames) {
 		Set<String> checker = new HashSet<>();
 		List<String> imports = new ArrayList<>();
 		Pattern pa = Pattern.compile("(.+)/.+\\.class");
@@ -197,6 +199,10 @@ public class ArisExecutor {
 	    			String path = ma.group(1);
 	    			if(!checker.contains(path)) {
 	    				checker.add(path);
+	    				String fullPackageName = ma.group(1).replace('/', '.');
+	    				if(!EmptyUtil.isNullOrEmpty(desiredPkgNames) && !StrUtil.startsWith(fullPackageName, desiredPkgNames)) {
+	    					continue;
+	    				}
 		    			String item = "import " + ma.group(1).replace('/', '.') + ".*;";
 		    			imports.add(item);
 	    			}	    			

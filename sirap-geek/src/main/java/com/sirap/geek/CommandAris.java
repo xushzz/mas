@@ -22,9 +22,9 @@ public class CommandAris extends CommandBase {
 			} else {
 				String output = StrUtil.findFirstMatchedItem("^=(.+)", singleParam);
 				if(output != null) {
-					javacodes.add("\t\t" + StrUtil.occupy("System.out.println({0});", output));
+					javacodes.add(StrUtil.occupy("System.out.println({0});", output));
 				} else {
-					javacodes.add("\t\t" + singleParam + ";");
+					javacodes.add(singleParam + ";");
 				}
 			}
 				
