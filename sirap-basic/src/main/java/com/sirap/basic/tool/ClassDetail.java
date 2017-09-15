@@ -84,8 +84,7 @@ public class ClassDetail {
 	
 	private String readPackageInfo() {
 		Package pack = glass.getPackage();
-		String temp = pack.getName();
-		return "package " + temp + ";";
+		return pack != null ? "package " + pack.getName() + ";" : "";
 	}
 	
 	private String readClassDefinition() {
