@@ -366,27 +366,6 @@ public class MexUtil {
 		return true;
 	}
 	
-	public static List<MexZipEntry> parseZipEntries(String filepath) {
-		try(ZipFile jarFile = new ZipFile(filepath)) {
-			List<MexZipEntry> items = new ArrayList<>();
-		    Enumeration what = jarFile.entries();
-		    String jarName = jarFile.getName();
-		    while (what.hasMoreElements()) {
-		    	Object obj = what.nextElement();
-		    	if(obj instanceof ZipEntry) {
-			    	ZipEntry entry = (ZipEntry)obj;
-			    	MexZipEntry xiu = new MexZipEntry(entry);
-			    	xiu.setJarName(jarName);
-			    	items.add(xiu);
-		    	}
-		    }
-		    
-		    return items;
-		} catch (Exception ex) {
-			throw new MexException(ex.getMessage());
-		}
-	}
-	
 	public static String print(Object obj) {
 		if(obj instanceof MexItem) {
 			return ((MexItem)obj).toPrint();

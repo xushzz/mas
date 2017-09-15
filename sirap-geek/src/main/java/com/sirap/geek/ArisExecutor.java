@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.tool.C;
+import com.sirap.basic.util.ArisUtil;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
@@ -82,7 +83,7 @@ public class ArisExecutor {
 	}
 	
 	private List<String> genearteRuntimeImportsFromJRELibrary(String desiredPackages) {
-		String runtimeJarPath = PanaceaBox.runtimeJarLocation();
+		String runtimeJarPath = StrUtil.useSeparator(ArisUtil.getRuntimeLibraryLocation(), "rt.jar");
 		return generateImportsByJarFile(runtimeJarPath, StrUtil.split(desiredPackages));
 	}
 	

@@ -23,6 +23,7 @@ import com.sirap.basic.component.CleverFolder;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.exception.MexException;
+import com.sirap.basic.tool.D;
 import com.sirap.basic.tool.FileWalker;
 
 @SuppressWarnings("unchecked")
@@ -712,5 +713,40 @@ public class FileUtil {
 	        removeEntireFolder(files[i].getAbsolutePath());  
 	    }  
 	    file.delete();  
-	}  
+	}
+	
+	public static List<String> getAllXXXFiles(String rootPath, String suffix) {
+		File file = new File(rootPath);
+		List<String> items = new ArrayList<>();
+		if(file.isDirectory()) {
+			getAllJarFiles(items, file, suffix);
+		}
+		
+		return items;
+	}
+	
+	private static void getAllJarFiles(List<String> items, File file, String suffix) {
+		if(!file.exists()) {
+			return;
+		}
+		
+		if(file.isDirectory()) {
+			File[] subFiles = file.listFiles(new FileFilter() {
+				@Override
+				public boolean accept(File subFile) {
+					if(subFile.isDirectory() || StrUtil.endsWith(subFile.getAbsolutePath(), suffix)) {
+						return true;
+					}
+					
+					return false;
+				}
+			});
+			
+			for(File subFile : subFiles) {
+				getAllJarFiles(items, subFile, suffix);
+			}
+		} else {
+			items.add(file.getAbsolutePath());
+		}
+	}
 }

@@ -12,11 +12,11 @@ import com.sirap.basic.exception.MexException;
 import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.search.MexFilter;
 import com.sirap.basic.tool.C;
+import com.sirap.basic.util.ArisUtil;
 import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.MathUtil;
-import com.sirap.basic.util.MexUtil;
 import com.sirap.basic.util.ObjectUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
@@ -282,7 +282,7 @@ public class CommandDev extends CommandBase {
 				File jar = parseFile(onefile);
 				if(jar != null) {
 					String filepath = jar.getAbsolutePath();
-					List<MexZipEntry> items = MexUtil.parseZipEntries(filepath);
+					List<MexZipEntry> items = ArisUtil.parseZipEntries(filepath);
 					allItems.addAll(items);
 				}
 			}

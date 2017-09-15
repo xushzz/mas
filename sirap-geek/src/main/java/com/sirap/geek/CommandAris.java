@@ -4,12 +4,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sirap.basic.util.ArisUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
 
 public class CommandAris extends CommandBase {
 	private static final String KEY_EXECUTE_JAVACODE = "ar";
+	private static final String KEY_JRE_LOCATION = "jre";
 
 	public boolean handle() {
 		
@@ -33,6 +35,12 @@ public class CommandAris extends CommandBase {
 			String classpath = StrUtil.connect(cpItems, ";");
 			
 			export(ArisExecutor.g.execute(javacodes, classpath, keepAlive));
+			
+			return true;
+		}
+		
+		if(is(KEY_JRE_LOCATION)) {
+			export(ArisUtil.getRuntimeLibraryLocation());
 			
 			return true;
 		}

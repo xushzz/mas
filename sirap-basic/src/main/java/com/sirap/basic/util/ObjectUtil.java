@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sirap.basic.exception.MexException;
-import com.sirap.basic.tool.ClassDetail;
+import com.sirap.basic.tool.ArisDetail;
 
 @SuppressWarnings("rawtypes")
 public class ObjectUtil {
@@ -148,7 +148,7 @@ public class ObjectUtil {
 	}
 	
 	public static List<String> getClassDetail(Class glass) {
-		ClassDetail xiu = new ClassDetail(glass);
+		ArisDetail xiu = new ArisDetail(glass);
 		return xiu.getAllParts();
 	}
 }

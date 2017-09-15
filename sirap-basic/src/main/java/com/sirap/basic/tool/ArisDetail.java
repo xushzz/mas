@@ -12,15 +12,16 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.sirap.basic.util.ArisUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.StrUtil;
 
 @SuppressWarnings("rawtypes")
-public class ClassDetail {
+public class ArisDetail {
 	private Class glass;
 	private Set<String> imports = new TreeSet<>();
 	
-	public ClassDetail(Class glass) {
+	public ArisDetail(Class glass) {
 		this.glass = glass;
 	}
 	
@@ -39,12 +40,14 @@ public class ClassDetail {
 			content.add(location);
 			content.add("");
 		}
-		content.add(packageInfo);
-		if(!EmptyUtil.isNullOrEmpty(importInfo)) {
+		if(!EmptyUtil.isNullOrEmpty(packageInfo)) {
+			content.add(packageInfo);
 			content.add("");
-			content.addAll(importInfo);
 		}
-		content.add("");
+		if(!EmptyUtil.isNullOrEmpty(importInfo)) {
+			content.addAll(importInfo);
+			content.add("");
+		}
 		content.add(definition);
 		if(!EmptyUtil.isNullOrEmpty(fields)) {
 			content.add("");
@@ -75,11 +78,18 @@ public class ClassDetail {
 	private String getLocation() {
 		CodeSource source = glass.getProtectionDomain().getCodeSource();
 		if(source != null && source.getLocation() != null) {
-			String temp = source.getLocation().toString().replaceAll("^file:/", "");
+			String temp = source.getLocation().toString();
+			temp = temp.replaceAll("^file:/", "").replaceAll("/$", "");
 			return temp;
+		} else {
+			String entryName = glass.getName().replace('.', '/') + ".class";
+			String someRuntimeJar = ArisUtil.belongsToWhichRuntimeJar(entryName);
+			if(someRuntimeJar != null) {
+				return someRuntimeJar;
+			} else {
+				return StrUtil.occupy("Uncanny, not found {0} in {1}", entryName, ArisUtil.getRuntimeLibraryLocation());
+			}
 		}
-		
-		return null;
 	}
 	
 	private String readPackageInfo() {

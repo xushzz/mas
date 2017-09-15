@@ -24,6 +24,7 @@ import com.sirap.basic.thirdparty.pdf.PdfHelper;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.FileDeeper;
 import com.sirap.basic.tool.MexFactory;
+import com.sirap.basic.util.ArisUtil;
 import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
@@ -31,7 +32,6 @@ import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.ImageUtil;
 import com.sirap.basic.util.MathUtil;
-import com.sirap.basic.util.MexUtil;
 import com.sirap.basic.util.ObjectUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.PanaceaBox;
@@ -155,7 +155,7 @@ public class CommandFile extends CommandBase {
 			String filePath = file.getAbsolutePath();
 			
 			if(!target.isFileRelated() && FileOpener.isZipFile(filePath)) {
-				List<MexZipEntry> items = MexUtil.parseZipEntries(filePath);
+				List<MexZipEntry> items = ArisUtil.parseZipEntries(filePath);
 				exportMexItems(items);
 				return true;
 			}
