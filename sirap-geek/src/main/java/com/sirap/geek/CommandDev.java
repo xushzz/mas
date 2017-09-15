@@ -262,12 +262,8 @@ public class CommandDev extends CommandBase {
 				String filepath = jar.getAbsolutePath();
 				List<String> items = IOUtil.readZipEntry(filepath, whatentry);
 				export(items);
-			} else {
-				String msg = "Not found '{0}'";
-				C.pl2(StrUtil.occupy(msg, whatfile));
+				return true;
 			}
-			
-			return true;
 		}
 		
 		InputAnalyzer sean = new FileSizeInputAnalyzer(input);

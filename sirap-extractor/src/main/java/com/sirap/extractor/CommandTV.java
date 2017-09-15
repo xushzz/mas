@@ -23,12 +23,6 @@ public class CommandTV extends CommandBase {
 	
 	public boolean handle() {
 		if(is(KEY_CCTV)) {
-			export(CCTVManager.g().allChannels());
-			
-			return true;
-		}
-
-		if(is(KEY_CCTV + KEY_2DOTS)) {
 			export(CCTVManager.g().currentProgrammesInAllChannels());
 			
 			return true;
