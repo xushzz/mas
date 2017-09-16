@@ -208,7 +208,9 @@ public class ArisUtil {
 		        while (entries.hasMoreElements()) {  
 		        	ZipEntry zack = (ZipEntry)entries.nextElement();
 		        	if(StrUtil.startsWith(zack.getName(), entryName)) {
-		        		items.add(url + "!" + zack.getName());
+		        		MexZipEntry xiu = new MexZipEntry(zack);
+				    	xiu.setJarName(url);
+		        		items.add(xiu.toPrint());
 		        	}
 		        }
 		        

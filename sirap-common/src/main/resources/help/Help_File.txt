@@ -6,7 +6,7 @@ F:\fly.txt         open the text file if no options at all
 F:\fly.txt $+line  print target file in text manner, $+sort,+uniq,+mark,+line,+case,+one
 F:\fly.txt $+line  print target file in text manner, file size limit is ${text.max} by default
 &F:\fly.txt        print target file in text manner in single one line, aka $+one with =F:\fly.txt
-#F:\fly.txt        print target file in text manner with line number, aka $+line with =F:\fly.txt, $-line
+#F:\fly.txt        print target file in text manner, option: $+line, to show line number
 #F:\folderA        list the names of folder or file at the deepest level
 F:\fire\fly.mp3    for an audio file, the sound will be played by the configured audio player, same goes 
                    for video/photo/doc/docx/xls/xlsx/PDF files with their players/viewers respectively, 

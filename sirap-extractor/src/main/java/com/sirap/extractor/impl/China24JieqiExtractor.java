@@ -1,11 +1,15 @@
 package com.sirap.extractor.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.sirap.basic.domain.MexObject;
+import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.extractor.Extractor;
 
@@ -14,6 +18,8 @@ public class China24JieqiExtractor extends Extractor<MexObject> {
 	public static final String HOMEPAGE = "http://114.xixik.com";
 	public static final String URL_TEMPLATE = HOMEPAGE + "/24jieqi";
 	private String year;
+	private boolean markWhere = true;
+	private Map<String, MexObject> points = new HashMap<>();
 	
 	public China24JieqiExtractor() {
 		printFetching = true;
@@ -28,6 +34,11 @@ public class China24JieqiExtractor extends Extractor<MexObject> {
 		setUrl(URL_TEMPLATE);
 	}
 	
+	
+	public void setMarkWhere(boolean markWhere) {
+		this.markWhere = markWhere;
+	}
+
 	@Override
 	protected void parseContent() {
 		if(year == null) {
@@ -45,9 +56,45 @@ public class China24JieqiExtractor extends Extractor<MexObject> {
 			String point = removeHttpStuff(m.group(1));
 			String english = removeHttpStuff(m.group(2));
 			String dates = removeHttpStuff(m.group(3));
-			String info = point + " " + setLen(dates) + " " + english;
-			mexItems.add(new MexObject(info));
+			String info = " " + point + " " + setLen(dates) + " " + english;
+			MexObject mo = new MexObject(info);
+			if(markWhere) {
+				String start = start(dates);
+				points.put(start, mo);
+			}
+			mexItems.add(mo);
 		}
+		
+		if(markWhere) {
+			markCurrentDay();
+		}
+	}
+	
+	private void markCurrentDay() {
+		List<String> keys = new ArrayList<>(points.keySet());
+		
+		String now = DateUtil.displayNow("MMdd");
+		int whenIndex = -10;
+
+		Collections.sort(keys);
+		for(int i = 0; i < keys.size(); i++) {
+			boolean flag = now.compareTo(keys.get(i)) <= 0;
+			if(flag) {
+				whenIndex = i;
+				break;
+			}
+		}
+		
+		if(whenIndex <= 0 ) {
+			whenIndex = keys.size() - 1;
+		} else {
+			whenIndex--;
+		}
+	
+		
+		String key = keys.get(whenIndex);
+		MexObject mo = points.get(key);
+		mo.setObj(mo.getObj().toString().replaceAll("^\\s", "*"));
 	}
 	
 	private void parseExactPointsByYear(String year) {
@@ -60,25 +107,30 @@ public class China24JieqiExtractor extends Extractor<MexObject> {
 			String whatYear = m.group(1);
 			if(StrUtil.equals(year, whatYear)) {
 				String contentByYear = m.group();
-				mexItems = parse24Points(contentByYear);
+				parse24Points(contentByYear);
 
 				return;
 			}
 		}
 	}
 	
-	private List<MexObject> parse24Points(String contentByYear) {
+	private void parse24Points(String contentByYear) {
 		String regex = "<td bgcolor=\"#EFEFEF\">(.+?)</td><td>(.+?)</td>";
 		Matcher m = createMatcher(regex, contentByYear);
-		List<MexObject> items = new ArrayList<>();
 		while(m.find()) {
 			String point = removeHttpStuff(m.group(1));
 			String datetime = removeHttpStuff(m.group(2));
-			String item = point + " " + datetime;
-			items.add(new MexObject(item));
+			MexObject mo = new MexObject(" " + point + " " + datetime);
+			if(markWhere) {
+				String start = start(datetime);
+				points.put(start, mo);
+			}
+			mexItems.add(mo);
 		}
 		
-		return items;
+		if(markWhere) {
+			markCurrentDay();
+		}
 	}
 	
 	public static String setLen(String dates) {
@@ -93,5 +145,12 @@ public class China24JieqiExtractor extends Extractor<MexObject> {
 		m.appendTail(sb);
 		
 		return sb.toString();
+	}
+	
+	public static String start(String dates) {
+		List<String> duo = StrUtil.findAllMatchedItems("\\d{1,2}", dates);
+		String start = StrUtil.extendLeftward(duo.get(0), 2, "0") +StrUtil.extendLeftward(duo.get(1), 2, "0");
+		
+		return start;
 	}
 }

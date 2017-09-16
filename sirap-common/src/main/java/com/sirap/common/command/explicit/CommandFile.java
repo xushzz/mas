@@ -54,7 +54,7 @@ public class CommandFile extends CommandBase {
 	private static final String KEY_ALL_DISKS_SINGLE_COLON = ":";
 	private static final String KEY_ALL_DISKS_DOUBLE_COLON = "::";
 	private static final String KEY_PRINT_TXT_ONELINE = "&";
-	private static final String KEY_PRINT_TXT_LINENUMBER = "#";
+	private static final String KEY_PRINT_TXT = "#";
 	private static final String KEY_SHOW_DETAIL = "-";
 	private static final String KEY_FOLDER_DEPTH = "#";
 	private static final String KEY_PDF = "pdf";
@@ -161,7 +161,7 @@ public class CommandFile extends CommandBase {
 			
 			if(!target.isFileRelated() && StrUtil.endsWith(filePath, Konstants.SUFFIX_CLASS)) {
 				Class glass = IOUtil.loadClassFile(filePath);
-				export(ArisUtil.getClassDetail(glass));
+				export(ArisUtil.getClassDetail(glass, filePath));
 				return true;
 			}
 			
@@ -593,10 +593,9 @@ public class CommandFile extends CommandBase {
 					String temp = IOUtil.readFileWithoutLineSeparator(filePath, g().getCharsetInUse());
 					String result = StrUtil.reduceMultipleSpacesToOne(temp);
 					export(result);
-				} else if(StrUtil.equals(KEY_PRINT_TXT_LINENUMBER, type)) {
+				} else if(StrUtil.equals(KEY_PRINT_TXT, type)) {
 					List<String> records = FileOpener.readTextContent(filePath, true);
-					boolean showLineNumber = OptionUtil.readBoolean(options, "line", true);
-					if(OptionUtil.readBoolean(options, "line", true)) {
+					if(OptionUtil.readBoolean(options, "line", false)) {
 						export(CollectionUtil.lineNumber(records, true));
 					} else {
 						export(records);
