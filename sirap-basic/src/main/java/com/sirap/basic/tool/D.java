@@ -33,6 +33,10 @@ public class D {
 
 	private static Object convert(Object... obj) {
 		Object temp = null;
+		if(obj == null) {
+			C.pl("Null stuff.");
+			return null;
+		}
 		if(obj.length == 1) {
 			temp = StrUtil.arrayToString(obj[0]);
 			if(temp == null) {

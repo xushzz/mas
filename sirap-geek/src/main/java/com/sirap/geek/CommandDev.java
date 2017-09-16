@@ -17,7 +17,6 @@ import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.MathUtil;
-import com.sirap.basic.util.ObjectUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
@@ -46,7 +45,6 @@ public class CommandDev extends CommandBase {
 	private static final String KEY_TO_UPPERCASE = "up";
 	private static final String KEY_TO_LOWERCASE= "lo";
 	private static final String KEY_ZIP = FileUtil.SUFFIXES_ZIP.replace(';', '|');
-	private static final String KEY_PRINT_CLASS = "(cl|class)";
 	private static final String KEY_UUID = "uuid";
 	private static final String KEY_CHANGE_FILESEPARATOR = "sw";
 
@@ -259,8 +257,7 @@ public class CommandDev extends CommandBase {
 			String whatentry = params[2];
 			File jar = parseFile(whatfile);
 			if(jar != null) {
-				String filepath = jar.getAbsolutePath();
-				List<String> items = IOUtil.readZipEntry(filepath, whatentry);
+				List<String> items = ArisUtil.readZipEntry(jar.getAbsolutePath(), whatentry);
 				export(items);
 				return true;
 			}
@@ -298,18 +295,6 @@ public class CommandDev extends CommandBase {
 				List<MexZipEntry> result = filter.process();
 				exportMexItems(result, tempOptions);
 			}
-			
-			return true;
-		}
-
-		regex = KEY_PRINT_CLASS + "\\s+([a-zA-Z\\d_\\.\\$/\\\\]+)";
-		params = parseParams(regex);
-		if(params != null) {
-			String name = params[1].replace('/', '.');
-			name = name.replace('\\', '.');
-			name = name.replaceAll("\\.class$", "");
-			List<String> items = ObjectUtil.getClassDetail(ObjectUtil.forName(name));
-			export(items);
 			
 			return true;
 		}

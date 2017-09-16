@@ -24,7 +24,7 @@ public class MexZipEntry extends MexItem {
 	}
 
 	public String getName() {
-		return entry.getName().replaceAll("/$", "");
+		return entry.getName();
 	}
 	
 	public String getJarName() {
@@ -86,7 +86,7 @@ public class MexZipEntry extends MexItem {
 		boolean showFullpath = OptionUtil.readBoolean(options, "full", true);
 		StringBuilder sb = new StringBuilder();
 		if(showFullpath) {
-			sb.append(getJarName() + "!/");
+			sb.append(getJarName().replace('\\', '/') + "!/");
 		}
 		sb.append(getName());
 		if(showSize && isNormalFile()) {

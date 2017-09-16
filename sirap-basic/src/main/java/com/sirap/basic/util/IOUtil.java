@@ -767,29 +767,6 @@ public class IOUtil {
 		return items;
 	}
 	
-	public static List<String> readZipEntry(String url, String entryName) {
-		try(ZipFile file = new ZipFile(url)) {
-		    ZipEntry entry = file.getEntry(entryName);
-		    if(entry == null) {
-		    	String msg = "The entry '{0}' doesn't exist.";
-		    	throw new MexException(StrUtil.occupy(msg, entryName));
-		    }
-		    if(entry.getSize() == 0) {
-		    	String msg = "The entry '{0}' either represents a directory or contains nothing.";
-		    	throw new MexException(StrUtil.occupy(msg, entryName));
-		    }
-		    if(StrUtil.endsWith(entryName, Konstants.SUFFIX_CLASS)) {
-		    	Class glass = loadClassFromJarFile(url, entryName);
-		    	return ObjectUtil.getClassDetail(glass);
-		    } else {
-			    InputStream inputStream = file.getInputStream(entry);
-			    return readStreamIntoList(inputStream);
-		    }
-		} catch (Exception ex) {
-			throw new MexException(ex);
-		}
-	}
-
 	@SuppressWarnings("resource")
 	public static Class loadClassFromJarFile(String jarLocation, String className) {
 		String regex = "^[\\w]{2,}:";

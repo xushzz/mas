@@ -1,3 +1,9 @@
 ar java code       compile and execute java code, method level 
 ar =42+323         compile and execute java code, System.out.println(42+323);
-ver=GEEK-ARIS1.0.1-PILOT  9/14/2017, IV
+jre                print runtime library such as C:\Java\jdk1.8.0_05\jre\lib
+class com.a.Fury   display class detail of class Fury if exists
+cl com.a.Fury      display class detail of class Fury if exists
+cl com/a/Fury      display class detail of class Fury if exists
+cl com/Fury.class  display class detail of class Fury if exists
+cl com\a\Fury      display class detail of class Fury if exists
+ver=GEEK-ARIS1.0.3-DEMBELE  9/16/2017, VI

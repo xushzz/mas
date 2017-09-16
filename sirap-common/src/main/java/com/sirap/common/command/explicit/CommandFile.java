@@ -32,7 +32,6 @@ import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.ImageUtil;
 import com.sirap.basic.util.MathUtil;
-import com.sirap.basic.util.ObjectUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.StrUtil;
@@ -162,7 +161,7 @@ public class CommandFile extends CommandBase {
 			
 			if(!target.isFileRelated() && StrUtil.endsWith(filePath, Konstants.SUFFIX_CLASS)) {
 				Class glass = IOUtil.loadClassFile(filePath);
-				export(ObjectUtil.getClassDetail(glass));
+				export(ArisUtil.getClassDetail(glass));
 				return true;
 			}
 			

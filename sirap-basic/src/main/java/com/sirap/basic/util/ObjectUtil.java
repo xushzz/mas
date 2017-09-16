@@ -146,9 +146,4 @@ public class ObjectUtil {
 		
 		return null;
 	}
-	
-	public static List<String> getClassDetail(Class glass) {
-		ArisDetail xiu = new ArisDetail(glass);
-		return xiu.getAllParts();
-	}
 }

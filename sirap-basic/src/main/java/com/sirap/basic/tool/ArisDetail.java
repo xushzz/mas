@@ -19,16 +19,22 @@ import com.sirap.basic.util.StrUtil;
 @SuppressWarnings("rawtypes")
 public class ArisDetail {
 	private Class glass;
+	private String sourceLocation;
 	private Set<String> imports = new TreeSet<>();
-	
+
 	public ArisDetail(Class glass) {
 		this.glass = glass;
+	}
+	
+	public ArisDetail(Class glass, String sourceLocation) {
+		this.glass = glass;
+		this.sourceLocation = sourceLocation;
 	}
 	
 	private List<String> content = new ArrayList<>();
 	
 	public List<String> getAllParts() {
-		String location = getLocation();
+		String location = sourceLocation != null ? sourceLocation : ArisUtil.sourceLocation(glass);
 		String packageInfo = readPackageInfo();
 		String definition = readClassDefinition();
 		List<String> constructors = readConstructors();
@@ -74,24 +80,7 @@ public class ArisDetail {
 		
 		return items;
 	}
-	
-	private String getLocation() {
-		CodeSource source = glass.getProtectionDomain().getCodeSource();
-		if(source != null && source.getLocation() != null) {
-			String temp = source.getLocation().toString();
-			temp = temp.replaceAll("^file:/", "").replaceAll("/$", "");
-			return temp;
-		} else {
-			String entryName = glass.getName().replace('.', '/') + ".class";
-			String someRuntimeJar = ArisUtil.belongsToWhichRuntimeJar(entryName);
-			if(someRuntimeJar != null) {
-				return someRuntimeJar;
-			} else {
-				return StrUtil.occupy("Uncanny, not found {0} in {1}", entryName, ArisUtil.getRuntimeLibraryLocation());
-			}
-		}
-	}
-	
+
 	private String readPackageInfo() {
 		Package pack = glass.getPackage();
 		return pack != null ? "package " + pack.getName() + ";" : "";
