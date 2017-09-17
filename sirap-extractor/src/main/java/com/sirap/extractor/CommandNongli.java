@@ -1,19 +1,26 @@
 package com.sirap.extractor;
 
 
+import java.util.List;
+
 import com.sirap.basic.domain.MexObject;
+import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.DateUtil;
+import com.sirap.basic.util.EmptyUtil;
+import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.extractor.Extractor;
 import com.sirap.extractor.impl.China24JieqiExtractor;
 import com.sirap.extractor.impl.ChinaCalendarExtractor;
+import com.sirap.extractor.impl.ChinaJieriExtractor;
 
 public class CommandNongli extends CommandBase {
 
 	private static final String KEY_IN_GONGLI_NONGLI = "(g|n)\\d{8}";
 	private static final String KEY_IN_GONGLI_TODAY = "gnow";
 	private static final String KEY_24_JIEQI = "jieqi";
+	private static final String KEY_CHINA_JIERI = "jieri";
 
 	{
 		helpMeanings.put("nongli.url", ChinaCalendarExtractor.URL_TEMPLATE);
@@ -51,8 +58,22 @@ public class CommandNongli extends CommandBase {
 		
 		if(is(KEY_24_JIEQI)) {
 			Extractor<MexObject> mike = new China24JieqiExtractor();
-			mike.process();
-			export(mike.getMexItems());
+			export(mike.process().getMexItems());
+			
+			return true;
+		}
+		
+		params = parseParams(KEY_CHINA_JIERI + "(|\\s+(.+))");
+		if(params != null) {
+			Extractor<MexObject> mike = new ChinaJieriExtractor();
+			List<MexObject> items = mike.process().getMexItems();
+			boolean showAll = OptionUtil.readBoolean(options, "all", false);
+			if(showAll) {
+				export(items);
+			} else {
+				String criteria = EmptyUtil.isNullOrEmpty(params[0]) ? DateUtil.displayNow("MM/") : params[1];
+				export(CollectionUtil.filter(items, criteria));
+			}
 			
 			return true;
 		}

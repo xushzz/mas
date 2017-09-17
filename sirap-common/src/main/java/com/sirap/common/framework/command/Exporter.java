@@ -45,6 +45,7 @@ public class Exporter {
 		
 		boolean isExportWithTs = SimpleKonfig.g().isExportWithTimestampEnabled();
 		if(target instanceof TargetTxtFile) {
+			String charset = SimpleKonfig.g().getCharsetInUse();
 			TargetTxtFile txtFile = (TargetTxtFile)target;
 			String filePath = isExportWithTs ? txtFile.getTimestampPath() : txtFile.getFilePath();
 			if(FileUtil.isSirapFile(filePath)) {
@@ -53,9 +54,9 @@ public class Exporter {
 				String encoded = TrumpUtil.encodeBySIRAP(content, passcode);
 				List<String> list = new ArrayList<>();
 				list.add(encoded);
-				IOUtil.saveAsTxt(list, filePath);
+				IOUtil.saveAsTxtWithCharset(list, filePath, charset);
 			} else {
-				IOUtil.saveAsTxt(records, filePath);
+				IOUtil.saveAsTxtWithCharset(records, filePath, charset);
 			}
 			C.pl2("Exported => " + filePath);
 			if(SimpleKonfig.g().isGeneratedFileAutoOpen()) {

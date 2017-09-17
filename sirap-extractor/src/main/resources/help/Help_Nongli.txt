@@ -3,4 +3,7 @@ g20170601          g, gongli, new calendar, to nongli, courtesy of ${nongli.url}
 gnow               g, gongli, now to nongli, old calendar, courtesy of ${nongli.url}
 jieqi              fetch 24 points, jieqi in Chinese, courtesy of ${24jieqi.url}
 jieqi2017-2020     print 24 jieqi of given year, courtesy of ${24jieqi.url}
-ver=EXTRACTOR-NONGLI1.0.0-KIM  6/22/2017, IV
+jieri              show important domestic or aboard days in current month
+jieri $+all        show all important domestic or aboard days 
+jieri 09&China     filter and show some important domestic or aboard days 
+ver=EXTRACTOR-NONGLI1.0.1-XINGFULI  9/17/2017, VII

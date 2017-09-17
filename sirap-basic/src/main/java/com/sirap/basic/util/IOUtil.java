@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.net.URI;
 import java.net.URL;
@@ -29,8 +30,6 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.component.MexedMap;
@@ -578,6 +577,21 @@ public class IOUtil {
 		}
 		
 		return false;
+	}
+	
+	public static boolean saveAsTxtWithCharset(List objList, String fullFileName, String charset) {
+		XXXUtil.nullCheck(objList, "List objList");
+		
+		try(OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(fullFileName), charset)) {
+			for(Object member: objList) {
+				out.write(MexUtil.print(member));
+				out.write("\r\n");
+			}
+			
+			return true;
+		} catch (Exception ex) {
+			throw new MexException(ex);
+		}
 	}
 
 	public static Object readObject(String fileName) {

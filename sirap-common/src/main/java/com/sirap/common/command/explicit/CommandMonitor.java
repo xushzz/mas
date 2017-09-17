@@ -15,6 +15,7 @@ import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.MathUtil;
+import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.TrumpUtil;
 import com.sirap.basic.util.XXXUtil;
@@ -197,44 +198,21 @@ public class CommandMonitor extends CommandBase {
 				return true;
 			}
 			
-			params = parseParams("]" + KEY_COMMAND_HISTORY + "(\\d{1,4})");
-			if(params != null) {
-				noCollect();
-				int count = MathUtil.toInteger(params[0], 20);
-				List<InputRecord> records = CommandHistoryManager.g().getNRecords(count);
-				if(target instanceof TargetPDF) {
-					target.setParams(CH_PDF_PARAMS);
-					List<List<String>> items = CollectionUtil.items2PDFRecords(records);
-					export(items);
-				} else {
-					export(CollectionUtil.items2PrintRecords(records));
-				}
-				return true;
-			}
-			
-			singleParam = parseParam("(])" + KEY_COMMAND_HISTORY + KEY_2DOTS);
-			if(singleParam != null) {
-				noCollect();
-				List<InputRecord> records = CommandHistoryManager.g().getAllRecords();
-				if(target instanceof TargetPDF) {
-					target.setParams(CH_PDF_PARAMS);
-					List<List<String>> items = CollectionUtil.items2PDFRecords(records);
-					export(items);
-				} else {
-					export(CollectionUtil.items2PrintRecords(records));
-				}
-				
-				return true;
-			}
-			
 			singleParam = parseParam(KEY_COMMAND_HISTORY + "(.*)");
 			if(singleParam != null) {
 				noCollect();
-				List<InputRecord> records = null;
-				if(EmptyUtil.isNullOrEmpty(singleParam)) {
-					records = CommandHistoryManager.g().getNRecords(20);
-				} else {
-					records = CommandHistoryManager.g().search(singleParam);
+				List<InputRecord> records = CommandHistoryManager.g().getAllRecords();
+				if(!OptionUtil.readBoolean(options, "all", false)) {
+					if(EmptyUtil.isNullOrEmpty(singleParam)) {
+						records = CommandHistoryManager.g().getNRecords(20);
+					} else {
+						if(OptionUtil.readBoolean(options, "n", false)) {
+							int count = MathUtil.toInteger(singleParam, 20);
+							records = CollectionUtil.last(records, count);
+						} else {
+							records = CommandHistoryManager.g().search(singleParam);
+						}
+					}
 				}
 				
 				if(target instanceof TargetPDF) {
