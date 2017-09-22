@@ -58,6 +58,13 @@ public class ArisExecutor {
 		return consoleOutput;
 	}
 	
+	private boolean doesUserCodeContainMainMethod() {
+		String allInOneLine = StrUtil.connect(manualJavacode);
+		String regex = "public\\s+static\\s+void\\s+main\\s*\\(\\s*String[^\\(\\)]+\\)";
+		
+		return StrUtil.isRegexFound(regex, allInOneLine);
+	}
+	
 	private void generateSourceCode() {
 		sourceCode = new ArrayList<>();
 		sourceCode.add("");
@@ -68,17 +75,27 @@ public class ArisExecutor {
 		
 		//add configImports;
 		sourceCode.addAll(generateConfigImportsFromClassPath());
-		//add manualImports;
 		sourceCode.add("");
+		
+		//add manualImports;
+		//currently not yet supported
 		
 		sourceCode.add("public class " + FINAL_CLASS_NAME + " {");
 		sourceCode.add("");
-		sourceCode.add("\tpublic static void main(String[] args) {");
+		
+		boolean hasMainMethodAlready = doesUserCodeContainMainMethod();
+		if(!hasMainMethodAlready) {
+			sourceCode.add("\tpublic static void main(String[] args) {");
+		}
+		
 		//add manual java code;
 		for(String item : manualJavacode) {
-			sourceCode.add("\t\t" + item + (item.endsWith(";") ? "":";"));
+			sourceCode.add("\t\t" + item);
 		}
-		sourceCode.add("\t}");
+
+		if(!hasMainMethodAlready) {
+			sourceCode.add("\t}");
+		}
 		sourceCode.add("}");
 	}
 	
@@ -126,7 +143,7 @@ public class ArisExecutor {
 		}
 		
 		String javaCommand = "java -cp \"{0}\" {1}";
-		String classpath = StrUtil.useDelimiter(";", whereToGenerate, configClasspath);
+		String classpath = StrUtil.useDelimiter(File.pathSeparator, whereToGenerate, configClasspath);
 		javaCommand = StrUtil.occupy(javaCommand, classpath, FINAL_CLASS_NAME);
 		consoleOutput.addAll(PanaceaBox.executeAndRead(javaCommand));
 	}

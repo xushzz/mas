@@ -136,8 +136,7 @@ public class ArisUtil {
 	public static String getRuntimeLibraryLocation() {
 		String path = System.getenv("PATH");
 		boolean isMacOrLinuxOrUnix = PanaceaBox.isMacOrLinuxOrUnix();
-		String what = PanaceaBox.isMacOrLinuxOrUnix() ? ":" : ";";
-		List<String> items = StrUtil.split(path, what);
+		List<String> items = StrUtil.split(path, File.pathSeparator);
 		for(String item : items) {
 			String regex = "jre.*(/|\\\\)bin$";
 			if(StrUtil.isRegexFound(regex, item)) {

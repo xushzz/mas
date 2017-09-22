@@ -25,19 +25,20 @@ public class CommandAris extends CommandBase {
 			if(file != null ) {
 				javacodes = IOUtil.readFileIntoList(file.getAbsolutePath(), g().getCharsetInUse());
 			} else {
-				String output = StrUtil.findFirstMatchedItem("^=(.+)", singleParam);
-				if(output != null) {
-					javacodes.add(StrUtil.occupy("System.out.println({0});", output));
+				String expression = StrUtil.findFirstMatchedItem("^=(.+)", singleParam);
+				if(expression != null) {
+					expression = expression.replaceAll("[,\\.;]+$", "");
+					javacodes.add(StrUtil.occupy("System.out.println({0});", expression));
 				} else {
 					javacodes.add(singleParam + ";");
 				}
 			}
 				
-			boolean keepAlive = g().isYes("aris.keep");
-			List<String> cpItems = g().getUserValuesByKeyword("aris.path.");
-			String classpath = StrUtil.connect(cpItems, ";");
+			boolean keepGeneratedFiles = g().isYes("aris.keep");
+			List<String> classPaths = g().getUserValuesByKeyword("aris.path.");
+			String classpath = StrUtil.connect(classPaths, File.pathSeparator);
 			
-			export(ArisExecutor.g.execute(javacodes, classpath, keepAlive));
+			export(ArisExecutor.g.execute(javacodes, classpath, keepGeneratedFiles));
 			
 			return true;
 		}
