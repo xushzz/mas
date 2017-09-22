@@ -35,7 +35,7 @@ public class CommandXCode extends CommandBase {
 	private static final String KEY_QRCODE_DECODE = "qrx";	
 	private static final String KEY_TO_BASE64 = "t64";
 	private static final String KEY_FROM_BASE64 = "f64";
-	private static final String KEY_DIGEST_ALGORITHMS = "(SHA1|SHA-224|SHA224|SHA-256|SHA256|MD2|SHA|SHA-512|SHA512|MD5)";
+	private static final String KEY_DIGEST_ALGORITHMS = "(SHA|SHA1|SHA224|SHA256|SHA512|MD2|MD5)";
 	private static final String KEY_URL_ENCODE = "url";
 	private static final String KEY_URL_DECODE = "urx";
 	private static final String KEY_ENCODE = "cde";

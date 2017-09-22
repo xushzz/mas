@@ -26,7 +26,7 @@ import com.sirap.basic.util.StrUtil;
 public class ArisExecutor {
 	
 	public static final String FINAL_CLASS_NAME = "ARIS";
-	private static final String AUTO_INCLUDE_IMPORTS = "java.io,java.math,java.text,java.util,java.net";
+	private static final String AUTO_INCLUDE_IMPORTS = "java.io,java.math,java.text,java.util,java.net,java.security";
 
 	public static ArisExecutor g = new ArisExecutor();
 
