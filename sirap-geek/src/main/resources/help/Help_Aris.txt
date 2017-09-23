@@ -1,5 +1,7 @@
-ar java code       compile and execute java code, method level 
+ar java code       compile and execute java code, method level, options: $+p, print command 
 ar =42+323         compile and execute java code, System.out.println(42+323);
+ar D:\aris.txt     read text file, construct java code and execute
+ar D:\aris.java    read original java file, construct java code and execute
 jre                print runtime library such as C:\Java\jdk1.8.0_05\jre\lib
 class com.a.Fury   display class detail of class Fury if exists
 cl com.a.Fury      display class detail of class Fury if exists

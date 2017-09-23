@@ -41,6 +41,7 @@ public class ArisExecutor {
 	private String configClasspath;
 	private String publicClassName;
 	private boolean isJavaFileStyle;
+	private boolean toPrintCommand;
 	
 	private void init() {
 		finalJavaFileFullPath = null;
@@ -48,6 +49,11 @@ public class ArisExecutor {
 		publicClassName = null;
 	}
 	
+	public ArisExecutor setToPrintCommand(boolean toPrintCommand) {
+		this.toPrintCommand = toPrintCommand;
+		return this;
+	}
+
 	public List<String> executeOnelineStyle(String lineJavacode, String configClasspath, boolean keepGeneratedFiles) {
 		Matcher ma = StrUtil.createMatcher(REGEX_IMPORT, lineJavacode);
 		StringBuffer sb = new StringBuffer();
@@ -208,10 +214,14 @@ public class ArisExecutor {
 		consoleOutput = new ArrayList<>();
 		String javacCommand = "javac -Xlint:none -cp \"{0}\" {1}";
 		javacCommand = StrUtil.occupy(javacCommand, configClasspath, finalJavaFileFullPath);
-		List<String> errors = PanaceaBox.executeAndRead(javacCommand);
-		consoleOutput.addAll(errors);
-		if(!EmptyUtil.isNullOrEmpty(errors)) {
-			C.pl("Compile result with command: " + javacCommand);
+		if(toPrintCommand) {
+			consoleOutput.add("command for javac: \n" + javacCommand);
+			consoleOutput.add("");
+		}
+		List<String> result = PanaceaBox.executeAndRead(javacCommand);
+		if(!EmptyUtil.isNullOrEmpty(result)) {
+			consoleOutput.add("result for javac: \n" + result);
+			consoleOutput.add("");
 		}
 		
 		String classFilepath = finalJavaFileFullPath.replaceAll("\\.java$", Konstants.SUFFIX_CLASS);
@@ -222,6 +232,10 @@ public class ArisExecutor {
 		String javaCommand = "java -cp \"{0}\" {1}";
 		String classpath = StrUtil.useDelimiter(File.pathSeparator, whereToGenerate, configClasspath);
 		javaCommand = StrUtil.occupy(javaCommand, classpath, publicClassName);
+		if(toPrintCommand) {
+			consoleOutput.add("command for java: \n" + javaCommand);
+			consoleOutput.add("");
+		}
 		consoleOutput.addAll(PanaceaBox.executeAndRead(javaCommand));
 	}
 	

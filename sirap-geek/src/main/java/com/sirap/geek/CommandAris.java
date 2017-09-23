@@ -8,6 +8,7 @@ import com.sirap.basic.util.ArisUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.ObjectUtil;
+import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
 
@@ -24,17 +25,17 @@ public class CommandAris extends CommandBase {
 			boolean keepGeneratedFiles = g().isYes("aris.keep");
 			List<String> classPaths = g().getUserValuesByKeyword("aris.path.");
 			String classpath = StrUtil.connect(classPaths, File.pathSeparator);
-
+			boolean toPrintCommand = OptionUtil.readBoolean(options, "p", false);;
 			File file = parseFile(singleParam);
 			if(file != null ) {
 				List<String> javacodes = IOUtil.readFileIntoList(file.getAbsolutePath(), g().getCharsetInUse());
 				if(StrUtil.endsWith(singleParam, Konstants.SUFFIX_JAVA)) {
-					export(ArisExecutor.g.executeJavaFileStyle(javacodes, classpath, keepGeneratedFiles));
+					export(ArisExecutor.g.setToPrintCommand(toPrintCommand).executeJavaFileStyle(javacodes, classpath, keepGeneratedFiles));
 				} else {
-					export(ArisExecutor.g.executeTextFileStyle(javacodes, classpath, keepGeneratedFiles));
+					export(ArisExecutor.g.setToPrintCommand(toPrintCommand).executeTextFileStyle(javacodes, classpath, keepGeneratedFiles));
 				}
 			} else {
-				export(ArisExecutor.g.executeOnelineStyle(singleParam, classpath, keepGeneratedFiles));
+				export(ArisExecutor.g.setToPrintCommand(toPrintCommand).executeOnelineStyle(singleParam, classpath, keepGeneratedFiles));
 			}
 			
 			return true;
