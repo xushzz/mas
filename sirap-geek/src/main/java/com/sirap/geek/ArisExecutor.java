@@ -206,12 +206,16 @@ public class ArisExecutor {
 	
 	private void compileAndRun() {
 		consoleOutput = new ArrayList<>();
-		String javacCommand = "javac -cp \"{0}\" {1}";
+		String javacCommand = "javac -Xlint:none -cp \"{0}\" {1}";
 		javacCommand = StrUtil.occupy(javacCommand, configClasspath, finalJavaFileFullPath);
 		List<String> errors = PanaceaBox.executeAndRead(javacCommand);
 		consoleOutput.addAll(errors);
 		if(!EmptyUtil.isNullOrEmpty(errors)) {
-			C.pl("Compile error with command: " + javacCommand);
+			C.pl("Compile result with command: " + javacCommand);
+		}
+		
+		String classFilepath = finalJavaFileFullPath.replaceAll("\\.java$", Konstants.SUFFIX_CLASS);
+		if(!FileUtil.exists(classFilepath)) {
 			return;
 		}
 		
