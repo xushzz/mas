@@ -101,24 +101,11 @@ public class ArisExecutor {
 		return consoleOutput;
 	}
 	
-	private boolean doesUserCodeContainMainMethod() {
-		String allInOneLine = StrUtil.connect(manualJavacode);
-		String regex = "public\\s+static\\s+void\\s+main\\s*\\(\\s*String[^\\(\\)]+\\)";
-		
-		return StrUtil.isRegexFound(regex, allInOneLine);
-	}
-	
-	private String parsePublicClassName() {
+	private void generateSourceCode() {
 		String allInOneLine = StrUtil.connect(manualJavacode);
 		String regex = "public\\s+class\\s+(" + Konstants.REGEX_JAVA_IDENTIFIER + ")";
-		String temp = StrUtil.findFirstMatchedItem(regex, allInOneLine);
-		
-		return temp;
-	}
-	
-	private void generateSourceCode() {
+		String tempClassName = StrUtil.findFirstMatchedItem(regex, allInOneLine);
 
-		String tempClassName = parsePublicClassName();
 		if(tempClassName != null) {
 			publicClassName = tempClassName;
 		}
@@ -146,9 +133,6 @@ public class ArisExecutor {
 		imports.addAll(generateConfigImportsFromClassPath());
 		imports.add("");
 		
-		//add manualImports;
-		//currently not yet supported
-
 		List<String> sentences = new ArrayList<>();
 		if(tempClassName == null) {
 			publicClassName = FINAL_CLASS_NAME;
@@ -156,7 +140,8 @@ public class ArisExecutor {
 			sentences.add("");
 		}
 		
-		boolean hasMainMethodAlready = doesUserCodeContainMainMethod();
+		String regexMain = "(public\\s+static|static\\s+public)\\s+void\\s+main\\s*\\(\\s*String[^\\(\\)]+\\)";
+		boolean hasMainMethodAlready = StrUtil.isRegexFound(regexMain, allInOneLine);
 		if(!hasMainMethodAlready) {
 			sentences.add("\tpublic static void main(String[] args) {");
 		}
