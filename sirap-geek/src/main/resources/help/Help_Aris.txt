@@ -6,4 +6,4 @@ cl com.a.Fury      display class detail of class Fury if exists
 cl com/a/Fury      display class detail of class Fury if exists
 cl com/Fury.class  display class detail of class Fury if exists
 cl com\a\Fury      display class detail of class Fury if exists
-ver=GEEK-ARIS1.0.3-DEMBELE  9/16/2017, VI
+ver=GEEK-ARIS1.0.4-DEMBELE  9/23/2017, VI

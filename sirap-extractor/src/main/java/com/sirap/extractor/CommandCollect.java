@@ -6,7 +6,6 @@ import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.output.PDFParams;
 import com.sirap.basic.util.CollectionUtil;
-import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.ObjectUtil;
@@ -17,18 +16,17 @@ import com.sirap.common.domain.WeatherRecord;
 import com.sirap.common.extractor.Extractor;
 import com.sirap.common.framework.command.target.TargetPDF;
 import com.sirap.extractor.domain.ZhihuRecord;
-import com.sirap.extractor.impl.CCTVProgramExtractor;
 import com.sirap.extractor.impl.EnglishDictionaryExtractor;
 import com.sirap.extractor.impl.FindJarExtractor;
 import com.sirap.extractor.impl.IcibaTranslationExtractor;
 import com.sirap.extractor.impl.MobilePhoneLocationExtractor;
 import com.sirap.extractor.impl.NationalWeatherExtractor;
 import com.sirap.extractor.impl.TulingExtractor;
+import com.sirap.extractor.impl.WeixinSearchExtractor;
 import com.sirap.extractor.impl.WikiSummaryExtractor;
 import com.sirap.extractor.impl.XRatesForexRateExtractor;
 import com.sirap.extractor.impl.ZhihuSearchExtractor;
 import com.sirap.extractor.manager.BaiduExtractorManager;
-import com.sirap.extractor.manager.CCTVManager;
 import com.sirap.extractor.manager.FinancialTimesChineseExtractorManager;
 import com.sirap.extractor.manager.ForexManager;
 import com.sirap.extractor.manager.RssExtractorManager;
@@ -47,6 +45,7 @@ public class CommandCollect extends CommandBase {
 	private static final String KEY_WIKI_SUMMARY = "wk";
 	private static final String KEY_RSS = "rss";
 	private static final String KEY_JAR= "jar";
+	private static final String KEY_WEIXIN_SEARCH= "wei";
 
 	{
 		helpMeanings.put("money.forex.url", XRatesForexRateExtractor.URL_X_RATES);
@@ -202,6 +201,15 @@ public class CommandCollect extends CommandBase {
 		singleParam = parseParam(KEY_JAR + "\\s+(.+?)");
 		if(singleParam != null) {
 			Extractor<MexObject> mike = new FindJarExtractor(singleParam);
+			mike.process();
+			export(mike.getMexItems());
+			
+			return true;
+		}
+		
+		singleParam = parseParam(KEY_WEIXIN_SEARCH + "\\s+(.+?)");
+		if(singleParam != null) {
+			Extractor<MexObject> mike = new WeixinSearchExtractor(singleParam);
 			mike.process();
 			export(mike.getMexItems());
 			

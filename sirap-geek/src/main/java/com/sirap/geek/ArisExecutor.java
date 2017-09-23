@@ -13,6 +13,7 @@ import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.sirap.basic.component.Konstants;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.ArisUtil;
@@ -24,7 +25,9 @@ import com.sirap.basic.util.RandomUtil;
 import com.sirap.basic.util.StrUtil;
 
 public class ArisExecutor {
-	
+
+	public static final String REGEX_IMPORT = StrUtil.occupy("import\\s+(static\\s+|){0}(\\s*\\.\\s*{0})*\\.(\\*|{0})\\s*;", Konstants.REGEX_JAVA_IDENTIFIER);
+	public static final String REGEX_PACKAGE = StrUtil.occupy("package\\s+(static\\s+|){0}(\\s*\\.\\s*{0})*;", Konstants.REGEX_JAVA_IDENTIFIER);
 	public static final String FINAL_CLASS_NAME = "ARIS";
 	private static final String AUTO_INCLUDE_IMPORTS = "java.io,java.math,java.text,java.util,java.net,java.security";
 
@@ -36,18 +39,58 @@ public class ArisExecutor {
 	private List<String> consoleOutput;
 	private List<String> manualJavacode;
 	private String configClasspath;
+	private String publicClassName;
+	private boolean isJavaFileStyle;
 	
 	private void init() {
 		finalJavaFileFullPath = null;
 		whereToGenerate = null;
+		publicClassName = null;
 	}
 	
-	public List<String> execute(List<String> manualJavacode, String configClasspath, boolean keepGeneratedFiles) {
-		init();
-
-		this.manualJavacode = manualJavacode;
-		this.configClasspath = configClasspath;
+	public List<String> executeOnelineStyle(String lineJavacode, String configClasspath, boolean keepGeneratedFiles) {
+		Matcher ma = StrUtil.createMatcher(REGEX_IMPORT, lineJavacode);
+		StringBuffer sb = new StringBuffer();
+		List<String> items = new ArrayList<>();
+		while(ma.find()) {
+			String what = ma.group();
+			items.add(what);
+			ma.appendReplacement(sb, "");
+		}
 		
+		ma.appendTail(sb);
+		String remain = sb.toString().trim();
+		String expression = StrUtil.findFirstMatchedItem("^=(.+)", remain);
+		String line = null;
+		if(expression != null) {
+			expression = expression.replaceAll("[,\\.;]+$", "");
+			line = StrUtil.occupy("System.out.println({0});", expression);
+		} else {
+			line = remain + (remain.endsWith(";") ? "" : ";");
+		}
+		
+		items.add(line);
+		
+		this.manualJavacode = items;
+		this.configClasspath = configClasspath;
+		return process(keepGeneratedFiles);
+	}
+	
+	public List<String> executeTextFileStyle(List<String> textJavacode, String configClasspath, boolean keepGeneratedFiles) {
+		this.manualJavacode = textJavacode;
+		this.configClasspath = configClasspath;
+		return process(keepGeneratedFiles);
+	}
+	
+	public List<String> executeJavaFileStyle(List<String> textJavacode, String configClasspath, boolean keepGeneratedFiles) {
+		this.manualJavacode = textJavacode;
+		this.configClasspath = configClasspath;
+		this.isJavaFileStyle = true;
+		return process(keepGeneratedFiles);
+	}
+	
+	private List<String> process(boolean keepGeneratedFiles) {
+		init();
 		generateSourceCode();		
 		saveSourceCode();
 		compileAndRun();
@@ -65,38 +108,83 @@ public class ArisExecutor {
 		return StrUtil.isRegexFound(regex, allInOneLine);
 	}
 	
+	private String parsePublicClassName() {
+		String allInOneLine = StrUtil.connect(manualJavacode);
+		String regex = "public\\s+class\\s+(" + Konstants.REGEX_JAVA_IDENTIFIER + ")";
+		String temp = StrUtil.findFirstMatchedItem(regex, allInOneLine);
+		
+		return temp;
+	}
+	
 	private void generateSourceCode() {
+
+		String tempClassName = parsePublicClassName();
+		if(tempClassName != null) {
+			publicClassName = tempClassName;
+		}
+
 		sourceCode = new ArrayList<>();
-		sourceCode.add("");
+		if(isJavaFileStyle) {
+			for(String item : manualJavacode) {
+				if(StrUtil.isRegexMatched(REGEX_PACKAGE, item.trim())) {
+					continue;
+				}
+				
+				sourceCode.add(item);
+			}
+			
+			return;
+		}
+		
+		List<String> imports = new ArrayList<>();
 		
 		//add runtimeImports;
-		sourceCode.addAll(genearteRuntimeImportsFromJRELibrary(AUTO_INCLUDE_IMPORTS));
-		sourceCode.add("");
+		imports.addAll(genearteRuntimeImportsFromJRELibrary(AUTO_INCLUDE_IMPORTS));
+		imports.add("");
 		
 		//add configImports;
-		sourceCode.addAll(generateConfigImportsFromClassPath());
-		sourceCode.add("");
+		imports.addAll(generateConfigImportsFromClassPath());
+		imports.add("");
 		
 		//add manualImports;
 		//currently not yet supported
-		
-		sourceCode.add("public class " + FINAL_CLASS_NAME + " {");
-		sourceCode.add("");
+
+		List<String> sentences = new ArrayList<>();
+		if(tempClassName == null) {
+			publicClassName = FINAL_CLASS_NAME;
+			sentences.add("public class " + publicClassName + " {");
+			sentences.add("");
+		}
 		
 		boolean hasMainMethodAlready = doesUserCodeContainMainMethod();
 		if(!hasMainMethodAlready) {
-			sourceCode.add("\tpublic static void main(String[] args) {");
+			sentences.add("\tpublic static void main(String[] args) {");
 		}
 		
 		//add manual java code;
 		for(String item : manualJavacode) {
-			sourceCode.add("\t\t" + item);
+			String temp = item.trim();
+			if(StrUtil.isRegexMatched(REGEX_IMPORT, temp)) {
+				imports.add(temp);
+			} else if(StrUtil.isRegexMatched(REGEX_PACKAGE, temp)) {
+				//do nothing
+			} else {
+				sentences.add("\t\t" + item);
+			}
 		}
+		imports.add("");
 
 		if(!hasMainMethodAlready) {
-			sourceCode.add("\t}");
+			sentences.add("\t}");
 		}
-		sourceCode.add("}");
+		if(tempClassName == null) {
+			sentences.add("}");
+		}
+
+		sourceCode = new ArrayList<>();
+		sourceCode.add("");
+		sourceCode.addAll(imports);
+		sourceCode.addAll(sentences);
 	}
 	
 	private List<String> genearteRuntimeImportsFromJRELibrary(String desiredPackages) {
@@ -144,7 +232,7 @@ public class ArisExecutor {
 		
 		String javaCommand = "java -cp \"{0}\" {1}";
 		String classpath = StrUtil.useDelimiter(File.pathSeparator, whereToGenerate, configClasspath);
-		javaCommand = StrUtil.occupy(javaCommand, classpath, FINAL_CLASS_NAME);
+		javaCommand = StrUtil.occupy(javaCommand, classpath, publicClassName);
 		consoleOutput.addAll(PanaceaBox.executeAndRead(javaCommand));
 	}
 	
@@ -153,8 +241,7 @@ public class ArisExecutor {
 		whereToGenerate = StrUtil.useSeparator(System.getProperty("user.home"), "aris", folderName);
 		File target = new File(whereToGenerate);
 		target.mkdirs();
-		
-		finalJavaFileFullPath = StrUtil.useSeparator(whereToGenerate, FINAL_CLASS_NAME + ".java");
+		finalJavaFileFullPath = StrUtil.useSeparator(whereToGenerate, publicClassName + ".java");
 		
 		try(BufferedWriter thomas = new BufferedWriter(new FileWriter(finalJavaFileFullPath))) {
 			for(String item : sourceCode) {

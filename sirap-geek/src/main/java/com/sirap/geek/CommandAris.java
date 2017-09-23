@@ -1,9 +1,9 @@
 package com.sirap.geek;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
+import com.sirap.basic.component.Konstants;
 import com.sirap.basic.util.ArisUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.IOUtil;
@@ -20,25 +20,22 @@ public class CommandAris extends CommandBase {
 		
 		singleParam = parseParam(KEY_EXECUTE_JAVACODE + "\\s+(.+)");
 		if(singleParam != null) {
-			File file = parseFile(singleParam);
-			List<String> javacodes = new ArrayList<>();
-			if(file != null ) {
-				javacodes = IOUtil.readFileIntoList(file.getAbsolutePath(), g().getCharsetInUse());
-			} else {
-				String expression = StrUtil.findFirstMatchedItem("^=(.+)", singleParam);
-				if(expression != null) {
-					expression = expression.replaceAll("[,\\.;]+$", "");
-					javacodes.add(StrUtil.occupy("System.out.println({0});", expression));
-				} else {
-					javacodes.add(singleParam + ";");
-				}
-			}
-				
+
 			boolean keepGeneratedFiles = g().isYes("aris.keep");
 			List<String> classPaths = g().getUserValuesByKeyword("aris.path.");
 			String classpath = StrUtil.connect(classPaths, File.pathSeparator);
-			
-			export(ArisExecutor.g.execute(javacodes, classpath, keepGeneratedFiles));
+
+			File file = parseFile(singleParam);
+			if(file != null ) {
+				List<String> javacodes = IOUtil.readFileIntoList(file.getAbsolutePath(), g().getCharsetInUse());
+				if(StrUtil.endsWith(singleParam, Konstants.SUFFIX_JAVA)) {
+					export(ArisExecutor.g.executeJavaFileStyle(javacodes, classpath, keepGeneratedFiles));
+				} else {
+					export(ArisExecutor.g.executeTextFileStyle(javacodes, classpath, keepGeneratedFiles));
+				}
+			} else {
+				export(ArisExecutor.g.executeOnelineStyle(singleParam, classpath, keepGeneratedFiles));
+			}
 			
 			return true;
 		}
