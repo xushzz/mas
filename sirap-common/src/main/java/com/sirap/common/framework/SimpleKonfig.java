@@ -120,6 +120,15 @@ public class SimpleKonfig extends Konfig {
 		isEmailEnabled = flag;
 	}
 	
+	public boolean isExportWithTimestampEnabled(String options) {
+		Object obj = OptionUtil.readObject(options, "ts");
+		if(obj instanceof Boolean) {
+			return (Boolean)obj;
+		}
+		
+		return isExportWithTimestampEnabled;
+	}
+
 	public boolean isExportWithTimestampEnabled() {
 		return isExportWithTimestampEnabled;
 	}

@@ -60,6 +60,11 @@ public class OptionUtil {
 		return readOption(options, targetKey, true);
 	}
 	
+	public static Object readObject(String options, String targetKey) {
+		List<MexedOption> items = parseOptions(options);
+		return readOption(items, targetKey);
+	}
+	
 	public static Object readOption(List<MexedOption> options, String targetKey, boolean ignoreCase) {
 		for(MexedOption mo : options) {
 			String key = mo.getName();

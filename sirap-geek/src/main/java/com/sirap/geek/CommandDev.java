@@ -47,7 +47,7 @@ public class CommandDev extends CommandBase {
 	private static final String KEY_ZIP = FileUtil.SUFFIXES_ZIP.replace(';', '|');
 	private static final String KEY_UUID = "uuid";
 	private static final String KEY_CHANGE_FILESEPARATOR = "sw";
-
+	
 	public boolean handle() {
 		singleParam = parseParam(KEY_PATH + "\\s(.*?)");
 		if(singleParam != null) {

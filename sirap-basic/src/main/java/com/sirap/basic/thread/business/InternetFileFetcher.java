@@ -1,11 +1,10 @@
 package com.sirap.basic.thread.business;
 
+import com.sirap.basic.component.TimestampIDGenerator;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.thread.WorkerGeneralItemOriented;
-import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
-import com.sirap.basic.util.RandomUtil;
 
 public class InternetFileFetcher extends WorkerGeneralItemOriented<MexObject> {
 	private String storage;
@@ -40,7 +39,7 @@ public class InternetFileFetcher extends WorkerGeneralItemOriented<MexObject> {
 		int count = countOfTasks - tasks.size();
 		String unique = "";
 		if(useUniqueFilename) {
-			unique = DateUtil.timestamp() + "_" + RandomUtil.letters(4) + "_";
+			unique = TimestampIDGenerator.nextId() + "_";
 		}
 		String filePath = storage + unique + FileUtil.generateFilenameByUrl(url, suffixWhenObscure);
 		if(FileUtil.exists(filePath)) {

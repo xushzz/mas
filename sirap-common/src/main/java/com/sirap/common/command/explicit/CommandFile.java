@@ -619,7 +619,7 @@ public class CommandFile extends CommandBase {
 				
 				String dir = getExportLocation();
 				String newPdfFilepath = dir + nameSuffix + Konstants.SUFFIX_PDF;
-				if(SimpleKonfig.g().isExportWithTimestampEnabled()) {
+				if(SimpleKonfig.g().isExportWithTimestampEnabled(options)) {
 					newPdfFilepath = dir + DateUtil.timestamp() + "_" + nameSuffix + Konstants.SUFFIX_PDF;
 				}
 
@@ -655,7 +655,7 @@ public class CommandFile extends CommandBase {
 			if(pdfFiles.size() > 1) {
 				String dir = getExportLocation();
 				String newPdfFilepath = dir + nameSuffix + Konstants.SUFFIX_PDF;
-				if(SimpleKonfig.g().isExportWithTimestampEnabled()) {
+				if(SimpleKonfig.g().isExportWithTimestampEnabled(options)) {
 					newPdfFilepath = dir + DateUtil.timestamp() + "_" + nameSuffix + Konstants.SUFFIX_PDF;
 				}
 				

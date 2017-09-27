@@ -32,7 +32,7 @@ import com.sirap.common.framework.command.target.TargetTxtFile;
 
 public class Exporter {
 	
-	public static void exportList(String command, List<Object> records, Target target) {
+	public static void exportList(String command, List<Object> records, Target target, String options) {
 		if(EmptyUtil.isNullOrEmpty(records)) {
 			return;
 		}
@@ -43,7 +43,7 @@ public class Exporter {
 			return;
 		}
 		
-		boolean isExportWithTs = SimpleKonfig.g().isExportWithTimestampEnabled();
+		boolean isExportWithTs = SimpleKonfig.g().isExportWithTimestampEnabled(options);
 		if(target instanceof TargetTxtFile) {
 			String charset = SimpleKonfig.g().getCharsetInUse();
 			TargetTxtFile txtFile = (TargetTxtFile)target;

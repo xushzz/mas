@@ -140,7 +140,7 @@ public abstract class CommandBase {
 		if(EmptyUtil.isNullOrEmpty(list)) {
 			exportEmptyMsg();
 		} else {
-			Exporter.exportList(input, list, whereToShot());
+			Exporter.exportList(input, list, whereToShot(), options);
 		}
 	}
 	
@@ -322,7 +322,7 @@ public abstract class CommandBase {
 		if(getNormalFile) {
 			String httpUrl = url;
 			String unique = "";
-			boolean useUniqueFilename = g().isExportWithTimestampEnabled();
+			boolean useUniqueFilename = g().isExportWithTimestampEnabled(options);
 			if(useUniqueFilename) {
 				unique = DateUtil.timestamp() + "_" + RandomUtil.letters(4) + "_";
 			}
@@ -388,7 +388,7 @@ public abstract class CommandBase {
 		String dir = getImageLocation();
 		String temp = "{0}{1}QR{2}.{3}";
 		String ts = "";
-		if(g().isExportWithTimestampEnabled()) {
+		if(g().isExportWithTimestampEnabled(options)) {
 			ts = DateUtil.timestamp() + "_";
 		}
 		String filePath = StrUtil.occupy(temp, dir, ts, FileUtil.generateLegalFileName(suffix), format);
@@ -458,7 +458,7 @@ public abstract class CommandBase {
 	
 	protected List<String> downloadFiles(String destination, List<MexObject> links, String suffixWhenObscure) {
 		int threads = SimpleKonfig.g().getUserNumberValueOf("threads.download");
-		boolean useUniqueFilename = g().isExportWithTimestampEnabled();
+		boolean useUniqueFilename = g().isExportWithTimestampEnabled(options);
 		return IOUtil.downloadFiles(destination, links, suffixWhenObscure, threads, useUniqueFilename);
 	}
 	
