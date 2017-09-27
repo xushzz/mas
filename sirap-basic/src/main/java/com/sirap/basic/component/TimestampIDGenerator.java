@@ -7,8 +7,12 @@ import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.StrUtil;
 
 public class TimestampIDGenerator {
-	private static AtomicReference<String> base = new AtomicReference<>(DateUtil.timestamp());
+	private static AtomicReference<String> base = new AtomicReference<>();
 	private static AtomicInteger index = new AtomicInteger(1);
+	
+	private TimestampIDGenerator() {
+		
+	}
 	
 	public static String nextId() {
 		String current = DateUtil.timestamp();
