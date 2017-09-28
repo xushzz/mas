@@ -431,12 +431,10 @@ public class IOUtil {
 			fileSizeInBytes = conn.getContentLengthLong();
 			inBuff = new BufferedInputStream(conn.getInputStream());
 			outBuff = new BufferedOutputStream(new FileOutputStream(filePath));
-
 			int t;
 			while ((t = inBuff.read()) != -1) {
 				outBuff.write(t);
 			}
-			
 			flag = true;
 		} catch (Exception ex) {
 			C.pl(ex + "\n\turl=>" + address + "\n\tLocation=>" + IOUtil.class.getName() + ".downloadNormalFile");

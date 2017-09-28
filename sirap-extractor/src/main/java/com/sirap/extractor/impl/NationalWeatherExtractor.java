@@ -22,13 +22,13 @@ public class NationalWeatherExtractor extends Extractor<WeatherRecord> {
 	protected void parseContent() {
 		StringBuffer regex = new StringBuffer();
 		regex.append("<div class=\"cname\">");
-		regex.append("\\s+<a target=\"_blank\" href=\"/publish/forecast/[A-Z]{1,5}/([A-Z]{1,50}).html\">([^<]+)</a>");
+		regex.append("\\s+<a target=\"_blank\" href=\"/publish/forecast/[A-Z]{1,5}/([A-Z\\-]{1,50}).html\">([^<]+)</a>");
 		regex.append("\\s+</div>");
 		regex.append("\\s+<div class=\"weather\">");
-		regex.append("\\s+([^<]+)");
+		regex.append("\\s+([^<>]+)");
 		regex.append("\\s+</div>");
 		regex.append("\\s+<div class=\"temp\">");
-		regex.append("\\s+([^<]+)");
+		regex.append("\\s+([^<>]+)");
 		regex.append("\\s+</div>");
 		Matcher m = Pattern.compile(regex.toString(), Pattern.CASE_INSENSITIVE).matcher(source);
 		
@@ -44,7 +44,7 @@ public class NationalWeatherExtractor extends Extractor<WeatherRecord> {
 			String temper = m.group(4).trim();
 			
 			WeatherRecord xiu = new WeatherRecord();
-			xiu.setCityPY(cityPinyin);
+			xiu.setCityPY(cityPinyin.replace("-", ""));
 			xiu.setCity(city);
 			xiu.setWeather(weather);
 			xiu.setCelsius(temper);

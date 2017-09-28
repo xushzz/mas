@@ -2,7 +2,6 @@
 ?fire              display any record containing fire
 ?^fire             display any record starting with fire
 ?fire$             display any record ending with water
-fire\*water        display any record containing a word, as in _1-9a-z, between fire and water
 ?fire&water        display any record containing both fire and water
 ?fire|water        display any record containing fire or water
 'rx:\d+            full regular expression matched, aka regex matched, start with rx:whatever

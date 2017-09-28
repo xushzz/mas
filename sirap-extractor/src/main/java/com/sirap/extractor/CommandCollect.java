@@ -1,6 +1,7 @@
 package com.sirap.extractor;
 
 import java.util.List;
+import java.util.regex.Matcher;
 
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexObject;
@@ -35,6 +36,7 @@ import com.sirap.extractor.manager.WeatherManager;
 public class CommandCollect extends CommandBase {
 
 	private static final String KEY_WEATHER = "w";	
+	private static final String KEY_CAR = "car";	
 	private static final String KEY_PHONE_MOBILE = "@";
 	private static final String KEY_DICTONARY = "ia";
 	private static final String KEY_TRANSLATE = "i";
@@ -58,6 +60,20 @@ public class CommandCollect extends CommandBase {
 	}
 	
 	public boolean handle() {
+
+		if(is(KEY_CAR + KEY_2DOTS)) {
+			export(fetchCarList());
+			
+			return true;
+		}
+		
+		singleParam = parseParam(KEY_CAR + "\\.([^\\.]+)");
+		if(singleParam != null) {
+			List<MexObject> items = fetchCarList();
+			export(CollectionUtil.filter(items, singleParam));
+			
+			return true;
+		}
 
 		if(is(KEY_WEATHER + KEY_2DOTS)) {
 			List<WeatherRecord> items = WeatherManager.g().allRecords();
@@ -217,6 +233,28 @@ public class CommandCollect extends CommandBase {
 		}
 		
 		return false;
+	}
+	
+	public static List<MexObject> fetchCarList() {
+		Extractor<MexObject> neymar = new Extractor<MexObject>() {
+
+			@Override
+			public String getUrl() {
+				printFetching = true;
+				return "http://www.ip138.com/carlist.htm";
+			}
+			
+			@Override
+			protected void parseContent() {
+				String regex = "<td>(.[A-Z])</td><td>([^<>]+)</td>";
+				Matcher ma = createMatcher(regex);
+				while(ma.find()) {
+					mexItems.add(new MexObject(ma.group(1) + " " + ma.group(2)));
+				}
+			}
+		};
+		
+		return neymar.process().getMexItems();
 	}
 	
 	public static String getMobilePhoneLocation(String phoneNumber) {

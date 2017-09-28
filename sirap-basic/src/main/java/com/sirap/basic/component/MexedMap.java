@@ -110,7 +110,7 @@ public class MexedMap {
 		return records;
 	}
 	
-	public List<Map.Entry<String, String>> getEntriesByKeyword(String keyword) {
+	private List<Map.Entry<String, String>> getEntriesByKeyword(String keyword) {
 		Map<String, String> sortedMap = new TreeMap<String, String>();
 		Iterator<String> it = container.keySet().iterator();
 		while(it.hasNext()) {
