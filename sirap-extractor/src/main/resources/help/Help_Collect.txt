@@ -1,6 +1,6 @@
 w.cityName         display weather info of China cities, like sz/shenzhen/10/duoyun, from ${china.weather.url}
 w..                display weather info of all cities in China, courtesy of ${china.weather.url}
-car.cityName       display car code info of China cities, like nanning/A, from http://www.ip138.com/carlist.htm
+car cityName       display car code info of China cities, like nanning/A, from http://www.ip138.com/carlist.htm
 car..              display car code info of all cities in China, courtesy of http://www.ip138.com/carlist.htm
 @15789451236       fetch seven-digit mobile phone location info, courtesy of ${phone.char.url}
 i de facto         get Chinese translation for this English word, courtesy of ${iciba.url}
