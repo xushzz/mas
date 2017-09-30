@@ -22,8 +22,11 @@ public class CommandAris extends CommandBase {
 		
 		singleParam = parseParam(KEY_EXECUTE_JAVACODE + "\\s+(.+)");
 		if(singleParam != null) {
-
 			boolean keepGeneratedFiles = g().isYes("aris.keep");
+			Object toKeep = OptionUtil.readObject(options, "k");
+			if(toKeep instanceof Boolean) {
+				keepGeneratedFiles = (Boolean)toKeep;
+			}
 			List<String> classPaths = g().getUserValuesByKeyword("aris.path.");
 			String classpath = StrUtil.connect(classPaths, File.pathSeparator);
 			List<String> autoPackages = getAutoIncludedPackageNames();
