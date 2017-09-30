@@ -2,9 +2,7 @@ package com.sirap.common.framework;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.sirap.basic.component.MexedMap;
 import com.sirap.basic.tool.C;

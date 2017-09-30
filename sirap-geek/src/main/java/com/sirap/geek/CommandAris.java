@@ -3,6 +3,7 @@ package com.sirap.geek;
 import java.io.File;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.util.ArisUtil;
 import com.sirap.basic.util.EmptyUtil;
@@ -25,17 +26,23 @@ public class CommandAris extends CommandBase {
 			boolean keepGeneratedFiles = g().isYes("aris.keep");
 			List<String> classPaths = g().getUserValuesByKeyword("aris.path.");
 			String classpath = StrUtil.connect(classPaths, File.pathSeparator);
-			boolean toPrintCommand = OptionUtil.readBoolean(options, "p", false);;
+			List<String> autoPackages = getAutoIncludedPackageNames();
+			String arisPlace = g().getUserValueOf("aris.place", System.getProperty("user.home"));
+			boolean toPrintCommand = OptionUtil.readBoolean(options, "p", false);
+			ArisExecutor instance = ArisExecutor.g().setToPrintCommand(toPrintCommand).setArisPlace(arisPlace);
+			if(!EmptyUtil.isNullOrEmpty(autoPackages)) {
+				instance.setAutoIncludedPackageNames(autoPackages);
+			}
 			File file = parseFile(singleParam);
 			if(file != null ) {
 				List<String> javacodes = IOUtil.readFileIntoList(file.getAbsolutePath(), g().getCharsetInUse());
 				if(StrUtil.endsWith(singleParam, Konstants.SUFFIX_JAVA)) {
-					export(ArisExecutor.g.setToPrintCommand(toPrintCommand).executeJavaFileStyle(javacodes, classpath, keepGeneratedFiles));
+					export(instance.executeJavaFileStyle(javacodes, classpath, keepGeneratedFiles));
 				} else {
-					export(ArisExecutor.g.setToPrintCommand(toPrintCommand).executeTextFileStyle(javacodes, classpath, keepGeneratedFiles));
+					export(instance.executeTextFileStyle(javacodes, classpath, keepGeneratedFiles));
 				}
 			} else {
-				export(ArisExecutor.g.setToPrintCommand(toPrintCommand).executeOnelineStyle(singleParam, classpath, keepGeneratedFiles));
+				export(instance.executeOnelineStyle(singleParam, classpath, keepGeneratedFiles));
 			}
 			
 			return true;
@@ -66,5 +73,26 @@ public class CommandAris extends CommandBase {
 		}
 		
 		return false;
+	}
+	
+	public List<String> getAutoIncludedPackageNames() {
+		List<String> desired = Lists.newArrayList();
+		List<String> items = g().getUserValuesByKeyword("aris.auto.");
+		for(String item : items) {
+			List<String> parentAndChildren = StrUtil.split(item);
+			if(parentAndChildren.isEmpty()) {
+				continue;
+			}
+			String parent = parentAndChildren.get(0);
+			if(parentAndChildren.size() == 1) {
+				desired.add(parent);
+			} else {
+				for(int i = 1 ; i < parentAndChildren.size(); i++) {
+					desired.add(parent + "." + parentAndChildren.get(i));			
+				}
+			}
+		}
+		
+		return desired;
 	}
 }
