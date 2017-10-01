@@ -22,7 +22,7 @@ public class Extractors {
 			@Override
 			protected void parseContent() {
 				Map<String, String> sea = shortAndFullProvinceName();
-				String regex = "<td>(.)([A-Z])</td><td>([^<>]+)</td>";
+				String regex = "<td>(.)([A-Z])\\s*</td><td>([^<>]+)</td>";
 				Matcher ma = createMatcher(regex);
 				while(ma.find()) {
 					String temp = sea.get(ma.group(1)) + " " + ma.group(1) + ma.group(2) + " " + ma.group(3);

@@ -32,7 +32,7 @@ public class CommandAris extends CommandBase {
 			List<String> autoPackages = getAutoIncludedPackageNames();
 			String arisPlace = g().getUserValueOf("aris.place", System.getProperty("user.home"));
 			boolean toPrintCommand = OptionUtil.readBoolean(options, "p", false);
-			ArisExecutor instance = ArisExecutor.g().setToPrintCommand(toPrintCommand).setArisPlace(arisPlace);
+			ArisExecutor instance = ArisExecutor.g().setToPrintCommand(toPrintCommand).setArisPlace(arisPlace).setToKeepGeneratedFiles(keepGeneratedFiles);
 			if(!EmptyUtil.isNullOrEmpty(autoPackages)) {
 				instance.setAutoIncludedPackageNames(autoPackages);
 			}
@@ -40,12 +40,12 @@ public class CommandAris extends CommandBase {
 			if(file != null ) {
 				List<String> javacodes = IOUtil.readFileIntoList(file.getAbsolutePath(), g().getCharsetInUse());
 				if(StrUtil.endsWith(singleParam, Konstants.SUFFIX_JAVA)) {
-					export(instance.executeJavaFileStyle(javacodes, classpath, keepGeneratedFiles));
+					export(instance.executeJavaFileStyle(javacodes, classpath));
 				} else {
-					export(instance.executeTextFileStyle(javacodes, classpath, keepGeneratedFiles));
+					export(instance.executeTextFileStyle(javacodes, classpath));
 				}
 			} else {
-				export(instance.executeOnelineStyle(singleParam, classpath, keepGeneratedFiles));
+				export(instance.executeOnelineStyle(singleParam, classpath));
 			}
 			
 			return true;

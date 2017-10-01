@@ -5,14 +5,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.exception.MexException;
@@ -39,7 +33,7 @@ public class ArisExecutor {
 	private String publicClassName;
 	private boolean isJavaFileStyle;
 	private boolean toPrintCommand;
-	private boolean keepGeneratedFiles;
+	private boolean toKeepGeneratedFiles;
 	
 	public static ArisExecutor g() {
 		return new ArisExecutor();
@@ -55,12 +49,17 @@ public class ArisExecutor {
 		return this;
 	}
 	
+	public ArisExecutor setToKeepGeneratedFiles(boolean toKeepGeneratedFiles) {
+		this.toKeepGeneratedFiles = toKeepGeneratedFiles;
+		return this;
+	}
+	
 	public ArisExecutor setArisPlace(String arisPlace) {
 		this.arisPlace = arisPlace;
 		return this;
 	}
 
-	public List<String> executeOnelineStyle(String lineJavacode, String configClasspath, boolean keepGeneratedFiles) {
+	public List<String> executeOnelineStyle(String lineJavacode, String configClasspath) {
 		Matcher ma = StrUtil.createMatcher(REGEX_IMPORT, lineJavacode);
 		StringBuffer sb = new StringBuffer();
 		List<String> items = new ArrayList<>();
@@ -85,29 +84,26 @@ public class ArisExecutor {
 		
 		this.manualJavacode = items;
 		this.configClasspath = configClasspath;
-		this.keepGeneratedFiles = keepGeneratedFiles;
 		return process();
 	}
 	
-	public List<String> executeTextFileStyle(List<String> textJavacode, String configClasspath, boolean keepGeneratedFiles) {
+	public List<String> executeTextFileStyle(List<String> textJavacode, String configClasspath) {
 		this.manualJavacode = textJavacode;
 		this.configClasspath = configClasspath;
-		this.keepGeneratedFiles = keepGeneratedFiles;
 		return process();
 	}
 	
-	public List<String> executeJavaFileStyle(List<String> textJavacode, String configClasspath, boolean keepGeneratedFiles) {
+	public List<String> executeJavaFileStyle(List<String> textJavacode, String configClasspath) {
 		this.manualJavacode = textJavacode;
 		this.configClasspath = configClasspath;
 		this.isJavaFileStyle = true;
-		this.keepGeneratedFiles = keepGeneratedFiles;
 		return process();
 	}
 	
 	private List<String> process() {
 		String finalJavaFileFullPath = saveSourceCode(generateSourceCode());
 		List<String> consoleOutput = compileAndRun(finalJavaFileFullPath);
-		if(!keepGeneratedFiles) {
+		if(!toKeepGeneratedFiles) {
 			cleanGeneratedFiles();
 		}
 		
@@ -193,7 +189,7 @@ public class ArisExecutor {
 			return Collections.EMPTY_LIST;
 		}
 		String runtimeJarPath = StrUtil.useSeparator(ArisUtil.getRuntimeLibraryLocation(), "rt.jar");
-		return generateImportsByJarFile(runtimeJarPath, autoIncludedPackageNames);
+		return ArisUtil.generateImportsByJarFile(runtimeJarPath, autoIncludedPackageNames);
 	}
 	
 	private List<String> generateConfigImportsFromClassPath() {
@@ -210,9 +206,9 @@ public class ArisExecutor {
 			}
 			
 			if(StrUtil.endsWith(item, ".jar")) {
-				imports.addAll(generateImportsByJarFile(item));
+				imports.addAll(ArisUtil.generateImportsByJarFile(item));
 			} else {
-				imports.addAll(generateImportsByFolder(item));
+				imports.addAll(ArisUtil.generateImportsByFolder(item));
 			}
 		}
 		
@@ -233,7 +229,7 @@ public class ArisExecutor {
 		}
 		List<String> result = PanaceaBox.executeAndRead(javacCommand);
 		if(!EmptyUtil.isNullOrEmpty(result)) {
-			keepGeneratedFiles = true;
+			toKeepGeneratedFiles = true;
 			consoleOutput.add("result for javac:");
 			consoleOutput.addAll(result);
 		}
@@ -272,72 +268,5 @@ public class ArisExecutor {
 		}
 		
 		return finalJavaFileFullPath;
-	}
-	
-	public static List<String> generateImportsByFolder(String folder) {
-		List<String> items = new ArrayList<>();
-		String root = folder;
-		readRecursively(items, root, folder);
-		
-		return items;
-	}
-	
-	private static void readRecursively(List<String> items, String root, String folder) {
-		File file = new File(folder);
-		if(file.isFile()) {
-			return;
-		}
-		
-		String[] subs = file.list();
-		if(subs == null) {
-			return;
-		}
-	
-		Set<String> checker = new HashSet<>();
-		for(String shortPath : subs) {
-			if(shortPath.endsWith(".class")) {
-				if(!checker.contains(folder)) {
-					checker.add(folder);
-					String packageName = folder.replace(root, "").replace(File.separatorChar, '.').replaceAll("^\\.", "");
-	    			String item = "import " + packageName + ".*;";
-	    			items.add(item);
-				}
-			}
-			readRecursively(items, root, StrUtil.useSeparator(folder, shortPath));
-		}
-	}
-	
-	public static List<String> generateImportsByJarFile(String jarFilepath) {
-		return generateImportsByJarFile(jarFilepath, null);
-	}
-	
-	public static List<String> generateImportsByJarFile(String jarFilepath, List<String> desiredPkgNames) {
-		Set<String> checker = new HashSet<>();
-		List<String> imports = new ArrayList<>();
-		Pattern pa = Pattern.compile("(.+)/.+\\.class");
-		try(JarFile jarFile = new JarFile(jarFilepath)) {
-		    Enumeration<JarEntry> what = jarFile.entries();
-		    while (what.hasMoreElements()) {
-		    	JarEntry entry = what.nextElement();
-	    		String name = entry.getName();
-	    		Matcher ma = pa.matcher(name);
-	    		if(ma.find()) {
-	    			String path = ma.group(1);
-	    			if(!checker.contains(path)) {
-	    				checker.add(path);
-	    				String fullPackageName = ma.group(1).replace('/', '.');
-	    				if(!EmptyUtil.isNullOrEmpty(desiredPkgNames) && !StrUtil.startsWith(fullPackageName, desiredPkgNames)) {
-	    					continue;
-	    				}
-		    			String item = "import " + ma.group(1).replace('/', '.') + ".*;";
-		    			imports.add(item);
-	    			}	    			
-	    		}
-		    }
-		} catch (Exception ex) {
-			throw new MexException(ex.getMessage());
-		}
-		
-		return imports;
 	}
 }

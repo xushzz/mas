@@ -5,7 +5,13 @@ import java.io.FileFilter;
 import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -224,5 +230,71 @@ public class ArisUtil {
 			throw new MexException(ex);
 		}
 	}
-
+	
+	public static List<String> generateImportsByJarFile(String jarFilepath) {
+		return generateImportsByJarFile(jarFilepath, null);
+	}
+	
+	public static List<String> generateImportsByJarFile(String jarFilepath, List<String> desiredPkgNames) {
+		Set<String> checker = new HashSet<>();
+		List<String> imports = new ArrayList<>();
+		Pattern pa = Pattern.compile("(.+)/.+\\.class");
+		try(JarFile jarFile = new JarFile(jarFilepath)) {
+		    Enumeration<JarEntry> what = jarFile.entries();
+		    while (what.hasMoreElements()) {
+		    	JarEntry entry = what.nextElement();
+	    		String name = entry.getName();
+	    		Matcher ma = pa.matcher(name);
+	    		if(ma.find()) {
+	    			String path = ma.group(1);
+	    			if(!checker.contains(path)) {
+	    				checker.add(path);
+	    				String fullPackageName = ma.group(1).replace('/', '.');
+	    				if(!EmptyUtil.isNullOrEmpty(desiredPkgNames) && !StrUtil.startsWith(fullPackageName, desiredPkgNames)) {
+	    					continue;
+	    				}
+		    			String item = "import " + ma.group(1).replace('/', '.') + ".*;";
+		    			imports.add(item);
+	    			}	    			
+	    		}
+		    }
+		} catch (Exception ex) {
+			throw new MexException(ex.getMessage());
+		}
+		
+		return imports;
+	}
+	
+	public static List<String> generateImportsByFolder(String folder) {
+		List<String> items = new ArrayList<>();
+		String root = folder;
+		readRecursively(items, root, folder);
+		
+		return items;
+	}
+	
+	private static void readRecursively(List<String> items, String root, String folder) {
+		File file = new File(folder);
+		if(file.isFile()) {
+			return;
+		}
+		
+		String[] subs = file.list();
+		if(subs == null) {
+			return;
+		}
+	
+		Set<String> checker = new HashSet<>();
+		for(String shortPath : subs) {
+			if(shortPath.endsWith(".class")) {
+				if(!checker.contains(folder)) {
+					checker.add(folder);
+					String packageName = folder.replace(root, "").replace(File.separatorChar, '.').replaceAll("^\\.", "");
+	    			String item = "import " + packageName + ".*;";
+	    			items.add(item);
+				}
+			}
+			readRecursively(items, root, StrUtil.useSeparator(folder, shortPath));
+		}
+	}
 }
