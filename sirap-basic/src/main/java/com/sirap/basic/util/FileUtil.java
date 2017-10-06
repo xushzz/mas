@@ -701,7 +701,7 @@ public class FileUtil {
 	public static boolean removeEntireFolder(String filepath) {  
 		File file = new File(filepath);
 	    if (!file.exists()) {
-	    	throw new MexException("File not found :", filepath);
+	    	throw new MexException("File not found: {0}", filepath);
 	    }
 	    if (file.isFile()) {  
 	        return file.delete();
