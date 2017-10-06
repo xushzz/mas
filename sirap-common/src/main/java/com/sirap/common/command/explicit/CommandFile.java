@@ -563,8 +563,9 @@ public class CommandFile extends CommandBase {
 						String msg = StrUtil.occupy("sheets({0}): {1}", sheets.size(), StrUtil.connect(sheets, ", "));
 						items.add(msg);
 					} else if(FileOpener.isTextFile(filePath)) {
-						int lines = IOUtil.totalLines(filePath);
-						items.add("lines: " + lines);
+						int[] count = IOUtil.countOfLinesChars(filePath);
+						items.add("lines: " + count[0]);
+						items.add("chars: " + count[1]);
 					} else if(FileOpener.isImageFile(filePath)) {
 						int[] widthHeight = ImageUtil.readImageWidthHeight(filePath);
 						items.add("resolution: " + widthHeight[0] + "x" + widthHeight[1]);

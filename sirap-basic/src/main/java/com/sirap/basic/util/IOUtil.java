@@ -211,13 +211,14 @@ public class IOUtil {
 		return list;
 	}
 	
-	public static int totalLines(String fileName) {
-		int count = 0;
+	public static int[] countOfLinesChars(String fileName) {
+		int[] countArr = new int[2];
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(fileName));
 			String record = br.readLine();
 			while (record != null) {
-				count++;
+				countArr[0]++;
+				countArr[1] += record.length();
 				record = br.readLine();
 			}
 			br.close();
@@ -225,7 +226,7 @@ public class IOUtil {
 			e.printStackTrace();
 		}
 
-		return count;
+		return countArr;
 	}
 	
 	public static MexedMap createMexedMapByRegularFile(String filePath) {

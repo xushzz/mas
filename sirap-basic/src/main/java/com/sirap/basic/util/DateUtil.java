@@ -37,7 +37,7 @@ public class DateUtil {
 	public static final String TIME_ONLY = "HH:mm:ss";
 	public static final String TIME_TIGHT = "HHmmss";
 	public static final String[] ROMAN_NUMBERS = {"VII", "I", "II", "III", "IV", "V", "VI"};
-	public static final List WEEK_DAY_NUMBERS = StrUtil.split("Mon,Tue,Wed,Thu,Fri,Sat,Sun");
+	public static final List<String> WEEK_DAY_NUMBERS = StrUtil.split("Mon,Tue,Wed,Thu,Fri,Sat,Sun");
 	
 	public static Date calendarToDate(Calendar cal) {
 		if(cal == null) {

@@ -23,7 +23,6 @@ import com.sirap.basic.component.CleverFolder;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.exception.MexException;
-import com.sirap.basic.tool.D;
 import com.sirap.basic.tool.FileWalker;
 
 @SuppressWarnings("unchecked")
@@ -699,20 +698,19 @@ public class FileUtil {
 		return matchedFiles;
 	}
 	
-	public static void removeEntireFolder(String filepath) {  
+	public static boolean removeEntireFolder(String filepath) {  
 		File file = new File(filepath);
 	    if (!file.exists()) {
-	        return;  
+	    	throw new MexException("File not found :", filepath);
 	    }
 	    if (file.isFile()) {  
-	    	file.delete();  
-	        return;  
+	        return file.delete();
 	    }
 	    File[] files = file.listFiles();  
 	    for (int i = 0; i < files.length; i++) {  
 	        removeEntireFolder(files[i].getAbsolutePath());  
-	    }  
-	    file.delete();  
+	    }
+	    return file.delete();  
 	}
 	
 	public static List<String> getAllXXXFiles(String rootPath, String suffix) {

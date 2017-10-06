@@ -5,13 +5,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
-import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.sirap.basic.exception.MexException;
 import com.sirap.basic.util.ArisUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.StrUtil;
@@ -128,8 +128,10 @@ public class ArisDetail {
 	private Object getFieldValue(Field item) {
 		Class type = item.getType();
 		try {
+			item.setAccessible(true);
 			Object value = item.get(glass);
 			String arrValue = StrUtil.arrayToString(value);
+
 			if(arrValue != null) {
 				return arrValue;
 			} else if("char".equals(type.toString()) || Character.class.equals(type)) {
@@ -140,10 +142,8 @@ public class ArisDetail {
 				return value;
 			}
 		} catch (Exception ex) {
-			//throw new MexException(ex);
+			throw new MexException(ex);
 		}
-		
-		return null;
 	}
 
 	private List<String> readFields() {

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.sirap.basic.component.Konstants;
+import com.sirap.basic.component.TimestampIDGenerator;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.exception.MexException;
@@ -20,7 +21,6 @@ import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.PanaceaBox;
-import com.sirap.basic.util.RandomUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.component.FileOpener;
@@ -324,7 +324,7 @@ public abstract class CommandBase {
 			String unique = "";
 			boolean useUniqueFilename = g().isExportWithTimestampEnabled(options);
 			if(useUniqueFilename) {
-				unique = DateUtil.timestamp() + "_" + RandomUtil.letters(4) + "_";
+				unique = TimestampIDGenerator.nextId() + "_";
 			}
 			String fileName = unique + FileUtil.generateFilenameByUrl(httpUrl);
 			String storage = pathWithSeparator("storage.misc", Konstants.FOLDER_MISC);
