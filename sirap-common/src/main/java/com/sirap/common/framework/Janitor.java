@@ -65,8 +65,8 @@ public class Janitor extends Checker {
 		try {
 			String after = StrUtil.occupySystemPropertyOrEnvironmentVariable(source, true);
 			if(!StrUtil.equals(source, after)) {
+				C.pl(source + " = " + after);
 				source = after;
-				C.pl("$ " + after);
 			}
 		} catch (MexException me) {
 			C.pl(me.getMessage());

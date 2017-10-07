@@ -545,10 +545,10 @@ public class FileUtil {
 		return record;
 	}
 	
-	public static String formatFileSize(String fileName) {
-		File file = getIfNormalFile(fileName);
-		if(file == null) {
-			return null;
+	public static String formatFileSize(String filePath) {
+		File file = new File(filePath);
+		if(!file.exists()) {
+			throw new MexException("Non-exist file: {0}", filePath);
 		}
 		
 		long size = file.length();

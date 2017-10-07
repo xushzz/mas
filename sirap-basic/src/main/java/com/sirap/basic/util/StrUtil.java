@@ -747,7 +747,7 @@ public class StrUtil {
 	public static String occupySystemPropertyOrEnvironmentVariable(String source, boolean useUnixFileSeparator) {
 		XXXUtil.nullCheck(source, "source");
 		
-		String regex = "\\$\\{(s:|e:|)([a-z\\.\\d\\-_]{1,99})\\}";
+		String regex = "\\$\\{(s:|e:|)([^\\$\\{\\}]+)\\}";
 		
 		String temp = source;
 		Matcher ma = createMatcher(regex, source);

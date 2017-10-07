@@ -32,7 +32,7 @@ ll fire            open last modified file matching criteria in ll. folder
 ox                 photo auto-open on/off switch after captured
 sx                 sound on/off switch when capturing screen
 tx                 export with or without time stamp switch, options:$+ts,-ts
-.                  list storage with dot
+.                  list storage with dot, $+size,+date,+bydate,+bysize,-byname,+bytype,+kids
 ver                version of this product, plus copyright and author information
 1+2.3x(4.5-_6)/8   yield 4.01875, basic calculation like add, subtract, multiply and divide
 ca 1+2.3x(_6)/8    explicitly evaluate given expression

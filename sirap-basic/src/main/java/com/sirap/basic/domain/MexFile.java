@@ -45,7 +45,12 @@ public class MexFile extends MexItem implements Comparable<MexFile> {
 	}
 	
 	public String getUnixPath() {
-		return file.getAbsolutePath().replace('\\', '/');
+		String value = file.getAbsolutePath();
+		if(file.isDirectory()) {
+			value += File.separator;
+		}
+		
+		return value.replace('\\', '/');
 	}
 	
 	@Override
@@ -57,6 +62,24 @@ public class MexFile extends MexItem implements Comparable<MexFile> {
 		}
 		
 		if(StrUtil.contains(temp, keyWord, caseSensitive)) {
+			return true;
+		}
+		
+		temp = getUnixPath();
+		
+		if(isRegexMatched(temp, keyWord)) {
+			return true;
+		}
+		
+		if(StrUtil.contains(temp, keyWord, caseSensitive)) {
+			return true;
+		}
+		
+		if(StrUtil.equals(keyWord, ":-f") && !file.isFile()) {
+			return true;
+		}
+		
+		if(StrUtil.equals(keyWord, ":-d") && !file.isDirectory()) {
 			return true;
 		}
 		
@@ -84,8 +107,17 @@ public class MexFile extends MexItem implements Comparable<MexFile> {
 	
 	public String toPrint(String optionsStr) {
 		StringBuilder sb = new StringBuilder(getUnixPath());
+
+		boolean showKids = OptionUtil.readBoolean(optionsStr, "kids", false);
+		if(showKids) {
+			String kids = getKids();
+			if(!EmptyUtil.isNullOrEmpty(kids)) {
+				sb.append(" ").append(kids);
+			}
+		}
+		
 		boolean showSize = OptionUtil.readBoolean(optionsStr, "size", false);
-		if(showSize && file.isFile()) {
+		if(showSize) {
 			sb.append("  ");
 			sb.append(FileUtil.formatFileSize(file.length()));
 		}
@@ -95,14 +127,6 @@ public class MexFile extends MexItem implements Comparable<MexFile> {
 			sb.append("  ");
 			Date lastmodified = new Date(file.lastModified());
 			sb.append(DateUtil.displayDate(lastmodified, DateUtil.DATETIME));
-		}
-		
-		boolean showKids = OptionUtil.readBoolean(optionsStr, "kids", false);
-		if(showKids) {
-			String kids = getKids();
-			if(!EmptyUtil.isNullOrEmpty(kids)) {
-				sb.append(" ").append(kids);
-			}
 		}
 		
 		return sb.toString();
