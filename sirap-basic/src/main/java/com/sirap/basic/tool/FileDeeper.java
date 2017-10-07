@@ -4,10 +4,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sirap.basic.domain.MexFile;
+
 public class FileDeeper {
 	
 	private int maxLevel = -1;
-	private List<File> maxLevelFiles = new ArrayList<File>();
+	private List<MexFile> maxLevelFiles = new ArrayList<MexFile>();
 	private String directory;
 	
 	public FileDeeper(String directory) {
@@ -20,7 +22,7 @@ public class FileDeeper {
 		return maxLevel;
 	}
 	
-	public List<File> getMaxLevelFiles() {
+	public List<MexFile> getMaxLevelFiles() {
 		if(maxLevel == -1) {
 			howDeep();
 		}
@@ -38,9 +40,9 @@ public class FileDeeper {
 		if(current > maxLevel) {
 			maxLevel = current;
 			maxLevelFiles.clear();
-			maxLevelFiles.add(file);
+			maxLevelFiles.add(new MexFile(file));
 		} else if(current == maxLevel) {
-			maxLevelFiles.add(file);
+			maxLevelFiles.add(new MexFile(file));
 		}
 		
 		if(!file.isDirectory()) {

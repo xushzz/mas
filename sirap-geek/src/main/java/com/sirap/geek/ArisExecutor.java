@@ -216,7 +216,7 @@ public class ArisExecutor {
 	}
 	
 	private void cleanGeneratedFiles() {
-		FileUtil.removeEntireFolder(whereToGenerate);
+		FileUtil.remove(whereToGenerate);
 	}
 	
 	private List<String> compileAndRun(String finalJavaFileFullPath) {

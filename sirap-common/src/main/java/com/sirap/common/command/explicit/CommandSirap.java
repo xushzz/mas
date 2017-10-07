@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.component.MatrixCalendar;
 import com.sirap.basic.component.RioCalendar;
+import com.sirap.basic.component.comparator.MexFileComparator;
 import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.email.EmailCenter;
@@ -34,13 +35,14 @@ import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.MexUtil;
 import com.sirap.basic.util.NetworkUtil;
+import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
-import com.sirap.common.domain.TextSearchEngine;
 import com.sirap.common.domain.SiteSearchEngine;
 import com.sirap.common.domain.TZRecord;
+import com.sirap.common.domain.TextSearchEngine;
 import com.sirap.common.extractor.Extractor;
 import com.sirap.common.framework.AppBase;
 import com.sirap.common.framework.Janitor;
@@ -356,8 +358,26 @@ public class CommandSirap extends CommandBase {
 			if(file != null) {
 				String path = file.getAbsolutePath();
 				if(path != null) {
-					List<String> records = FileUtil.listDirectory(path);
-					export(records);
+					List<MexFile> allFiles = FileUtil.listDirectory(path);
+					boolean orderByNameAsc = OptionUtil.readBoolean(options, "byname", true);
+					MexFileComparator cesc = new MexFileComparator(orderByNameAsc);
+					boolean orderByTypeDirAtTop = OptionUtil.readBoolean(options, "bytype", true);
+					cesc.setByTypeAsc(orderByTypeDirAtTop);
+					Object orderByDate = OptionUtil.readObject(options, "bydate");
+					if(orderByDate instanceof Boolean) {
+						cesc.setByDateAsc((Boolean)orderByDate);
+					}
+					Object orderBySize = OptionUtil.readObject(options, "bysize");
+					if(orderBySize instanceof Boolean) {
+						cesc.setBySizeAsc((Boolean)orderBySize);
+					}
+					Collections.sort(allFiles, cesc);
+					String tempOptions = options;
+					if(options == null || !options.contains("kids")) {
+						tempOptions += ",+kids";
+					}
+
+					exportWithOptions(allFiles, tempOptions);
 				}
 				return true;
 			}

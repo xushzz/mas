@@ -297,28 +297,26 @@ public class FileUtil {
 		return null;
 	}
 	
-	public static List<String> listDirectory(String dir) {
+	public static List<MexFile> listDirectory(String dir) {
 		File file = new File(dir);
-		List<String> records = new ArrayList<String>();
-		final List<String> normalFiles = new ArrayList<String>();
-		final List<String> subFolders = new ArrayList<String>();
+		List<MexFile> records = new ArrayList<>();
+		final List<MexFile> normalFiles = new ArrayList<>();
+		final List<MexFile> subFolders = new ArrayList<>();
 		file.listFiles(new FileFilter() {
 			@Override
 			public boolean accept(File currentFile) {
+				MexFile june = new MexFile(currentFile);
 				if(currentFile.isDirectory()) {
-					String[] files = currentFile.list();
-					if(files != null) {
-						subFolders.add(currentFile.getAbsolutePath() + "(" + files.length + ")");
-					}
+					subFolders.add(june);
 				} else {
-					normalFiles.add(currentFile.getAbsolutePath());
+					normalFiles.add(june);
 				}
 				
 				return true;
 			}
 		});
 		
-		records.add(dir);
+		records.add(new MexFile(file));
 		records.addAll(subFolders);
 		records.addAll(normalFiles);
 		
@@ -701,7 +699,7 @@ public class FileUtil {
 		return matchedFiles;
 	}
 	
-	public static boolean removeEntireFolder(String filepath) {  
+	public static boolean remove(String filepath) {  
 		File file = new File(filepath);
 	    if (!file.exists()) {
 	    	throw new MexException("File not found: {0}", filepath);
@@ -711,7 +709,7 @@ public class FileUtil {
 	    }
 	    File[] files = file.listFiles();  
 	    for (int i = 0; i < files.length; i++) {  
-	        removeEntireFolder(files[i].getAbsolutePath());  
+	        remove(files[i].getAbsolutePath());  
 	    }
 	    return file.delete();  
 	}

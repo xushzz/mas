@@ -9,6 +9,7 @@ public class MexFileComparator implements Comparator<MexFile> {
 
 	private Boolean byDateAsc;
 	private Boolean bySizeAsc;
+	private Boolean byTypeAsc;
 	private boolean byNameAsc = true;
 	
 	public MexFileComparator() {
@@ -24,8 +25,24 @@ public class MexFileComparator implements Comparator<MexFile> {
 		return this;
 	}
 	
+	public MexFileComparator setByTypeAsc(Boolean byTypeAsc) {
+		this.byTypeAsc = byTypeAsc;
+		return this;
+	}
+	
 	public MexFileComparator(boolean byNameAsc) {
 		this.byNameAsc= byNameAsc;
+	}
+	
+	private int valueOfType(File file) {
+		int value = 0;
+		if(file.isDirectory()) {
+			value = 1;
+		} else if(file.isFile()) {
+			value = 2;
+		}
+		
+		return value;
 	}
 	
 	@Override
@@ -34,6 +51,13 @@ public class MexFileComparator implements Comparator<MexFile> {
 		File fb = mb.getFile();
 		
 		int value = 0;
+		
+		if(byTypeAsc != null) {
+			value = valueOfType(fa) - valueOfType(fb);
+			if(!byTypeAsc) {
+				value *= -1;
+			}
+		}
 		
 		if(byDateAsc != null) {
 			value = fa.lastModified() < fb.lastModified() ? 1 : -1;

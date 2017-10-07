@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.exception.MexException;
+import com.sirap.basic.tool.D;
 
 public class StrUtil {
 
@@ -743,26 +744,50 @@ public class StrUtil {
 		return temp;
 	}
 	
-	public static String occupySystemPropertyOrEnvironmentVariable(String source) {
+	public static String occupySystemPropertyOrEnvironmentVariable(String source, boolean useUnixFileSeparator) {
 		XXXUtil.nullCheck(source, "source");
 		
-		String regex = "\\$\\{([a-z\\.\\d\\-_]{1,99})\\}";
+		String regex = "\\$\\{(s:|e:|)([a-z\\.\\d\\-_]{1,99})\\}";
 		
 		String temp = source;
 		Matcher ma = createMatcher(regex, source);
 		while(ma.find()) {
 			String whole = ma.group(0);
-			String item = ma.group(1);
-			String obama = System.getProperty(item);
-			String romney = System.getenv(item);
-			if(obama == null && romney == null) {
-				throw new MexException("No such system property or environment variable as {0}", item);
+			String type = ma.group(1);
+			String item = ma.group(2);
+			String sap = System.getProperty(item);
+			String egg = System.getenv(item);
+			if(EmptyUtil.isNullOrEmpty(type)) {
+				if(sap == null && egg == null) {
+					throw new MexException("No such system property or environment variable as '{0}'", item);
+				} else if(sap != null && egg != null) {
+					String msg = "Obscure name '{0}', use ${s:{0}} to fetch system property or ${e:{0}} environment variable.";
+					msg += "\nsystem property : {1}";
+					msg += "\nenvironment variable : {2}";
+					
+					throw new MexException(msg, item, sap, egg);
+				} else {
+					if(!EmptyUtil.isNullOrEmpty(sap)) {
+						temp = temp.replace(whole, sap.replace(File.separatorChar, '/'));
+					}
+					if(!EmptyUtil.isNullOrEmpty(egg)) {
+						temp = temp.replace(whole, egg.replace(File.separatorChar, '/'));
+					}
+				}
 			}
-			if(!EmptyUtil.isNullOrEmpty(obama)) {
-				temp = temp.replace(whole, obama);
+			if(StrUtil.equals(type, "s:")) {
+				if(EmptyUtil.isNullOrEmpty(sap)) {
+					throw new MexException("No such system property as '{0}'", item);
+				} else {
+					temp = temp.replace(whole, sap.replace(File.separatorChar, '/'));
+				}
 			}
-			if(!EmptyUtil.isNullOrEmpty(romney)) {
-				temp = temp.replace(whole, romney);
+			if(StrUtil.equals(type, "e:")) {
+				if(EmptyUtil.isNullOrEmpty(egg)) {
+					throw new MexException("No such environment variable as '{0}'", item);
+				} else {
+					temp = temp.replace(whole, egg.replace(File.separatorChar, '/'));
+				}
 			}
 		}
 		

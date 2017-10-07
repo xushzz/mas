@@ -5,6 +5,7 @@ import java.util.Date;
 
 import com.sirap.basic.search.SizeCriteria;
 import com.sirap.basic.util.DateUtil;
+import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
@@ -21,6 +22,19 @@ public class MexFile extends MexItem implements Comparable<MexFile> {
 	public File getFile() {
 		return file;
 	}
+	
+	public String getKids() {
+		if(!file.isDirectory()) {
+			return null;
+		}
+		
+		String[] files = file.list();
+		if(files != null) {
+			return "(" + files.length + ")";
+		}
+
+		return null;
+	}
 
 	public String getName() {
 		return file.getName();
@@ -28,6 +42,10 @@ public class MexFile extends MexItem implements Comparable<MexFile> {
 	
 	public String getPath() {
 		return file.getAbsolutePath();
+	}
+	
+	public String getUnixPath() {
+		return file.getAbsolutePath().replace('\\', '/');
 	}
 	
 	@Override
@@ -65,7 +83,7 @@ public class MexFile extends MexItem implements Comparable<MexFile> {
 	}
 	
 	public String toPrint(String optionsStr) {
-		StringBuilder sb = new StringBuilder(file.getAbsolutePath());
+		StringBuilder sb = new StringBuilder(getUnixPath());
 		boolean showSize = OptionUtil.readBoolean(optionsStr, "size", false);
 		if(showSize && file.isFile()) {
 			sb.append("  ");
@@ -77,6 +95,14 @@ public class MexFile extends MexItem implements Comparable<MexFile> {
 			sb.append("  ");
 			Date lastmodified = new Date(file.lastModified());
 			sb.append(DateUtil.displayDate(lastmodified, DateUtil.DATETIME));
+		}
+		
+		boolean showKids = OptionUtil.readBoolean(optionsStr, "kids", false);
+		if(showKids) {
+			String kids = getKids();
+			if(!EmptyUtil.isNullOrEmpty(kids)) {
+				sb.append(" ").append(kids);
+			}
 		}
 		
 		return sb.toString();

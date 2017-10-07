@@ -254,14 +254,14 @@ public class CommandFile extends CommandBase {
 					FileDeeper dima = new FileDeeper(cleverPath);
 					
 					int maxLevel = dima.howDeep();
-					List<File> files = dima.getMaxLevelFiles();
+					List<MexFile> files = dima.getMaxLevelFiles();
 					
 					if(target.isFileRelated()) {
 						export(files);
 					} else {
 						List<String> items = new ArrayList<>();
-						for(File what: files) {
-							items.add(maxLevel + " " + what.getAbsolutePath());
+						for(MexFile what: files) {
+							items.add(maxLevel + " " + what.getUnixPath());
 						}
 						
 						export(items);
@@ -290,28 +290,39 @@ public class CommandFile extends CommandBase {
 			}
 			
 			if(!EmptyUtil.isNullOrEmpty(paths)) {
-				List<String> allRecords = new ArrayList<>();
+				List<MexFile> allFiles = new ArrayList<>();
 				for(String pathItem: paths) {
-					List<String> records = FileUtil.listDirectory(pathItem);
+					List<MexFile> records = FileUtil.listDirectory(pathItem);
 					if(!EmptyUtil.isNullOrEmpty(records)) {
-						allRecords.addAll(records);
+						allFiles.addAll(records);
 					}
 				}
 				
-				if(!EmptyUtil.isNullOrEmpty(allRecords)) {
+				if(!EmptyUtil.isNullOrEmpty(allFiles)) {
 					if(target.isFileRelated()) {
-						export(CollectionUtil.toFileList(allRecords));
+						export(CollectionUtil.toFileList(allFiles));
 					} else {
-						if(StrUtil.equals(KEY_SHOW_DETAIL, does)) {
-							List<String> items = new ArrayList<>();
-							for(String record : allRecords) {
-								String temp = detailFileInfo(record);
-								items.add(temp);
-							}
-							export(items);
-						} else {
-							export(allRecords);
+						boolean orderByNameAsc = OptionUtil.readBoolean(options, "byname", true);
+						MexFileComparator cesc = new MexFileComparator(orderByNameAsc);
+						boolean orderByTypeDirAtTop = OptionUtil.readBoolean(options, "bytype", true);
+						cesc.setByTypeAsc(orderByTypeDirAtTop);
+						Object orderByDate = OptionUtil.readObject(options, "bydate");
+						if(orderByDate instanceof Boolean) {
+							cesc.setByDateAsc((Boolean)orderByDate);
 						}
+						Object orderBySize = OptionUtil.readObject(options, "bysize");
+						if(orderBySize instanceof Boolean) {
+							cesc.setBySizeAsc((Boolean)orderBySize);
+						}
+						Collections.sort(allFiles, cesc);
+						String tempOptions = StrUtil.equals(KEY_SHOW_DETAIL, does) ? "+size" : "";
+						if(options != null) {
+							tempOptions += "," + options;
+						}
+						if(options == null || !options.contains("kids")) {
+							tempOptions += ",+kids";
+						}
+						exportWithOptions(allFiles, tempOptions);
 					}
 					
 					return true;
@@ -418,6 +429,11 @@ public class CommandFile extends CommandBase {
 				} else {
 					boolean orderByNameAsc = OptionUtil.readBoolean(options, "byname", true);
 					MexFileComparator cesc = new MexFileComparator(orderByNameAsc); 
+
+					Object orderByType = OptionUtil.readObject(options, "bytype");
+					if(orderByType instanceof Boolean) {
+						cesc.setByTypeAsc((Boolean)orderByType);
+					}
 					Object orderByDate = OptionUtil.readObject(options, "bydate");
 					if(orderByDate instanceof Boolean) {
 						cesc.setByDateAsc((Boolean)orderByDate);
