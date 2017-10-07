@@ -756,7 +756,7 @@ public class StrUtil {
 			String obama = System.getProperty(item);
 			String romney = System.getenv(item);
 			if(obama == null && romney == null) {
-				throw new MexException("No such system property or environment variable: {0}", item);
+				throw new MexException("No such system property or environment variable as {0}", item);
 			}
 			if(!EmptyUtil.isNullOrEmpty(obama)) {
 				temp = temp.replace(whole, obama);

@@ -72,7 +72,6 @@ public class InputAnalyzer {
 	}
 
 	public void analyze() {
-		input = StrUtil.occupySystemPropertyOrEnvironmentVariable(input);
 		int idxExport = whereToSplit();
 		if(idxExport >= 0) {
 			String temp= input.substring(0, idxExport).trim();

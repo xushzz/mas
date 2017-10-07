@@ -3,9 +3,11 @@ package com.sirap.common.framework;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sirap.basic.exception.MexException;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.ObjectUtil;
+import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.command.CommandHelp;
 import com.sirap.common.command.CommandTask;
@@ -58,7 +60,18 @@ public class Janitor extends Checker {
 		}
 	}
 
-    public void process(String source) {
+    public void process(String origin) {
+    	String source = origin;
+		try {
+			String after = StrUtil.occupySystemPropertyOrEnvironmentVariable(source);
+			if(!StrUtil.equals(source, after)) {
+				source = after;
+				C.pl(after);
+			}
+		} catch (MexException me) {
+			C.pl(me.getMessage());
+		}
+
     	long start = System.currentTimeMillis();
     	Stash.g().place(Stash.KEY_START_IN_MILLIS, start);
     	if(EmptyUtil.isNullOrEmptyOrBlank(source)) {
