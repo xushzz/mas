@@ -289,11 +289,11 @@ public class CommandDev extends CommandBase {
 			}
 			
 			if(KEY_2DOTS.equals(criteria)) {
-				exportMexItems(allItems, tempOptions);
+				exportWithOptions(allItems, tempOptions);
 			} else {
 				MexFilter<MexZipEntry> filter = new MexFilter<MexZipEntry>(criteria, allItems, isCaseSensitive(tempOptions));
 				List<MexZipEntry> result = filter.process();
-				exportMexItems(result, tempOptions);
+				exportWithOptions(result, tempOptions);
 			}
 			
 			return true;

@@ -203,6 +203,9 @@ public class FileUtil {
 				target = params[0];
 				depth = MathUtil.toInteger(params[1], depth);
 			}
+			if(!target.endsWith("/") && !target.endsWith("\\")) {
+				target += File.separator;
+			}
 			allFiles.addAll(scanSingleFolder(target, depth, includeFolder));
 		}
 		

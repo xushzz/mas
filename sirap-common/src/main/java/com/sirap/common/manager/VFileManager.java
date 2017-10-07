@@ -72,7 +72,7 @@ public class VFileManager {
 	private void initFixedPaths() {
 		originalPaths = getOriginalPaths();
 		fixedPaths.clear();
-		for(String path:originalPaths) {
+		for(String path : originalPaths) {
 			fixedPaths.add(path);
 		}
 	}
@@ -121,8 +121,6 @@ public class VFileManager {
 			items.addAll(CollectionUtil.filter(files, fixedCriteria));
 		}
 
-		Collections.sort(items);
-		
 		return items;
 	}
 	

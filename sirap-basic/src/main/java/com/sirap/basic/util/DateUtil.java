@@ -24,7 +24,7 @@ public class DateUtil {
 	public static final String HOUR_Min_Sec_AM_WEEK_DATE = "hh:mm:ss aa, EEEE, MMM dd, yyyy";
 	public static final String HOUR_Min_Sec_Milli_AM_WEEK_DATE = "hh:mm:ss.SSS aa, EEEE, MMM dd, yyyy";
 	public static final String HOUR_Min_AM_WEEK_DATE = "hh:mm aa, EEEE, MMM dd, yyyy";
-	public static final String DATETIME= "yyyy-MM-dd HH:mm:ss";
+	public static final String DATETIME = "yyyy-MM-dd HH:mm:ss";
 	public static final String DATETIME_F5TXT = "HH:mm yyyy/MM/dd";
 	public static final String DATETIME_TIGHT = "yyyyMMddHHmmss";
 	public static final String DATETIME_ALL_TIGHT = "yyyyMMddHHmmssSSS";

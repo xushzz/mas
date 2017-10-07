@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.sirap.basic.component.Konstants;
+import com.sirap.basic.component.comparator.MexFileComparator;
 import com.sirap.basic.component.media.MediaFileAnalyzer;
 import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.domain.MexObject;
@@ -155,7 +156,7 @@ public class CommandFile extends CommandBase {
 			
 			if(!target.isFileRelated() && FileOpener.isZipFile(filePath)) {
 				List<MexZipEntry> items = ArisUtil.parseZipEntries(filePath);
-				exportMexItems(items);
+				exportWithDefaultOptions(items);
 				return true;
 			}
 			
@@ -415,12 +416,22 @@ public class CommandFile extends CommandBase {
 					
 					export(files);
 				} else {
-					Collections.sort(allMexedFiles);
+					boolean orderByNameAsc = OptionUtil.readBoolean(options, "byname", true);
+					MexFileComparator cesc = new MexFileComparator(orderByNameAsc); 
+					Object orderByDate = OptionUtil.readObject(options, "bydate");
+					if(orderByDate instanceof Boolean) {
+						cesc.setByDateAsc((Boolean)orderByDate);
+					}
+					Object orderBySize = OptionUtil.readObject(options, "bysize");
+					if(orderBySize instanceof Boolean) {
+						cesc.setBySizeAsc((Boolean)orderBySize);
+					}
+					Collections.sort(allMexedFiles, cesc);
 					String tempOptions = jack.isShowDetail() ? "+size" : "";
 					if(options != null) {
 						tempOptions += "," + options;
 					}
-					exportMexItems(allMexedFiles, tempOptions);
+					exportWithOptions(allMexedFiles, tempOptions);
 				}
 			}
 			
@@ -438,13 +449,25 @@ public class CommandFile extends CommandBase {
 			String criteria = params[1].trim();
 			List<MexFile> records = VFileManager.g().getFileRecordsByName(criteria, isCaseSensitive());
 			if(target.isFileRelated()) {
+				Collections.sort(records);
 				export(CollectionUtil.toFileList(records));
 			} else {
+				boolean orderByNameAsc = OptionUtil.readBoolean(options, "byname", true);
+				MexFileComparator cesc = new MexFileComparator(orderByNameAsc); 
+				Object orderByDate = OptionUtil.readObject(options, "bydate");
+				if(orderByDate instanceof Boolean) {
+					cesc.setByDateAsc((Boolean)orderByDate);
+				}
+				Object orderBySize = OptionUtil.readObject(options, "bysize");
+				if(orderBySize instanceof Boolean) {
+					cesc.setBySizeAsc((Boolean)orderBySize);
+				}
+				Collections.sort(records, cesc);
 				String tempOptions = detail ? "+size" : "";
 				if(options != null) {
 					tempOptions += "," + options;
 				}
-				exportMexItems(records, tempOptions);
+				exportWithOptions(records, tempOptions);
 			}
 			
 			return true;
@@ -452,10 +475,22 @@ public class CommandFile extends CommandBase {
 		
 		if(is(KEY_VERY_IMPORTANT_FOLDER + KEY_2DOTS)) {
 			List<MexFile> records = VFileManager.g().getAllFileRecords();
+			boolean orderByNameAsc = OptionUtil.readBoolean(options, "byname", true);
+			MexFileComparator cesc = new MexFileComparator(orderByNameAsc); 
+			Object orderByDate = OptionUtil.readObject(options, "bydate");
+			if(orderByDate instanceof Boolean) {
+				cesc.setByDateAsc((Boolean)orderByDate);
+			}
+			Object orderBySize = OptionUtil.readObject(options, "bysize");
+			if(orderBySize instanceof Boolean) {
+				cesc.setBySizeAsc((Boolean)orderBySize);
+			}
+			Collections.sort(records, cesc);
+
 			if(target.isFileRelated()) {
 				export(CollectionUtil.toFileList(records));
 			} else {
-				export(CollectionUtil.items2PrintRecords(records));
+				exportWithDefaultOptions(records);
 			}
 			
 			return true;

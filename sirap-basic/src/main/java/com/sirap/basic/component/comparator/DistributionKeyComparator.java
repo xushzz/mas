@@ -1,7 +1,8 @@
-package com.sirap.basic.component;
+package com.sirap.basic.component.comparator;
 
 import java.util.Comparator;
 
+import com.sirap.basic.component.Konstants;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.StrUtil;
 

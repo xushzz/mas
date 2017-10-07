@@ -1,4 +1,4 @@
-package com.sirap.basic.component;
+package com.sirap.basic.component.comparator;
 
 import java.util.Comparator;
 

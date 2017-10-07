@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.sirap.basic.component.StringSenseComparator;
+import com.sirap.basic.component.comparator.StringSenseComparator;
 import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexObject;

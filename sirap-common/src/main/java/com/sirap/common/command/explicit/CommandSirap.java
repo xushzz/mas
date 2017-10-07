@@ -701,7 +701,7 @@ public class CommandSirap extends CommandBase {
 				list = TextSearcher.search(folders, fileCriteria, contentCriteria, g().getCharsetInUse());
 			}
 			
-			exportMexItems(list, options);
+			exportWithOptions(list, options);
 			
 			return true;
 		}

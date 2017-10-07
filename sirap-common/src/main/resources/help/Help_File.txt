@@ -27,12 +27,13 @@ F:\fly.xls 0       print index-designated excel sheet
 F:\D o\a.xlsx, 1   print index-designated excel sheet
 F: 3 >3.3M         file search by size-unit criteria, > great than, < less than, ~ about 0.1 difference
 F: 3 >3.3M         size-unit criteria, = equal 0.01 diff, 3.3B, 3.3K, also for units like M,G,T,P and E
-:                  list out all available disks in detail manner, $+size,+date
+:                  list out all available disks in detail manner, $+size,+date,+bydate,+bysize,-byname
 ::                 similar to performing C:, D: and all other available disks all together
 ::\fire            similar to performing C:\fire, D:\fire and all other available disks all together
 ::\fire 3 txt      recursively display for all available disks
 vv                 display folder names configured in v.folder nodes, "v folders"
 v..                list all files in v folders recursively by given depth, default 2 and configurable 
+v..                use options like $+size,+date,+bydate,+bysize,-byname
 vr                 refresh 'v folders' cache, the changes in folders will be reflected in next search
 v homeland&tower   conduct search in v folders by multiple conditions, & for 'and', | for 'or'
 v 5.3              the number-format criteria would be additionally read as season 05 episode 03

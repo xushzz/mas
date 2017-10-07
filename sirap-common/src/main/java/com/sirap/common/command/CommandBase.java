@@ -127,11 +127,11 @@ public abstract class CommandBase {
 		return OptionUtil.readBoolean(tempOptions, "case", false);
 	}
 	
-	public <T extends MexItem> void exportMexItems(List<T> list) {
+	public <T extends MexItem> void exportWithDefaultOptions(List<T> list) {
 		export(CollectionUtil.items2PrintRecords(list, options));
 	}
 	
-	public <T extends MexItem> void exportMexItems(List<T> list, String niceOptions) {
+	public <T extends MexItem> void exportWithOptions(List<T> list, String niceOptions) {
 		export(CollectionUtil.items2PrintRecords(list, niceOptions));
 	}
 	
