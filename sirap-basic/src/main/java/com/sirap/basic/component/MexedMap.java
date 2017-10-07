@@ -22,21 +22,15 @@ public class MexedMap {
 		
 	}
 	
-	public int decodeValues(String passcode) {
+	public void recoverValues(String passcode) {
 		Iterator<String> it = container.keySet().iterator();
-		int affectedItems = 0;
 		while(it.hasNext()) {
 			String key = it.next();
-			String value = container.get(key);
-			String v2 = TrumpUtil.decodeMixedTextBySIRAP(value, passcode);
-			if(StrUtil.equals(value, v2)) {
-				affectedItems++;
-			} else {
-				container.put(key, v2);
-			}
+			String origin = container.get(key);
+			String temp = TrumpUtil.decodeMixedTextBySIRAP(origin, passcode);
+			String finale = StrUtil.occupySystemPropertyOrEnvironmentVariable(temp);
+			container.put(key, finale);
 		}
-		
-		return affectedItems;
 	}
 	
 	public List<String> detectCircularItems() {

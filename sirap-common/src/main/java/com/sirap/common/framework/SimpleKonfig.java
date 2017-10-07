@@ -86,7 +86,7 @@ public class SimpleKonfig extends Konfig {
 	}
 	
 	private void decodeUserConfig() {
-		getUserProps().decodeValues(securityPasscode);
+		getUserProps().recoverValues(securityPasscode);
 		List<String> items = getUserProps().detectCircularItems();
 		if(!EmptyUtil.isNullOrEmpty(items)) {
 			C.pl("[Configuration] Circular items found in [" + instance.userConfigFile + "] as following:");

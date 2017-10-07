@@ -743,6 +743,32 @@ public class StrUtil {
 		return temp;
 	}
 	
+	public static String occupySystemPropertyOrEnvironmentVariable(String source) {
+		XXXUtil.nullCheck(source, "source");
+		
+		String regex = "\\$\\{([a-z\\.\\d\\-_]{1,99})\\}";
+		
+		String temp = source;
+		Matcher ma = createMatcher(regex, source);
+		while(ma.find()) {
+			String whole = ma.group(0);
+			String item = ma.group(1);
+			String obama = System.getProperty(item);
+			String romney = System.getenv(item);
+			if(obama == null && romney == null) {
+				throw new MexException("No such system property or environment variable: {0}", item);
+			}
+			if(!EmptyUtil.isNullOrEmpty(obama)) {
+				temp = temp.replace(whole, obama);
+			}
+			if(!EmptyUtil.isNullOrEmpty(romney)) {
+				temp = temp.replace(whole, romney);
+			}
+		}
+		
+		return temp;
+	}
+
 	public static String pseudoEncrypt(String plainText) {
 		String temp = plainText.replaceAll(".", "*");
 		return temp;
