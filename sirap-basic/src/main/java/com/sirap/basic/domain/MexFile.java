@@ -83,6 +83,22 @@ public class MexFile extends MexItem implements Comparable<MexFile> {
 			return true;
 		}
 		
+		if(StrUtil.equals(keyWord, ":-h") && !file.isHidden()) {
+			return true;
+		}
+		
+		if(StrUtil.equals(keyWord, ":+f") && file.isFile()) {
+			return true;
+		}
+		
+		if(StrUtil.equals(keyWord, ":+d") && file.isDirectory()) {
+			return true;
+		}
+		
+		if(StrUtil.equals(keyWord, ":+h") && file.isHidden()) {
+			return true;
+		}
+		
 		SizeCriteria quinn = getSizeCriteria(keyWord);
 		if(quinn != null && quinn.isGood(file.length())) {
 			return true;
@@ -107,6 +123,13 @@ public class MexFile extends MexItem implements Comparable<MexFile> {
 	
 	public String toPrint(String optionsStr) {
 		StringBuilder sb = new StringBuilder(getUnixPath());
+		
+		boolean flagHidden = OptionUtil.readBoolean(optionsStr, "hide", false);
+		if(flagHidden) {
+			if(file.isHidden()) {
+				sb.append(" ").append("(H)");
+			}
+		}
 
 		boolean showKids = OptionUtil.readBoolean(optionsStr, "kids", false);
 		if(showKids) {
