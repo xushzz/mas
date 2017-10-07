@@ -744,7 +744,7 @@ public class StrUtil {
 		return temp;
 	}
 	
-	public static String occupySystemPropertyOrEnvironmentVariable(String source, boolean useUnixFileSeparator) {
+	public static String occupySapOrEav(String source, boolean useUnixFileSeparator) {
 		XXXUtil.nullCheck(source, "source");
 		
 		String regex = "\\$\\{(s:|e:|)([^\\$\\{\\}]+)\\}";
@@ -756,22 +756,22 @@ public class StrUtil {
 			String type = ma.group(1);
 			String item = ma.group(2);
 			String sap = System.getProperty(item);
-			String egg = System.getenv(item);
+			String eav = System.getenv(item);
 			if(EmptyUtil.isNullOrEmpty(type)) {
-				if(sap == null && egg == null) {
+				if(sap == null && eav == null) {
 					throw new MexException("No such system property or environment variable as '{0}'", item);
-				} else if(sap != null && egg != null) {
+				} else if(sap != null && eav != null) {
 					String msg = "Obscure name '{0}', use ${s:{0}} to fetch system property or ${e:{0}} environment variable.";
 					msg += "\nsystem property : {1}";
 					msg += "\nenvironment variable : {2}";
 					
-					throw new MexException(msg, item, sap, egg);
+					throw new MexException(msg, item, sap, eav);
 				} else {
 					if(!EmptyUtil.isNullOrEmpty(sap)) {
 						temp = temp.replace(whole, sap.replace(File.separatorChar, '/'));
 					}
-					if(!EmptyUtil.isNullOrEmpty(egg)) {
-						temp = temp.replace(whole, egg.replace(File.separatorChar, '/'));
+					if(!EmptyUtil.isNullOrEmpty(eav)) {
+						temp = temp.replace(whole, eav.replace(File.separatorChar, '/'));
 					}
 				}
 			}
@@ -783,10 +783,10 @@ public class StrUtil {
 				}
 			}
 			if(StrUtil.equals(type, "e:")) {
-				if(EmptyUtil.isNullOrEmpty(egg)) {
+				if(EmptyUtil.isNullOrEmpty(eav)) {
 					throw new MexException("No such environment variable as '{0}'", item);
 				} else {
-					temp = temp.replace(whole, egg.replace(File.separatorChar, '/'));
+					temp = temp.replace(whole, eav.replace(File.separatorChar, '/'));
 				}
 			}
 		}

@@ -28,7 +28,7 @@ public class MexedMap {
 			String key = it.next();
 			String origin = container.get(key);
 			String temp = TrumpUtil.decodeMixedTextBySIRAP(origin, passcode);
-			String finale = StrUtil.occupySystemPropertyOrEnvironmentVariable(temp, true);
+			String finale = StrUtil.occupySapOrEav(temp, true);
 			container.put(key, finale);
 		}
 	}

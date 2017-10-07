@@ -63,7 +63,7 @@ public class Janitor extends Checker {
     public void process(String origin) {
     	String source = origin;
 		try {
-			String after = StrUtil.occupySystemPropertyOrEnvironmentVariable(source, true);
+			String after = StrUtil.occupySapOrEav(source, true);
 			if(!StrUtil.equals(source, after)) {
 				C.pl(source + " = " + after);
 				source = after;
