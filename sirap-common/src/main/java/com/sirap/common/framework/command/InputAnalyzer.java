@@ -1,7 +1,10 @@
 package com.sirap.common.framework.command;
 
 import java.io.File;
+import java.util.List;
+import java.util.regex.Matcher;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.StrUtil;
@@ -86,13 +89,29 @@ public class InputAnalyzer {
 			target = new TargetConsole(true);
 		}
 		
-		String regex = "(.+)\\s\\$(\\S+)$";
-		String[] params = StrUtil.parseParams(regex, command);
-		if(params != null) {
-			command = params[0];
-			options = params[1];
-		}
+		String[] sucker = suckOptions(command);
+		command = sucker[0];
+		options = sucker[1];
 		command = command.replace("!$", "$");
+	}
+	
+	public static String[] suckOptions(String source) {
+		List<String> regexes = Lists.newArrayList();
+		regexes.add("^\\$(\\S+)\\s");
+		regexes.add("\\s\\$(\\S+)\\s");
+		regexes.add("\\s\\$(\\S+)$");
+		
+		String temp = source.trim();
+		
+		for(String regex : regexes) {
+			Matcher ma = StrUtil.createMatcher(regex, temp);
+			if(ma.find()) {
+				String remain = temp.replace(ma.group(0), " ").trim();
+				return new String[]{remain, ma.group(1)};
+			}
+		}
+		
+		return new String[]{temp, null};
 	}
 	
 	private String removeEscape(String source) {
