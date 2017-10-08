@@ -268,7 +268,7 @@ public class CommandMonitor extends CommandBase {
 		params = parseParams(KEY_SYSTEM_CONFIG + "(|\\s+(.*?))");
 		if(params != null) {
 			String criteria = params[1];
-			List<String> list = FileUtil.readResourceFilesIntoList(g().getSystemConfigFileName());
+			List<String> list = FileUtil.readResourceFilesIntoList(SimpleKonfig.KONFIG_FILE);
 			List<String> recordsExtra = FileUtil.readResourceFilesIntoList(Konfig.EXTRA_FILE);
 			list.addAll(recordsExtra);
 			

@@ -44,7 +44,7 @@ import com.sirap.common.domain.SiteSearchEngine;
 import com.sirap.common.domain.TZRecord;
 import com.sirap.common.domain.TextSearchEngine;
 import com.sirap.common.extractor.Extractor;
-import com.sirap.common.framework.AppBase;
+import com.sirap.common.framework.App;
 import com.sirap.common.framework.Janitor;
 import com.sirap.common.framework.SimpleKonfig;
 import com.sirap.common.framework.command.InputAnalyzer;
@@ -813,7 +813,7 @@ public class CommandSirap extends CommandBase {
 	protected String getSystemInfo() {
 
 		StringBuffer sb = new StringBuffer();
-		sb.append(AppBase.USERNAME);
+		sb.append(App.USERNAME);
 		sb.append(" ").append(g().getSystemInfo());
 		
 		Date expirationDate = Janitor.g().getExpirationDate();

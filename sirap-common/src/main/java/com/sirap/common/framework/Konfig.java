@@ -13,7 +13,8 @@ import com.sirap.basic.util.XXXUtil;
 
 public abstract class Konfig {
 
-	public static String EXTRA_FILE = "/Extra.properties";
+	public static String EXTRA_FILE = "/KonfigExtra.properties";
+	public static String KONFIG_FILE = "/Konfig.properties";
 	public static String KEYS_FILE = "/Keys.txt";
 	
 	public static final String KEY_STORAGE = "storage";
@@ -21,7 +22,6 @@ public abstract class Konfig {
 	public static final String KEY_PASSCODE = "passcode";
 	
 	protected String originalStorage;
-	protected String systemConfigFile;
 	protected String userConfigFile;
 	protected MexedMap systemProperties = new MexedMap();
 	protected MexedMap userProperties = new MexedMap();
@@ -29,9 +29,9 @@ public abstract class Konfig {
 	protected void loadSystemConfigDetail() {
 		systemProperties.getContainer().clear();
 		
-		InputStream is = getClass().getResourceAsStream(systemConfigFile);
+		InputStream is = getClass().getResourceAsStream(KONFIG_FILE);
 		if(is == null) {
-			XXXUtil.alert("[Configuration] System config file unavailable, please check [" + systemConfigFile + "].");
+			XXXUtil.alert("[Configuration] System config file unavailable, please check [" + KONFIG_FILE + "].");
 		}
 		
 		MexedMap temp = IOUtil.readKeyValuesIntoMexedMap(is);
@@ -80,7 +80,7 @@ public abstract class Konfig {
 	}
 
 	public int getNumberValueOf(String key) {
-		return systemProperties.getNumber(key, 0);
+		return systemProperties.getNumber(key, -7);
 	}
 
 	public int getNumberValueOf(String key, int defaulIfNull) {
@@ -100,7 +100,7 @@ public abstract class Konfig {
 	}
 
 	public int getUserNumberValueOf(String key) {
-		return userProperties.getNumber(key, 0);
+		return userProperties.getNumber(key, -17);
 	}
 
 	public int getUserNumberValueOf(String key, int defaulIfNull) {

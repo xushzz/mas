@@ -2,14 +2,15 @@ package com.sirap.common.entry;
 
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.PanaceaBox;
-import com.sirap.common.framework.AppBase;
+import com.sirap.common.framework.App;
 import com.sirap.common.framework.Janitor;
+import com.sirap.common.framework.JanitorMD5;
 import com.sirap.common.framework.SimpleKonfig;
 
-public class AppMas extends AppBase {
+public class AppMas extends App {
 	
 	public static void main(String[] args) {
-		AppBase app = new AppMas();
+		App app = new AppMas();
 		app.init(args);
 		app.run();
 	}
@@ -21,12 +22,13 @@ public class AppMas extends AppBase {
 
 	@Override
 	public void initKonfig(String[] args) {
-		SimpleKonfig.init("/Config_Mas.properties", PanaceaBox.firstArgument(args));
+		SimpleKonfig.init(PanaceaBox.firstArgument(args));
+		setDelayMinutes(getKonfig().getTimeoutMinutes());
 	}
 
 	@Override
 	protected Janitor getJanitor() {
-		Janitor smith = new Janitor(getKonfig());
+		Janitor smith = new JanitorMD5(getKonfig());
 		
 		return smith;
 	}

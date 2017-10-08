@@ -31,12 +31,10 @@ public class SimpleKonfig extends Konfig {
 	private static SimpleKonfig instance;
 	
 	private String storage;
-	private String passwordEncrypted;
 	private List<CommandRecord> commandNodes;
 	private Locale locale;
 	private String areaZoneUser;
 	private int timeZoneUser = Short.MIN_VALUE;
-	private int timeoutMinutes;
 	private boolean isEmailEnabled;
 	private boolean isExportWithTimestampEnabled;
 	private boolean isAsianFontWhenPDF;
@@ -55,14 +53,8 @@ public class SimpleKonfig extends Konfig {
 	}
 	
 	public static void init(String params) {
-		C.pl(params);
-	}
-
-	public static void init(String systemConfigFile, String params) {
 		instance = new SimpleKonfig();
 		
-		instance.systemConfigFile = systemConfigFile;
-
 		List<MexedOption> options = OptionUtil.parseOptions(params);
 		instance.originalStorage = OptionUtil.readString(options, KEY_STORAGE);
 		
@@ -170,8 +162,6 @@ public class SimpleKonfig extends Konfig {
 		storage = originalStorage.replace("/", File.separator);
 		FileUtil.makeDirectoriesIfNonExist(storage);
 
-		timeoutMinutes = getNumberValueOf("timeout.minutes");
-		passwordEncrypted = getValueOf("password.encrypted");
 		commandNodes = parseCommandNodes();
 		
 		locale = DateUtil.parseLocale(getUserValueOf("locale.in_use"));
@@ -192,7 +182,9 @@ public class SimpleKonfig extends Konfig {
 		isPrintException = isYes("exception.stack.print");
 	}
 	
-	public double getTimeoutMinutes() {
+	public int getTimeoutMinutes() {
+		int timeoutMinutes = getUserNumberValueOf("timeout.minutes");
+
 		return timeoutMinutes;
 	}
 
@@ -200,15 +192,13 @@ public class SimpleKonfig extends Konfig {
 		return storage + File.separator;
 	}
 
-	public String getSystemConfigFileName() {
-		return systemConfigFile;
-	}
-
 	public String getUserConfigFileName() {
 		return userConfigFile;
 	}
 
-	public String getPasswordEncrypted() {
+	public String getPasswordEncrypted(String type) {
+		String passwordEncrypted = getUserValueOf("password.encrypted." + type);
+
 		return passwordEncrypted;
 	}
 

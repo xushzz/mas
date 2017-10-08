@@ -3,6 +3,7 @@ package com.sirap.common.framework;
 import java.util.Date;
 
 import com.sirap.basic.domain.MexObject;
+import com.sirap.basic.exception.QuitException;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.MexUtil;
@@ -13,6 +14,7 @@ import com.sirap.common.manager.CommandHistoryManager;
 
 public abstract class Checker {
 
+	private String whatToCheckAgainst;
 	private Date serverTimeWhenLogin;
 	private Date expirationDate;
 	private MexObject wrappedWorldTimeWhenLogin;
@@ -25,10 +27,18 @@ public abstract class Checker {
 		
 		Date expDate = null;
 		wrappedExpirationDate = new MexObject(expDate);
-		CommonExtractors.setUserExpiration(wrappedExpirationDate, AppBase.USERNAME);
+		CommonExtractors.setUserExpiration(wrappedExpirationDate, App.USERNAME);
+	}
+	
+    public String getWhatToCheckAgainst() {
+		return whatToCheckAgainst;
 	}
 
-    protected boolean askAndCheckPassword() {
+	public void setWhatToCheckAgainst(String whatToCheckAgainst) {
+		this.whatToCheckAgainst = whatToCheckAgainst;
+	}
+
+	protected boolean askAndCheckPassword() {
     	int max = getMaxAttempts();
     	if(max <= 0) {
     		return false;
@@ -42,15 +52,18 @@ public abstract class Checker {
 			
 			count++;
 			
-			String input = MexUtil.askForHiddenInput("Password: ");
+			String input = MexUtil.askForHiddenInput("Password: [q to quit] ");
 			CommandHistoryManager.g().collect(input);
+			if(StrUtil.equals(input, "q")) {
+				throw new QuitException("Fxxking tired of this game...");
+			}
 			if(verify(input)) {
 				return true;
 			} else {
 				int left = max - count;
 				String suffix = left > 1 ? "s" : "";
 				String asia = "Wrong password, {0} attempt{1} left.";
-				C.pl(StrUtil.occupy(asia, left, suffix));
+				C.pl2(StrUtil.occupy(asia, left, suffix));
 			}
     	}
     	
@@ -58,7 +71,7 @@ public abstract class Checker {
     }
     
     protected int getMaxAttempts() {
-    	return 1;
+    	return 9;
     }
     
     protected abstract boolean verify(String input);
@@ -117,7 +130,7 @@ public abstract class Checker {
 			String key = "license.toExpire";
 			String toExpire = SimpleKonfig.g().getValueOf(key);
 			if(toExpire != null) {
-				printLicenseInfo(StrUtil.occupy(toExpire, AppBase.USERNAME, number, unit, plural));
+				printLicenseInfo(StrUtil.occupy(toExpire, App.USERNAME, number, unit, plural));
 			} else {
 				XXXUtil.alert("No valid expiration alert [" + key +"] provided.");
 			}
@@ -128,7 +141,7 @@ public abstract class Checker {
 			String display = DateUtil.displayDate(expirationDate, DateUtil.DATE_US);
 			String expired = SimpleKonfig.g().getValueOf(key);
 			if(expired != null) {
-				printLicenseInfo(StrUtil.occupy(expired, AppBase.USERNAME, display));
+				printLicenseInfo(StrUtil.occupy(expired, App.USERNAME, display));
 			} else {
 				XXXUtil.alert("No valid expiration alert [" + key +"] provided.");
 			}

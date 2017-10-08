@@ -21,7 +21,6 @@ public class Janitor extends Checker {
 	private List<Class<?>> commandList = new ArrayList<Class<?>>();
 	
 	private boolean expirationCheckNeeded;
-	private boolean passwordCheckNeeded;
 
 	public Janitor(Konfig konfig) {
 		this.konfig = konfig;
@@ -36,10 +35,6 @@ public class Janitor extends Checker {
 		this.expirationCheckNeeded = expirationCheckNeeded;
 	}
 
-	public void setPasswordCheckNeeded(boolean passwordCheckNeeded) {
-		this.passwordCheckNeeded = passwordCheckNeeded;
-	}
-	
 	private static Janitor instance;
 
 	public static Janitor g() {
@@ -130,7 +125,7 @@ public class Janitor extends Checker {
     }
 
     protected boolean checkPassword() {
-    	if(!passwordCheckNeeded) {
+    	if(EmptyUtil.isNullOrEmpty(getWhatToCheckAgainst())) {
     		return true;
     	}
     	
@@ -141,7 +136,7 @@ public class Janitor extends Checker {
     
     @Override
     protected boolean verify(String input) {
-    	return false;
+    	throw new MexException("This method must be overridden");
     }
     
     protected boolean checkExpiration() {

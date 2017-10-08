@@ -10,7 +10,7 @@ public abstract class MexedTimer {
 	private long delayMilliSeconds = -1;
 	private long periodMilliSeconds = -1;
     
-	protected void setDelayMinutes(double minutes) {
+	protected void setDelayMinutes(long minutes) {
 		this.delayMilliSeconds = (long)(minutes * Konstants.MILLI_PER_MINUTE);
 	}
 

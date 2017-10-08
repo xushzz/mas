@@ -4,17 +4,12 @@ import com.sirap.basic.tool.C;
 import com.sirap.basic.util.TrumpUtil;
 import com.sirap.basic.util.XXXUtil;
 	
-public class VerbalJanitor extends Janitor {
+public class JanitorSIRAP extends Janitor {
     
-    public VerbalJanitor(SimpleKonfig konfig) {
+    public JanitorSIRAP(SimpleKonfig konfig) {
 		super(konfig);
-		setPasswordCheckNeeded(true);
+		setWhatToCheckAgainst(konfig.getPasswordEncrypted("sirap"));
 	}
-
-	@Override
-    protected int getMaxAttempts() {
-    	return 99;
-    }
     
     @Override
     protected boolean verify(String input) {
@@ -26,7 +21,7 @@ public class VerbalJanitor extends Janitor {
     	String passcode = SimpleKonfig.g().getSecurityPasscode();
     	XXXUtil.nullOrEmptyCheck(passcode, "security passcode");
     	
-    	String temp = SimpleKonfig.g().getPasswordEncrypted();
+    	String temp = getWhatToCheckAgainst();
     	if(temp == null) {
     		C.pl("Invalid encrypted password provided.");
 			return false;

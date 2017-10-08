@@ -1,6 +1,7 @@
 package com.sirap.common.framework;
 
 import com.sirap.basic.component.MexedTimer;
+import com.sirap.basic.exception.QuitException;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
@@ -11,11 +12,11 @@ import com.sirap.common.command.CommandBase;
 import com.sirap.common.command.CommandQuit;
 import com.sirap.common.manager.AlarmManager;
 import com.sirap.common.manager.CommandHistoryManager;
-import com.sirap.common.manager.VFileManager;
 import com.sirap.common.manager.LoginHistoryManager;
 import com.sirap.common.manager.RemoteCommandManager;
+import com.sirap.common.manager.VFileManager;
 
-public abstract class AppBase extends MexedTimer {
+public abstract class App extends MexedTimer {
 	
 	public static final String USERNAME = "KY#1917";
 	private static final int MAX_LEN_COMMAND = 9999;
@@ -42,7 +43,14 @@ public abstract class AppBase extends MexedTimer {
     	welcome();
     	
     	Janitor smith = getJanitor();
-    	if(!smith.checkPassword()) {
+    	try {
+        	if(!smith.checkPassword()) {
+        		byebye();
+        		return;
+        	}
+    	} catch (QuitException ex) {
+    		C.pl(ex.getMessage());
+    		byebye();
     		return;
     	}
 
@@ -144,7 +152,7 @@ public abstract class AppBase extends MexedTimer {
 	
 	protected void timeout() {
 		C.pl();
-    	C.pl("=== Session TIMEOUT ===");
+    	C.pl(StrUtil.occupy("=== Session TIMEOUT since {0} ===", getDatetimeString()));
     	C.pl("Press ENTER to continue, [" + CommandBase.KEY_EXIT + "] to quit");
 	}
 }
