@@ -14,17 +14,17 @@ public class Extractors {
 	/**
 	 * 
 	 * @param 
-	 * 	year 1917, bc626, 756
+	 * 	year 1917.htm, bc626.htm, 756.htm
 	 * 	month 01-16
 	 * @return
 	 */
-	public static List<MexObject> fetchHistoryEvents(final String yearOrMonthDay) {
+	public static List<MexObject> fetchHistoryEvents(final String param) {
 		Extractor<MexObject> neymar = new Extractor<MexObject>() {
 
 			@Override
 			public String getUrl() {
 				printFetching = true;
-				String url = StrUtil.occupy("http://jintian.cidianwang.com/{0}.htm", yearOrMonthDay);
+				String url = StrUtil.occupy("http://jintian.cidianwang.com/{0}", param);
 				return url;
 			}
 			

@@ -236,7 +236,8 @@ public class CommandCollect extends CommandBase {
 		
 		singleParam = parseParam(KEY_THIS_DAY_IN_HISTORY + "(bc\\d{1,4}|\\d{1,4})");
 		if(singleParam != null) {
-			export(Extractors.fetchHistoryEvents(singleParam));
+			String urlParam = singleParam + ".htm";
+			export(Extractors.fetchHistoryEvents(urlParam));
 			return true;
 		}
 
@@ -244,12 +245,13 @@ public class CommandCollect extends CommandBase {
 		if(params != null) {
 			String month = StrUtil.extendLeftward(params[0], 2, "0");
 			String day = StrUtil.extendLeftward(params[1], 2, "0");
-			export(Extractors.fetchHistoryEvents(month + "-" + day));
-			return true;
-		}
+			String urlParam = month + "-" + day;
+			export(Extractors.fetchHistoryEvents(urlParam));
+			return true;		}
 
 		if(is(KEY_THIS_DAY_IN_HISTORY)) {
-			export(Extractors.fetchHistoryEvents(DateUtil.displayNow("MM-dd")));
+			String urlParam = DateUtil.displayNow("MM-dd");
+			export(Extractors.fetchHistoryEvents(urlParam));
 			return true;
 		}
 		
