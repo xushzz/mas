@@ -150,6 +150,9 @@ public abstract class Extractor<T extends MexItem> {
 		temp = temp.replace("&middot;", "·");
 		temp = temp.replace("&bull;", "·");
 		temp = temp.replace("&amp;", "&");
+		temp = temp.replace("&#8217;", "'");
+		temp = temp.replace("&#8220;", "\"");
+		temp = temp.replace("&#8221;", "\"");
 		temp = StrUtil.reduceMultipleSpacesToOne(temp);
 		temp = temp.trim();
 		

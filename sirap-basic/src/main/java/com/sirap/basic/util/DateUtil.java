@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -38,7 +39,9 @@ public class DateUtil {
 	public static final String TIME_TIGHT = "HHmmss";
 	public static final String[] ROMAN_NUMBERS = {"VII", "I", "II", "III", "IV", "V", "VI"};
 	public static final List<String> WEEK_DAY_NUMBERS = StrUtil.split("Mon,Tue,Wed,Thu,Fri,Sat,Sun");
-	
+	public static final int[] MAX_DAY_IN_MONTH_LEAP_YEAR = {31,29,31,30,31,30,31,31,30,31,30,31};
+	public static final int[] MAX_DAY_IN_MONTH = {31,28,31,30,31,30,31,31,30,31,30,31};
+
 	public static Date calendarToDate(Calendar cal) {
 		if(cal == null) {
 			return null;
@@ -563,5 +566,25 @@ public class DateUtil {
 		sb.append(StrUtil.extendLeftward(seconds + "", 2, "0"));
 		
 		return sb.toString();
+	}
+	
+	public static String getJanuaryLikeMonth(int month1To12, boolean showLongName) {
+		XXXUtil.checkMonthRange(month1To12);
+		if(showLongName) {
+			return new DateFormatSymbols(Locale.US).getMonths()[month1To12 - 1];
+		} else {
+			return new DateFormatSymbols(Locale.US).getShortMonths()[month1To12 - 1];
+		}
+	}
+	
+	public static int parseJanuaryLikeMonth(String monthJanuaryToDecember) {
+		String[] arr = new DateFormatSymbols().getMonths();
+		for(int i = 0; i < arr.length; i++) {
+			if(arr[i].toLowerCase().startsWith(monthJanuaryToDecember.toLowerCase())) {
+				return i + 1;
+			}
+		}
+		
+		throw new MexException("Invalid month '{0}'", monthJanuaryToDecember);
 	}
 }

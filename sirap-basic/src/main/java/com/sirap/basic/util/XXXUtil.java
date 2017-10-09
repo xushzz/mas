@@ -12,6 +12,26 @@ import com.sirap.basic.tool.C;
 @SuppressWarnings({ "rawtypes"})
 public class XXXUtil {
 	
+	public static void checkMonthRange(int month) {
+		if(month < 1 || month > 12) {
+			throw new MexException("Bad month '{month}', should be between 1 and 12.");
+		}
+	}
+	
+	public static void checkDayRange(int day) {
+		if(day < 1 || day > 31) {
+			throw new MexException("Bad day '{0}', should be between 1 and 31.", day);
+		}
+	}
+	
+	public static void checkMonthDayRange(int month, int day) {
+		checkMonthRange(month);
+		int maxDay = DateUtil.MAX_DAY_IN_MONTH_LEAP_YEAR[month - 1];
+		if(day < 1 || day > maxDay) {
+			throw new MexException("Bad day '{0}', should be between 1 and {1}.", day, maxDay);
+		}
+	}
+	
 	public static void nullOrEmptyCheck(Object obj) {
 		nullOrEmptyCheck(obj, null);
 	}

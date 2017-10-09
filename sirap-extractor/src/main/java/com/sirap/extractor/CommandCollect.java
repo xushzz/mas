@@ -12,6 +12,7 @@ import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.ObjectUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.domain.WeatherRecord;
 import com.sirap.common.extractor.Extractor;
@@ -49,6 +50,7 @@ public class CommandCollect extends CommandBase {
 	private static final String KEY_RSS = "rss";
 	private static final String KEY_JAR= "jar";
 	private static final String KEY_WEIXIN_SEARCH= "wei";
+	private static final String KEY_THIS_DAY_IN_HISTORY_CHINESE = "this";
 	private static final String KEY_THIS_DAY_IN_HISTORY = "hist";
 
 	{
@@ -234,27 +236,47 @@ public class CommandCollect extends CommandBase {
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_THIS_DAY_IN_HISTORY + "(bc\\d{1,4}|\\d{1,4})");
+		singleParam = parseParam(KEY_THIS_DAY_IN_HISTORY_CHINESE + "(bc\\d{1,4}|\\d{1,4})");
 		if(singleParam != null) {
-			String urlParam = singleParam + ".htm";
-			export(Extractors.fetchHistoryEvents(urlParam));
+			export(Extractors.fetchHistoryEventsByYear(singleParam));
+			return true;
+		}
+
+		params = parseParams(KEY_THIS_DAY_IN_HISTORY_CHINESE + "(\\d{1,2})[\\./\\-](\\d{1,2})");
+		if(params != null) {
+			String month = StrUtil.extendLeftward(params[0], 2, "0");
+			String day = StrUtil.extendLeftward(params[1], 2, "0");
+			String urlParam = month + "-" + day;
+			export(Extractors.fetchHistoryEventsByDay(urlParam));
+			return true;		}
+
+		if(is(KEY_THIS_DAY_IN_HISTORY_CHINESE)) {
+			String urlParam = DateUtil.displayNow("MM-dd");
+			export(Extractors.fetchHistoryEventsByDay(urlParam));
 			return true;
 		}
 
 		params = parseParams(KEY_THIS_DAY_IN_HISTORY + "(\\d{1,2})[\\./\\-](\\d{1,2})");
 		if(params != null) {
-			String month = StrUtil.extendLeftward(params[0], 2, "0");
-			String day = StrUtil.extendLeftward(params[1], 2, "0");
-			String urlParam = month + "-" + day;
-			export(Extractors.fetchHistoryEvents(urlParam));
-			return true;		}
+			int month = Integer.parseInt(params[0]);
+			int day = Integer.parseInt(params[1]);
+			XXXUtil.checkMonthDayRange(month, day);
+			String month2 = DateUtil.getJanuaryLikeMonth(month, true).toLowerCase();
+			String month3 = StrUtil.extendLeftward(month + "", 2, "0");
+			String day2 = StrUtil.extendLeftward(day + "", 2, "0");
+			String urlParam = month2 + "-" + day2;
+			String monthDay = month3 + "/" + day2;
+			export(Extractors.fetchHistoryEventsByDay2(urlParam, monthDay));
+			return true;		
+		}
 
 		if(is(KEY_THIS_DAY_IN_HISTORY)) {
-			String urlParam = DateUtil.displayNow("MM-dd");
-			export(Extractors.fetchHistoryEvents(urlParam));
+			String urlParam = DateUtil.displayNow("MMMM-dd").toLowerCase();
+			String monthDay = DateUtil.displayNow("MM/dd");
+			export(Extractors.fetchHistoryEventsByDay2(urlParam, monthDay));
 			return true;
 		}
-		
+
 		return false;
 	}
 	

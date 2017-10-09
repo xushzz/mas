@@ -5,7 +5,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 
 import com.google.common.collect.Maps;
+import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexObject;
+import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.extractor.Extractor;
 
@@ -13,28 +15,91 @@ public class Extractors {
 	
 	/**
 	 * 
-	 * @param 
-	 * 	year 1917.htm, bc626.htm, 756.htm
-	 * 	month 01-16
+	 * @param year 1917, bc626, 756
 	 * @return
 	 */
-	public static List<MexObject> fetchHistoryEvents(final String param) {
+	public static List<MexObject> fetchHistoryEventsByYear(final String yearInfo) {
 		Extractor<MexObject> neymar = new Extractor<MexObject>() {
 
 			@Override
 			public String getUrl() {
 				printFetching = true;
-				String url = StrUtil.occupy("http://jintian.cidianwang.com/{0}", param);
+				String url = StrUtil.occupy("http://jintian.cidianwang.com/{0}.htm", yearInfo);
 				return url;
 			}
 			
 			@Override
 			protected void parseContent() {
-				String regex = "<a href=\"http://jintian.cidianwang.com/([^/]+)/(\\d{4})[^<>]+>([^<>]+)</a></li>";
+				String regex = "<li>\\[<a[^<>]+>[^<>]+</a>[^<>]+<a href=\"http://jintian.cidianwang.com/([^/]+)/[^<>]+>([^<>]+)</a></li>";
 				Matcher ma = createMatcher(regex);
 				while(ma.find()) {
-					String temp = ma.group(2) + "/" + ma.group(1).replace('-', '/') + " " + ma.group(3);
+					String temp = yearInfo.toUpperCase() + "/" + ma.group(1).replace('-', '/') + " " + ma.group(2);
 					mexItems.add(new MexObject(temp));
+				}
+			}
+		};
+		
+		return neymar.process().getMexItems();
+	}
+
+	/***
+	 * @param param 01-16
+	 * @return
+	 */
+	public static List<MexObject> fetchHistoryEventsByDay(final String day) {
+		Extractor<MexObject> neymar = new Extractor<MexObject>() {
+
+			@Override
+			public String getUrl() {
+				printFetching = true;
+				String url = StrUtil.occupy("http://jintian.cidianwang.com/{0}", day);
+				return url;
+			}
+			
+			@Override
+			protected void parseContent() {
+				String regex = "<li>\\[<a href=\"http://jintian.cidianwang.com/([bc\\d]+).htm\"[^<>]+>[^<>]+</a>[^<>]+<a[^<>]+>([^<>]+)</a></li>";
+				Matcher ma = createMatcher(regex);
+				while(ma.find()) {
+					String temp = ma.group(1).toUpperCase() + "/" + day.replace('-', '/') + " " + ma.group(2);
+					mexItems.add(new MexObject(temp));
+				}
+			}
+		};
+		
+		return neymar.process().getMexItems();
+	}
+
+	/***
+	 * @param param 1.16
+	 * @return
+	 */
+	public static List<MexObject> fetchHistoryEventsByDay2(final String urlParam, final String monthDay) {
+		Extractor<MexObject> neymar = new Extractor<MexObject>() {
+			
+			@Override
+			public String getUrl() {
+				printFetching = true;
+				String url = StrUtil.occupy("http://www.historynet.com/today-in-history/{0}", urlParam);
+				return url;
+			}
+
+			protected void readSourceX() {
+				String temp = "E:/KDB/tasks/1009_History/{0}.txt";
+				String what = "jan19";
+				String path = StrUtil.occupy(temp, what);
+				source = IOUtil.readFileWithoutLineSeparator(path, Konstants.CODE_UTF8);
+			}
+			
+			@Override
+			protected void parseContent() {
+				String regex = "<tr>\\s*<td align=\"left\" valign=\"top\">([^\"]+)</td>";
+				regex += "\\s*<td></td>";
+				regex += "\\s*<td align=\"left\" valign=\"top\">(.+?)</td>\\s*</tr>";
+				Matcher ma = createMatcher(regex);
+				while(ma.find()) {
+					String temp = removeHttpStuff(ma.group(1)) + "/" + monthDay + " " + removeHttpStuff(ma.group(2));
+					mexItems.add(new MexObject(temp.trim()));
 				}
 			}
 		};
