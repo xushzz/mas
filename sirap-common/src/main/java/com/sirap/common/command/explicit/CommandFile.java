@@ -618,9 +618,7 @@ public class CommandFile extends CommandBase {
 						items.add("lines: " + count[0]);
 						items.add("chars: " + count[1]);
 					} else if(FileOpener.isImageFile(filePath)) {
-						int[] widthHeight = ImageUtil.readImageWidthHeight(filePath);
-						items.add("resolution: " + widthHeight[0] + "x" + widthHeight[1]);
-						
+						items.add("area: " + ImageUtil.readImageWidthHeight(filePath, " x "));
 						String format = ImageUtil.getRealFormat(filePath);
 						if(!StrUtil.endsWith(filePath, format)) {
 							items.add("format: " + format);

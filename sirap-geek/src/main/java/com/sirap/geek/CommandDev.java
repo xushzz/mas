@@ -1,10 +1,14 @@
 package com.sirap.geek;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.image.RenderedImage;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.domain.MexZipEntry;
@@ -12,10 +16,12 @@ import com.sirap.basic.exception.MexException;
 import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.search.MexFilter;
 import com.sirap.basic.tool.C;
+import com.sirap.basic.tool.ScreenCaptor;
 import com.sirap.basic.util.ArisUtil;
 import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
+import com.sirap.basic.util.ImageUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
@@ -47,6 +53,7 @@ public class CommandDev extends CommandBase {
 	private static final String KEY_ZIP = FileUtil.SUFFIXES_ZIP.replace(';', '|');
 	private static final String KEY_UUID = "uuid";
 	private static final String KEY_CHANGE_FILESEPARATOR = "sw";
+	private static final String KEY_SIZE = "size";
 	
 	public boolean handle() {
 		singleParam = parseParam(KEY_PATH + "\\s(.*?)");
@@ -333,6 +340,20 @@ public class CommandDev extends CommandBase {
 				items.add(temp);
 			}
 			
+			export(items);
+		}
+		
+		singleParam = parseParam(KEY_SIZE + "([1-9]|)");
+		if(singleParam != null) {
+			Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+			List<String> items = Lists.newArrayList();
+			items.add("full: " + (int)dim.width + " x " + (int)dim.height);
+			if(!singleParam.isEmpty()) {
+				ImageUtil.countDown(Integer.parseInt(singleParam));
+				C.pl();
+			}
+			RenderedImage image = (new ScreenCaptor()).captureCurrentWindow();
+			items.add("acti: " + (int)image.getWidth() + " x " + (int)image.getHeight());
 			export(items);
 		}
 		

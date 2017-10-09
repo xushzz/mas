@@ -15,7 +15,9 @@ import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
+import com.sirap.basic.util.ImageUtil;
 import com.sirap.basic.util.LocaleUtil;
+import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.SecurityUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XCodeUtil;
@@ -72,7 +74,12 @@ public class CommandXCode extends CommandBase {
 			
 			String filePath = QRCodeUtil.createImage(content, filepath, format, 200, 200);
 			if (filePath != null) {
-				C.pl(filePath);
+				String info = "";
+				if(OptionUtil.readBoolean(options, "d", false)) {
+					info += " " + FileUtil.formatFileSize(filePath);
+					info += " " + ImageUtil.readImageWidthHeight(filePath, "x");
+				}
+				C.pl(filePath + info);
 				tryToOpenGeneratedImage(filePath);
 			}
 			
@@ -268,7 +275,7 @@ public class CommandXCode extends CommandBase {
 		}
 		
 		if(is(KEY_SWAP)) {
-			String[] codeAndImage = IOUtil.generateCaptcha(4, screenShotPath());
+			String[] codeAndImage = ImageUtil.generateCaptcha(4, screenShotPath());
 			String code = null;
 			String filePath = null;
 			if(codeAndImage != null) {
@@ -277,7 +284,12 @@ public class CommandXCode extends CommandBase {
 			}
 			
 			if(filePath != null) {
-				C.pl(code + ", " + filePath);
+				String info = "";
+				if(OptionUtil.readBoolean(options, "d", false)) {
+					info += " " + FileUtil.formatFileSize(filePath);
+					info += " " + ImageUtil.readImageWidthHeight(filePath, "x");
+				}
+				C.pl(code + ", " + filePath + info);
 				tryToOpenGeneratedImage(filePath);
 			}
 			

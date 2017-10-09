@@ -100,7 +100,6 @@ public class CommandBible extends CommandBase {
 		if(params != null) {
 			String bookName = params[0];
 			int chapter = Integer.parseInt(params[1]);
-			XXXUtil.shouldBePositive(chapter);
 			BibleBook book = BibleManager.g().searchByName(bookName, chapter, isCaseSensitive());
 			if(book != null) {
 				if(!StrUtil.equals(book.getName(), bookName)) {

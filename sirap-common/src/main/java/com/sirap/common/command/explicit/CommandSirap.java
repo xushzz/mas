@@ -32,6 +32,7 @@ import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
+import com.sirap.basic.util.ImageUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.MexUtil;
 import com.sirap.basic.util.NetworkUtil;
@@ -276,9 +277,15 @@ public class CommandSirap extends CommandBase {
 			String filename = filenameAndFormat[0];
 			String format = filenameAndFormat[1];
 			
-			String filePath = IOUtil.takePhoto(filename, getCaptureSound(), format, delay, KEY_CAPTURE_SCREEN.equals(type));
+			String filePath = ImageUtil.takePhoto(filename, getCaptureSound(), format, delay, KEY_CAPTURE_SCREEN.equals(type));
 			if(filePath != null) {
-				C.pl(" => " + filePath);
+				String info = "";
+				if(OptionUtil.readBoolean(options, "d", false)) {
+					info += " " + FileUtil.formatFileSize(filePath);
+					info += " " + ImageUtil.readImageWidthHeight(filePath, "*");
+				}
+
+				C.pl(" => " + filePath + info);
 				tryToOpenGeneratedImage(filePath);
 			}
 			
@@ -299,7 +306,6 @@ public class CommandSirap extends CommandBase {
 				FileOpener.open(filePath);
 			}
 		}
-		
 		
 		params = parseParams("(s|c)(|\\d{1,2})\\+(\\d{1,4})(|\\s.*?)");
 		if(params != null) {
@@ -326,8 +332,14 @@ public class CommandSirap extends CommandBase {
 				String filename = filenameAndFormat[0];
 				String format = filenameAndFormat[1];
 
-				String filePath = IOUtil.takeConsecutivePhotos(filename, getCaptureSound(), format, delay, count, KEY_CAPTURE_SCREEN.equals(type));
+				String filePath = ImageUtil.takeConsecutivePhotos(filename, getCaptureSound(), format, delay, count, KEY_CAPTURE_SCREEN.equals(type));
 				if(filePath != null) {
+					String info = "";
+					if(OptionUtil.readBoolean(options, "d", false)) {
+						info += " " + FileUtil.formatFileSize(filePath);
+						info += " " + ImageUtil.readImageWidthHeight(filePath, "x");
+					}
+					C.pl("detail:" + info);
 					tryToOpenGeneratedImage(filePath);
 				}
 				
@@ -762,11 +774,18 @@ public class CommandSirap extends CommandBase {
 			return null;
 		}
 		
-		File file = parseFile(g().getUserValueOf("capture.sound"));
-		if(file == null) {
+		String key = "capture.sound";
+		String sound = g().getUserValueOf(key);
+		if(EmptyUtil.isNullOrEmpty(sound)) {
+			C.pl("[silent] can't find sound with key " + key);
 			return null;
 		}
 		
+		File file = parseFile(sound);
+		if(file == null) {
+			C.pl("[silent] can't find sound at " + sound);
+			return null;
+		}
 		return file.getAbsolutePath();
 	}
 	

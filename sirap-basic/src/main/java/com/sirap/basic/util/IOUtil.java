@@ -45,10 +45,8 @@ import com.sirap.basic.thread.MasterGeneralItemOriented;
 import com.sirap.basic.thread.business.InternetFileFetcher;
 import com.sirap.basic.thread.business.NormalFileMover;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.tool.CaptchaGenerator;
 import com.sirap.basic.tool.D;
 import com.sirap.basic.tool.MexedAudioPlayer;
-import com.sirap.basic.tool.ScreenCaptor;
 
 @SuppressWarnings({"rawtypes","unchecked"})
 public class IOUtil {
@@ -349,64 +347,9 @@ public class IOUtil {
 
 		return null;
 	}
-	
-	public static String takeConsecutivePhotos(String fileNamePrefix, String soundSource, String format, int delay, int count, boolean isEntireScreen) {
-		countDown(delay);
-		if(delay > 0) {
-			C.pl();
-		}
-		String lastOne = null;
-		String temp = fileNamePrefix + "_{1}.{2}";
-		for(int i = 0; i < count; i++) {
-			if(i != 0) {
-				ThreadUtil.sleepInSeconds(1);
-			}
-			int index = i + 1;
-			String indexStr = StrUtil.extendLeftward(index + "", (count + "").length(), "0");
-			String imgFileName = StrUtil.occupy(temp, DateUtil.timestamp(), indexStr, format);
-			ScreenCaptor fang = new ScreenCaptor(imgFileName, format, isEntireScreen);
-	    	if(!EmptyUtil.isNullOrEmptyOrBlank(soundSource)) {
-	        	IOUtil.playSound(soundSource);
-	    	}
-	    	
-			String filePath = fang.capture();
-			C.pl(index + "/" + count +" => " + filePath);
-			if(i == count - 1) {
-				lastOne = filePath;
-			}
-		}
-		
-		return lastOne;
-	}
-
-	public static String takePhoto(String fileNamePrefix, String soundSource, String format, int delay, boolean isEntireScreen) {
-		countDown(delay);
-		String fileName = StrUtil.occupy(fileNamePrefix, DateUtil.timestamp()) + "." + format;
-		ScreenCaptor cam = new ScreenCaptor(fileName, format, isEntireScreen);
-    	if(!EmptyUtil.isNullOrEmptyOrBlank(soundSource)) {
-        	IOUtil.playSound(soundSource);
-    	}
-    	
-		String filePath = cam.capture();
-		
-		return filePath;
-	}
-
-	public static String[] generateCaptcha(int numberOfChars, String storage) {
-		String text = RandomUtil.letters(4);
-    	String filePath = storage + DateUtil.timestamp() + "_captcha.jpeg";
-		CaptchaGenerator james = new CaptchaGenerator(text);
-		boolean flag = james.writeImageTo(filePath);
-		if(flag) {
-			return new String[]{text, filePath};
-		} else {
-			return null;
-		}
-	}
 
 	public static void playSound(String soundSource) {
 		MexedAudioPlayer andy = new MexedAudioPlayer(soundSource);
-		
     	andy.play();
 	}
 	
@@ -757,16 +700,6 @@ public class IOUtil {
 	
 	public static boolean saveAsExcel(List objList, String fullFileName, ExcelParams params) {
 		return ExcelHelper.export(objList, fullFileName, params);
-	}
-	
-	private static void countDown(int seconds) {
-		for(int i = 0; i < seconds; i++) {
-			int left = seconds - i;
-			String display = left + (left > 1 ? " " : "");
-			C.pr(display);
-			
-			ThreadUtil.sleepInSeconds(1);
-		}
 	}
 	
 	public static List<String> echoPath() {
