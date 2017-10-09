@@ -6,6 +6,7 @@ import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.output.PDFParams;
 import com.sirap.basic.util.CollectionUtil;
+import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.ObjectUtil;
@@ -48,6 +49,7 @@ public class CommandCollect extends CommandBase {
 	private static final String KEY_RSS = "rss";
 	private static final String KEY_JAR= "jar";
 	private static final String KEY_WEIXIN_SEARCH= "wei";
+	private static final String KEY_THIS_DAY_IN_HISTORY = "hist";
 
 	{
 		helpMeanings.put("money.forex.url", XRatesForexRateExtractor.URL_X_RATES);
@@ -229,6 +231,25 @@ public class CommandCollect extends CommandBase {
 			mike.process();
 			export(mike.getMexItems());
 			
+			return true;
+		}
+		
+		singleParam = parseParam(KEY_THIS_DAY_IN_HISTORY + "(bc\\d{1,4}|\\d{1,4})");
+		if(singleParam != null) {
+			export(Extractors.fetchHistoryEvents(singleParam));
+			return true;
+		}
+
+		params = parseParams(KEY_THIS_DAY_IN_HISTORY + "(\\d{1,2})[\\./\\-](\\d{1,2})");
+		if(params != null) {
+			String month = StrUtil.extendLeftward(params[0], 2, "0");
+			String day = StrUtil.extendLeftward(params[1], 2, "0");
+			export(Extractors.fetchHistoryEvents(month + "-" + day));
+			return true;
+		}
+
+		if(is(KEY_THIS_DAY_IN_HISTORY)) {
+			export(Extractors.fetchHistoryEvents(DateUtil.displayNow("MM-dd")));
 			return true;
 		}
 		

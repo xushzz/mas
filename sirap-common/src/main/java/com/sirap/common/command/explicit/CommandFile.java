@@ -794,16 +794,6 @@ public class CommandFile extends CommandBase {
 		return list;
 	}
 	
-	private String detailFileInfo(String filepath) {
-		File file = parseFile(filepath);
-		if(file != null) {
-			String size = FileUtil.formatFileSize(file.length());
-			return filepath + " " + size;
-		} else {
-			return filepath;
-		}
-	}
-	
 	private SearchComponent parseFolderPathAndCriterias(String input) {
 		String[] expArr = {"(-|)(.*?)\\s(.+)", "(-|)(.*?),\\s?(.+)"};
 		List<String> allDisks = null;

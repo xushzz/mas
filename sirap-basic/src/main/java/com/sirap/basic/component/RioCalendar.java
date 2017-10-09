@@ -131,13 +131,14 @@ public class RioCalendar {
 
 		int dayOfMonth = 1;
 		while(dayOfMonth <= maxDays) {
-			String tempStr = StrUtil.extendLeftward(dayOfMonth + "", 2);
-			String decoratedDayOfMonth = " " + tempStr + " ";
+			String tempStr;
 			
 			if(currentMonthIndex == monthIndex && currentDay == dayOfMonth && yearParam == currentYear) {
-				decoratedDayOfMonth = "[" + tempStr + "]";
+				tempStr = "*" + dayOfMonth + " ";
+			} else {
+				tempStr = " " + dayOfMonth + " ";
 			}
-			
+			String decoratedDayOfMonth = StrUtil.extendLeftward(tempStr + "", 4);
 			sb.append(decoratedDayOfMonth);
 			
 			count++;

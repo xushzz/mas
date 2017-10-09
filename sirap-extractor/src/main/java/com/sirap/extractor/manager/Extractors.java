@@ -6,9 +6,41 @@ import java.util.regex.Matcher;
 
 import com.google.common.collect.Maps;
 import com.sirap.basic.domain.MexObject;
+import com.sirap.basic.util.StrUtil;
 import com.sirap.common.extractor.Extractor;
 
 public class Extractors {
+	
+	/**
+	 * 
+	 * @param 
+	 * 	year 1917, bc626, 756
+	 * 	month 01-16
+	 * @return
+	 */
+	public static List<MexObject> fetchHistoryEvents(final String yearOrMonthDay) {
+		Extractor<MexObject> neymar = new Extractor<MexObject>() {
+
+			@Override
+			public String getUrl() {
+				printFetching = true;
+				String url = StrUtil.occupy("http://jintian.cidianwang.com/{0}.htm", yearOrMonthDay);
+				return url;
+			}
+			
+			@Override
+			protected void parseContent() {
+				String regex = "<a href=\"http://jintian.cidianwang.com/([^/]+)/(\\d{4})[^<>]+>([^<>]+)</a></li>";
+				Matcher ma = createMatcher(regex);
+				while(ma.find()) {
+					String temp = ma.group(2) + "/" + ma.group(1).replace('-', '/') + " " + ma.group(3);
+					mexItems.add(new MexObject(temp));
+				}
+			}
+		};
+		
+		return neymar.process().getMexItems();
+	}
 
 	public static List<MexObject> fetchCarList() {
 		Extractor<MexObject> neymar = new Extractor<MexObject>() {

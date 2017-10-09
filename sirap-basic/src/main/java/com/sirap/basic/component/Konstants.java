@@ -22,7 +22,7 @@ public class Konstants {
 	public static final String FOLDER_YOUDAO = "youdao";
 	public static final String FOLDER_MISC = "misc";
 	public static final String FOLDER_SCREENSHOT = "shot";
-	public static final String FOLDER_HISTORY = "hist";
+	public static final String FOLDER_HISTORY = "log";
 	public static final String FOLDER_REMOTE = "remote";
 	public static final String SUFFIX_BAT = ".bat";
 	public static final String SUFFIX_TXT = ".txt";

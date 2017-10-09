@@ -21,4 +21,8 @@ rss.civilnews      list all news items provide by baidu rss with type of civilne
 rss.4civilnews     list all news items provide by baidu rss with type of civilnews
 rss.column/007000012,news,feed,letter, provided by ftchinese
 wei James          fetch summay of sogou weixin with keyword James, courtesy of http://weixin.sogou.com/weixin
-ver=EXTRACTOR-COLLECT1.0.7-CAWANI  9/28/2017, IV
+hist               list events in this day in history, courtesy of http://jintian.cidianwang.com
+hist5.6            list events in May 6th in history, same as 5/26,5-16, courtesy of http://jintian.cidianwang.com
+hist1917           list events in the year 1917 in history, courtesy of http://jintian.cidianwang.com
+histbc626          list events in the year B.C. 626 in history, courtesy of http://jintian.cidianwang.com
+ver=EXTRACTOR-COLLECT1.0.8-CAWANI  10/9/2017, I
