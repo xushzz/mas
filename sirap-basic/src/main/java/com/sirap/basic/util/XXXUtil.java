@@ -32,6 +32,12 @@ public class XXXUtil {
 		}
 	}
 	
+	public static void checkYearRange(int year, int maxYear) {
+		if(year < 1 || year > maxYear) {
+			throw new MexException("Bad year '{0}', should be between 1 and {1}.", year, maxYear);
+		}
+	}
+
 	public static void nullOrEmptyCheck(Object obj) {
 		nullOrEmptyCheck(obj, null);
 	}

@@ -238,17 +238,25 @@ public class CommandCollect extends CommandBase {
 		
 		singleParam = parseParam(KEY_THIS_DAY_IN_HISTORY_CHINESE + "(bc\\d{1,4}|\\d{1,4})");
 		if(singleParam != null) {
+			if(!StrUtil.startsWith(singleParam, "bc")) {
+				int currentYear = Integer.parseInt(DateUtil.displayNow("yyyy"));
+				XXXUtil.checkYearRange(Integer.parseInt(singleParam), currentYear);
+			}
 			export(Extractors.fetchHistoryEventsByYear(singleParam));
 			return true;
 		}
 
 		params = parseParams(KEY_THIS_DAY_IN_HISTORY_CHINESE + "(\\d{1,2})[\\./\\-](\\d{1,2})");
 		if(params != null) {
-			String month = StrUtil.extendLeftward(params[0], 2, "0");
-			String day = StrUtil.extendLeftward(params[1], 2, "0");
-			String urlParam = month + "-" + day;
+			int month = Integer.parseInt(params[0]);
+			int day = Integer.parseInt(params[1]);
+			XXXUtil.checkMonthDayRange(month, day);
+			String month2 = StrUtil.extendLeftward(month + "", 2, "0");
+			String day2 = StrUtil.extendLeftward(day + "", 2, "0");
+			String urlParam = month2 + "-" + day2;
 			export(Extractors.fetchHistoryEventsByDay(urlParam));
-			return true;		}
+			return true;
+		}
 
 		if(is(KEY_THIS_DAY_IN_HISTORY_CHINESE)) {
 			String urlParam = DateUtil.displayNow("MM-dd");
