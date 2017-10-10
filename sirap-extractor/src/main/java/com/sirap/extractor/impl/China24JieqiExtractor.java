@@ -53,9 +53,9 @@ public class China24JieqiExtractor extends Extractor<MexObject> {
 		regex += "(.+?)<br\\s*/>([^<>]+)</td>";
 		Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
 		while(m.find()) {
-			String point = removeHttpStuff(m.group(1));
-			String english = removeHttpStuff(m.group(2));
-			String dates = removeHttpStuff(m.group(3));
+			String point = getPrettyText(m.group(1));
+			String english = getPrettyText(m.group(2));
+			String dates = getPrettyText(m.group(3));
 			String info = " " + point + " " + setLen(dates) + " " + english;
 			MexObject mo = new MexObject(info);
 			if(markWhere) {
@@ -118,8 +118,8 @@ public class China24JieqiExtractor extends Extractor<MexObject> {
 		String regex = "<td bgcolor=\"#EFEFEF\">(.+?)</td><td>(.+?)</td>";
 		Matcher m = createMatcher(regex, contentByYear);
 		while(m.find()) {
-			String point = removeHttpStuff(m.group(1));
-			String datetime = removeHttpStuff(m.group(2));
+			String point = getPrettyText(m.group(1));
+			String datetime = getPrettyText(m.group(2));
 			MexObject mo = new MexObject(" " + point + " " + datetime);
 			if(markWhere) {
 				String start = start(datetime);

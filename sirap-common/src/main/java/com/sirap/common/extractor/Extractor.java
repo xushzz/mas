@@ -139,20 +139,11 @@ public abstract class Extractor<T extends MexItem> {
 		return isAllBeingWell;
 	}
 	
-	public String removeHttpStuff(String source) {
-		String temp = HtmlUtil.removeHttpTag(source);
-		temp = temp.replace("&nbsp;", "");
-		temp = temp.replace("&hellip;", "...");
-		temp = temp.replace("&mdash;", "-");
-		temp = temp.replace("&radic;", "√");
-		temp = temp.replace("&ldquo;", "\"");
-		temp = temp.replace("&rdquo;", "\"");
-		temp = temp.replace("&middot;", "·");
-		temp = temp.replace("&bull;", "·");
-		temp = temp.replace("&amp;", "&");
-		temp = temp.replace("&#8217;", "'");
-		temp = temp.replace("&#8220;", "\"");
-		temp = temp.replace("&#8221;", "\"");
+	public String getPrettyText(String source) {
+		String temp = source;
+		temp = HtmlUtil.removeHttpTag(temp);
+		temp = HtmlUtil.replaceRawUnicode(temp);
+		temp = HtmlUtil.replaceHtmlEntities(temp);
 		temp = StrUtil.reduceMultipleSpacesToOne(temp);
 		temp = temp.trim();
 		

@@ -32,13 +32,13 @@ public class ZhihuSearchExtractor extends Extractor<ZhihuRecord> {
 			if(!StrUtil.startsWith(link, "https")) {
 				link = HOMEPAGE + link;
 			}
-			String question = removeHttpStuff(StrUtil.findFirstMatchedItem(regexQuestion, raw));
+			String question = getPrettyText(StrUtil.findFirstMatchedItem(regexQuestion, raw));
 
 			String answer = "SHIT";
 			String temp = StrUtil.findFirstMatchedItem(regexAnswer, raw);
 			if(temp != null) {
 				temp = temp.replaceAll("<br>", "\n");
-				answer = removeHttpStuff(temp);
+				answer = getPrettyText(temp);
 			}
 			
 			count++;

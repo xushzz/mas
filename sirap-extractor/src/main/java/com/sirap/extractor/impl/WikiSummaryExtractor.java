@@ -3,7 +3,6 @@ package com.sirap.extractor.impl;
 import java.util.List;
 
 import com.sirap.basic.domain.MexObject;
-import com.sirap.basic.util.HtmlUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.extractor.Extractor;
@@ -31,8 +30,7 @@ public class WikiSummaryExtractor extends Extractor<MexObject> {
 
 		for(int i = 0; i < items.size(); i++) {
 			String item = items.get(i);
-			String temp = HtmlUtil.removeHttpTag(item);
-			temp = HtmlUtil.normalize(temp).trim();
+			String temp = getPrettyText(item);
 
 			mexItems.add(new MexObject(temp));
 			if(i != items.size() - 1) {

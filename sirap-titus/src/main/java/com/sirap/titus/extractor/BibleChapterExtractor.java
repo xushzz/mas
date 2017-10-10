@@ -27,7 +27,7 @@ public class BibleChapterExtractor extends Extractor<MexObject> {
 		String regex = "<h1>([^><]+)<small>([^><]+)</small>\\s*</h1>";
 		Matcher ma = createMatcher(regex);
 		if(ma.find()) {
-			String bookName = HtmlUtil.normalize(ma.group(1)).trim();
+			String bookName = getPrettyText(ma.group(1)).trim();
 			String baseInfo = StrUtil.occupy("<{0} {1}>", bookName, ma.group(2).trim());
 			mexItems.add(new MexObject(baseInfo));
 		} else {

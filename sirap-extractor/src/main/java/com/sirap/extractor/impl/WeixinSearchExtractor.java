@@ -27,10 +27,10 @@ public class WeixinSearchExtractor extends Extractor<MexObject> {
 		int count = 1;
 		String prefix = StrUtil.repeat(' ', 3);
 		while(ma.find()) {
-			String title = removeHttpStuff(ma.group(2)).trim();
+			String title = getPrettyText(ma.group(2)).trim();
 			String url = ma.group(1).replace("&amp;", "&").trim();
-			String summary = removeHttpStuff(ma.group(3)).trim(); 
-			String who = removeHttpStuff(ma.group(4)).trim(); 
+			String summary = getPrettyText(ma.group(3)).trim(); 
+			String who = getPrettyText(ma.group(4)).trim(); 
 			String when = String.format("%tF", new Date(Long.parseLong(ma.group(5) + "000")));
 			mexItems.add(new MexObject("#" + (count++) + " " + title + " " +  who + " " + when));
 			mexItems.add(new MexObject(prefix + summary));

@@ -173,8 +173,7 @@ public class BaiduExtractorManager extends RssExtractorManager {
 				
 				for(int i = 0; i < items.size(); i++) {
 					String item = items.get(i);
-					String temp = HtmlUtil.removeHttpTag(item);
-					temp = HtmlUtil.normalize(temp).trim();
+					String temp = getPrettyText(item);
 					temp = temp.replaceAll("\\[[\\d\\-]+\\]", "");
 					mexItems.add(new MexObject(temp));
 					if(i != items.size() - 1) {

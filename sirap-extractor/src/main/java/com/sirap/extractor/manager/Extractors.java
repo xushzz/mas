@@ -5,13 +5,40 @@ import java.util.Map;
 import java.util.regex.Matcher;
 
 import com.google.common.collect.Maps;
-import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.extractor.Extractor;
 
 public class Extractors {
+	
+	public static List<MexObject> fetchHtmlEntities() {
+		Extractor<MexObject> nikita = new Extractor<MexObject>() {
+
+			@Override
+			protected void readSource() {
+				String temp = "";
+				temp += IOUtil.readURL("http://www.w3school.com.cn/tags/html_ref_entities.html");
+				temp += IOUtil.readURL("http://www.w3school.com.cn/tags/html_ref_symbols.html");
+				
+				source = temp;
+			}
+			
+			@Override
+			protected void parseContent() {
+				String regex = "<td>&amp;([a-z]{1,99});</td>\\s*<td>&amp;#(\\d{1,7});</td>";
+
+				Matcher ma = createMatcher(regex);
+				String guys = "GUYS.put(\"{0}\", {1});";
+				while(ma.find()) {
+					String temp = StrUtil.occupy(guys, ma.group(1), ma.group(2));
+					mexItems.add(new MexObject(temp));
+				}
+			}
+		};
+		
+		return nikita.process().getMexItems();
+	}
 	
 	/**
 	 * 
@@ -83,13 +110,6 @@ public class Extractors {
 				String url = StrUtil.occupy("http://www.historynet.com/today-in-history/{0}", urlParam);
 				return url;
 			}
-
-			protected void readSourceX() {
-				String temp = "E:/KDB/tasks/1009_History/{0}.txt";
-				String what = "jan19";
-				String path = StrUtil.occupy(temp, what);
-				source = IOUtil.readFileWithoutLineSeparator(path, Konstants.CODE_UTF8);
-			}
 			
 			@Override
 			protected void parseContent() {
@@ -98,7 +118,7 @@ public class Extractors {
 				regex += "\\s*<td align=\"left\" valign=\"top\">(.+?)</td>\\s*</tr>";
 				Matcher ma = createMatcher(regex);
 				while(ma.find()) {
-					String temp = removeHttpStuff(ma.group(1)) + "/" + monthDay + " " + removeHttpStuff(ma.group(2));
+					String temp = getPrettyText(ma.group(1)) + "/" + monthDay + " " + getPrettyText(ma.group(2));
 					mexItems.add(new MexObject(temp.trim()));
 				}
 			}

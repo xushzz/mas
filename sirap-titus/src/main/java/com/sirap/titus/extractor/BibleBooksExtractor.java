@@ -2,7 +2,6 @@ package com.sirap.titus.extractor;
 
 import java.util.regex.Matcher;
 
-import com.sirap.basic.util.HtmlUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.domain.Link;
 import com.sirap.common.extractor.Extractor;
@@ -21,7 +20,7 @@ public class BibleBooksExtractor extends Extractor<Link> {
 		Matcher m = createMatcher(regex);
 		while(m.find()) {
 			String href = m.group(1);
-			String name = HtmlUtil.normalize(m.group(2));
+			String name = getPrettyText(m.group(2));
 			mexItems.add(new Link(name, href));
 		}
 	}

@@ -11,35 +11,45 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.sirap.basic.data.HtmlEntities;
+
 public class HtmlUtil {
 	
-	public static String normalize(String source) {
-		String temp = source.replaceAll("&amp;", "&");
-		temp = temp.replaceAll("&nbsp;", "");
-		temp = temp.replaceAll("&ndash;", "-");
-		temp = temp.replace("&quot;", "\"");
-		temp = temp.replace("&apos;", "\'");
+	public static String removeHttpTag(String source) {
+		XXXUtil.nullCheck(source, "source");
+		String temp = source.replaceAll("<.*?>", "");
 		
-		//&#39; => '
-		Matcher ma = StrUtil.createMatcher("&#(\\d{1,3});", temp);
+		return temp;
+	}
+	
+	/****
+	 * https://en.wikipedia.org/wiki/Unicode
+	 * Unicode defines a code space of 1,114,112 code points in the range 0hex to 10FFFFhex.
+	 * 
+	 * http://www.cnblogs.com/fml1com/p/5149269.html
+	 * @param source
+	 * @return
+	 */
+	public static String replaceRawUnicode(String source) {
+		Matcher ma = StrUtil.createMatcher("&#(\\d{1,7});", source);
+		String temp = source;
 		while(ma.find()) {
-			String whole = ma.group(0);
-			String part = ma.group(1);
-			char ch = (char)(Integer.parseInt(part));
-			temp = temp.replace(whole, ch + "");
-		}
-		
-		ma = StrUtil.createMatcher("&([A-Za-z])([A-Za-z]{3,}).*?;", temp);
-		while(ma.find()) {
-			temp = temp.replace(ma.group(0), ma.group(1)); 
+			int unicode = Integer.parseInt(ma.group(1));
+			temp = temp.replace(ma.group(0), "" + (char)unicode);
 		}
 		
 		return temp;
 	}
-
-	public static String removeHttpTag(String source) {
-		XXXUtil.nullCheck(source, "source");
-		String temp = source.replaceAll("<.*?>", "");
+	
+	public static String replaceHtmlEntities(String source) {
+		Matcher ma = StrUtil.createMatcher("&([a-z]{1,99});", source);
+		String temp = source;
+		while(ma.find()) {
+			Integer unicode = HtmlEntities.GUYS.get(ma.group(1).toLowerCase());
+			if(unicode != null) {
+				temp = temp.replace(ma.group(0), "" + (char)unicode.intValue());
+			}
+		}
 		
 		return temp;
 	}
