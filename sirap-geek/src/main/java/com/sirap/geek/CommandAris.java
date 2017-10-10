@@ -22,16 +22,12 @@ public class CommandAris extends CommandBase {
 		
 		singleParam = parseParam(KEY_EXECUTE_JAVACODE + "\\s+(.+)");
 		if(singleParam != null) {
-			boolean keepGeneratedFiles = g().isYes("aris.keep");
-			Object toKeep = OptionUtil.readObject(options, "k");
-			if(toKeep instanceof Boolean) {
-				keepGeneratedFiles = (Boolean)toKeep;
-			}
+			boolean keepGeneratedFiles = OptionUtil.readBooleanPRI(options, "k", g().isYes("aris.keep"));
 			List<String> classPaths = g().getUserValuesByKeyword("aris.path.");
 			String classpath = StrUtil.connect(classPaths, File.pathSeparator);
 			List<String> autoPackages = getAutoIncludedPackageNames();
 			String arisPlace = g().getUserValueOf("aris.place", System.getProperty("user.home"));
-			boolean toPrintCommand = OptionUtil.readBoolean(options, "p", false);
+			boolean toPrintCommand = OptionUtil.readBooleanPRI(options, "p", false);
 			ArisExecutor instance = ArisExecutor.g().setToPrintCommand(toPrintCommand).setArisPlace(arisPlace).setToKeepGeneratedFiles(keepGeneratedFiles);
 			if(!EmptyUtil.isNullOrEmpty(autoPackages)) {
 				instance.setAutoIncludedPackageNames(autoPackages);

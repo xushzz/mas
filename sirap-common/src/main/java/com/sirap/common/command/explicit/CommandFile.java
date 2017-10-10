@@ -168,21 +168,21 @@ public class CommandFile extends CommandBase {
 			
 			if(!target.isFileRelated() && FileOpener.isTextFile(filePath) && options != null) {
 				List<String> records = FileOpener.readTextContent(filePath, true);
-				if(OptionUtil.readBoolean(options, "one", false)) {
+				if(OptionUtil.readBooleanPRI(options, "one", false)) {
 					String temp = IOUtil.readFileWithoutLineSeparator(filePath, g().getCharsetInUse());
 					String result = StrUtil.reduceMultipleSpacesToOne(temp);
 					export(result);
 				} else {
 					boolean sensitive = isCaseSensitive();
-					if(OptionUtil.readBoolean(options, "sort", false)) {
+					if(OptionUtil.readBooleanPRI(options, "sort", false)) {
 						CollectionUtil.sort(records, sensitive);
 					}
 
-					if(OptionUtil.readBoolean(options, "mark", false)) {
+					if(OptionUtil.readBooleanPRI(options, "mark", false)) {
 						records = CollectionUtil.sortAndMarkSame(records, sensitive);
 					}
 
-					if(OptionUtil.readBoolean(options, "uniq", false)) {
+					if(OptionUtil.readBooleanPRI(options, "uniq", false)) {
 						if(sensitive) {
 							Set<String> taiwan = new LinkedHashSet<>(records);
 							records = new ArrayList<>(taiwan);
@@ -201,7 +201,7 @@ public class CommandFile extends CommandBase {
 						}
 					}
 
-					if(OptionUtil.readBoolean(options, "line", false)) {
+					if(OptionUtil.readBooleanPRI(options, "line", false)) {
 						records = CollectionUtil.lineNumber(records, true);
 					}
 
@@ -302,18 +302,12 @@ public class CommandFile extends CommandBase {
 					if(target.isFileRelated()) {
 						export(CollectionUtil.toFileList(allFiles));
 					} else {
-						boolean orderByNameAsc = OptionUtil.readBoolean(options, "byname", true);
+						boolean orderByNameAsc = OptionUtil.readBooleanPRI(options, "byname", true);
 						MexFileComparator cesc = new MexFileComparator(orderByNameAsc);
-						boolean orderByTypeDirAtTop = OptionUtil.readBoolean(options, "bytype", true);
+						boolean orderByTypeDirAtTop = OptionUtil.readBooleanPRI(options, "bytype", true);
 						cesc.setByTypeAsc(orderByTypeDirAtTop);
-						Object orderByDate = OptionUtil.readObject(options, "bydate");
-						if(orderByDate instanceof Boolean) {
-							cesc.setByDateAsc((Boolean)orderByDate);
-						}
-						Object orderBySize = OptionUtil.readObject(options, "bysize");
-						if(orderBySize instanceof Boolean) {
-							cesc.setBySizeAsc((Boolean)orderBySize);
-						}
+						cesc.setByDateAsc(OptionUtil.readBoolean(options, "bydate"));
+						cesc.setBySizeAsc(OptionUtil.readBoolean(options, "bysize"));
 						Collections.sort(allFiles, cesc);
 						String tempOptions = StrUtil.equals(KEY_SHOW_DETAIL, does) ? "+size" : "";
 						if(options != null) {
@@ -427,21 +421,11 @@ public class CommandFile extends CommandBase {
 					
 					export(files);
 				} else {
-					boolean orderByNameAsc = OptionUtil.readBoolean(options, "byname", true);
+					boolean orderByNameAsc = OptionUtil.readBooleanPRI(options, "byname", true);
 					MexFileComparator cesc = new MexFileComparator(orderByNameAsc); 
-
-					Object orderByType = OptionUtil.readObject(options, "bytype");
-					if(orderByType instanceof Boolean) {
-						cesc.setByTypeAsc((Boolean)orderByType);
-					}
-					Object orderByDate = OptionUtil.readObject(options, "bydate");
-					if(orderByDate instanceof Boolean) {
-						cesc.setByDateAsc((Boolean)orderByDate);
-					}
-					Object orderBySize = OptionUtil.readObject(options, "bysize");
-					if(orderBySize instanceof Boolean) {
-						cesc.setBySizeAsc((Boolean)orderBySize);
-					}
+					cesc.setByTypeAsc(OptionUtil.readBoolean(options, "bytype"));
+					cesc.setByDateAsc(OptionUtil.readBoolean(options, "bydate"));
+					cesc.setBySizeAsc(OptionUtil.readBoolean(options, "bysize"));
 					Collections.sort(allMexedFiles, cesc);
 					String tempOptions = jack.isShowDetail() ? "+size" : "";
 					if(options != null) {
@@ -468,16 +452,10 @@ public class CommandFile extends CommandBase {
 				Collections.sort(records);
 				export(CollectionUtil.toFileList(records));
 			} else {
-				boolean orderByNameAsc = OptionUtil.readBoolean(options, "byname", true);
+				boolean orderByNameAsc = OptionUtil.readBooleanPRI(options, "byname", true);
 				MexFileComparator cesc = new MexFileComparator(orderByNameAsc); 
-				Object orderByDate = OptionUtil.readObject(options, "bydate");
-				if(orderByDate instanceof Boolean) {
-					cesc.setByDateAsc((Boolean)orderByDate);
-				}
-				Object orderBySize = OptionUtil.readObject(options, "bysize");
-				if(orderBySize instanceof Boolean) {
-					cesc.setBySizeAsc((Boolean)orderBySize);
-				}
+				cesc.setByDateAsc(OptionUtil.readBoolean(options, "bydate"));
+				cesc.setBySizeAsc(OptionUtil.readBoolean(options, "bysize"));
 				Collections.sort(records, cesc);
 				String tempOptions = detail ? "+size" : "";
 				if(options != null) {
@@ -491,16 +469,10 @@ public class CommandFile extends CommandBase {
 		
 		if(is(KEY_VERY_IMPORTANT_FOLDER + KEY_2DOTS)) {
 			List<MexFile> records = VFileManager.g().getAllFileRecords();
-			boolean orderByNameAsc = OptionUtil.readBoolean(options, "byname", true);
+			boolean orderByNameAsc = OptionUtil.readBooleanPRI(options, "byname", true);
 			MexFileComparator cesc = new MexFileComparator(orderByNameAsc); 
-			Object orderByDate = OptionUtil.readObject(options, "bydate");
-			if(orderByDate instanceof Boolean) {
-				cesc.setByDateAsc((Boolean)orderByDate);
-			}
-			Object orderBySize = OptionUtil.readObject(options, "bysize");
-			if(orderBySize instanceof Boolean) {
-				cesc.setBySizeAsc((Boolean)orderBySize);
-			}
+			cesc.setByDateAsc(OptionUtil.readBoolean(options, "bydate"));
+			cesc.setBySizeAsc(OptionUtil.readBoolean(options, "bysize"));
 			Collections.sort(records, cesc);
 
 			if(target.isFileRelated()) {
@@ -533,7 +505,7 @@ public class CommandFile extends CommandBase {
 			String pageUrl = equiHttpProtoclIfNeeded(params[1].trim());
 			String source = IOUtil.readURL(pageUrl, g().getCharsetInUse(), true);
 			if(source != null) {
-				boolean showOrder = OptionUtil.readBoolean(options, "order", false);
+				boolean showOrder = OptionUtil.readBooleanPRI(options, "order", false);
 				List<List<String>> allItems = StrUtil.findAllMatchedListedItems(regex, source, isCaseSensitive());
 				List tempList = new ArrayList();
 				int count = 0;
@@ -563,7 +535,7 @@ public class CommandFile extends CommandBase {
 			if(tempFile != null) {
 				String filePath = tempFile.getAbsolutePath();
 				if(FileOpener.isTextFile(filePath)) {
-					boolean showLineNumber = OptionUtil.readBoolean(options, "line", false);
+					boolean showLineNumber = OptionUtil.readBooleanPRI(options, "line", false);
 					String connector = OptionUtil.readString(options, "conn", "; ").replace("\\s", " ");
 					
 					List<String> items = new ArrayList<String>();
@@ -645,7 +617,7 @@ public class CommandFile extends CommandBase {
 					export(result);
 				} else if(StrUtil.equals(KEY_PRINT_TXT, type)) {
 					List<String> records = FileOpener.readTextContent(filePath, true);
-					if(OptionUtil.readBoolean(options, "line", false)) {
+					if(OptionUtil.readBooleanPRI(options, "line", false)) {
 						export(CollectionUtil.lineNumber(records, true));
 					} else {
 						export(records);

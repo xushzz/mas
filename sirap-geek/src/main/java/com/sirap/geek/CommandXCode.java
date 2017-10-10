@@ -75,7 +75,7 @@ public class CommandXCode extends CommandBase {
 			String filePath = QRCodeUtil.createImage(content, filepath, format, 200, 200);
 			if (filePath != null) {
 				String info = "";
-				if(OptionUtil.readBoolean(options, "d", false)) {
+				if(OptionUtil.readBooleanPRI(options, "d", false)) {
 					info += " " + FileUtil.formatFileSize(filePath);
 					info += " " + ImageUtil.readImageWidthHeight(filePath, "x");
 				}
@@ -285,7 +285,7 @@ public class CommandXCode extends CommandBase {
 			
 			if(filePath != null) {
 				String info = "";
-				if(OptionUtil.readBoolean(options, "d", false)) {
+				if(OptionUtil.readBooleanPRI(options, "d", false)) {
 					info += " " + FileUtil.formatFileSize(filePath);
 					info += " " + ImageUtil.readImageWidthHeight(filePath, "x");
 				}

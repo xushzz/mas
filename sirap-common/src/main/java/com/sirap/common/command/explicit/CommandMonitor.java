@@ -202,11 +202,11 @@ public class CommandMonitor extends CommandBase {
 			if(singleParam != null) {
 				noCollect();
 				List<InputRecord> records = CommandHistoryManager.g().getAllRecords();
-				if(!OptionUtil.readBoolean(options, "all", false)) {
+				if(!OptionUtil.readBooleanPRI(options, "all", false)) {
 					if(EmptyUtil.isNullOrEmpty(singleParam)) {
 						records = CommandHistoryManager.g().getNRecords(20);
 					} else {
-						if(OptionUtil.readBoolean(options, "n", false)) {
+						if(OptionUtil.readBooleanPRI(options, "n", false)) {
 							int count = MathUtil.toInteger(singleParam, 20);
 							records = CollectionUtil.last(records, count);
 						} else {

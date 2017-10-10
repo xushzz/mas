@@ -10,7 +10,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.sirap.basic.component.Konstants;
-import com.sirap.basic.component.MexedOption;
 import com.sirap.basic.email.EmailCenter;
 import com.sirap.basic.email.EmailServerItem;
 import com.sirap.basic.tool.C;
@@ -55,15 +54,13 @@ public class SimpleKonfig extends Konfig {
 	public static void init(String params) {
 		instance = new SimpleKonfig();
 		
-		List<MexedOption> options = OptionUtil.parseOptions(params);
-		instance.originalStorage = OptionUtil.readString(options, KEY_STORAGE);
-		
-		String tempPasscode = OptionUtil.readString(options, KEY_PASSCODE);
+		instance.originalStorage = OptionUtil.readString(params, KEY_STORAGE);
+		String tempPasscode = OptionUtil.readString(params, KEY_PASSCODE);
 		if(!EmptyUtil.isNullOrEmpty(tempPasscode)) {
 			String temp2 = TrumpUtil.decodeMixedTextBySIRAP(tempPasscode, "true", true);
 			instance.securityPasscode = temp2;
 		}
-		instance.userConfigFile = OptionUtil.readString(options, KEY_USERCONFIG);
+		instance.userConfigFile = OptionUtil.readString(params, KEY_USERCONFIG);
 		
 		instance.loadAndSetValues();
 	}
@@ -113,12 +110,7 @@ public class SimpleKonfig extends Konfig {
 	}
 	
 	public boolean isExportWithTimestampEnabled(String options) {
-		Object obj = OptionUtil.readObject(options, "ts");
-		if(obj instanceof Boolean) {
-			return (Boolean)obj;
-		}
-		
-		return isExportWithTimestampEnabled;
+		return OptionUtil.readBooleanPRI(options, "ts", isExportWithTimestampEnabled);
 	}
 
 	public boolean isExportWithTimestampEnabled() {

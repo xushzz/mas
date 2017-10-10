@@ -1,8 +1,5 @@
 package com.sirap.basic.domain;
 
-import java.util.List;
-
-import com.sirap.basic.component.MexedOption;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 
@@ -51,10 +48,9 @@ public class MexTextSearchRecord extends MexObject {
 		return false; 
 	}
 
-	public String toPrint(String optionsStr) {
-		List<MexedOption> options = OptionUtil.parseOptions(optionsStr);
-		boolean showFullFilename = OptionUtil.readBoolean(options, "full", false);
-		boolean showLineNumber = OptionUtil.readBoolean(options, "line", false);
+	public String toPrint(String options) {
+		boolean showFullFilename = OptionUtil.readBooleanPRI(options, "full", false);
+		boolean showLineNumber = OptionUtil.readBooleanPRI(options, "line", false);
 		StringBuilder sb = new StringBuilder();
 		if(showFullFilename) {
 			sb.append(fullFilename).append(" ");

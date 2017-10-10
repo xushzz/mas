@@ -1,8 +1,5 @@
 package com.sirap.common.domain;
 
-import java.util.List;
-
-import com.sirap.basic.component.MexedOption;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.util.OptionUtil;
 
@@ -81,17 +78,15 @@ public class TextSearchEngine extends MexItem {
 			setFileCriteria(info[2].trim());
 		}
 		
-		String optionsStr = null;
 		if(info.length >= 4) {
-			optionsStr = info[3].trim();
-			List<MexedOption> options = OptionUtil.parseOptions(optionsStr);
-			Object value = OptionUtil.readOption(options, KEY_USECACHE);
-			if(value instanceof Boolean) {
-				setUseCache((Boolean)value);
+			String options = info[3].trim();
+			Boolean value = OptionUtil.readBoolean(options, KEY_USECACHE);
+			if(value != null) {
+				setUseCache(value);
 			}
-			value = OptionUtil.readOption(options, KEY_USESPACE);
-			if(value instanceof Boolean) {
-				setUseSpace((Boolean)value);
+			value = OptionUtil.readBoolean(options, KEY_USESPACE);
+			if(value != null) {
+				setUseSpace(value);
 			}
 		}
 		

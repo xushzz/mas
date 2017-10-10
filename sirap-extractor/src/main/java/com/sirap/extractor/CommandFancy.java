@@ -43,7 +43,7 @@ public class CommandFancy extends CommandBase {
 			justin.process();
 			items.addAll(justin.getMexItems());
 			
-			boolean showAll = OptionUtil.readBoolean(options, "all", false);
+			boolean showAll = OptionUtil.readBooleanPRI(options, "all", false);
 			if(showAll) {
 				List<MexObject> morePages = MeituManager.g().explode(singleParam, justin.getCountOfAlbum());
 				items.addAll(MeituManager.g().getImageLinks(morePages));

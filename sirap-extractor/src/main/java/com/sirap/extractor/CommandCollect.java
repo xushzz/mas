@@ -170,7 +170,7 @@ public class CommandCollect extends CommandBase {
 		
 		params = parseParams(KEY_BAIDU_BAIKE_SUMMARY + "\\s(\\*?)(.+?)");
 		if(params != null) {
-			boolean withOtherSameNames = !params[0].isEmpty() || OptionUtil.readBoolean(options, "all", false);
+			boolean withOtherSameNames = !params[0].isEmpty() || OptionUtil.readBooleanPRI(options, "all", false);
 			String keywordOrUrl = params[1];
 			List<MexObject> items = BaiduExtractorManager.g().fetchBaiduSummary(keywordOrUrl, withOtherSameNames);
 			export(items);

@@ -120,11 +120,11 @@ public abstract class CommandBase {
 	}
 	
 	public boolean isCaseSensitive() {
-		return OptionUtil.readBoolean(options, "case", false);
+		return OptionUtil.readBooleanPRI(options, "case", false);
 	}
 	
 	public boolean isCaseSensitive(String tempOptions) {
-		return OptionUtil.readBoolean(tempOptions, "case", false);
+		return OptionUtil.readBooleanPRI(tempOptions, "case", false);
 	}
 	
 	public <T extends MexItem> void exportWithDefaultOptions(List<T> list) {

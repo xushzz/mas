@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sirap.basic.component.MexedOption;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.OptionUtil;
@@ -117,10 +116,9 @@ public class ForexRateRecord extends MexItem implements Comparable<ForexRateReco
 	}
 	
 	@Override
-	public String toPrint(String optionsStr) {
-		List<MexedOption> options = OptionUtil.parseOptions(optionsStr);
-		Integer maxLenOfCurrency = OptionUtil.readInteger(options, "maxLenOfCurrency", 25);
-		Integer maxLenOfAmount = OptionUtil.readInteger(options, "maxLenOfAmount", 25);
+	public String toPrint(String options) {
+		int maxLenOfCurrency = OptionUtil.readIntegerPRI(options, "maxLenOfCurrency", 25);
+		int maxLenOfAmount = OptionUtil.readIntegerPRI(options, "maxLenOfAmount", 25);
 		StringBuffer sb = new StringBuffer();
 		sb.append(code);
 		sb.append("  ").append(StrUtil.extend(displayName, maxLenOfCurrency));

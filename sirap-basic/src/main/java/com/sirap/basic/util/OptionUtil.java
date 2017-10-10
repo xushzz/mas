@@ -3,85 +3,99 @@ package com.sirap.basic.util;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
 
 import com.sirap.basic.component.MexedOption;
+import com.sirap.basic.exception.DuplicationException;
+import com.sirap.basic.exception.MexException;
 
 public class OptionUtil {
-
-	public static int readInteger(String options, String targetKey, int def) {
-		List<MexedOption> items = parseOptions(options);
-		return readInteger(items, targetKey, def);
-	}
 	
-	public static int readInteger(List<MexedOption> options, String targetKey, int def) {
-		Object temp = readOption(options, targetKey, true);
-		if(temp instanceof Integer) {
-			return (Integer)temp;
-		} else {
-			return def;
+	public static int readIntegerPRI(String options, String key, int def) {
+		try {
+			Integer value = readInteger(options, key);
+			if(value != null) {
+				return value;
+			}
+		} catch (DuplicationException ex) {
+			throw ex;
 		}
+		
+		return def;
 	}
 	
-	public static String readString(List<MexedOption> options, String targetKey) {
-		return readString(options, targetKey, null);
+	public static Integer readInteger(String options, String key) {
+		OptionUtil.checkOptionKey(key);
+		String strValue = readString(options, key);
+		
+		return MathUtil.toInteger(strValue);
 	}
 	
-	public static String readString(List<MexedOption> options, String targetKey, String def) {
-		Object temp = readOption(options, targetKey, true);
-		if(temp instanceof String) {
-			return (String)temp;
-		} else {
-			return def;
+	public static String readString(String options, String key, String def) {
+		try {
+			String value = readString(options, key);
+			if(value != null) {
+				return value;
+			}
+		} catch (DuplicationException ex) {
+			throw ex;
 		}
+		
+		return def;
 	}
+	
+	public static String readString(String options, String key) {
+		if(EmptyUtil.isNullOrEmpty(options)) {
+			return null;
+		}
+		
+		OptionUtil.checkOptionKey(key);
 
-	public static String readString(String options, String targetKey, String def) {
-		List<MexedOption> items = parseOptions(options);
-		return readString(items, targetKey, def);
+		Matcher ma = StrUtil.createMatcher("(,|^)\\s*" + key + "\\s*=\\s*([^,]+)", options);
+		
+		String value = null;
+		int count = 0;
+		
+		while(ma.find()) {
+			count++;
+			OptionUtil.checkDuplicativeKeys(key, count);
+			value = ma.group(2);
+		}
+		
+		return value;
 	}
+	
+	public static boolean readBooleanPRI(String options, String key, boolean def) {
+		try {
+			Boolean flag = readBoolean(options, key);
+			if(flag != null) {
+				return flag;
+			}
+		} catch (DuplicationException ex) {
+			throw ex;
+		}
+		
+		return def;
+	}
+	
+	public static Boolean readBoolean(String options, String key) {
+		if(EmptyUtil.isNullOrEmpty(options)) {
+			return null;
+		}
+		checkOptionKey(key);
 
-	public static boolean readBoolean(String options, String targetKey, boolean def) {
-		List<MexedOption> items = parseOptions(options);
-		boolean flag = readBoolean(items, targetKey, def);
+		Matcher ma = StrUtil.createMatcher("(,|^)\\s*(\\+|-)" + key + "\\s*(,|$)", options);
+		
+		Boolean flag = null;
+		int count = 0;
+		
+		while(ma.find()) {
+			count++;
+			checkDuplicativeKeys(key, count);
+			flag = StrUtil.equals(ma.group(2), "+");
+		}
 		
 		return flag;
-	}
-	
-	public static boolean readBoolean(List<MexedOption> options, String targetKey, boolean def) {
-		Object temp = readOption(options, targetKey, true);
-		if(temp instanceof Boolean) {
-			return (Boolean)temp;
-		} else {
-			return def;
-		}
-	}
-	
-	public static Object readOption(List<MexedOption> options, String targetKey) {
-		return readOption(options, targetKey, true);
-	}
-	
-	public static Object readObject(String options, String targetKey) {
-		List<MexedOption> items = parseOptions(options);
-		return readOption(items, targetKey);
-	}
-	
-	public static Object readOption(List<MexedOption> options, String targetKey, boolean ignoreCase) {
-		for(MexedOption mo : options) {
-			String key = mo.getName();
-			Object value = mo.getValue();
-			if(ignoreCase) {
-				if(StrUtil.equals(targetKey, key)) {
-					return value;
-				}
-			} else {
-				if(StrUtil.equalsCaseSensitive(targetKey, key)) {
-					return value;
-				}
-			}
-			
-		}
-		
-		return null;
 	}
 	
 	public static List<MexedOption> parseOptions(String source) {
@@ -99,5 +113,22 @@ public class OptionUtil {
 		}
 		
 		return options;
+	}
+	/***
+	 * alphanumeric and underscore, aka \w
+	 * good: 12k,hu232,ko232,232,1999,k_3812
+	 * bad: &kf23,ji f23
+	 */
+	public static void checkOptionKey(String key) {
+		if(!key.matches("\\w+")) {
+			String msg = "Invalid key [{0}], chars should either be alphanumeric or undersocre.";
+			throw new MexException(msg, key);
+		}
+	}
+	
+	public static void checkDuplicativeKeys(String key, int count) {
+		if(count > 1) {
+			throw new DuplicationException("Found duplicative keys: {0}", key);
+		}
 	}
 }

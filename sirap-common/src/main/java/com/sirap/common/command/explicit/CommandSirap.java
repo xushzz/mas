@@ -280,7 +280,7 @@ public class CommandSirap extends CommandBase {
 			String filePath = ImageUtil.takePhoto(filename, getCaptureSound(), format, delay, KEY_CAPTURE_SCREEN.equals(type));
 			if(filePath != null) {
 				String info = "";
-				if(OptionUtil.readBoolean(options, "d", false)) {
+				if(OptionUtil.readBooleanPRI(options, "d", false)) {
 					info += " " + FileUtil.formatFileSize(filePath);
 					info += " " + ImageUtil.readImageWidthHeight(filePath, "*");
 				}
@@ -335,7 +335,7 @@ public class CommandSirap extends CommandBase {
 				String filePath = ImageUtil.takeConsecutivePhotos(filename, getCaptureSound(), format, delay, count, KEY_CAPTURE_SCREEN.equals(type));
 				if(filePath != null) {
 					String info = "";
-					if(OptionUtil.readBoolean(options, "d", false)) {
+					if(OptionUtil.readBooleanPRI(options, "d", false)) {
 						info += " " + FileUtil.formatFileSize(filePath);
 						info += " " + ImageUtil.readImageWidthHeight(filePath, "x");
 					}
@@ -371,18 +371,12 @@ public class CommandSirap extends CommandBase {
 				String path = file.getAbsolutePath();
 				if(path != null) {
 					List<MexFile> allFiles = FileUtil.listDirectory(path);
-					boolean orderByNameAsc = OptionUtil.readBoolean(options, "byname", true);
+					boolean orderByNameAsc = OptionUtil.readBooleanPRI(options, "byname", true);
 					MexFileComparator cesc = new MexFileComparator(orderByNameAsc);
-					boolean orderByTypeDirAtTop = OptionUtil.readBoolean(options, "bytype", true);
+					boolean orderByTypeDirAtTop = OptionUtil.readBooleanPRI(options, "bytype", true);
 					cesc.setByTypeAsc(orderByTypeDirAtTop);
-					Object orderByDate = OptionUtil.readObject(options, "bydate");
-					if(orderByDate instanceof Boolean) {
-						cesc.setByDateAsc((Boolean)orderByDate);
-					}
-					Object orderBySize = OptionUtil.readObject(options, "bysize");
-					if(orderBySize instanceof Boolean) {
-						cesc.setBySizeAsc((Boolean)orderBySize);
-					}
+					cesc.setByDateAsc(OptionUtil.readBoolean(options, "bydate"));
+					cesc.setBySizeAsc(OptionUtil.readBoolean(options, "bysize"));
 					Collections.sort(allFiles, cesc);
 					String tempOptions = options;
 					if(options == null || !options.contains("kids")) {

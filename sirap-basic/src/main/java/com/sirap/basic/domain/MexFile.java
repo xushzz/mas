@@ -124,14 +124,14 @@ public class MexFile extends MexItem implements Comparable<MexFile> {
 	public String toPrint(String optionsStr) {
 		StringBuilder sb = new StringBuilder(getUnixPath());
 		
-		boolean flagHidden = OptionUtil.readBoolean(optionsStr, "hide", false);
+		boolean flagHidden = OptionUtil.readBooleanPRI(optionsStr, "hide", false);
 		if(flagHidden) {
 			if(file.isHidden()) {
 				sb.append(" ").append("(H)");
 			}
 		}
 
-		boolean showKids = OptionUtil.readBoolean(optionsStr, "kids", false);
+		boolean showKids = OptionUtil.readBooleanPRI(optionsStr, "kids", false);
 		if(showKids) {
 			String kids = getKids();
 			if(!EmptyUtil.isNullOrEmpty(kids)) {
@@ -139,13 +139,13 @@ public class MexFile extends MexItem implements Comparable<MexFile> {
 			}
 		}
 		
-		boolean showSize = OptionUtil.readBoolean(optionsStr, "size", false);
+		boolean showSize = OptionUtil.readBooleanPRI(optionsStr, "size", false);
 		if(showSize) {
 			sb.append("  ");
 			sb.append(FileUtil.formatFileSize(file.length()));
 		}
 
-		boolean showDate = OptionUtil.readBoolean(optionsStr, "date", false);
+		boolean showDate = OptionUtil.readBooleanPRI(optionsStr, "date", false);
 		if(showDate) {
 			sb.append("  ");
 			Date lastmodified = new Date(file.lastModified());

@@ -1,9 +1,7 @@
 package com.sirap.basic.domain;
 
-import java.util.List;
 import java.util.zip.ZipEntry;
 
-import com.sirap.basic.component.MexedOption;
 import com.sirap.basic.search.SizeCriteria;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.OptionUtil;
@@ -80,10 +78,9 @@ public class MexZipEntry extends MexItem {
 		return toPrint("");
 	}
 	
-	public String toPrint(String optionsStr) {
-		List<MexedOption> options = OptionUtil.parseOptions(optionsStr);
-		boolean showSize = OptionUtil.readBoolean(options, "size", false);
-		boolean showFullpath = OptionUtil.readBoolean(options, "full", true);
+	public String toPrint(String options) {
+		boolean showSize = OptionUtil.readBooleanPRI(options, "size", false);
+		boolean showFullpath = OptionUtil.readBooleanPRI(options, "full", true);
 		StringBuilder sb = new StringBuilder();
 		if(showFullpath) {
 			sb.append(getJarName().replace('\\', '/') + "!/");

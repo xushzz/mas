@@ -143,7 +143,7 @@ public class CommandBible extends CommandBase {
 	
 	@SuppressWarnings("rawtypes")
 	public List readChapterDetail(ChapterSense sense) {
-		boolean fetchForcibly = OptionUtil.readBoolean(options, "force", false);
+		boolean fetchForcibly = OptionUtil.readBooleanPRI(options, "force", false);
 		String bookName = sense.getBook().getName();
 		int chapter = sense.getChapterNumber();
 		List items = null;

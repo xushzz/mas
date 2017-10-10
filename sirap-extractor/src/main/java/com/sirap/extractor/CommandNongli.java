@@ -67,7 +67,7 @@ public class CommandNongli extends CommandBase {
 		if(params != null) {
 			Extractor<MexObject> mike = new ChinaJieriExtractor();
 			List<MexObject> items = mike.process().getMexItems();
-			boolean showAll = OptionUtil.readBoolean(options, "all", false);
+			boolean showAll = OptionUtil.readBooleanPRI(options, "all", false);
 			if(showAll) {
 				export(items);
 			} else {
