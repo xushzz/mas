@@ -26,12 +26,12 @@ public class Extractors {
 			
 			@Override
 			protected void parseContent() {
-				String regex = "<td>&amp;([a-z]{1,99});</td>\\s*<td>&amp;#(\\d{1,7});</td>";
+				String regex = "<td>([^<>]+)</td>\\s*<td>&amp;([a-z]{1,99});</td>\\s*<td>&amp;#(\\d{1,7});</td>";
 
 				Matcher ma = createMatcher(regex);
-				String guys = "GUYS.put(\"{0}\", {1});";
+				String guys = "EGGS.put(\"{0}\", new HtmlEntity(\"{0}\", {1}, \"{2}\"));";
 				while(ma.find()) {
-					String temp = StrUtil.occupy(guys, ma.group(1), ma.group(2));
+					String temp = StrUtil.occupy(guys, ma.group(2), ma.group(3), ma.group(1).trim());
 					mexItems.add(new MexObject(temp));
 				}
 			}

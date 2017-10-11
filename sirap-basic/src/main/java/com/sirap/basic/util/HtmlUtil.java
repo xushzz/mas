@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.sirap.basic.data.HtmlEntities;
+import com.sirap.basic.data.HtmlData;
 
 public class HtmlUtil {
 	
@@ -45,7 +45,7 @@ public class HtmlUtil {
 		Matcher ma = StrUtil.createMatcher("&([a-z]{1,99});", source);
 		String temp = source;
 		while(ma.find()) {
-			Integer unicode = HtmlEntities.GUYS.get(ma.group(1).toLowerCase());
+			Integer unicode = HtmlData.EGGS.get(ma.group(1)).getCode();
 			if(unicode != null) {
 				temp = temp.replace(ma.group(0), "" + (char)unicode.intValue());
 			}
