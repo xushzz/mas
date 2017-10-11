@@ -114,7 +114,7 @@ public class Extractors {
 			@Override
 			protected void parseContent() {
 				String regex = "<tr>\\s*<td align=\"left\" valign=\"top\">([^\"]+)</td>";
-				regex += "\\s*<td></td>";
+				regex += "\\s*<td>[^<>]*</td>";
 				regex += "\\s*<td align=\"left\" valign=\"top\">(.+?)</td>\\s*</tr>";
 				Matcher ma = createMatcher(regex);
 				while(ma.find()) {
