@@ -137,7 +137,7 @@ public abstract class CommandBase {
 	
 	public <T extends MexItem> void exportWithOptions(List<T> list, String niceOptions) {
 		if(isDebug()) {
-			C.pl("options: " + niceOptions);
+			D.ts("options: " + niceOptions);
 		}
 		export(CollectionUtil.items2PrintRecords(list, niceOptions));
 	}
