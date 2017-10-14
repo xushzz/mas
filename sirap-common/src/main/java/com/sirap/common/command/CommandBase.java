@@ -86,8 +86,7 @@ public abstract class CommandBase {
 		try {
 			boolean flag = handle();
 			
-			boolean printCommandNodeName = g().isYes("command.nodename.print");
-			if(printCommandNodeName) {
+			if(isDebug()) {
 				D.ts(getClass());
 			}
 			if(!flag) {
@@ -95,7 +94,7 @@ public abstract class CommandBase {
 			}
 		} catch (MexException ex) {
 			StringBuilder stv = new StringBuilder();
-			if(g().isPrintExceptionStackTrace()) {
+			if(isDebug()) {
 				if(ex.getOrigin() != null) {
 					stv.append(XXXUtil.getStackTrace(ex.getOrigin()));
 				} else {
@@ -109,7 +108,7 @@ public abstract class CommandBase {
 		} catch (Exception ex) {
 			StringBuilder stv = new StringBuilder();
 			stv.append(ex.getMessage());
-			if(g().isPrintExceptionStackTrace()) {
+			if(isDebug()) {
 				stv.append(Konstants.NEWLINE);
 				stv.append(XXXUtil.getStackTrace(ex));
 			}
@@ -131,7 +130,15 @@ public abstract class CommandBase {
 		export(CollectionUtil.items2PrintRecords(list, options));
 	}
 	
+	public boolean isDebug() {
+		boolean debug = OptionUtil.readBooleanPRI(options, "debug", false);
+		return debug;
+	}
+	
 	public <T extends MexItem> void exportWithOptions(List<T> list, String niceOptions) {
+		if(isDebug()) {
+			C.pl("options: " + niceOptions);
+		}
 		export(CollectionUtil.items2PrintRecords(list, niceOptions));
 	}
 	

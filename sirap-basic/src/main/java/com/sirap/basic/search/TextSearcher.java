@@ -49,6 +49,7 @@ public class TextSearcher {
 		return result;
 	}
 	
+	@Deprecated
 	public static List<MexObject> searchWithCache(String engineName, String foldersStr, String fileNameCriteria, String contentCriteria, String charset) {
 		List<String> folders = StrUtil.splitByRegex(foldersStr);
 		return searchWithCache(engineName, folders, fileNameCriteria, contentCriteria, charset);

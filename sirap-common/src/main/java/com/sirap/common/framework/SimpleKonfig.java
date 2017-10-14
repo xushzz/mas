@@ -43,7 +43,6 @@ public class SimpleKonfig extends Konfig {
 	private boolean isHistoryEnabled;
 	private boolean isCaptureSoundOn;
 	private boolean isGeneratedFileAutoOpen;
-	private boolean isPrintException;
 	private String securityPasscode = "mike";
 	private String charsetInUse;
 	
@@ -171,7 +170,6 @@ public class SimpleKonfig extends Konfig {
 		isPrintGreyRowWhenPDF = !isNo("pdf.table.grayrow");
 		isAsianFontWhenPDF = isYes("pdf.font.asian");
 		isExportWithTimestampEnabled = !isNo("timestamp.enabled");
-		isPrintException = isYes("exception.stack.print");
 	}
 	
 	public int getTimeoutMinutes() {
@@ -376,10 +374,6 @@ public class SimpleKonfig extends Konfig {
 	
 	public void setSecurityPasscode(String securityPasscode) {
 		this.securityPasscode = securityPasscode;
-	}
-
-	public boolean isPrintExceptionStackTrace() {
-		return isPrintException;
 	}
 
 	private Map<String, EmailServerItem> getExtraServers() {

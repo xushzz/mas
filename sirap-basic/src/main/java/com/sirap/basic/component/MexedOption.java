@@ -54,9 +54,27 @@ public class MexedOption extends MexItem {
 		
 		return false;
 	}
-
+	
+	@Override
+	public int hashCode() {
+		return name.hashCode();
+	}	
+	
+	@Override
+	public boolean equals(Object obj) {
+		MexedOption mo = (MexedOption)obj;
+		return StrUtil.equals(name, mo.getName());
+	}
+	
 	@Override
 	public String toString() {
-		return "MexedOption [name=" + name + ", value=" + value + "]";
+		StringBuffer sb = StrUtil.sb();
+		if(value instanceof Boolean) {
+			sb.append((Boolean)value ? "+" : "-").append(name);
+		} else {
+			sb.append(name).append("=").append(value);
+		}
+		
+		return sb.toString();
 	}
 }

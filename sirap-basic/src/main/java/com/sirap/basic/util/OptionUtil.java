@@ -1,10 +1,10 @@
 package com.sirap.basic.util;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.component.MexedOption;
 import com.sirap.basic.exception.DuplicationException;
 import com.sirap.basic.exception.MexException;
@@ -98,9 +98,25 @@ public class OptionUtil {
 		return flag;
 	}
 	
+	public static String mergeOptions(String highPriority, String lowPriority) {
+		List<MexedOption> listA = parseOptions(highPriority);
+		List<MexedOption> listB = parseOptions(lowPriority);
+		
+		List<MexedOption> listAll = Lists.newArrayList(listA);
+		for(MexedOption itemB : listB) {
+			if(listA.indexOf(itemB) >= 0) {
+				continue;
+			}
+			
+			listAll.add(itemB);
+		}
+		
+		return StrUtil.connectWithComma(listAll);
+	}
+	
 	public static List<MexedOption> parseOptions(String source) {
 		if(EmptyUtil.isNullOrEmpty(source)) {
-			return Collections.EMPTY_LIST;
+			return Lists.newArrayList();
 		}
 		List<MexedOption> options = new ArrayList<>();
 		

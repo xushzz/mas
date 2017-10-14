@@ -1,18 +1,13 @@
 package com.sirap.common.domain;
 
 import com.sirap.basic.domain.MexItem;
-import com.sirap.basic.util.OptionUtil;
 
 @SuppressWarnings("serial")
 public class TextSearchEngine extends MexItem {
 	private String prefix;
 	private String folders;
 	private String fileNameCriteria;
-	private boolean useCache;
-	private boolean useSpace = true;
-
-	private static final String KEY_USECACHE = "usecache";
-	private static final String KEY_USESPACE = "usespace";
+	private String options;
 	
 	public TextSearchEngine() {
 		
@@ -48,20 +43,12 @@ public class TextSearchEngine extends MexItem {
 		this.folders = folders;
 	}
 	
-	public boolean isUseCache() {
-		return useCache;
+	public String getOptions() {
+		return options;
 	}
 
-	public void setUseCache(boolean useCache) {
-		this.useCache = useCache;
-	}	
-	
-	public boolean isUseSpace() {
-		return useSpace;
-	}
-
-	public void setUseSpace(boolean useSpace) {
-		this.useSpace = useSpace;
+	public void setOptions(String options) {
+		this.options = options;
 	}
 
 	@Override
@@ -79,15 +66,7 @@ public class TextSearchEngine extends MexItem {
 		}
 		
 		if(info.length >= 4) {
-			String options = info[3].trim();
-			Boolean value = OptionUtil.readBoolean(options, KEY_USECACHE);
-			if(value != null) {
-				setUseCache(value);
-			}
-			value = OptionUtil.readBoolean(options, KEY_USESPACE);
-			if(value != null) {
-				setUseSpace(value);
-			}
+			setOptions(info[3].trim());
 		}
 		
 		return true;
@@ -99,7 +78,7 @@ public class TextSearchEngine extends MexItem {
 		sb.append(prefix).append("\t");
 		sb.append(folders).append("\t");
 		sb.append(fileNameCriteria).append("\t");
-		sb.append("useCache:" + useCache).append(",").append("useSpace:" + useSpace);
+		sb.append(options);
 		
 		return sb.toString(); 
 	}

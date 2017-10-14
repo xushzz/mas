@@ -309,14 +309,12 @@ public class CommandFile extends CommandBase {
 						cesc.setByDateAsc(OptionUtil.readBoolean(options, "bydate"));
 						cesc.setBySizeAsc(OptionUtil.readBoolean(options, "bysize"));
 						Collections.sort(allFiles, cesc);
-						String tempOptions = StrUtil.equals(KEY_SHOW_DETAIL, does) ? "+size" : "";
-						if(options != null) {
-							tempOptions += "," + options;
+						String tempOptions = "+kids";
+						if(StrUtil.equals(KEY_SHOW_DETAIL, does)) {
+							tempOptions += ",+size";
 						}
-						if(options == null || !options.contains("kids")) {
-							tempOptions += ",+kids";
-						}
-						exportWithOptions(allFiles, tempOptions);
+						String finalOptions = OptionUtil.mergeOptions(options, tempOptions);
+						exportWithOptions(allFiles, finalOptions);
 					}
 					
 					return true;
@@ -428,10 +426,8 @@ public class CommandFile extends CommandBase {
 					cesc.setBySizeAsc(OptionUtil.readBoolean(options, "bysize"));
 					Collections.sort(allMexedFiles, cesc);
 					String tempOptions = jack.isShowDetail() ? "+size" : "";
-					if(options != null) {
-						tempOptions += "," + options;
-					}
-					exportWithOptions(allMexedFiles, tempOptions);
+					String finalOptions = OptionUtil.mergeOptions(options, tempOptions);
+					exportWithOptions(allMexedFiles, finalOptions);
 				}
 			}
 			
@@ -458,10 +454,8 @@ public class CommandFile extends CommandBase {
 				cesc.setBySizeAsc(OptionUtil.readBoolean(options, "bysize"));
 				Collections.sort(records, cesc);
 				String tempOptions = detail ? "+size" : "";
-				if(options != null) {
-					tempOptions += "," + options;
-				}
-				exportWithOptions(records, tempOptions);
+				String finalOptions = OptionUtil.mergeOptions(options, tempOptions);
+				exportWithOptions(records, finalOptions);
 			}
 			
 			return true;

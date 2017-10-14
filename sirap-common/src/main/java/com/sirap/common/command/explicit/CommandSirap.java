@@ -712,22 +712,15 @@ public class CommandSirap extends CommandBase {
 	}
 	
 	private boolean conductTextSearch(TextSearchEngine engine) {
-		String engineName = engine.getPrefix();
-		boolean isSpaceMandatory = engine.isUseSpace();
-		String regex = engineName + (isSpaceMandatory ? "\\s(.+?)" : "(.+?)");
+		String regex = engine.getPrefix() + "\\s(.+?)";
 		String contentCriteria = parseParam(regex);
 		if(contentCriteria != null) {
 			String folders = engine.getFolders();
 			String fileCriteria = engine.getFileCriteria();
-			boolean useCache = engine.isUseCache();
-			List<MexObject> list = null;
-			if(useCache) {
-				list = TextSearcher.searchWithCache(engineName, folders, fileCriteria, contentCriteria, g().getCharsetInUse());
-			} else {
-				list = TextSearcher.search(folders, fileCriteria, contentCriteria, g().getCharsetInUse());
-			}
-			
-			exportWithOptions(list, options);
+			String engineOptions = engine.getOptions();
+			List<MexObject> list = TextSearcher.search(folders, fileCriteria, contentCriteria, g().getCharsetInUse());
+			String finalOptions = OptionUtil.mergeOptions(options, engineOptions);
+			exportWithOptions(list, finalOptions);
 			
 			return true;
 		}
