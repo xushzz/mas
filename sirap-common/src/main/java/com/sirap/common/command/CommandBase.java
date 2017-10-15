@@ -413,7 +413,8 @@ public abstract class CommandBase {
 		return Konstants.IMG_BMP;
 	}
 
-	protected String getTargetLocation(String dir) {
+	protected String getTargetLocation(String defaultLocation) {
+		String dir = defaultLocation;
 		if(target instanceof TargetFolder) {
 			dir = ((TargetFolder) target).getPath() + File.separator;
 		} else {

@@ -2,9 +2,12 @@ package com.sirap.extractor;
 
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.output.PDFParams;
+import com.sirap.basic.thread.Master;
+import com.sirap.basic.tool.C;
 import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
@@ -262,6 +265,29 @@ public class CommandCollect extends CommandBase {
 		if(is(KEY_THIS_DAY_IN_HISTORY_CHINESE)) {
 			String urlParam = DateUtil.displayNow("MM-dd");
 			export(Extractors.fetchHistoryEventsByDay(urlParam));
+			return true;
+		}
+
+		if(is(KEY_THIS_DAY_IN_HISTORY_CHINESE + ".load")) {
+			int[] maxDays = DateUtil.MAX_DAY_IN_MONTH_LEAP_YEAR;
+			List<MexObject> urlParams = Lists.newArrayList();
+			for(int k = 1; k <= 12; k++) {
+				String month = StrUtil.extendLeftward("" + k, 2, "0");
+				int max = maxDays[k - 1];
+				for(int i = 1; i <= max; i++) {
+					String day = StrUtil.extendLeftward("" + i, 2, "0");
+					urlParams.add(new MexObject(month + "-" + day));
+				}
+			}
+			
+			String location = getTargetLocation(storage());
+
+			HistoryEventsFetcher dinesh = new HistoryEventsFetcher(location);
+			Master<MexObject> master = new Master<MexObject>(urlParams, dinesh);
+
+			master.sitAndWait();
+			C.pl2("Done with downloading, check " + location);
+
 			return true;
 		}
 

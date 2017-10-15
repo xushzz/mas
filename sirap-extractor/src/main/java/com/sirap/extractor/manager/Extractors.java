@@ -116,10 +116,27 @@ public class Extractors {
 			
 			@Override
 			protected void parseContent() {
-				String regex = "<li>\\[<a href=\"http://jintian.cidianwang.com/([bc\\d]+).htm\"[^<>]+>[^<>]+</a>[^<>]+<a[^<>]+>([^<>]+)</a></li>";
+				String regex = "</h2><ul>(.+?)</ul>";
 				Matcher ma = createMatcher(regex);
 				while(ma.find()) {
-					String temp = ma.group(1).toUpperCase() + "/" + day.replace('-', '/') + " " + getPrettyText(ma.group(2));
+					String temp = ma.group(1);
+					parseSection(temp);
+				}
+			}
+
+			protected void parseSection(String section) {
+				String regexSectioin = "<li>(.+?)</li>";
+				Matcher ma = createMatcher(regexSectioin, section);
+				while(ma.find()) {
+					String rawItem = ma.group(1);
+					String temp;
+					String regexItem = "\\[<a href=\"http://jintian.cidianwang.com/([^\"/]+).htm\".+?target=\"_blank\"\\s*>(.+?)</a>";
+					Matcher ma2 = createMatcher(regexItem, rawItem);
+					if(ma2.matches()) {
+						temp = ma2.group(1).toUpperCase() + "/" + day.replace('-', '/') + " " + getPrettyText(ma2.group(2));
+					} else {
+						temp = day.replace('-', '/') + " " + getPrettyText(rawItem);
+					}
 					mexItems.add(new MexObject(temp));
 				}
 			}

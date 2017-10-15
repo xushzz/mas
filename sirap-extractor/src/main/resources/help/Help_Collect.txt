@@ -25,8 +25,10 @@ this               list events in this day in history, courtesy of http://jintia
 this5.6            list events in May 6th in history, same as 5/26,5-16, courtesy of http://jintian.cidianwang.com
 this1917           list events in the year 1917 in history, courtesy of http://jintian.cidianwang.com
 thisbc626          list events in the year B.C. 626 in history, courtesy of http://jintian.cidianwang.com
+this.load          download all history events to default location, storage/hist
+this.load E:\      download all history events to a given location, such as E:/hist
 hist               list events in this day in history, courtesy of http://www.historynet.com
 hist5.6            list events in May 6th in history, same as 5/26,5-16, courtesy of http://www.historynet.com
 nobel..            list all nobel prize year, category, laureate and reason
 nobel 2007&james   list nobel prize info, filter by mex criteria
-ver=EXTRACTOR-COLLECT1.0.11-CANTONA  10/15/2017, VII
+ver=EXTRACTOR-COLLECT1.0.12-CANTONA  10/16/2017, I
