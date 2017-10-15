@@ -364,8 +364,8 @@ public abstract class CommandBase {
 			return true;
 			
 		} else {
+			FileOpener.playThing(url, "page.viewer", true);
 			C.pl2("View Page.");
-			FileOpener.playThing(url, "page.viewer");
 		}
 		
 		return true;

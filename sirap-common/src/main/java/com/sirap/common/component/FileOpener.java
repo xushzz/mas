@@ -53,7 +53,7 @@ public class FileOpener {
 			playThing(filePath, "excel.viewer");
 			return true;
 		} else if(FileUtil.isAnyTypeOf(filePath, FileUtil.SUFFIXES_HTML)) {
-			C.pl2("View excel document");
+			C.pl2("View html document");
 			playThing(filePath, "page.viewer");
 			return true;
 		} else if(isAcceptableFormat(filePath, FileUtil.SUFFIXES_TEXT, KEY_TEXT)) {
@@ -173,17 +173,31 @@ public class FileOpener {
 		
 		return flag;
 	}
-	
+
 	public static void playThing(String filePath, String playerKey) {
+		playThing(filePath, playerKey, false);
+	}
+	
+	public static boolean playThing(String filePath, String playerKey, boolean mandatory) {
 		if(PanaceaBox.isMac()) {
-			PanaceaBox.openFile(filePath);
-			return;
+			return PanaceaBox.openFile(filePath);
 		}
 		String appDir = SimpleKonfig.g().getUserValueOf(playerKey);
+		if(mandatory) {
+			if(EmptyUtil.isNullOrEmpty(appDir)) {
+				C.pl("Can't find player with key: " + playerKey);
+			} else {
+				if(!FileUtil.exists(appDir)) {
+					C.pl("Can't find player with path: " + appDir);
+				}
+			}
+		}
 		if(EmptyUtil.isNullOrEmpty(appDir) || appDir.length() < 5) {
 			PanaceaBox.openFile(filePath);
 		} else {
 			PanaceaBox.openFile(appDir, filePath);
 		}
+		
+		return true;
 	}
 }

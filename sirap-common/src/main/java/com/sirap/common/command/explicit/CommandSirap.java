@@ -697,15 +697,16 @@ public class CommandSirap extends CommandBase {
 		if(singleParam != null) {
 			String urlTemplate = engine.getUrlTemplate();
 			String url = StrUtil.occupy(urlTemplate, Extractor.encodeURLParam(singleParam));
-			FileOpener.playThing(url, "page.viewer");
-			C.pl(url);
-			String motto = engine.getMotto();
-			if(!EmptyUtil.isNullOrEmpty(motto)) {
-				C.pl(engine.getMotto());
+			if(FileOpener.playThing(url, "page.viewer", true)) {
+				C.pl(url);
+				String motto = engine.getMotto();
+				if(!EmptyUtil.isNullOrEmpty(motto)) {
+					C.pl(engine.getMotto());
+				}
+				C.pl();
+				
+				return true;
 			}
-			C.pl();
-			
-			return true;
 		}
 		
 		return false;
