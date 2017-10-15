@@ -18,6 +18,7 @@ import com.sirap.basic.component.RioCalendar;
 import com.sirap.basic.component.comparator.MexFileComparator;
 import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.domain.MexObject;
+import com.sirap.basic.domain.MexTextSearchRecord;
 import com.sirap.basic.email.EmailCenter;
 import com.sirap.basic.math.FormulaCalculator;
 import com.sirap.basic.math.MexColorConverter;
@@ -719,7 +720,7 @@ public class CommandSirap extends CommandBase {
 			String folders = engine.getFolders();
 			String fileCriteria = engine.getFileCriteria();
 			String engineOptions = engine.getOptions();
-			List<MexObject> list = TextSearcher.search(folders, fileCriteria, contentCriteria, g().getCharsetInUse());
+			List<MexTextSearchRecord> list = TextSearcher.search(folders, fileCriteria, contentCriteria, g().getCharsetInUse());
 			String finalOptions = OptionUtil.mergeOptions(options, engineOptions);
 			exportWithOptions(list, finalOptions);
 			
