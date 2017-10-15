@@ -1,5 +1,6 @@
 package com.sirap.basic.domain;
 
+import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 
@@ -23,6 +24,11 @@ public class MexTextSearchRecord extends MexObject {
 
 	public void setFullFilename(String fullFilename) {
 		this.fullFilename = fullFilename;
+	}
+	
+	public String getShortFileNameWithoutExtension() {
+		String name = FileUtil.extractFilenameWithoutExtension(fullFilename);
+		return name;
 	}
 	
 	public int getLineNumber() {
@@ -49,11 +55,15 @@ public class MexTextSearchRecord extends MexObject {
 	}
 
 	public String toPrint(String options) {
-		boolean showFullFilename = OptionUtil.readBooleanPRI(options, "full", false);
+		boolean showFullFilePath = OptionUtil.readBooleanPRI(options, "full", false);
 		boolean showLineNumber = OptionUtil.readBooleanPRI(options, "line", false);
+		boolean showShortFileName = OptionUtil.readBooleanPRI(options, "short", false);
 		StringBuilder sb = new StringBuilder();
-		if(showFullFilename) {
+		if(showFullFilePath) {
 			sb.append(fullFilename).append(" ");
+		}
+		if(showShortFileName) {
+			sb.append(getShortFileNameWithoutExtension()).append(" ");
 		}
 		if(showLineNumber) {
 			sb.append("L" + lineNumber).append(" ");
