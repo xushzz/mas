@@ -60,7 +60,7 @@ public class Extractors {
 				String regex = "<li>\\[<a[^<>]+>[^<>]+</a>[^<>]+<a href=\"http://jintian.cidianwang.com/([^/]+)/[^<>]+>([^<>]+)</a></li>";
 				Matcher ma = createMatcher(regex);
 				while(ma.find()) {
-					String temp = yearInfo.toUpperCase() + "/" + ma.group(1).replace('-', '/') + " " + ma.group(2);
+					String temp = yearInfo.toUpperCase() + "/" + ma.group(1).replace('-', '/') + " " + getPrettyText(ma.group(2));
 					mexItems.add(new MexObject(temp));
 				}
 			}
@@ -88,7 +88,7 @@ public class Extractors {
 				String regex = "<li>\\[<a href=\"http://jintian.cidianwang.com/([bc\\d]+).htm\"[^<>]+>[^<>]+</a>[^<>]+<a[^<>]+>([^<>]+)</a></li>";
 				Matcher ma = createMatcher(regex);
 				while(ma.find()) {
-					String temp = ma.group(1).toUpperCase() + "/" + day.replace('-', '/') + " " + ma.group(2);
+					String temp = ma.group(1).toUpperCase() + "/" + day.replace('-', '/') + " " + getPrettyText(ma.group(2));
 					mexItems.add(new MexObject(temp));
 				}
 			}
