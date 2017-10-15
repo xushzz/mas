@@ -27,4 +27,6 @@ this1917           list events in the year 1917 in history, courtesy of http://j
 thisbc626          list events in the year B.C. 626 in history, courtesy of http://jintian.cidianwang.com
 hist               list events in this day in history, courtesy of http://www.historynet.com
 hist5.6            list events in May 6th in history, same as 5/26,5-16, courtesy of http://www.historynet.com
-ver=EXTRACTOR-COLLECT1.0.10-CANTONA  10/11/2017, III
+nobel..            list all nobel prize year, category, laureate and reason
+nobel 2007&james   list nobel prize info, filter by mex criteria
+ver=EXTRACTOR-COLLECT1.0.11-CANTONA  10/15/2017, VII

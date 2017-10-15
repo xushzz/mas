@@ -52,6 +52,7 @@ public class CommandCollect extends CommandBase {
 	private static final String KEY_WEIXIN_SEARCH= "wei";
 	private static final String KEY_THIS_DAY_IN_HISTORY_CHINESE = "this";
 	private static final String KEY_THIS_DAY_IN_HISTORY = "hist";
+	private static final String KEY_NOBEL_PRIZE = "nobel";
 
 	{
 		helpMeanings.put("money.forex.url", XRatesForexRateExtractor.URL_X_RATES);
@@ -282,6 +283,20 @@ public class CommandCollect extends CommandBase {
 			String urlParam = DateUtil.displayNow("MMMM-dd").toLowerCase();
 			String monthDay = DateUtil.displayNow("MM/dd");
 			export(Extractors.fetchHistoryEventsByDay2(urlParam, monthDay));
+			return true;
+		}
+
+		if(is(KEY_NOBEL_PRIZE + KEY_2DOTS)) {
+			export(Extractors.fetchAllNobelPrizes());
+			
+			return true;
+		}
+		
+		singleParam = parseParam(KEY_NOBEL_PRIZE + "\\s([^\\.]+)");
+		if(singleParam != null) {
+			List<MexObject> items = Extractors.fetchAllNobelPrizes();
+			export(CollectionUtil.filter(items, singleParam));
+			
 			return true;
 		}
 

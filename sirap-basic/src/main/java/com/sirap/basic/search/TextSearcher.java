@@ -2,12 +2,9 @@ package com.sirap.basic.search;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.sirap.basic.domain.MexFile;
-import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.domain.MexTextSearchRecord;
 import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.FileUtil;
@@ -16,22 +13,22 @@ import com.sirap.basic.util.StrUtil;
 
 public class TextSearcher {
 	
-	private static Map<String, TextSearcher> instances = new HashMap<>();
+//	private static Map<String, TextSearcher> instances = new HashMap<>();
 	private List<MexTextSearchRecord> allItems;
 	
 	private TextSearcher(List<String> folders, String fileNameCriteria, String charset) {
 		allItems = readAllItems(folders, fileNameCriteria, charset);
 	}
-	
-	private synchronized static TextSearcher getInstance(String engineName, List<String> folders, String fileNameCriteria, String charset) {
-		TextSearcher wang = instances.get(engineName);
-		if(wang == null) {
-			wang = new TextSearcher(folders, fileNameCriteria, charset);
-			instances.put(engineName, wang);
-		}
-		
-		return wang;
-	}
+//	
+//	private synchronized static TextSearcher getInstance(String engineName, List<String> folders, String fileNameCriteria, String charset) {
+//		TextSearcher wang = instances.get(engineName);
+//		if(wang == null) {
+//			wang = new TextSearcher(folders, fileNameCriteria, charset);
+//			instances.put(engineName, wang);
+//		}
+//		
+//		return wang;
+//	}
 	
 	public static List<MexTextSearchRecord> search(String foldersStr, String fileNameCriteria, String criteria, String charset) {
 		List<String> folders = StrUtil.splitByRegex(foldersStr);

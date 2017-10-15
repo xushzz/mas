@@ -11,6 +11,37 @@ import com.sirap.basic.util.StrUtil;
 import com.sirap.common.extractor.Extractor;
 
 public class Extractors {
+
+	public static List<MexObject> fetchAllNobelPrizes() {
+		Extractor<MexObject> neymar = new Extractor<MexObject>() {
+
+			@Override
+			public String getUrl() {
+				printFetching = true;
+				String url = "https://www.nobelprize.org/nobel_prizes/lists/all/index.html";
+				return url;
+			}
+			
+			@Override
+			protected void parseContent() {
+				String fixed = source.replace("<div class=\"by_year_clear\"></div>", "");
+				String regex = "<div class=\"by_year(.+?)</div>";
+				Matcher ma = createMatcher(regex, fixed);
+				while(ma.find()) {
+					String temp = ma.group(0).replace("</a></h3>", ", ");
+					temp = temp.replaceAll("</h6>\\s*<p>", ", ");
+					temp = temp.replace("The Sveriges Riksbank Prize in Economic Sciences in Memory of Alfred Nobel", "Economic Sciences");
+					temp = temp.replace("The Nobel Prize in", "");
+					temp = temp.replace("The Nobel", "");
+					temp = getPrettyText(temp);
+					temp = temp.replaceAll(",\\s*$", "");
+					mexItems.add(new MexObject(temp));
+				}
+			}
+		};
+		
+		return neymar.process().getMexItems();
+	}
 	
 	public static List<MexObject> fetchHtmlEntities() {
 		Extractor<MexObject> nikita = new Extractor<MexObject>() {

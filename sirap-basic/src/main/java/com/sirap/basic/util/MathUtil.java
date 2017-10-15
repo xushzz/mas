@@ -4,8 +4,11 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.math.PermutationGenerator;
 import com.sirap.basic.tool.C;
 
@@ -232,5 +235,51 @@ public class MathUtil {
 		double avg = sum / (numbers.size() + 0.0);
 		return avg;
 	}
+	
+	public static String temperature(double value, String unit) {
+		String degreeFahrenheit = "Fa";
+		String degreeCelsius = "Ce";
+		double targetValue = 0;
+		String targetUnit = null;
+		if(StrUtil.equals(degreeFahrenheit, unit)) {
+			targetValue = (value - 32) / 1.8;
+			targetUnit = degreeCelsius;
+		} else if(StrUtil.equals(degreeCelsius, unit)) {
+			targetValue = 1.8 * value + 32;
+			targetUnit = degreeFahrenheit;
+		} else {
+			XXXUtil.alert("Illegal unit {0}, should be one of {1}, {2}.", unit, "Fa, Ce");
+		}
+		
+		String va = setDoubleScale(targetValue, 2);
+		String king = StrUtil.removePointZeroes(va) + " " + targetUnit;
+		
+		return king;
+	}
+	
+	public static List<String> weight(double value, String unit) {
+		Map<String, Double> map = new LinkedHashMap<>();
+		map.put("kg", 1.0);
+		map.put("lb", 2.2046226);
+		map.put("oz", 35.2739619);
+		
+		List<String> keys = Lists.newArrayList(map.keySet());
 
+		String paramKey = unit.toLowerCase();
+		Double paramFactor = map.get(paramKey);
+		if(paramFactor == null) {
+			XXXUtil.alert("Illegal unit {0}, should be one of {1}.", unit, keys);
+		}
+
+		List<String> values = Lists.newArrayList();
+		for(int i = 0; i < keys.size(); i++) {
+			String currentKey = keys.get(i);
+			Double currentFactor = map.get(currentKey);
+			Double king = currentFactor * value / paramFactor;
+			String va = setDoubleScale(king, 2);
+			values.add(StrUtil.removePointZeroes(va) + " " + currentKey);
+		}
+		
+		return values;
+	}
 }
