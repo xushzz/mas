@@ -314,10 +314,10 @@ public class MathUtil {
 
 	public static List<String> longDistance(double value, String unit) {
 		Map<String, Double> map = new LinkedHashMap<>();
-		map.put("mile", 1.0);
-		map.put("km", 1.609344);
 		map.put("naut", 0.8689762);
 		map.put("nmi", 0.8689762);
+		map.put("mile", 1.0);
+		map.put("km", 1.609344);
 		
 		List<String> keys = Lists.newArrayList(map.keySet());
 
