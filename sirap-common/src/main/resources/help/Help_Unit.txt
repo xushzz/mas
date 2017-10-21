@@ -1,0 +1,4 @@
+70kg               convert weight units between KG,LB,OZ, 1kg=2.2lb=35.237oz
+50Fa               convert temperature units between Fahrenheit and Celsius
+10cm               concert short distance units between cm, yard, chi, feet, cun, inch
+10km               concert long distance units between km, mile, naut, nmi, aka nautical mile

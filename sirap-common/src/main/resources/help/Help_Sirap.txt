@@ -67,5 +67,3 @@ gbk                set File or HTTP Request charset as GBK, the same goes for UT
 max                display maximal and minimum values for long, integer, short and byte
 min                display maximal and minimum values for long, integer, short and byte
 local text search  local.search.5=id#E:/KDB/statics/life#.txt#+full,+short,+line
-70kg               convert weight units between KG,LB,OZ, 1kg=2.2lb=35.237oz
-50Fa               convert temperature units between Fahrenheit and Celsius

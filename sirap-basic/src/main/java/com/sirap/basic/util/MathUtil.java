@@ -282,4 +282,60 @@ public class MathUtil {
 		
 		return values;
 	}
+	
+	public static List<String> distance(double value, String unit) {
+		Map<String, Double> map = new LinkedHashMap<>();
+		map.put("yard", 1.0);
+		map.put("chi", 2.7432);
+		map.put("feet", 3.0);
+		map.put("cun", 27.432);
+		map.put("inch", 36.0);
+		map.put("cm", 91.44);
+		
+		List<String> keys = Lists.newArrayList(map.keySet());
+
+		String paramKey = unit.toLowerCase();
+		Double paramFactor = map.get(paramKey);
+		if(paramFactor == null) {
+			XXXUtil.alert("Illegal unit {0}, should be one of {1}.", unit, keys);
+		}
+
+		List<String> values = Lists.newArrayList();
+		for(int i = 0; i < keys.size(); i++) {
+			String currentKey = keys.get(i);
+			Double currentFactor = map.get(currentKey);
+			Double king = currentFactor * value / paramFactor;
+			String va = setDoubleScale(king, 8);
+			values.add(StrUtil.removePointZeroes(va) + " " + currentKey);
+		}
+		
+		return values;
+	}
+
+	public static List<String> longDistance(double value, String unit) {
+		Map<String, Double> map = new LinkedHashMap<>();
+		map.put("mile", 1.0);
+		map.put("km", 1.609344);
+		map.put("naut", 0.8689762);
+		map.put("nmi", 0.8689762);
+		
+		List<String> keys = Lists.newArrayList(map.keySet());
+
+		String paramKey = unit.toLowerCase();
+		Double paramFactor = map.get(paramKey);
+		if(paramFactor == null) {
+			XXXUtil.alert("Illegal unit {0}, should be one of {1}.", unit, keys);
+		}
+
+		List<String> values = Lists.newArrayList();
+		for(int i = 0; i < keys.size(); i++) {
+			String currentKey = keys.get(i);
+			Double currentFactor = map.get(currentKey);
+			Double king = currentFactor * value / paramFactor;
+			String va = setDoubleScale(king, 8);
+			values.add(StrUtil.removePointZeroes(va) + " " + currentKey);
+		}
+		
+		return values;
+	}
 }
