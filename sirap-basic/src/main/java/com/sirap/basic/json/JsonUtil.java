@@ -11,6 +11,20 @@ import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 
 public class JsonUtil {
+	
+	public static String createJson(String key, Object value) {
+		XXXUtil.nullCheck(value, "value");
+		String template = "{\"{0}\":{1}}";
+		String actual = null;
+		if(value instanceof String) {
+			actual = "\"" + value.toString() + "\"";
+		} else {
+			actual = value.toString();
+		}
+		
+		return StrUtil.occupy(template, key, actual);
+	}
+	
 	public static String getFirstStringValueByKey(String source, String key) {
 		if(source == null)
 			return null;

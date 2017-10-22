@@ -17,6 +17,7 @@ import com.sirap.common.framework.SimpleKonfig;
 
 public class CommandHelp extends CommandBase {
 
+	private static final String KEY_BASIC = "Basic";
 	private static final String KEY_GUEST = "Guest";
 	private static final String KEY_EMAIL = "Email";
 	private static final String KEY_TASK = "Task";
@@ -51,6 +52,7 @@ public class CommandHelp extends CommandBase {
 				allKeys.add(KEY_EMAIL);
  			}
 			allKeys.add(KEY_TASK);
+			allKeys.add(KEY_BASIC);
 			
 			List<String> results = new ArrayList<>();
 			int maxLen = StrUtil.maxLengthOf(allKeys) + 2;

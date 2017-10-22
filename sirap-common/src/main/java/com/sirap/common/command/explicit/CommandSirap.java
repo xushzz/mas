@@ -20,11 +20,6 @@ import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.domain.MexTextSearchRecord;
 import com.sirap.basic.email.EmailCenter;
-import com.sirap.basic.math.FormulaCalculator;
-import com.sirap.basic.math.MexColorConverter;
-import com.sirap.basic.math.MexNumberConverter;
-import com.sirap.basic.math.SimCal;
-import com.sirap.basic.math.Sudoku;
 import com.sirap.basic.output.PDFParams;
 import com.sirap.basic.search.TextSearcher;
 import com.sirap.basic.tool.C;
@@ -64,7 +59,6 @@ public class CommandSirap extends CommandBase {
 	private static final String KEY_DATETIME_USER = "du";
 	private static final String KEY_TIMEZONE_DISPLAY = "z\\.(.{1,20})";
 	private static final String KEY_USER_TIMEZONE_SET = "u([+-](1[0-2]|[0-9]))";
-	private static final String KEY_CALCULATE = "ca";
 	private static final String KEY_USER_SETTING = "u";
 	private static final String KEY_CONFIGURATION = "c";
 	private static final String KEY_USER_CONFIGURATION = "/";
@@ -75,14 +69,9 @@ public class CommandSirap extends CommandBase {
 	private static final String KEY_GENERATEDFILE_AUTOOPEN_ONOFF_SWITCH = "ox";
 	private static final String KEY_EMAIL_ENABLED_SWITCH = "mx";
 	private static final String KEY_TIMESTAMP_ENABLED_SWITCH = "tx";
-	private static final String KEY_PERMUTATION = "p=";
 	private static final String KEY_HOST = "host";
 	private static final String KEY_MAC = "mac";
-	private static final String LENGTH_OF = "l\\.";
-	private static final String KEY_TO_DATE = "td";
-	private static final String KEY_TO_LONG = "tl";
 	private static final String KEY_ASSIGN_CHARSET = "gbk,utf8,utf-8,gb2312";
-	private static final String KEY_MAXMIN = "max,min";
 
 	{
 		helpMeanings.put("image.formats", Konstants.IMG_FORMATS);
@@ -229,7 +218,7 @@ public class CommandSirap extends CommandBase {
     		return true;
 		}
 
-		if(isIn(KEY_DATETIME_USER)) {
+		if(is(KEY_DATETIME_USER)) {
 			Date dateUser = DateUtil.getTZRelatedDate(g().getTimeZoneUser(), new Date());
 			export(DateUtil.displayDateWithGMT(dateUser, DateUtil.HOUR_Min_Sec_AM_WEEK_DATE, g().getLocale(), g().getTimeZoneUser()));
     		
@@ -400,112 +389,12 @@ public class CommandSirap extends CommandBase {
 			resetTimeZone(Integer.parseInt(singleParam));
 			return true;
 		}
-
-		String regexCalculate = "([\\s_\\d\\.+\\-x\\*/\\(\\)]{2,})";
-		singleParam = parseParam(KEY_CALCULATE + "\\s+" + regexCalculate);
-		if(singleParam != null) {
-			int scale = g().getUserNumberValueOf("calculator.scale", 2);
-			String math = SimCal.evaluate(singleParam, scale);
-			if(math != null) {
-				List<String> results = new ArrayList<String>();
-				results.add(singleParam + " = " + math);
-				if(math.length() > 9) {
-					results.add("Result contains " + math.length() + " chars.");
-				}
-				export(results);
-				return true;
-			}
-		}
-
-		try {
-			singleParam = parseParam(regexCalculate);
-			int scale = g().getUserNumberValueOf("calculator.scale", 2);
-			String math = SimCal.evaluate(singleParam, scale);
-			if(math != null) {
-				List<String> results = new ArrayList<String>();
-				results.add(singleParam + "=" + math);
-				export(results);
-				return true;
-			}
-		} catch (Exception ex) {
-			//
-		}
-		
-		String math = FormulaCalculator.evaluate(command);
-		if(math != null) {
-			List<String> results = new ArrayList<String>();
-			results.add("x=" + math);
-			export(results);
-			return true;
-		}
-		
-		List<String[]> solutions = Sudoku.evaluate(command);
-		if(!EmptyUtil.isNullOrEmpty(solutions)) {
-			boolean isMultiple = solutions.size() > 1;
-			List<String> results = new ArrayList<String>();
-			for(int i = 0; i < solutions.size(); i++) {
-				if(isMultiple) {
-					results.add("Solution " + (i+1) + ">");
-				}
-				String[] matrix = solutions.get(i);
-				
-				for(int m = 0; m < matrix.length; m++) {
-					results.add(matrix[m].replace("", " "));
-				}
-			}
-			export(results);
-			
-			return true;
-		}
-		
-		params = parseParams("(h|hex|d|dec|o|oct|b|bin|)=([a-f|\\d|,|\\s]+)");
-		if(params != null) {
-			MexNumberConverter salim = new MexNumberConverter(params[0], params[1]);
-			List<String> results = salim.getResult();
-			export(results);
-			return true;
-		}
-		
-		singleParam = parseParam("#([a-f|\\d|,|\\s]+)");
-		if(singleParam != null) {
-			MexColorConverter salim = new MexColorConverter(singleParam);
-			List<String> results = salim.getResult();
-			if(!EmptyUtil.isNullOrEmpty(results)) {
-				export(results);
-				return true;
-			}
-		}
-		
-		params = parseParams(KEY_PERMUTATION + "(.+?)\\s*,\\s*(\\d+)");
-		if(params != null) {
-			String p0 = params[0].trim();
-			String p1 = params[1].trim();
-			Integer targetSize = MathUtil.toInteger(p1);
-			if(targetSize != null) {
-				Integer numberOfSamples = MathUtil.toInteger(p0);
-				if(numberOfSamples != null) {
-					String result = MathUtil.permutationWithLimit(numberOfSamples, targetSize, 99);
-					if(result != null) {
-						C.pl2("Permutation(" + numberOfSamples + "," + targetSize + ")=" + result);
-					}
-				}
-				
-				String source = p0;
-				List<String> records = MathUtil.permutation(source, targetSize);
-				if(!EmptyUtil.isNullOrEmpty(records)) {
-					records.add(C.getTotal(records.size()));
-					setIsPrintTotal(false);
-					export(records);
-				}
-				
-				return true;
-			}
-		}
 		
 		String userConfig = KEY_USER_CONFIGURATION;
 		if(PanaceaBox.isMac()) {
 			userConfig = ";" + KEY_USER_CONFIGURATION;
 		}
+		
 		params = parseParams(userConfig + "(|(.*?))");
 		if(params != null) {
 			String criteria = params[1];
@@ -521,39 +410,6 @@ public class CommandSirap extends CommandBase {
 		if(is(KEY_CONFIGURATION + KEY_REFRESH)) {
 			g().refresh();
 			C.pl2("Configuration refreshed.");
-			
-			return true;
-		}
-		
-		String regexDateStr = "(|\\d{4})\\.(|\\d{1,2})\\.(|\\d{1,2})";
-		params = parseParams(regexDateStr + "\\s*-\\s*" + regexDateStr);
-		if(params != null) {
-			Date d1 = DateUtil.construct(params[0], params[1], params[2]);
-			Date d2 = DateUtil.construct(params[3], params[4], params[5]);
-			int dayDiff = DateUtil.dayDiff(d1, d2);
-			String d1Str = DateUtil.displayDateCompact(d1);
-			String d2Str = DateUtil.displayDateCompact(d2);
-			export(d1Str + " - " + d2Str + " = " + dayDiff);
-			
-			return true;
-		}
-		
-		params = parseParams(regexDateStr + "\\s*([+-])\\s*(\\d{1,5})");
-		if(params != null) {
-			Date d1 = DateUtil.construct(params[0], params[1], params[2]);
-			String operator = params[3];
-			int dayDiffAbs = MathUtil.toInteger(params[4]);
-			int dayDiff = dayDiffAbs;
-			if(StrUtil.equals(operator, "-")) {
-				dayDiff *= -1;
-			}
-			
-			Date d2 = DateUtil.add(d1, Calendar.DAY_OF_YEAR, dayDiff);
-
-			String d1Str = DateUtil.displayDateCompact(d1);
-			String d2Str = DateUtil.displayDateCompact(d2);
-			export(d1Str + " " + operator + " " + dayDiffAbs + " = " + d2Str);
-			
 			
 			return true;
 		}
@@ -590,63 +446,10 @@ public class CommandSirap extends CommandBase {
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_HOST + " (.*?)");
+		singleParam = parseParam(KEY_HOST + "\\s+(.*?)");
 		if(singleParam != null) {
 			String result = NetworkUtil.getHostByName(singleParam);
 			export(result);
-			
-			return true;
-		}
-		
-		singleParam = parseParam(KEY_TO_DATE + "\\.(-?\\d{0,14})");
-		if(singleParam != null) {
-			Long milliSecondsSince1970 = Long.parseLong(singleParam);
-			
-			List<String> items = new ArrayList<>();
-			items.add(DateUtil.convertLongToDateStr(milliSecondsSince1970, DateUtil.HOUR_Min_Sec_Milli_AM_WEEK_DATE));
-			items.add(DateUtil.convertLongToDateStr(milliSecondsSince1970, DateUtil.DATETIME_ALL_TIGHT));
-			
-			export(items);
-			
-			return true;
-		}
-		
-		if(is(KEY_TO_LONG)) {
-			long value = DateUtil.convertDateStrToLong(null);
-			export(value);
-			
-			return true;
-		}
-		
-		singleParam = parseParam(KEY_TO_LONG + "\\.(\\d{8,17})");
-		if(singleParam != null) {
-			long value = DateUtil.convertDateStrToLong(singleParam);
-			export(value);
-			
-			return true;
-		}
-		
-		singleParam = parseParam(LENGTH_OF + "(.+?)");
-		if(singleParam != null) {
-			int len = singleParam.length();
-			String value = "len = " + len;
-			export(value);
-			
-			return true;
-		}
-		
-		if(isIn(KEY_MAXMIN)) {
-			List<String> items = new ArrayList<>();
-			items.add(maxmin("Max of Long", Long.MAX_VALUE));
-			items.add(maxmin("Min of Long", Long.MIN_VALUE));
-			items.add(maxmin("Max of Integer", Integer.MAX_VALUE));
-			items.add(maxmin("Min of Integer", Integer.MIN_VALUE));
-			items.add(maxmin("Max of Short", Short.MAX_VALUE));
-			items.add(maxmin("Min of Short", Short.MIN_VALUE));
-			items.add(maxmin("Max of Byte", Byte.MAX_VALUE));
-			items.add(maxmin("Min of Byte", Byte.MIN_VALUE));
-			
-			export(items);
 			
 			return true;
 		}
@@ -916,18 +719,5 @@ public class CommandSirap extends CommandBase {
 		}
 		
 		return filePath;
-	}
-	
-	private String maxmin(String displayName, long value) {
-		String str = String.valueOf(value);
-		int len = str.length();
-		if(value < 0) {
-			len--;
-		}
-		
-		String temp = "{0} is {1}, {2} chars.";
-		String result = StrUtil.occupy(temp, displayName, str, len);
-		
-		return result;
 	}
 }

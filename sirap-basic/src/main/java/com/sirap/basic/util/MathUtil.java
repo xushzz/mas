@@ -305,7 +305,7 @@ public class MathUtil {
 			String currentKey = keys.get(i);
 			Double currentFactor = map.get(currentKey);
 			Double king = currentFactor * value / paramFactor;
-			String va = setDoubleScale(king, 8);
+			String va = setDoubleScale(king, 6);
 			values.add(StrUtil.removePointZeroes(va) + " " + currentKey);
 		}
 		
@@ -314,7 +314,6 @@ public class MathUtil {
 
 	public static List<String> longDistance(double value, String unit) {
 		Map<String, Double> map = new LinkedHashMap<>();
-		map.put("naut", 0.8689762);
 		map.put("nmi", 0.8689762);
 		map.put("mile", 1.0);
 		map.put("km", 1.609344);
@@ -332,7 +331,7 @@ public class MathUtil {
 			String currentKey = keys.get(i);
 			Double currentFactor = map.get(currentKey);
 			Double king = currentFactor * value / paramFactor;
-			String va = setDoubleScale(king, 8);
+			String va = setDoubleScale(king, 6);
 			values.add(StrUtil.removePointZeroes(va) + " " + currentKey);
 		}
 		

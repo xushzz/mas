@@ -34,21 +34,6 @@ sx                 sound on/off switch when capturing screen
 tx                 export with or without time stamp switch, options:$+ts,-ts
 .                  list storage with dot, $+size,+date,+bydate,+bysize,-byname,+bytype,+kids
 ver                version of this product, plus copyright and author information
-1+2.3x(4.5-_6)/8   yield 4.01875, basic calculation like add, subtract, multiply and divide
-ca 1+2.3x(_6)/8    explicitly evaluate given expression
-p=20,3             permutation, like how many ways could you choose from three out of 20? 6840!
-p=ABCD,3           permutation with given samples, display all the possibilities most of the time
-#F1F2F4[,00FFCC]   RGB values expressed in three two-bit-hexes, this help you get equivalent three decimals
-=21[,23][..]       display hex, decimal, octal and binary values for decimals '21' and '23' and others
-h=FFF[,21][..]     display hex, decimal, octal and binary values for hex numbers 'FFF' and '21' and others, 
-h=FFF[,21][..]     the type of the numbers can be 'd', 'o' and 'b', aka 'hex', 'dec', 'oct' and 'bin'.
-h=FFF[,21][..]     The numbers can be split by space or ',', this rule also applies to RGB cases
-sudoku             the solution for the puzzle can be found if exists, in input the zero stands for blank
-sudoku             000010000,000007645,906000700,400000302,870000000,000000060,000020590,230600000,089403000
-2012.12.23-2010.12.2 calculate day difference
-..23-.1.31         calculate day diff, the value of unspecified field is default to be that of current day  
-..23+139           calculate next date with positive day diff, max 99999
-..23-139           calculate next date with negative day diff, max -99999
 a Vincent          search 'Vincent' via AOL
 b Vincent          search 'Vincent' via Baidu
 g Vincent          search 'Vincent' via Google
@@ -58,12 +43,6 @@ www.google.com     open the web page with configured explorer with http://www.go
 host               display local host name IP address, and macAddress 
 host name          display target host name and IP address if exists
 mac                display all currently active mac addresses 
-td.14412345678     parse the string to long as milliseconds, then convert it to date
-tl.20160915        convert the date to long, the date could be from yyyyMMdd to yyyyMMddhhmmssSSS
-tl                 not team leader, but convert current date to long in milliseconds
-l.abcdefgh         display the length of specified string
 p fire&water       conduct local text search with command 'p' defined by configuration, such as p#D:/SF#.txt
 gbk                set File or HTTP Request charset as GBK, the same goes for UTF8,UTF-8,GB2312
-max                display maximal and minimum values for long, integer, short and byte
-min                display maximal and minimum values for long, integer, short and byte
 local text search  local.search.5=id#E:/KDB/statics/life#.txt#+full,+short,+line
