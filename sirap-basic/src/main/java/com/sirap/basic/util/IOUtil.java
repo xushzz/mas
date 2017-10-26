@@ -43,7 +43,7 @@ import com.sirap.basic.thirdparty.pdf.PdfHelper;
 import com.sirap.basic.thread.Master;
 import com.sirap.basic.thread.MasterGeneralItemOriented;
 import com.sirap.basic.thread.business.InternetFileFetcher;
-import com.sirap.basic.thread.business.NormalFileMover;
+import com.sirap.basic.thread.business.NormalFileCopier;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
 import com.sirap.basic.tool.MexedAudioPlayer;
@@ -583,10 +583,10 @@ public class IOUtil {
 	 * @param targetFolder
 	 * @return
 	 */
-	public static int[] copyFiles(List<File> sourceFiles, String targetFolder)  {
+	public static int[] copyFilesToFolder(List<File> sourceFiles, String targetFolder)  {
 		int[] results = new int[2];
 		for(File file:sourceFiles) {
-			boolean flag = copyFile(file, targetFolder);
+			boolean flag = copyFileToFolder(file, targetFolder);
 			if(flag) {
 				results[0]++;
 			} else {
@@ -597,8 +597,8 @@ public class IOUtil {
 		return results;
 	}
 	
-	public static boolean copyFile(String sourceFilePath, String targetFolder)  {
-		return copyFile(new File(sourceFilePath), targetFolder);
+	public static boolean copyFileToFolder(String sourceFilePath, String targetFolder)  {
+		return copyFileToFolder(new File(sourceFilePath), targetFolder);
 	}
 	
 	public static boolean isInTheFolder(File file, String folder) {
@@ -607,7 +607,7 @@ public class IOUtil {
 		return flag;
 	}
 	
-	public static boolean copyFile(File sourceFile, String targetFolder)  {
+	public static boolean copyFileToFolder(File sourceFile, String targetFolder)  {
     	if(sourceFile == null ||targetFolder == null) {
     		return false;
     	}
@@ -621,7 +621,7 @@ public class IOUtil {
         try {
         	String fileName = sourceFile.getName();
         	FileUtil.makeDirectoriesIfNonExist(targetFolder);
-        	String targetPath = targetFolder + File.separator + fileName; 
+        	String targetPath = StrUtil.useSeparator(targetFolder, fileName); 
             inBuff = new BufferedInputStream(new FileInputStream(sourceFile));
             outBuff = new BufferedOutputStream(new FileOutputStream(targetPath));
 
@@ -649,14 +649,43 @@ public class IOUtil {
         return false;
     }
 	
+	public static boolean copyFile(String sourcePath, String targetPath)  {
+    	BufferedInputStream inBuff = null;
+        BufferedOutputStream outBuff = null;
+        try {
+            inBuff = new BufferedInputStream(new FileInputStream(sourcePath));
+            outBuff = new BufferedOutputStream(new FileOutputStream(targetPath));
 
+            byte[] b = new byte[Konstants.FILE_SIZE_STEP * 5];
+            int len;
+            while ((len = inBuff.read(b)) != -1) {
+                outBuff.write(b, 0, len);
+            }
+            outBuff.flush();
+            
+            return true;
+        } catch (Exception ex) {
+        	ex.printStackTrace();        	
+        } finally {
+        	try {
+                if (inBuff != null)
+                    inBuff.close();
+                if (outBuff != null)
+                    outBuff.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+        }
+        
+        return false;
+    }
 	
 	public static int[] copyMexedFiles(List<MexFile> sourcefiles, String targetFolder) {
 		return copyMexedFiles(sourcefiles, targetFolder, -1);
 	}
 	
 	public static int[] copyMexedFiles(List<MexFile> sourcefiles, String targetFolder, final int threads) {
-		Master<MexFile> george = new Master<MexFile>(sourcefiles, new NormalFileMover(targetFolder)) {
+		Master<MexFile> george = new Master<MexFile>(sourcefiles, new NormalFileCopier(targetFolder)) {
 			@Override
 			protected int countOfThread() {
 				int temp = threads <= 0 ? super.countOfThread() : threads;
