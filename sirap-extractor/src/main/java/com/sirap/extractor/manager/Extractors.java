@@ -1,7 +1,9 @@
 package com.sirap.extractor.manager;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 
 import com.google.common.collect.Maps;
@@ -9,9 +11,55 @@ import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.extractor.Extractor;
+import com.sirap.extractor.domain.SportsMatchItem;
 
 public class Extractors {
 
+	public static List<SportsMatchItem> fetchUefaChampionsSchedule() {
+		Extractor<SportsMatchItem> neymar = new Extractor<SportsMatchItem>() {
+
+			@Override
+			public String getUrl() {
+				printFetching = true;
+				String url = "https://soccer.hupu.com/uefa/schedule.php";
+				return url;
+			}
+			
+			@Override
+			protected void parseContent() {
+				String regex = "<tr align=\"center\">\\s*";
+				regex += "<td>([^<>]+)</td>\\s*";
+				regex += "<td>([^<>]+)</td>\\s*";
+				regex += "<td>([^<>]+)</td>\\s*";
+				regex += "<td>([^<>]+)</td>\\s*";
+				regex += "<td><[^<>]+>([^<>]+)</a></td>\\s*";
+				regex += "<td><[^<>]+>([^<>]+)</a></td>\\s*";
+				regex += "<td><[^<>]+>([^<>]+)</a></td>\\s*";
+				Matcher ma = createMatcher(regex, source);
+				Set<String> numbers = new HashSet<>();
+				while(ma.find()) {
+					String gameNumber = ma.group(1);
+					if(numbers.contains(gameNumber)) {
+						continue;
+					} else {
+						numbers.add(gameNumber);
+					}
+					SportsMatchItem item = new SportsMatchItem();
+					item.setOrder(gameNumber);
+					String time = ma.group(3).replaceAll(":\\d+$", "").trim();
+					item.setDatetime(ma.group(2).trim() + " " + time);
+					item.setGroup(ma.group(4).trim());
+					item.setHomeTeam(getPrettyText(ma.group(5)));
+					item.setStatus(getPrettyText(ma.group(6)).replace(" ", ""));
+					item.setAwayTeam(getPrettyText(ma.group(7)));
+					mexItems.add(item);
+				}
+			}
+		};
+		
+		return neymar.process().getMexItems();
+	}
+	
 	public static List<MexObject> fetchAllNobelPrizes() {
 		Extractor<MexObject> neymar = new Extractor<MexObject>() {
 

@@ -11,7 +11,6 @@ import java.util.regex.Pattern;
 
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.exception.MexException;
-import com.sirap.basic.tool.D;
 
 public class StrUtil {
 

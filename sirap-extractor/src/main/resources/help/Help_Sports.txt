@@ -1,0 +1,5 @@
+uefa               display UEFA champions league next 16 games from today
+uefa criteria      display UEFA champions league games matching criteria
+uefa..             display UEFA champions league all games
+uefa..             #8   2017-09-13 02:45  D TA vs TB, courtesy of https://soccer.hupu.com 
+ver=EXTRACTOR-SPORTS1.0.1-WUQILONG  10/27/2017, V
