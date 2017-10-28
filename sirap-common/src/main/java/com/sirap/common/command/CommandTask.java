@@ -71,9 +71,9 @@ public class CommandTask extends CommandBase {
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_ALARM_CANCEL);
-		if(singleParam != null) {
-			List<String> orderIds = singleParam.isEmpty() ? null : StrUtil.split(singleParam);			
+		solo = parseSoloParam(KEY_ALARM_CANCEL);
+		if(solo != null) {
+			List<String> orderIds = solo.isEmpty() ? null : StrUtil.split(solo);			
 			int count = AlarmManager.g().cancelAlarms(true, orderIds);
 			if(count > 0) {
 				C.pl2(alarmNowInfo());
@@ -86,14 +86,14 @@ public class CommandTask extends CommandBase {
 			return true;
 		}
 		
-		singleParam = StrUtil.parseParam(KEY_TASK + "\\s(.*?)", input);
-		if(singleParam != null) {
-			File file = parseFile(singleParam);
+		solo = StrUtil.parseParam(KEY_TASK + "\\s(.*?)", input);
+		if(solo != null) {
+			File file = parseFile(solo);
 			if(file != null && FileOpener.isTextFile(file.getAbsolutePath())) {
 				List<String> tasks = FileOpener.readTextContent(file.getAbsolutePath());
 				executeActions(tasks);
 			} else {
-				List<String> actions = StrUtil.split(singleParam);
+				List<String> actions = StrUtil.split(solo);
 				D.pl(actions);
 				executeActions(actions);
 			}

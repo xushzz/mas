@@ -25,9 +25,9 @@ public class CommandFancy extends CommandBase {
 
 	public boolean handle() {
 		String types = StrUtil.connect(new ArrayList<String>(ExtractorFancy.TYPE_METHOD.keySet()), "|");
-		singleParam = parseParam("lady(" + types+ ")");
-		if(singleParam != null) {
-			String type = singleParam.toLowerCase();
+		solo = parseSoloParam("lady(" + types+ ")");
+		if(solo != null) {
+			String type = solo.toLowerCase();
 			String method = ExtractorFancy.TYPE_METHOD.get(type);
 			List<String> links = ExtractorUtil.photos(method, ExtractorFancy.class);
 
@@ -36,16 +36,16 @@ public class CommandFancy extends CommandBase {
 		}
 		
 		//fetch lass image links from library path that indicates one or more albums
-		singleParam = parseParam(KEY_MEITU + " (.+)");
-		if(singleParam != null && StrUtil.isRegexMatched("[a-z\\d/]+", singleParam)) {
+		solo = parseSoloParam(KEY_MEITU + " (.+)");
+		if(solo != null && StrUtil.isRegexMatched("[a-z\\d/]+", solo)) {
 			List<MexObject> items = new ArrayList<>();
-			MeituImageLinksExtractor justin = new MeituImageLinksExtractor(singleParam);
+			MeituImageLinksExtractor justin = new MeituImageLinksExtractor(solo);
 			justin.process();
 			items.addAll(justin.getMexItems());
 			
 			boolean showAll = OptionUtil.readBooleanPRI(options, "all", false);
 			if(showAll) {
-				List<MexObject> morePages = MeituManager.g().explode(singleParam, justin.getCountOfAlbum());
+				List<MexObject> morePages = MeituManager.g().explode(solo, justin.getCountOfAlbum());
 				items.addAll(MeituManager.g().getImageLinks(morePages));
 			} else {
 				int sample = g().getUserNumberValueOf("mei.some", 7);
@@ -73,9 +73,9 @@ public class CommandFancy extends CommandBase {
 		}
 		
 		//fetch lass intros from lass path which locates in txt file
-		singleParam = parseParam(KEY_MEITU + ".intro (.+?)");
-		if(singleParam != null) {
-			File file = parseFile(singleParam);
+		solo = parseSoloParam(KEY_MEITU + ".intro (.+?)");
+		if(solo != null) {
+			File file = parseFile(solo);
 			if(file != null) {
 				String filePath = file.getAbsolutePath();
 				if(FileOpener.isTextFile(filePath)) {

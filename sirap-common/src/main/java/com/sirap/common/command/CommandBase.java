@@ -46,7 +46,7 @@ public abstract class CommandBase {
 	public Target target;
 	protected boolean collectInput = true;
 	
-	protected String singleParam;
+	protected String solo;
 	protected String[] params;
 	protected String regex;
 	
@@ -101,16 +101,16 @@ public abstract class CommandBase {
 					stv.append(XXXUtil.getStackTrace(ex));
 				}
 			} else {
-				stv.append(ex.getMessage());
+				stv.append(ex);
 			}
 			export(stv);
 			
 		} catch (Exception ex) {
 			StringBuilder stv = new StringBuilder();
-			stv.append(ex.getMessage());
 			if(isDebug()) {
-				stv.append(Konstants.NEWLINE);
 				stv.append(XXXUtil.getStackTrace(ex));
+			} else {
+				stv.append(ex);
 			}
 			export(stv);
 		}
@@ -231,7 +231,7 @@ public abstract class CommandBase {
 		return key.equalsIgnoreCase(command);
 	}
 
-	public String parseParam(String regex) {
+	public String parseSoloParam(String regex) {
 		return StrUtil.parseParam(regex, command);
 	}
 
@@ -240,7 +240,7 @@ public abstract class CommandBase {
 	}
 	
 	protected boolean isSingleParamNotnull() {
-		return singleParam != null;
+		return solo != null;
 	}
 	
 	protected boolean isParamsNotnull() {

@@ -1,5 +1,6 @@
 package com.sirap.extractor.manager;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,165 @@ import com.sirap.common.extractor.Extractor;
 import com.sirap.extractor.domain.SportsMatchItem;
 
 public class Extractors {
+	
+	public static List<MexObject> fetchHupuFootballChinaTable() {
+		Extractor<MexObject> neymar = new Extractor<MexObject>() {
+
+			@Override
+			public String getUrl() {
+				printFetching = true;
+				String url = "https://soccer.hupu.com/table/csl.html";
+				return url;
+			}
+			
+			private String[] columnNames(int len) {
+				String regexTH = "";
+				for(int k = 0; k < len; k++) {
+					regexTH += "<th[^<>]*>(.+?)</th>\\s*";
+				}
+				String regexTR ="<tr>\\s*" + regexTH;
+				String[] items = new String[len];
+				Matcher ma = createMatcher(regexTR, source);
+				if(ma.find()) {
+					for(int k = 0; k < len; k++) {
+						items[k] = ma.group(k + 1);
+					}
+				}
+				
+				return items;
+			}
+
+			@Override
+			protected void parseContent() {
+				int[] lens = {4, 12, 4, 2, 2, 2, 4, 4, 6, 4};
+				String template = "";
+				{
+					for(int i = 0; i < lens.length; i++) {
+						template += "{" + i + "}    ";
+					}
+					template = template.trim();
+				}
+				String[] header = columnNames(lens.length);
+				{
+					int i = 0, k = 0;
+					String order = StrUtil.extendByAscii(header[i++], lens[k++]);
+					String team = StrUtil.extendByAscii(header[i++], lens[k++]);
+					String games = StrUtil.extendLeftwardByAscii(header[i++], lens[k++]);
+					String win = StrUtil.extendLeftwardByAscii(header[i++], lens[k++]);
+					String draw = StrUtil.extendLeftwardByAscii(header[i++], lens[k++]);
+					String lose = StrUtil.extendLeftwardByAscii(header[i++], lens[k++]);
+					String goals = StrUtil.extendLeftwardByAscii(header[i++], lens[k++]);
+					String goals2 = StrUtil.extendLeftwardByAscii(header[i++], lens[k++]);
+					String net = StrUtil.extendLeftwardByAscii(header[i++], lens[k++]);
+					String points = StrUtil.extendLeftwardByAscii(header[i++], lens[k++]);
+					String temp = StrUtil.occupy(template, order, team, games, win, draw, lose, goals, goals2, net, points);
+					mexItems.add(new MexObject(temp));
+				}
+
+				String regexTD = "";
+				for(int i = 0; i < lens.length; i++) {
+					regexTD += "<td>([^<>]+)</td>\\s*";
+				}
+				String regex = "<tr[^<>]*>\\s*" + regexTD + "</tr>";
+				Matcher ma = createMatcher(regex, source);
+				
+				while(ma.find()) {
+					int i = 1, k = 0;
+					String order = StrUtil.extend("#" + getPrettyText(ma.group(i++)), lens[k++]);
+					String team = StrUtil.extendByAscii(getPrettyText(ma.group(i++)), lens[k++]);
+					String games = StrUtil.extendLeftward(ma.group(i++), lens[k++]);
+					String win = StrUtil.extendLeftward(ma.group(i++), lens[k++]);
+					String draw = StrUtil.extendLeftward(ma.group(i++), lens[k++]);
+					String lose = StrUtil.extendLeftward(ma.group(i++), lens[k++]);
+					String goals = StrUtil.extendLeftward(ma.group(i++), lens[k++]);
+					String goals2 = StrUtil.extendLeftward(ma.group(i++), lens[k++]);
+					String net = StrUtil.extendLeftward(ma.group(i++), lens[k++]);
+					String points = StrUtil.extendLeftward(ma.group(i++), lens[k++]);
+					String temp = StrUtil.occupy(template, order, team, games, win, draw, lose, goals, goals2, net, points);
+					mexItems.add(new MexObject(temp));
+				}
+			}
+		};
+		
+		return neymar.process().getMexItems();
+	}
+	
+	public static List<MexObject> fetchUefaChampionsTable() {
+		Extractor<MexObject> neymar = new Extractor<MexObject>() {
+
+			@Override
+			public String getUrl() {
+				printFetching = true;
+				String url = "https://soccer.hupu.com/uefa/table.php";
+				return url;
+			}
+			
+			private Object[] columnNames() {
+				int len = 10;
+				String regexTH = "";
+				for(int k = 0; k < len; k++) {
+					regexTH += "<th[^<>]*>([^<>]+)</th>\\s*";
+				}
+				String regexTR ="<tr[^<>]+>\\s*" + regexTH;
+				String[] items = new String[len];
+				Matcher ma = createMatcher(regexTR, source);
+				if(ma.find()) {
+					for(int k = 0; k < len; k++) {
+						items[k] = ma.group(k + 1);
+					}
+				}
+				
+				return items;
+			}
+
+			@Override
+			protected void parseContent() {
+				String template = "{0}  {1}  {2}   {3}   {4}   {5}   {6}   {7}   {8}   {9}";
+				String temp = StrUtil.occupy(template, columnNames());
+				mexItems.add(new MexObject(temp));
+
+				String regexTR = "<tr[^<>]*>";
+				regexTR += "<td>([^<>]+)</td>\\s*";
+				regexTR += "<td><a[^<>]+>([^<>]+)</a></td>\\s*";
+				regexTR += "<td>([^<>]+)</td>\\s*";
+				regexTR += "<td>([^<>]+)</td>\\s*";
+				regexTR += "<td>([^<>]+)</td>\\s*";
+				regexTR += "<td>([^<>]+)</td>\\s*";
+				regexTR += "<td>([^<>]+)</td>\\s*";
+				regexTR += "<td>([^<>]+)</td>\\s*";
+				regexTR += "<td>([^<>]+)</td>\\s*";
+				regexTR += "<td>([^<>]+)</td>\\s*";
+				regexTR += "</tr>";
+				Matcher ma = createMatcher(regexTR, source);
+				
+				int k = 0;
+				char lastGroup = 'A';
+				while(ma.find()) {
+					int groupIndex = k / 4;
+					k++;
+					char car = (char)((int)'A' + groupIndex);
+					if(car != lastGroup) {
+						mexItems.add(new MexObject(""));
+						lastGroup = car;
+					}
+					String order = car + ma.group(1);
+					String team = StrUtil.extendByAscii(getPrettyText(ma.group(2)), 16);
+					String games = ma.group(3);
+					String win = ma.group(4);
+					String draw = ma.group(5);
+					String lose = ma.group(6);
+					String goals = StrUtil.extendLeftward(ma.group(7), 3);
+					String goals2 = StrUtil.extendLeftward(ma.group(8), 3);
+					String net = StrUtil.extendLeftward(ma.group(9), 3);
+					String points = StrUtil.extendLeftward(ma.group(10), 3);
+					temp = StrUtil.occupy(template, order, team, games, win, draw, lose, goals, goals2, net, points);
+					mexItems.add(new MexObject(temp));
+				}
+			}
+		};
+		
+		return neymar.process().getMexItems();
+	}
 
 	public static List<SportsMatchItem> fetchUefaChampionsSchedule() {
 		Extractor<SportsMatchItem> neymar = new Extractor<SportsMatchItem>() {
@@ -24,7 +184,7 @@ public class Extractors {
 				String url = "https://soccer.hupu.com/uefa/schedule.php";
 				return url;
 			}
-			
+
 			@Override
 			protected void parseContent() {
 				String regex = "<tr align=\"center\">\\s*";
@@ -53,6 +213,198 @@ public class Extractors {
 					item.setStatus(getPrettyText(ma.group(6)).replace(" ", ""));
 					item.setAwayTeam(getPrettyText(ma.group(7)));
 					mexItems.add(item);
+				}
+			}
+		};
+		
+		return neymar.process().getMexItems();
+	}
+	
+	public static List<MexObject> fetchHupuFootballScorers(int leagueId) {
+		Extractor<MexObject> neymar = new Extractor<MexObject>() {
+
+			@Override
+			public String getUrl() {
+				printFetching = true;
+				String url = "https://soccer.hupu.com/scorers/{0}";
+				return StrUtil.occupy(url, leagueId);
+			}
+			
+			private Object[] columnNames(int len) {
+				String regexTH = "";
+				for(int k = 0; k < len; k++) {
+					regexTH += "<th>(.+?)</th>\\s*";
+				}
+				String regexTR ="<tr[^<>]*>\\s*" + regexTH + "</tr>";
+				String[] items = new String[len];
+				Matcher ma = createMatcher(regexTR, source);
+				if(ma.find()) {
+					for(int k = 0; k < len; k++) {
+						items[k] = ma.group(k + 1);
+					}
+				}
+				
+				return items;
+			}
+			
+			private void conciseScorers() {
+				int len = 4;
+				String template = "{0}  {1}  {2}   {3}";
+				String temp = StrUtil.occupy(template, columnNames(len));
+				mexItems.add(new MexObject(temp));
+
+				String regexTD = "";
+				for(int k = 0; k < len; k++) {
+					regexTD += "<td>(.+?)</td>\\s*";
+				}
+				String regexTR ="<tr[^<>]*>\\s*" + regexTD + "</tr>";
+				Matcher ma = createMatcher(regexTR, source);
+				
+				while(ma.find()) {
+					int i = 1;
+					String order = "#" + StrUtil.extend(getPrettyText(ma.group(i++)), 3);
+					String playerCN = StrUtil.extendByAscii(getPrettyText(ma.group(i++)), 22);
+					String team = StrUtil.extendByAscii(getPrettyText(ma.group(i++)), 16);
+					String goals = StrUtil.extend(getPrettyText(ma.group(i++)), 6);
+					temp = StrUtil.occupy(template, order, playerCN, team, goals);
+					mexItems.add(new MexObject(temp));
+				}
+			}
+
+			@Override
+			protected void parseContent() {
+				if(leagueId == 128) {
+					conciseScorers();
+					return;
+				}
+				int len = 7;
+				String template = "{0}  {1}  {2}   {3}   {4}   {5}   {6}";
+				String temp = StrUtil.occupy(template, columnNames(len));
+				mexItems.add(new MexObject(temp));
+
+				String regexTD = "";
+				for(int k = 0; k < len; k++) {
+					regexTD += "<td>(.+?)</td>\\s*";
+				}
+				String regexTR ="<tr[^<>]*>\\s*" + regexTD + "</tr>";
+				Matcher ma = createMatcher(regexTR, source);
+				
+				while(ma.find()) {
+					int i = 1;
+					String order = "#" + StrUtil.extend(getPrettyText(ma.group(i++)), 3);
+					String playerCN = StrUtil.extendByAscii(getPrettyText(ma.group(i++)), 22);
+					String player = StrUtil.extend(getPrettyText(ma.group(i++)), 26);
+					String team = StrUtil.extendByAscii(getPrettyText(ma.group(i++)), 16);
+					String position = StrUtil.extendByAscii(getPrettyText(ma.group(i++)), 4);
+					String goals = StrUtil.extendLeftward(getPrettyText(ma.group(i++)), 3);
+					String penalty = StrUtil.extend(getPrettyText(ma.group(i++)), 3);
+					temp = StrUtil.occupy(template, order, playerCN, player, team, position, goals, penalty);
+					mexItems.add(new MexObject(temp));
+				}
+			}
+		};
+		
+		return neymar.process().getMexItems();
+	}
+
+	public static List<SportsMatchItem> fetchHupuFootballSchedule(int leagueId) {
+		Extractor<SportsMatchItem> neymar = new Extractor<SportsMatchItem>() {
+
+			@Override
+			public String getUrl() {
+				printFetching = true;
+				String url = "https://soccer.hupu.com/schedule/schedule.server.php";
+				return StrUtil.occupy(url, leagueId);
+			}
+
+			@Override
+			protected void parseContent() {
+				String regex = "<tr[^<>]*>\\s*";
+				regex += "<td class=\"hui\" title=\"([^\"]+)\">[^<>]+\\s([^<>]+)</td>\\s*";
+				regex += "<td[^<>]*>(.+?)</td>\\s*";
+				regex += "<td[^<>]*>(.+?)</td>\\s*";
+				regex += "<td[^<>]*>(.+?)</td>\\s*";
+				regex += "<td[^<>]*>(.+?)</td>\\s*";
+				regex += "<td[^<>]*>(.+?)</a></span>\\s*</td>";
+				Matcher ma = createMatcher(regex, source);
+				int count = 0;
+				while(ma.find()) {
+					count++;
+					SportsMatchItem item = new SportsMatchItem();
+					item.setOrder(count + "");
+					item.setDatetime(ma.group(1) + " " + getPrettyText(ma.group(2)));
+					item.setWeekday(getPrettyText(ma.group(3)));
+					item.setRound(getPrettyText(ma.group(4)));
+					item.setHomeTeam(getPrettyText(ma.group(5)));
+					item.setStatus(getPrettyText(ma.group(6)).replace(" ", ""));
+					item.setAwayTeam(getPrettyText(ma.group(7)));
+					mexItems.add(item);
+				}
+			}
+		};
+		
+		neymar.setMethodPost(true);
+		neymar.setRequestParams("league_id=" + leagueId);
+		
+		return neymar.process().getMexItems();
+	}
+	
+	public static List<MexObject> fetchHupuFootballBig5Table(String leagueName) {
+		Extractor<MexObject> neymar = new Extractor<MexObject>() {
+
+			@Override
+			public String getUrl() {
+				printFetching = true;
+				String url = "https://soccer.hupu.com/table/{0}.html";
+				return StrUtil.occupy(url, leagueName);
+			}
+			
+			private String[] columnNames() {
+				int len = 15;
+				String regexTH = "";
+				for(int k = 0; k < len; k++) {
+					regexTH += "<th width=[^<>]*>([^<>]+)</th>\\s*";
+				}
+				String regexTR ="<tr>\\s*" + regexTH;
+				String[] items = new String[len];
+				Matcher ma = createMatcher(regexTR, source);
+				if(ma.find()) {
+					for(int k = 0; k < len; k++) {
+						items[k] = ma.group(k + 1);
+					}
+				}
+				
+				return items;
+			}
+
+			@Override
+			protected void parseContent() {
+				String space2 = "  ";
+				List<String> list = Arrays.asList(columnNames());
+				mexItems.add(new MexObject(StrUtil.connect(list, space2)));
+
+				int len = 12;
+				String regexTR = "<tr class=[^<>]+>\\s*";
+				regexTR += "<td>([^<>]+)</td>\\s*";
+				regexTR += "<td><img[^<>]+/></td>\\s*";
+				regexTR += "<td><a[^<>]+>([^<>]+)</a></td>\\s*";
+				for(int k = 0; k < len; k++) {
+					regexTR += "<td>([^<>]+)</td>\\s*";
+				}
+				regexTR += "</tr>";
+				Matcher ma = createMatcher(regexTR, source);
+
+				while(ma.find()) {
+					StringBuffer sb = StrUtil.sb();
+					String goodOrder = "#" + StrUtil.extend(ma.group(1), 2);
+					sb.append(goodOrder).append(space2);
+					String team = StrUtil.extendByAscii(getPrettyText(ma.group(2)), 12);
+					sb.append(team).append(space2);
+					for(int k = 0; k < len; k++) {
+						String item = StrUtil.extendLeftward(ma.group(k + 3), 5);
+						sb.append(item).append(space2);
+					}
+					mexItems.add(new MexObject(sb.toString()));
 				}
 			}
 		};

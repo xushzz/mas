@@ -38,11 +38,11 @@ public class CommandDatabase extends CommandBase {
 	@Override
 	public boolean handle() {
 		InputAnalyzer sean = new SqlInputAnalyzer(input);
-		singleParam = StrUtil.parseParam(KEY_SQL + "(.{4,})", sean.getCommand());
-		if(singleParam != null) {
+		solo = StrUtil.parseParam(KEY_SQL + "(.{4,})", sean.getCommand());
+		if(solo != null) {
 			this.command = sean.getCommand();
 			this.target = sean.getTarget();
-			File file = parseFile(singleParam);
+			File file = parseFile(solo);
 			if(file != null) {
 				if(FileOpener.isTextFile(file.getAbsolutePath())) {
 					checkTooBigToHandle(file, g().getUserValueOf(SQL_MAX_SIZE_KEY, SQL_MAX_SIZE_DEFAULT));
@@ -53,7 +53,7 @@ public class CommandDatabase extends CommandBase {
 					dealWith(sql);
 				}
 			} else {
-				dealWith(singleParam);
+				dealWith(solo);
 			}
 			
 			return true;
@@ -75,13 +75,13 @@ public class CommandDatabase extends CommandBase {
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_TABLE + "\\s(.+)");
-		if(singleParam != null) {
+		solo = parseSoloParam(KEY_TABLE + "\\s(.+)");
+		if(solo != null) {
 			String sql = DBKonstants.SHOW_TABLES;
 			QueryWatcher ming = query(sql);
 
 			List<String> items = ming.exportLiteralStrings();
-			List<MexObject> result = CollectionUtil.search(items, singleParam);
+			List<MexObject> result = CollectionUtil.search(items, solo);
 			export(result);
 			
 			return true;
@@ -106,9 +106,9 @@ public class CommandDatabase extends CommandBase {
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_DATABASE + "\\.(.+)");
-		if(singleParam != null) {
-			String dbName = singleParam.toLowerCase();
+		solo = parseSoloParam(KEY_DATABASE + "\\.(.+)");
+		if(solo != null) {
+			String dbName = solo.toLowerCase();
 			if(DBHelper.takeAsColumnOrTableName(dbName)) {
 				DBConfigItem db = DBHelper.getDatabaseByName(dbName);
 				if(db != null) {
@@ -136,9 +136,9 @@ public class CommandDatabase extends CommandBase {
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_DATABASE + "=(.+)");
-		if(singleParam != null) {
-			String dbName = singleParam;
+		solo = parseSoloParam(KEY_DATABASE + "=(.+)");
+		if(solo != null) {
+			String dbName = solo;
 			DBConfigItem db = DBHelper.getDatabaseByName(dbName);
 			if(db != null) {
 				g().getUserProps().put("db.active", dbName);
@@ -167,15 +167,15 @@ public class CommandDatabase extends CommandBase {
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_SCHEMA + "=(.+)");
-		if(singleParam != null) {
+		solo = parseSoloParam(KEY_SCHEMA + "=(.+)");
+		if(solo != null) {
 			String sql = DBKonstants.SHOW_DATABASES;
 			String actualSchema = null;
 			
 			QueryWatcher ming = query(sql);
 			List<String> items = ming.exportLiteralStrings();
 			for(String item : items) {
-				if(StrUtil.equals(singleParam, item)) {
+				if(StrUtil.equals(solo, item)) {
 					actualSchema = item;
 				}
 			}
@@ -184,7 +184,7 @@ public class CommandDatabase extends CommandBase {
 				g().getUserProps().put("db.schema", actualSchema);
 				C.pl2("currently active schema: " + actualSchema + "");
 			} else {
-				C.pl("Not found schema [" + singleParam + "], available schemas:");
+				C.pl("Not found schema [" + solo + "], available schemas:");
 				C.list(items);
 				C.pl();
 			}

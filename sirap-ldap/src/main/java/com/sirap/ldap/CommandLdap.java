@@ -18,20 +18,20 @@ public class CommandLdap extends CommandBase {
 
 	public boolean handle() {
 		
-		singleParam = parseParam(KEY_LDAP + "(|\\s+.+?)");
-		if(singleParam != null) {
+		solo = parseSoloParam(KEY_LDAP + "(|\\s+.+?)");
+		if(solo != null) {
 			LdapOnlineManager ninja = LdapOnlineManager.g();
-			String criteria = singleParam.isEmpty() ? null : singleParam.trim();
+			String criteria = solo.isEmpty() ? null : solo.trim();
 			List<String> items = ninja.search(criteria);
 			export(items);
 			
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_LDAP_FIND + "(\\s+.+?)");
-		if(singleParam != null) {
+		solo = parseSoloParam(KEY_LDAP_FIND + "(\\s+.+?)");
+		if(solo != null) {
 			LdapOnlineManager ninja = LdapOnlineManager.g();
-			List<String> items = ninja.findByWorkerNumber(singleParam);
+			List<String> items = ninja.findByWorkerNumber(solo);
 			export(items);
 			
 			return true;

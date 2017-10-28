@@ -71,8 +71,8 @@ public class CommandFile extends CommandBase {
 	@SuppressWarnings("all")
 	@Override
 	public boolean handle() {
-		singleParam = parseParam(KEY_EXTENSIBLE + "\\s(.*?)");
-		if(singleParam != null) {
+		solo = parseSoloParam(KEY_EXTENSIBLE + "\\s(.*?)");
+		if(solo != null) {
 			if(target instanceof TargetConsole) {
 				if(isEmailEnabled()) {
 					target = TargetAnalyzer.createTargetEmail(EmailCenter.DEF_RECEIVER, command);
@@ -83,7 +83,7 @@ public class CommandFile extends CommandBase {
 			}
 			
 			final List<Object> objs = new ArrayList<Object>();
-			List<String> items = StrUtil.split(singleParam, ';');
+			List<String> items = StrUtil.split(solo, ';');
 			for(String item:items) {
 				if(EmptyUtil.isNullOrEmptyOrBlank(item)) {
 					continue;
@@ -149,8 +149,8 @@ public class CommandFile extends CommandBase {
 			return true;
 		}
 		
-		singleParam = command;
-		File file = parseFile(singleParam);
+		solo = command;
+		File file = parseFile(solo);
 		if(file != null) {
 			String filePath = file.getAbsolutePath();
 			
@@ -649,9 +649,9 @@ public class CommandFile extends CommandBase {
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_PDF + "\\s+(.+?\\.pdf)");
-		if(singleParam != null) {
-			List<String> items = StrUtil.split(singleParam);
+		solo = parseSoloParam(KEY_PDF + "\\s+(.+?\\.pdf)");
+		if(solo != null) {
+			List<String> items = StrUtil.split(solo);
 			List<String> pdfFiles = new ArrayList<String>();
 			String nameSuffix = "merge";
 			for(String item : items) {

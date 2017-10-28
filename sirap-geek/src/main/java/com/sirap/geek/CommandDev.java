@@ -56,10 +56,10 @@ public class CommandDev extends CommandBase {
 	private static final String KEY_SIZE = "size";
 	
 	public boolean handle() {
-		singleParam = parseParam(KEY_PATH + "\\s(.*?)");
-		if(singleParam != null) {
+		solo = parseSoloParam(KEY_PATH + "\\s(.*?)");
+		if(solo != null) {
 			List<String> items = IOUtil.echoPath();
-			List<MexObject> result = CollectionUtil.search(items, singleParam);
+			List<MexObject> result = CollectionUtil.search(items, solo);
 			
 			export(result);
 			
@@ -87,14 +87,14 @@ public class CommandDev extends CommandBase {
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_DEPS + "\\s(.*?)");
-		if(singleParam != null) {
+		solo = parseSoloParam(KEY_DEPS + "\\s(.*?)");
+		if(solo != null) {
 			String filepath = null;
-			File file = FileUtil.getIfNormalFile(singleParam);
+			File file = FileUtil.getIfNormalFile(solo);
 			if(file != null) {
 				filepath = file.getAbsolutePath();
 			} else {
-				File folder = FileUtil.getIfNormalFolder(singleParam);
+				File folder = FileUtil.getIfNormalFolder(solo);
 				if(folder != null) {
 					String temp = folder.getAbsolutePath() + File.separatorChar + "pom.xml";
 					if(FileUtil.exists(temp)) {
@@ -111,9 +111,9 @@ public class CommandDev extends CommandBase {
 			}
 		}
 		
-		singleParam = parseParam(KEY_ISSUE + " ([A-Za-z0-9\\-_]+/[A-Za-z0-9\\-_]+)");
-		if(singleParam != null) {
-			Extractor<MexItem> frank = new GithubIssuesExtractor(singleParam);
+		solo = parseSoloParam(KEY_ISSUE + " ([A-Za-z0-9\\-_]+/[A-Za-z0-9\\-_]+)");
+		if(solo != null) {
+			Extractor<MexItem> frank = new GithubIssuesExtractor(solo);
 			frank.process();
 			List<MexItem> items = frank.getMexItems();
 			export(items);
@@ -130,9 +130,9 @@ public class CommandDev extends CommandBase {
 			export(url);
 		}
 		
-		singleParam = parseParam(KEY_JENKINS + " ([A-Za-z0-9\\-_]+)");
-		if(singleParam != null) {
-			JenkinsBuildRecord record = JenkinsManager.g().getLatestBuildRecord(singleParam);
+		solo = parseSoloParam(KEY_JENKINS + " ([A-Za-z0-9\\-_]+)");
+		if(solo != null) {
+			JenkinsBuildRecord record = JenkinsManager.g().getLatestBuildRecord(solo);
 			export(record);
 			
 			return true;
@@ -159,9 +159,9 @@ public class CommandDev extends CommandBase {
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_JSON + " " + KEY_HTTP_WWW);
-		if(singleParam != null) {
-			String source = IOUtil.readURL(singleParam);
+		solo = parseSoloParam(KEY_JSON + " " + KEY_HTTP_WWW);
+		if(solo != null) {
+			String source = IOUtil.readURL(solo);
 			String text = JsonUtil.getPrettyText(source);
 			export(text);
 			
@@ -178,9 +178,9 @@ public class CommandDev extends CommandBase {
 			}
 		}
 		
-		singleParam = parseParam(KEY_JSON + " (.+?)");
-		if(singleParam != null) {
-			File file = parseFile(singleParam);
+		solo = parseSoloParam(KEY_JSON + " (.+?)");
+		if(solo != null) {
+			File file = parseFile(solo);
 			if(file != null) {
 				String filePath = file.getAbsolutePath();
 				if(FileOpener.isTextFile(filePath)) {
@@ -193,25 +193,25 @@ public class CommandDev extends CommandBase {
 				
 				return true;
 			} else {
-				String text = JsonUtil.getPrettyText(singleParam);
+				String text = JsonUtil.getPrettyText(solo);
 				export(text);
 			}
 			
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_RAW_JSON + " " + KEY_HTTP_WWW);
-		if(singleParam != null) {
-			String source = IOUtil.readURL(singleParam);
+		solo = parseSoloParam(KEY_RAW_JSON + " " + KEY_HTTP_WWW);
+		if(solo != null) {
+			String source = IOUtil.readURL(solo);
 			String text = JsonUtil.getRawText(source);
 			export(text);
 			
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_RAW_JSON + " (.+?)");
-		if(singleParam != null) {
-			File file = parseFile(singleParam);
+		solo = parseSoloParam(KEY_RAW_JSON + " (.+?)");
+		if(solo != null) {
+			File file = parseFile(solo);
 			if(file != null) {
 				String filePath = file.getAbsolutePath();
 				if(FileOpener.isTextFile(filePath)) {
@@ -224,34 +224,34 @@ public class CommandDev extends CommandBase {
 				
 				return true;
 			} else {
-				String text = JsonUtil.getRawText(singleParam);
+				String text = JsonUtil.getRawText(solo);
 				export(text);
 			}
 			
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_PAIR_KEY_VALUE + "\\s(.+)");
-		if(singleParam != null) {
-			List<String> pairs = StrUtil.parseUrlParams(singleParam);
+		solo = parseSoloParam(KEY_PAIR_KEY_VALUE + "\\s(.+)");
+		if(solo != null) {
+			List<String> pairs = StrUtil.parseUrlParams(solo);
 			export(pairs);
 			
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_TO_LOWERCASE + "\\.(.+)");
-		if(singleParam != null) {
-			C.pl("To lower case, " + singleParam.length() + " chars.");
-			String result = singleParam.toLowerCase();
+		solo = parseSoloParam(KEY_TO_LOWERCASE + "\\.(.+)");
+		if(solo != null) {
+			C.pl("To lower case, " + solo.length() + " chars.");
+			String result = solo.toLowerCase();
 			export(result);
 			
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_TO_UPPERCASE + "\\.(.+)");
-		if(singleParam != null) {
-			C.pl("To upper case, " + singleParam.length() + " chars.");
-			String result = singleParam.toUpperCase();
+		solo = parseSoloParam(KEY_TO_UPPERCASE + "\\.(.+)");
+		if(solo != null) {
+			C.pl("To upper case, " + solo.length() + " chars.");
+			String result = solo.toUpperCase();
 			export(result);
 			
 			return true;
@@ -313,10 +313,10 @@ public class CommandDev extends CommandBase {
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_UUID + "(\\d{1,3})");
-		if(singleParam != null) {
+		solo = parseSoloParam(KEY_UUID + "(\\d{1,3})");
+		if(solo != null) {
 			List<String> items = new ArrayList<>();
-			int count = Integer.parseInt(singleParam);
+			int count = Integer.parseInt(solo);
 			for(int i = 0; i < count; i++) {
 				items.add(UUID.randomUUID().toString().replace("-", ""));
 			}
@@ -325,31 +325,31 @@ public class CommandDev extends CommandBase {
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_CHANGE_FILESEPARATOR + "\\s+(.+)");
-		if(singleParam != null) {
+		solo = parseSoloParam(KEY_CHANGE_FILESEPARATOR + "\\s+(.+)");
+		if(solo != null) {
 			char windows = '\\';
 			char unix = '/';
 			List<String> items = new ArrayList<>();
-			String temp = singleParam.replace(windows, unix);
-			if(!StrUtil.equals(temp, singleParam)) {
+			String temp = solo.replace(windows, unix);
+			if(!StrUtil.equals(temp, solo)) {
 				items.add(temp);
 			}
 			
-			temp = singleParam.replace(unix, windows);
-			if(!StrUtil.equals(temp, singleParam)) {
+			temp = solo.replace(unix, windows);
+			if(!StrUtil.equals(temp, solo)) {
 				items.add(temp);
 			}
 			
 			export(items);
 		}
 		
-		singleParam = parseParam(KEY_SIZE + "([1-9]|)");
-		if(singleParam != null) {
+		solo = parseSoloParam(KEY_SIZE + "([1-9]|)");
+		if(solo != null) {
 			Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 			List<String> items = Lists.newArrayList();
 			items.add("full: " + (int)dim.width + " x " + (int)dim.height);
-			if(!singleParam.isEmpty()) {
-				ImageUtil.countDown(Integer.parseInt(singleParam));
+			if(!solo.isEmpty()) {
+				ImageUtil.countDown(Integer.parseInt(solo));
 				C.pl();
 			}
 			RenderedImage image = (new ScreenCaptor()).captureCurrentWindow();

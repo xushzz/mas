@@ -17,9 +17,9 @@ public class CommandExecutor extends CommandBase {
 	
 	@Override
 	public boolean handle() {
-		singleParam = parseParam(KEY_SSH + "\\s(.{1,})");
-		if(singleParam != null) {
-			String sshCommand = singleParam;
+		solo = parseSoloParam(KEY_SSH + "\\s(.{1,})");
+		if(solo != null) {
+			String sshCommand = solo;
 			List<String> items = SSHCommandExecutor.g().execute(sshCommand);
 			
 			export(items);

@@ -86,7 +86,7 @@ public class CommandXCode extends CommandBase {
 			return true;
 		}
 
-		String param = parseParam(KEY_QRCODE_DECODE + "\\s+(.+?)");
+		String param = parseSoloParam(KEY_QRCODE_DECODE + "\\s+(.+?)");
 		if(param != null) {
 			File file = parseFile(param);
 			if(file != null) {
@@ -128,11 +128,11 @@ public class CommandXCode extends CommandBase {
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_ASCII_SHORT + "\\s(.+?)");
-		if(singleParam != null) {
+		solo = parseSoloParam(KEY_ASCII_SHORT + "\\s(.+?)");
+		if(solo != null) {
 			List<MexItem> records = GeekManager.g().asciiAll();
 			
-			MexFilter<MexObject> filter = new MexFilter<MexObject>(singleParam, CollectionUtil.toMexedObjects(records));
+			MexFilter<MexObject> filter = new MexFilter<MexObject>(solo, CollectionUtil.toMexedObjects(records));
 			List<MexObject> items = filter.process();
 			
 			if(!EmptyUtil.isNullOrEmpty(items)) {
@@ -144,17 +144,17 @@ public class CommandXCode extends CommandBase {
 			return true;
 		}
 
-		singleParam = parseParam(KEY_TO_BASE64 + "\\s(.+?)");
-		if(singleParam != null) {
-			String result = XCodeUtil.toBase64(singleParam);
+		solo = parseSoloParam(KEY_TO_BASE64 + "\\s(.+?)");
+		if(solo != null) {
+			String result = XCodeUtil.toBase64(solo);
 			export(result);
 			
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_FROM_BASE64 + "\\s(.+?)");
-		if(singleParam != null) {
-			String result = XCodeUtil.fromBase64(singleParam);
+		solo = parseSoloParam(KEY_FROM_BASE64 + "\\s(.+?)");
+		if(solo != null) {
+			String result = XCodeUtil.fromBase64(solo);
 			export(result);
 			
 			return true;
@@ -193,20 +193,20 @@ public class CommandXCode extends CommandBase {
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_URL_ENCODE + "\\s(.+?)");
-		if(singleParam != null) {
+		solo = parseSoloParam(KEY_URL_ENCODE + "\\s(.+?)");
+		if(solo != null) {
 			String charset = g().getCharsetInUse();
-			String value = XCodeUtil.urlEncode(singleParam, charset);
+			String value = XCodeUtil.urlEncode(solo, charset);
 			C.pl("Encode with charset: " + charset);
 			export(value);
 			
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_URL_DECODE + "\\s(.+?)");
-		if(singleParam != null) {
+		solo = parseSoloParam(KEY_URL_DECODE + "\\s(.+?)");
+		if(solo != null) {
 			String charset = g().getCharsetInUse();
-			String value = XCodeUtil.urlDecode(singleParam, charset);
+			String value = XCodeUtil.urlDecode(solo, charset);
 			C.pl("Decode with charset: " + charset);
 			export(value);
 			
@@ -220,9 +220,9 @@ public class CommandXCode extends CommandBase {
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_ENCODE + "-([\\S]+)");
-		if(singleParam != null) {
-			String criteria = singleParam;
+		solo = parseSoloParam(KEY_ENCODE + "-([\\S]+)");
+		if(solo != null) {
+			String criteria = solo;
 			List<CharsetCode> codes = GeekManager.g().searchCharsetNames(criteria);
 			
 			List<String> charsets = new ArrayList<>();
@@ -236,9 +236,9 @@ public class CommandXCode extends CommandBase {
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_ENCODE + "\\s(.+?)");
-		if(singleParam != null) {
-			List<String> items = GeekManager.g().encodeStringByUnicodeUTF8GBK(singleParam);
+		solo = parseSoloParam(KEY_ENCODE + "\\s(.+?)");
+		if(solo != null) {
+			List<String> items = GeekManager.g().encodeStringByUnicodeUTF8GBK(solo);
 			export(items);
 			return true;
 		}
@@ -311,12 +311,12 @@ public class CommandXCode extends CommandBase {
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_CURRENCY + "\\s(.+?)");
+		solo = parseSoloParam(KEY_CURRENCY + "\\s(.+?)");
 		if(isSingleParamNotnull()) { 
 			String extraLocales = g().getUserValueOf("iso.locales");
 			List<MexObject> records = LocaleUtil.getAllCurrencies(extraLocales);
 			
-			MexFilter<MexObject> filter = new MexFilter<MexObject>(singleParam, records);
+			MexFilter<MexObject> filter = new MexFilter<MexObject>(solo, records);
 			List<MexObject> items = filter.process();
 
 			export(items);
@@ -331,10 +331,10 @@ public class CommandXCode extends CommandBase {
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_DATE_FORMAT_SYMBOL + "\\s(.+?)");
+		solo = parseSoloParam(KEY_DATE_FORMAT_SYMBOL + "\\s(.+?)");
 		if(isSingleParamNotnull()) { 
 			List<String> records = LocaleUtil.getAllMonthWeekdays();
-			MexFilter<MexObject> filter = new MexFilter<MexObject>(singleParam, CollectionUtil.toMexedObjects(records));
+			MexFilter<MexObject> filter = new MexFilter<MexObject>(solo, CollectionUtil.toMexedObjects(records));
 			List<MexObject> items = filter.process();
 
 			export(items);
@@ -353,10 +353,10 @@ public class CommandXCode extends CommandBase {
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_ISO + "\\s(.+?)");
+		solo = parseSoloParam(KEY_ISO + "\\s(.+?)");
 		if(isSingleParamNotnull()) { 
 			String extraLocales = g().getUserValueOf("iso.locales");
-			MexFilter<MexLocale> filter = new MexFilter<MexLocale>(singleParam, LocaleUtil.AAM_LOCALES);
+			MexFilter<MexLocale> filter = new MexFilter<MexLocale>(solo, LocaleUtil.AAM_LOCALES);
 			List<MexLocale> items = filter.process();
 
 			if(!EmptyUtil.isNullOrEmpty(items)) {
@@ -369,16 +369,16 @@ public class CommandXCode extends CommandBase {
 			return true;
 		}
 	
-		singleParam = parseParam(KEY_ISO + "=\\s*([^|&]*?)");
-		if(singleParam != null) {
+		solo = parseSoloParam(KEY_ISO + "=\\s*([^|&]*?)");
+		if(solo != null) {
 			Locale locale = null;
 			List<MexLocale> items = null;
-			String criteria = "^" + singleParam + "$";
+			String criteria = "^" + solo + "$";
 			List<MexLocale> accurateItems = LocaleUtil.searchSimilars(criteria);
 			if(accurateItems.size() == 1) {
 				locale = accurateItems.get(0).getLocale();
 			} else {
-				criteria = singleParam.replace('_', '|');
+				criteria = solo.replace('_', '|');
 				items = LocaleUtil.searchSimilars(criteria);
 				if(items.size() == 1) {
 					locale = items.get(0).getLocale();
@@ -392,7 +392,7 @@ public class CommandXCode extends CommandBase {
 				MexLocale ml = new MexLocale(locale);
 				C.pl2("Locale set as " + ml.toPrint(mexItemParams));
 			} else {
-				C.pl("[" + singleParam + "] is not a valid locale, did you mean one of these?");
+				C.pl("[" + solo + "] is not a valid locale, did you mean one of these?");
 				if(EmptyUtil.isNullOrEmpty(items)) {
 					C.listSome(CollectionUtil.items2PrintRecords(LocaleUtil.AAM_LOCALES, mexItemParams), 10);
 				} else {

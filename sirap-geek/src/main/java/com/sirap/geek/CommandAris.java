@@ -20,8 +20,8 @@ public class CommandAris extends CommandBase {
 
 	public boolean handle() {
 		
-		singleParam = parseParam(KEY_EXECUTE_JAVACODE + "\\s+(.+)");
-		if(singleParam != null) {
+		solo = parseSoloParam(KEY_EXECUTE_JAVACODE + "\\s+(.+)");
+		if(solo != null) {
 			boolean keepGeneratedFiles = OptionUtil.readBooleanPRI(options, "k", g().isYes("aris.keep"));
 			List<String> classPaths = g().getUserValuesByKeyword("aris.path.");
 			String classpath = StrUtil.connect(classPaths, File.pathSeparator);
@@ -32,16 +32,16 @@ public class CommandAris extends CommandBase {
 			if(!EmptyUtil.isNullOrEmpty(autoPackages)) {
 				instance.setAutoIncludedPackageNames(autoPackages);
 			}
-			File file = parseFile(singleParam);
+			File file = parseFile(solo);
 			if(file != null ) {
 				List<String> javacodes = IOUtil.readFileIntoList(file.getAbsolutePath(), g().getCharsetInUse());
-				if(StrUtil.endsWith(singleParam, Konstants.SUFFIX_JAVA)) {
+				if(StrUtil.endsWith(solo, Konstants.SUFFIX_JAVA)) {
 					export(instance.executeJavaFileStyle(javacodes, classpath));
 				} else {
 					export(instance.executeTextFileStyle(javacodes, classpath));
 				}
 			} else {
-				export(instance.executeOnelineStyle(singleParam, classpath));
+				export(instance.executeOnelineStyle(solo, classpath));
 			}
 			
 			return true;

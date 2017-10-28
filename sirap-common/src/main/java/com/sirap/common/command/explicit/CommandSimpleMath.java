@@ -31,13 +31,13 @@ public class CommandSimpleMath extends CommandBase {
 	public boolean handle() {
 
 		String regexCalculate = "([\\s_\\d\\.+\\-x\\*/\\(\\)]{2,})";
-		singleParam = parseParam(KEY_CALCULATE + "\\s+" + regexCalculate);
-		if(singleParam != null) {
+		solo = parseSoloParam(KEY_CALCULATE + "\\s+" + regexCalculate);
+		if(solo != null) {
 			int scale = g().getUserNumberValueOf("calculator.scale", 2);
-			String math = SimCal.evaluate(singleParam, scale);
+			String math = SimCal.evaluate(solo, scale);
 			if(math != null) {
 				List<String> results = new ArrayList<String>();
-				results.add(singleParam + " = " + math);
+				results.add(solo + " = " + math);
 				if(math.length() > 9) {
 					results.add("Result contains " + math.length() + " chars.");
 				}
@@ -47,12 +47,12 @@ public class CommandSimpleMath extends CommandBase {
 		}
 
 		try {
-			singleParam = parseParam(regexCalculate);
+			solo = parseSoloParam(regexCalculate);
 			int scale = g().getUserNumberValueOf("calculator.scale", 2);
-			String math = SimCal.evaluate(singleParam, scale);
+			String math = SimCal.evaluate(solo, scale);
 			if(math != null) {
 				List<String> results = new ArrayList<String>();
-				results.add(singleParam + "=" + math);
+				results.add(solo + "=" + math);
 				export(results);
 				return true;
 			}
@@ -95,9 +95,9 @@ public class CommandSimpleMath extends CommandBase {
 			return true;
 		}
 		
-		singleParam = parseParam("#([a-f|\\d|,|\\s]+)");
-		if(singleParam != null) {
-			MexColorConverter salim = new MexColorConverter(singleParam);
+		solo = parseSoloParam("#([a-f|\\d|,|\\s]+)");
+		if(solo != null) {
+			MexColorConverter salim = new MexColorConverter(solo);
 			List<String> results = salim.getResult();
 			if(!EmptyUtil.isNullOrEmpty(results)) {
 				export(results);
@@ -164,9 +164,9 @@ public class CommandSimpleMath extends CommandBase {
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_TO_DATE + "\\.(-?\\d{0,14})");
-		if(singleParam != null) {
-			Long milliSecondsSince1970 = Long.parseLong(singleParam);
+		solo = parseSoloParam(KEY_TO_DATE + "\\.(-?\\d{0,14})");
+		if(solo != null) {
+			Long milliSecondsSince1970 = Long.parseLong(solo);
 			
 			List<String> items = new ArrayList<>();
 			items.add(DateUtil.convertLongToDateStr(milliSecondsSince1970, DateUtil.HOUR_Min_Sec_Milli_AM_WEEK_DATE));
@@ -184,9 +184,9 @@ public class CommandSimpleMath extends CommandBase {
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_TO_LONG + "\\.(\\d{8,17})");
-		if(singleParam != null) {
-			long value = DateUtil.convertDateStrToLong(singleParam);
+		solo = parseSoloParam(KEY_TO_LONG + "\\.(\\d{8,17})");
+		if(solo != null) {
+			long value = DateUtil.convertDateStrToLong(solo);
 			export(value);
 			
 			return true;
@@ -224,9 +224,9 @@ public class CommandSimpleMath extends CommandBase {
 			return true;
 		}
 		
-		singleParam = parseParam(LENGTH_OF + "(.+?)");
-		if(singleParam != null) {
-			int len = singleParam.length();
+		solo = parseSoloParam(LENGTH_OF + "(.+?)");
+		if(solo != null) {
+			int len = solo.length();
 			String value = "len = " + len;
 			export(value);
 			

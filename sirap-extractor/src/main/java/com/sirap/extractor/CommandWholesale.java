@@ -39,11 +39,11 @@ public class CommandWholesale extends CommandBase {
 	
 	public boolean handle() {
 		
-		singleParam = parseParam(KEY_SOGOU + "\\s(.*?)");
+		solo = parseSoloParam(KEY_SOGOU + "\\s(.*?)");
 		if(isSingleParamNotnull()) {
-			List<MexObject> links = ExtractorUtil.sogouImageLinks(singleParam);
+			List<MexObject> links = ExtractorUtil.sogouImageLinks(solo);
 			if(!EmptyUtil.isNullOrEmpty(links)) {
-				String folderName = FileUtil.generateLegalFileName(singleParam);
+				String folderName = FileUtil.generateLegalFileName(solo);
 				String path = pathWithSeparator("storage.sogou", Konstants.FOLDER_SOGOU);
 				String whereToSave = path + folderName + File.separator;
 				
@@ -53,11 +53,11 @@ public class CommandWholesale extends CommandBase {
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_QIHU360 + "\\s(.*?)");
+		solo = parseSoloParam(KEY_QIHU360 + "\\s(.*?)");
 		if(isSingleParamNotnull()) {
-			List<MexObject> links = ExtractorUtil.qihu360ImageLinks(singleParam);
+			List<MexObject> links = ExtractorUtil.qihu360ImageLinks(solo);
 			if(!EmptyUtil.isNullOrEmpty(links)) {
-				String folderName = FileUtil.generateLegalFileName(singleParam);
+				String folderName = FileUtil.generateLegalFileName(solo);
 				String path = pathWithSeparator("storage.so360", FOLDER_QIHU360);
 				String whereToSave = path + folderName + File.separator;
 				
@@ -68,9 +68,9 @@ public class CommandWholesale extends CommandBase {
 		}
 		
 		String types = StrUtil.connect(new ArrayList<String>(ExtractorNetease.TYPE_METHOD.keySet()), "|");
-		singleParam = parseParam("163(" + types+ ")");
-		if(singleParam != null) {
-			String type = singleParam.toLowerCase();
+		solo = parseSoloParam("163(" + types+ ")");
+		if(solo != null) {
+			String type = solo.toLowerCase();
 			String method = ExtractorNetease.TYPE_METHOD.get(type);
 			List<String> links = ExtractorUtil.photos(method, ExtractorNetease.class);
 

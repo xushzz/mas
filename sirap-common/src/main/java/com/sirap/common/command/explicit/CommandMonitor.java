@@ -55,12 +55,12 @@ public class CommandMonitor extends CommandBase {
 	
 	@Override
 	public boolean handle() {
-		singleParam = parseParam(KEY_ECHO + "\\s(.+?)");
-		if(singleParam != null) {
+		solo = parseSoloParam(KEY_ECHO + "\\s(.+?)");
+		if(solo != null) {
 			List<String> sysProps = new ArrayList(System.getProperties().entrySet());
 			List<String> sysEnvis = new ArrayList(System.getenv().entrySet());
 			
-			String criteria = singleParam;
+			String criteria = solo;
 			if(criteria.equalsIgnoreCase("-s")) {
 				export(sysProps);
 				return true;
@@ -157,9 +157,9 @@ public class CommandMonitor extends CommandBase {
 		}
 
 		if(g().isHistoryEnabled()) {
-			singleParam = parseParam(KEY_LOGIN_HISTORY + "\\s(.+?)");
-			if(singleParam != null) {
-				List<LoginRecord> records = LoginHistoryManager.g().search(singleParam);
+			solo = parseSoloParam(KEY_LOGIN_HISTORY + "\\s(.+?)");
+			if(solo != null) {
+				List<LoginRecord> records = LoginHistoryManager.g().search(solo);
 				if(target instanceof TargetPDF) {
 					target.setParams(LH_PDF_PARAMS);
 					List<List<String>> items = CollectionUtil.items2PDFRecords(records);
@@ -198,19 +198,19 @@ public class CommandMonitor extends CommandBase {
 				return true;
 			}
 			
-			singleParam = parseParam(KEY_COMMAND_HISTORY + "(.*)");
-			if(singleParam != null) {
+			solo = parseSoloParam(KEY_COMMAND_HISTORY + "(.*)");
+			if(solo != null) {
 				noCollect();
 				List<InputRecord> records = CommandHistoryManager.g().getAllRecords();
 				if(!OptionUtil.readBooleanPRI(options, "all", false)) {
-					if(EmptyUtil.isNullOrEmpty(singleParam)) {
+					if(EmptyUtil.isNullOrEmpty(solo)) {
 						records = CommandHistoryManager.g().getNRecords(20);
 					} else {
 						if(OptionUtil.readBooleanPRI(options, "n", false)) {
-							int count = MathUtil.toInteger(singleParam, 20);
+							int count = MathUtil.toInteger(solo, 20);
 							records = CollectionUtil.last(records, count);
 						} else {
-							records = CommandHistoryManager.g().search(singleParam);
+							records = CommandHistoryManager.g().search(solo);
 						}
 					}
 				}
@@ -236,9 +236,9 @@ public class CommandMonitor extends CommandBase {
 				return true;
 			}
 
-			singleParam = parseParam(KEY_LOGIN_HISTORY_DISTRIBUTION + "\\s(.+?)");
-			if(singleParam != null) {
-				List<LoginRecord> records = LoginHistoryManager.g().search(singleParam);
+			solo = parseSoloParam(KEY_LOGIN_HISTORY_DISTRIBUTION + "\\s(.+?)");
+			if(solo != null) {
+				List<LoginRecord> records = LoginHistoryManager.g().search(solo);
 				List<String> list = LoginHistoryManager.g().displayDistribution(records);
 				setIsPrintTotal(false);
 				export(list);
@@ -284,9 +284,9 @@ public class CommandMonitor extends CommandBase {
 			return true;
 		}
 
-		singleParam = parseParam(KEY_KEYS_READER + "\\s(.+?)");
-		if(singleParam != null) {
-			List<String> folders = StrUtil.splitByRegex(singleParam);
+		solo = parseSoloParam(KEY_KEYS_READER + "\\s(.+?)");
+		if(solo != null) {
+			List<String> folders = StrUtil.splitByRegex(solo);
 			String methods = g().getValueOf("keys.reader.methods");
 			List<String> methodList = StrUtil.splitByRegex(methods);
 			List<String> keys = new ArrayList<String>();

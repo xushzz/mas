@@ -423,7 +423,7 @@ public class StrUtil {
 	public static String extend(String source, int targetLength) {
 		return extend(source, targetLength, false);
 	}
-	
+
 	public static String extend(String source, int targetLength, boolean isNiceWay) {
 		if(source == null) {
 			return null;
@@ -446,35 +446,50 @@ public class StrUtil {
 
 		return sb.toString();
 	}
+
+	public static String extendByAscii(String source, int targetLength) {
+		return extendByAscii(source, targetLength, " ");
+	}
 	
-	public static String extendChinese(String source, int targetLength, boolean isNiceWay) {
+	public static String extendByAscii(String source, int targetLength, String whatToFill) {
 		if(source == null) {
 			return null;
 		}
 		
-		int len = source.length();
+		int len = countOfAscii(source);
 		int diff = targetLength - len;
 		if(diff <= 0) {
-			if(isNiceWay) {
-				return source + "  ";
-			} else {
-				return source;
-			}
+			return source;
 		}
 		
 		StringBuffer sb = new StringBuffer(source);
 		for(int i = 0; i < diff; i++) {
-			sb.append(" ");
+			sb.append(whatToFill);
 		}
 
 		return sb.toString();
+	}
+	
+	public static int countOfAscii(String source) {
+		int len = 0;
+		for(int k = 0; k < source.length(); k++) {
+			char car = source.charAt(k);
+			len += howManyAscii(car);
+		}
+		
+		return len;
+	}
+	
+	public static int howManyAscii(char car) {
+		byte[] bs = (car + "").getBytes();
+		return bs.length;
 	}
 	
 	public static String extendLeftward(String source, int targetLen) {
 		return extendLeftward(source, targetLen, " ");
 	}
 	
-	public static String extendLeftward(String source, int targetLen, String str) {
+	public static String extendLeftward(String source, int targetLen, String whatToFill) {
 		if(source == null) {
 			return null;
 		}
@@ -487,14 +502,38 @@ public class StrUtil {
 		
 		StringBuffer sb = new StringBuffer();
 		for(int i = 0; i < diff; i++) {
-			sb.append(str);
+			sb.append(whatToFill);
+		}
+		sb.append(source);
+	
+		return sb.toString();
+	}
+
+	public static String extendLeftwardByAscii(String source, int targetLen) {
+		return extendLeftwardByAscii(source, targetLen, " ");
+	}
+	
+	public static String extendLeftwardByAscii(String source, int targetLen, String whatToFill) {
+		if(source == null) {
+			return null;
+		}
+		
+		int len = countOfAscii(source);
+		int diff = targetLen - len;
+		if(diff <= 0) {
+			return source;
+		}
+		
+		StringBuffer sb = new StringBuffer();
+		for(int i = 0; i < diff; i++) {
+			sb.append(whatToFill);
 		}
 		sb.append(source);
 	
 		return sb.toString();
 	}
 	
-	public static String extend(String source, int targetLen, String str) {
+	public static String extend(String source, int targetLen, String whatToFill) {
 		if(source == null) {
 			return null;
 		}
@@ -507,7 +546,7 @@ public class StrUtil {
 		
 		StringBuffer sb = new StringBuffer(source);
 		for(int i = 0; i < diff; i++) {
-			sb.append(str);
+			sb.append(whatToFill);
 		}
 	
 		return sb.toString();

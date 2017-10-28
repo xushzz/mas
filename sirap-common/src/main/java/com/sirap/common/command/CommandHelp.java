@@ -27,8 +27,8 @@ public class CommandHelp extends CommandBase {
 	@Override
 	public boolean handle() {
 		
-		singleParam = parseParam("[?|'](.*?)");
-		if(singleParam != null) {
+		solo = parseSoloParam("[?|'](.*?)");
+		if(solo != null) {
 			List<String> allKeys = new ArrayList<>();
 			allKeys.add(KEY_GUEST);
 			
@@ -68,8 +68,8 @@ public class CommandHelp extends CommandBase {
 			}
 
 			if(!EmptyUtil.isNullOrEmpty(results)) {
-				if(!singleParam.isEmpty()) {
-					List<MexObject> items = CollectionUtil.search(results, singleParam);
+				if(!solo.isEmpty()) {
+					List<MexObject> items = CollectionUtil.search(results, solo);
 					results = CollectionUtil.items2PrintRecords(items);
 				}
 				results.add("");

@@ -63,15 +63,15 @@ public class CommandPirate extends CommandBase {
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_ID_SFZ + "\\s(\\d{1,6}|[\\D]{1,100})");
-		if(singleParam != null) {
+		solo = parseSoloParam(KEY_ID_SFZ + "\\s(\\d{1,6}|[\\D]{1,100})");
+		if(solo != null) {
 			String source = g().getUserValueOf("sfz.source");
 			if(!EmptyUtil.isNullOrEmpty(source)) {
 				boolean isText = FileOpener.isTextFile(source);
 				if(isText) {
 					String path = parseFile(source).getAbsolutePath();
 					List<String> allAreas = IOUtil.readFileIntoList(path, g().getCharsetInUse());
-					List<MexObject> items = CollectionUtil.search(allAreas, singleParam);
+					List<MexObject> items = CollectionUtil.search(allAreas, solo);
 					export(items);
 				} else {
 					C.pl2("Not a text file: " + source);
@@ -81,9 +81,9 @@ public class CommandPirate extends CommandBase {
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_ID_SFZ + "\\s((\\d{17})(|\\d|X))");
-		if(singleParam != null) {
-			sfz(singleParam);
+		solo = parseSoloParam(KEY_ID_SFZ + "\\s((\\d{17})(|\\d|X))");
+		if(solo != null) {
+			sfz(solo);
 			return true;
 		}
 		
@@ -94,9 +94,9 @@ public class CommandPirate extends CommandBase {
 			
 		}
 		
-		singleParam = parseParam(KEY_BEEP_K);
-		if(singleParam != null) {
-			Integer count = MathUtil.toInteger(singleParam);
+		solo = parseSoloParam(KEY_BEEP_K);
+		if(solo != null) {
+			Integer count = MathUtil.toInteger(solo);
 			beepKTimes(count);
 			
 			C.pl();

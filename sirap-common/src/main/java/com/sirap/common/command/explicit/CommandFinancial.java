@@ -28,10 +28,10 @@ public class CommandFinancial extends CommandBase {
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_CREDIT_KARD + " ([a-zA-Z]+)");
-		if(singleParam != null) {
+		solo = parseSoloParam(KEY_CREDIT_KARD + " ([a-zA-Z]+)");
+		if(solo != null) {
 			String filePath = cardPath();
-			KardManager.g().analyzeCards(singleParam, filePath);
+			KardManager.g().analyzeCards(solo, filePath);
 			return true;
 		}
 		

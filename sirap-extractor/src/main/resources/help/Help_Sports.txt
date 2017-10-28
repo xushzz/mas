@@ -1,5 +1,16 @@
-uefa               display UEFA champions league next 16 games from today
-uefa criteria      display UEFA champions league games matching criteria
-uefa..             display UEFA champions league all games
-uefa..             #8   2017-09-13 02:45  D TA vs TB, courtesy of https://soccer.hupu.com 
-ver=EXTRACTOR-SPORTS1.0.1-WUQILONG  10/27/2017, V
+esp-g              esp for 3 Spain, g for goals, list top N=10 scorers in Spain league
+esp-g..            list all scorers in Spain league, options: $n=19
+esp-g TeamName     list all scorers in Spain league matching criteria, uefa 9, china 128
+esp-g              #4 james Milan 5(3), eng 2 England, ita 4 Italy, ger 5 German, fra 6 France
+3-g                3 for esp Spain, same as esp-g, also 128-g for china-g
+ita-t              t for table, list table info of Italy football league, along with level info
+ita-t criteria     list table info matching given criteria, order, team, played, goals for, points
+ita-t              options: $-mark, show no level info, just simple order. no level info for uefa
+uefa-t             ita for Italy, -t for big five only, aka eng, esp, ita, ger and fra
+eng-s              s for schedule, list next K=10 matches info of premier league, K=16 when uefa
+eng-s..            list all matches info, aka schedule info of premier league
+eng-s              eng for England, -s for big five only, aka eng, esp, ita, ger and fra, uefa
+eng-s criteria     list matches info that matching given criteria, courtesy of https://soccer.hupu.com 
+eng-s              options: $l=7 previous seven games from today, $n=7 next seven games from today
+uefa-s #8          #8   2017-09-13 02:45  D TA vs TB, #D for group D
+ver=EXTRACTOR-SPORTS1.0.2-KANE  10/29/2017, VII

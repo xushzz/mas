@@ -148,10 +148,10 @@ public class CommandSirap extends CommandBase {
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_CALENDAR + "([\\d&]+)");
-		if(singleParam != null) {
+		solo = parseSoloParam(KEY_CALENDAR + "([\\d&]+)");
+		if(solo != null) {
 			List<String> totalRecords = new ArrayList<String>();
-			List<String> yearMonthList = StrUtil.split(singleParam, '&');
+			List<String> yearMonthList = StrUtil.split(solo, '&');
 			for(String info:yearMonthList) {
 				String singleMonth = StrUtil.parseParam("(\\d{1,2})", info);
 				if(singleMonth != null) {
@@ -225,9 +225,9 @@ public class CommandSirap extends CommandBase {
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_TIMEZONE_DISPLAY);
-		if(singleParam != null) {
-			List<TZRecord> records = TimeZoneManager.g().getTimeZones(singleParam, g().getLocale(), false);
+		solo = parseSoloParam(KEY_TIMEZONE_DISPLAY);
+		if(solo != null) {
+			List<TZRecord> records = TimeZoneManager.g().getTimeZones(solo, g().getLocale(), false);
 			if(!EmptyUtil.isNullOrEmpty(records)) {
 				if(target instanceof TargetPDF) {
 					int[] cellsWidth = {1, 1};
@@ -384,9 +384,9 @@ public class CommandSirap extends CommandBase {
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_USER_TIMEZONE_SET);
-		if(singleParam != null) {
-			resetTimeZone(Integer.parseInt(singleParam));
+		solo = parseSoloParam(KEY_USER_TIMEZONE_SET);
+		if(solo != null) {
+			resetTimeZone(Integer.parseInt(solo));
 			return true;
 		}
 		
@@ -446,9 +446,9 @@ public class CommandSirap extends CommandBase {
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_HOST + "\\s+(.*?)");
-		if(singleParam != null) {
-			String result = NetworkUtil.getHostByName(singleParam);
+		solo = parseSoloParam(KEY_HOST + "\\s+(.*?)");
+		if(solo != null) {
+			String result = NetworkUtil.getHostByName(solo);
 			export(result);
 			
 			return true;
@@ -497,7 +497,7 @@ public class CommandSirap extends CommandBase {
 	
 	private boolean conductSiteSearch(SiteSearchEngine engine) {
 		String regex = engine.getPrefix() + " (.+?)";
-		String singleParam = parseParam(regex);
+		String singleParam = parseSoloParam(regex);
 		if(singleParam != null) {
 			String urlTemplate = engine.getUrlTemplate();
 			String url = StrUtil.occupy(urlTemplate, Extractor.encodeURLParam(singleParam));
@@ -518,7 +518,7 @@ public class CommandSirap extends CommandBase {
 	
 	private boolean conductTextSearch(TextSearchEngine engine) {
 		String regex = engine.getPrefix() + "\\s(.+?)";
-		String contentCriteria = parseParam(regex);
+		String contentCriteria = parseSoloParam(regex);
 		if(contentCriteria != null) {
 			String folders = engine.getFolders();
 			String fileCriteria = engine.getFileCriteria();

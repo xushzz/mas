@@ -38,15 +38,15 @@ public class CommandFetch extends CommandBase {
 	@Override
 	public boolean handle() {
 		
-		singleParam = parseParam(KEY_FETCH + "\\s(.+?)"); 
-		if(singleParam != null) {
-			if(handleHttpRequest(singleParam)) {
+		solo = parseSoloParam(KEY_FETCH + "\\s(.+?)"); 
+		if(solo != null) {
+			if(handleHttpRequest(solo)) {
 				return true;
 			}
 
 			List<MexObject> links = new ArrayList<MexObject>();
 			List<String> records = new ArrayList<String>();
-			File file = parseFile(singleParam);
+			File file = parseFile(solo);
 			if(file != null) {
 				String filePath = file.getAbsolutePath();
 				if(FileOpener.isTextFile(filePath)) {
@@ -103,9 +103,9 @@ public class CommandFetch extends CommandBase {
 			return true;
 		}
 		
-		singleParam = parseParam(KEY_WEB_PRETTY_PRINT + KEY_HTTP_WWW);
-		if(singleParam != null) {
-			String pageUrl = equiHttpProtoclIfNeeded(singleParam);
+		solo = parseSoloParam(KEY_WEB_PRETTY_PRINT + KEY_HTTP_WWW);
+		if(solo != null) {
+			String pageUrl = equiHttpProtoclIfNeeded(solo);
 			WebReader xiu = new WebReader(pageUrl, g().getCharsetInUse(), true);
 			List<String> items = xiu.readIntoList();
 			String charsetInUse = xiu.getCharset();
@@ -117,9 +117,9 @@ public class CommandFetch extends CommandBase {
 			C.pl2("charset in use: " + charsetInUse + ", charset on server: " + serverCharset);
 		}
 		
-		singleParam = parseParam(KEY_WEB_UGLY_PRINT + KEY_HTTP_WWW);
-		if(singleParam != null) {
-			String pageUrl = equiHttpProtoclIfNeeded(singleParam);;
+		solo = parseSoloParam(KEY_WEB_UGLY_PRINT + KEY_HTTP_WWW);
+		if(solo != null) {
+			String pageUrl = equiHttpProtoclIfNeeded(solo);;
 			WebReader xiu = new WebReader(pageUrl, g().getCharsetInUse(), true);
 			String content = xiu.readIntoString();
 			String charsetInUse = xiu.getCharset();
@@ -142,9 +142,9 @@ public class CommandFetch extends CommandBase {
     		return true;
 		}
 		
-		singleParam = parseParam(KEY_DATETIME_TIMEZONE);
-		if(singleParam != null) {
-			List<TZRecord> records = TimeZoneManager.g().getTimeZones(singleParam, g().getLocale());
+		solo = parseSoloParam(KEY_DATETIME_TIMEZONE);
+		if(solo != null) {
+			List<TZRecord> records = TimeZoneManager.g().getTimeZones(solo, g().getLocale());
 			if(!EmptyUtil.isNullOrEmpty(records)) {
 				if(target instanceof TargetPDF) {
 					int[] cellsWidth = {5, 1, 5};
