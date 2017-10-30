@@ -29,4 +29,4 @@ ccy Chinese        display currency info containing Chinese: zh_HK, HKG, Chinese
 ccy..              display all currency info provided by the JRE
 dfs zh_TW          display date format symbols info for local zh_TW
 dfs..              display all date format symbols info provided by the JRE
-ver=GEEK-XCODE1.0.3-IVANKA  8/3/2017, IV
+ver=8/3/2017, IV  GEEK-XCODE1.0.3-IVANKA

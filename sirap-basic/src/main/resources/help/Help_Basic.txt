@@ -1,1 +1,1 @@
-ver=BASIC3.5.64-BANNON  10/30/2017, I
+ver=10/30/2017, I  Basic3.5.64-BANNON  

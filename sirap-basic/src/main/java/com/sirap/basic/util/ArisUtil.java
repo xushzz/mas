@@ -170,6 +170,18 @@ public class ArisUtil {
 		return xiu.getAllParts();
 	}
 	
+	public static List<String> getClassDetail(Class glass, String sourceLocation, boolean printException) {
+		ArisDetail xiu = new ArisDetail(glass, sourceLocation);
+		xiu.setPrintException(printException);
+		return xiu.getAllParts();
+	}
+	
+	public static List<String> getClassDetail(Class glass, boolean printException) {
+		ArisDetail xiu = new ArisDetail(glass);
+		xiu.setPrintException(printException);
+		return xiu.getAllParts();
+	}
+	
 	public static String sourceLocation(Class glass) {
 		CodeSource source = glass.getProtectionDomain().getCodeSource();
 		if(source != null && source.getLocation() != null) {

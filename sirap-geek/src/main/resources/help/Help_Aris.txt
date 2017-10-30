@@ -7,6 +7,6 @@ class com.a.Fury   display class detail of class Fury if exists
 cl com.a.Fury      display class detail of class Fury if exists
 cl com/a/Fury      display class detail of class Fury if exists
 cl com/Fury.class  display class detail of class Fury if exists
-cl com\a\Fury      display class detail of class Fury if exists
+cl com\a\Fury      display class detail of class Fury if exists, options: $+debug
 cl com\a\Fury criteria     display class detail of class wherever matching criteria
-ver=GEEK-ARIS1.0.6-DEMBELE  10/30/2017, I
+ver=10/30/2017, I  GEEK-ARIS1.0.6-DEMBELE

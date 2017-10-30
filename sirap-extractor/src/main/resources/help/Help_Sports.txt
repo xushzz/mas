@@ -13,4 +13,4 @@ eng-s              eng for England, -s for big five only, aka eng, esp, ita, ger
 eng-s criteria     list matches info that matching given criteria, courtesy of https://soccer.hupu.com 
 eng-s              options: $l=7 previous seven games from today, $n=7 next seven games from today
 uefa-s #8          #8   2017-09-13 02:45  D TA vs TB, #D for group D
-ver=EXTRACTOR-SPORTS1.0.2-KANE  10/29/2017, VII
+ver=10/29/2017, VII  EXTRACTOR-SPORTS1.0.2-KANE

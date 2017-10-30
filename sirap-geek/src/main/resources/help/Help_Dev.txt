@@ -23,4 +23,4 @@ up.QwErTy21        convert given string to upper case
 E:\abc.jar a&b     list out what is inside a jar with criteria, $+full,+size,+case
 E:\abc.jar!/a.txt  list out the content of given entry in given zip file, entry better be ascii file
 sw F:\a\b\c/de     replace / with \, replace \ with /, then print these two records if any different
-ver=GEEK-DEV1.0.29-HENGDA  9/15/2017, V
+ver=9/15/2017, V  GEEK-DEV1.0.29-HENGDA

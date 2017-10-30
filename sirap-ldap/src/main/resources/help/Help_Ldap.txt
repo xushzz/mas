@@ -10,4 +10,4 @@ la mail:*ding*     list users matching given filter expression, order by creatio
 la alias           [zhao, ghao, acc] for sAMAccountName
 la expression      site: http://blog.csdn.net/jbgtwang/article/details/39180915
 la 01107,m78fd     list users on LDAP server whose accounts are in the comma-separated string
-ver=SIRAP-LDAP1.0.2-ALWIN  2/12/2017, VII
+ver=2/12/2017, VII  SIRAP-LDAP1.0.2-ALWIN

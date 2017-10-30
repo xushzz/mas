@@ -162,7 +162,7 @@ public class CommandFile extends CommandBase {
 			
 			if(!target.isFileRelated() && StrUtil.endsWith(filePath, Konstants.SUFFIX_CLASS)) {
 				Class glass = IOUtil.loadClassFile(filePath);
-				export(ArisUtil.getClassDetail(glass, filePath));
+				export(ArisUtil.getClassDetail(glass, filePath, isDebug()));
 				return true;
 			}
 			

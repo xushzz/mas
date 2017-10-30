@@ -11,15 +11,16 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.sirap.basic.exception.MexException;
 import com.sirap.basic.util.ArisUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.StrUtil;
 
 @SuppressWarnings("rawtypes")
 public class ArisDetail {
+	
 	private Class glass;
 	private String sourceLocation;
+	private boolean printException;
 	private Set<String> imports = new TreeSet<>();
 
 	public ArisDetail(Class glass) {
@@ -31,6 +32,14 @@ public class ArisDetail {
 		this.sourceLocation = sourceLocation;
 	}
 	
+	public boolean isPrintException() {
+		return printException;
+	}
+
+	public void setPrintException(boolean printException) {
+		this.printException = printException;
+	}
+
 	private List<String> content = new ArrayList<>();
 	
 	public List<String> getAllParts() {
@@ -127,22 +136,27 @@ public class ArisDetail {
 	
 	private Object getFieldValue(Field item) {
 		Class type = item.getType();
+		item.setAccessible(true);
+		String arrValue = null;
+		Object value = null;
 		try {
-			item.setAccessible(true);
-			Object value = item.get(glass);
-			String arrValue = StrUtil.arrayToString(value);
-
-			if(arrValue != null) {
-				return arrValue;
-			} else if("char".equals(type.toString()) || Character.class.equals(type)) {
-				return "\'" + value + "\'";
-			} else if(String.class.equals(type)) {
-				return "\"" + value + "\"";
-			} else {
-				return value;
+			value = item.get(glass);
+			arrValue = StrUtil.arrayToString(value);
+		} catch(Exception ex) {
+			if(printException) {
+				String msg = "Exception when accessing {0} {1} of {2}, {3}";
+				C.pl(StrUtil.occupy(msg, type, item.getName(), glass, ex));
 			}
-		} catch (Exception ex) {
-			throw new MexException(ex);
+		}
+
+		if(arrValue != null) {
+			return arrValue;
+		} else if("char".equals(type.toString()) || Character.class.equals(type)) {
+			return "\'" + value + "\'";
+		} else if(String.class.equals(type)) {
+			return "\"" + value + "\"";
+		} else {
+			return value;
 		}
 	}
 

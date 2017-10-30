@@ -66,7 +66,7 @@ public class CommandAris extends CommandBase {
 				String jarEntryName = name.replace('.', '/') + ".class";
 				items = ArisUtil.siblingClasses(sourceLocation, jarEntryName);
 			} else {
-				items = ArisUtil.getClassDetail(glass);
+				items = ArisUtil.getClassDetail(glass, isDebug());
 			}
 			
 			if(EmptyUtil.isNullOrEmpty(mexCriteria)) {

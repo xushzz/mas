@@ -6,4 +6,4 @@ jieqi2017-2020     print 24 jieqi of given year, courtesy of ${24jieqi.url}
 jieri              show important domestic or aboard days in current month
 jieri $+all        show all important domestic or aboard days 
 jieri 09&China     filter and show some important domestic or aboard days 
-ver=EXTRACTOR-NONGLI1.0.1-XINGFULI  9/17/2017, VII
+ver=9/17/2017, VII  EXTRACTOR-NONGLI1.0.1-XINGFULI

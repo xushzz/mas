@@ -8,4 +8,4 @@ mei s/59                 list image links for specified category
 mei x/74                 list image links for specified organization
 mei taiwan               list image links for specified location, also for riben, zhongguo, hanguo
 mei.intro E:\lass.txt    fetch lass intros from lass path which locates in text file
-ver=EXTRACTOR-FANCY1.0.2-NAVAS  9/12/2017, II
+ver=9/12/2017, II  EXTRACTOR-FANCY1.0.2-NAVAS

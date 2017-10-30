@@ -7,4 +7,4 @@ so fire            search qihu360 photos, number is fixed as 60, courtesy of ${q
 phonex             display phonex social photo URLs, courtesy of ${phoenix.url}
 postcode,youbian   display all post code info, courtesy of ${youbian.postcode.url}
 areacode,quhao     display all area code info, courtesy of ${quhao.areacode.url}  
-ver=EXTRACTOR-WHOLESALE1.0.3-PATTEN  7/1/2017, VI
+ver=7/1/2017, VI  EXTRACTOR-WHOLESALE1.0.3-PATTEN
