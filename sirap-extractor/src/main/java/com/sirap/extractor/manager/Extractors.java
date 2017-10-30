@@ -56,16 +56,16 @@ public class Extractors {
 				String[] header = columnNames(lens.length);
 				{
 					int i = 0, k = 0;
-					String order = StrUtil.extendByAscii(header[i++], lens[k++]);
-					String team = StrUtil.extendByAscii(header[i++], lens[k++]);
-					String games = StrUtil.extendLeftwardByAscii(header[i++], lens[k++]);
-					String win = StrUtil.extendLeftwardByAscii(header[i++], lens[k++]);
-					String draw = StrUtil.extendLeftwardByAscii(header[i++], lens[k++]);
-					String lose = StrUtil.extendLeftwardByAscii(header[i++], lens[k++]);
-					String goals = StrUtil.extendLeftwardByAscii(header[i++], lens[k++]);
-					String goals2 = StrUtil.extendLeftwardByAscii(header[i++], lens[k++]);
-					String net = StrUtil.extendLeftwardByAscii(header[i++], lens[k++]);
-					String points = StrUtil.extendLeftwardByAscii(header[i++], lens[k++]);
+					String order = StrUtil.padRightAscii(header[i++], lens[k++]);
+					String team = StrUtil.padRightAscii(header[i++], lens[k++]);
+					String games = StrUtil.padLeftAscii(header[i++], lens[k++]);
+					String win = StrUtil.padLeftAscii(header[i++], lens[k++]);
+					String draw = StrUtil.padLeftAscii(header[i++], lens[k++]);
+					String lose = StrUtil.padLeftAscii(header[i++], lens[k++]);
+					String goals = StrUtil.padLeftAscii(header[i++], lens[k++]);
+					String goals2 = StrUtil.padLeftAscii(header[i++], lens[k++]);
+					String net = StrUtil.padLeftAscii(header[i++], lens[k++]);
+					String points = StrUtil.padLeftAscii(header[i++], lens[k++]);
 					String temp = StrUtil.occupy(template, order, team, games, win, draw, lose, goals, goals2, net, points);
 					mexItems.add(new MexObject(temp));
 				}
@@ -79,16 +79,16 @@ public class Extractors {
 				
 				while(ma.find()) {
 					int i = 1, k = 0;
-					String order = StrUtil.extend("#" + getPrettyText(ma.group(i++)), lens[k++]);
-					String team = StrUtil.extendByAscii(getPrettyText(ma.group(i++)), lens[k++]);
-					String games = StrUtil.extendLeftward(ma.group(i++), lens[k++]);
-					String win = StrUtil.extendLeftward(ma.group(i++), lens[k++]);
-					String draw = StrUtil.extendLeftward(ma.group(i++), lens[k++]);
-					String lose = StrUtil.extendLeftward(ma.group(i++), lens[k++]);
-					String goals = StrUtil.extendLeftward(ma.group(i++), lens[k++]);
-					String goals2 = StrUtil.extendLeftward(ma.group(i++), lens[k++]);
-					String net = StrUtil.extendLeftward(ma.group(i++), lens[k++]);
-					String points = StrUtil.extendLeftward(ma.group(i++), lens[k++]);
+					String order = StrUtil.padRight("#" + getPrettyText(ma.group(i++)), lens[k++]);
+					String team = StrUtil.padRightAscii(getPrettyText(ma.group(i++)), lens[k++]);
+					String games = StrUtil.padLeft(ma.group(i++), lens[k++]);
+					String win = StrUtil.padLeft(ma.group(i++), lens[k++]);
+					String draw = StrUtil.padLeft(ma.group(i++), lens[k++]);
+					String lose = StrUtil.padLeft(ma.group(i++), lens[k++]);
+					String goals = StrUtil.padLeft(ma.group(i++), lens[k++]);
+					String goals2 = StrUtil.padLeft(ma.group(i++), lens[k++]);
+					String net = StrUtil.padLeft(ma.group(i++), lens[k++]);
+					String points = StrUtil.padLeft(ma.group(i++), lens[k++]);
 					String temp = StrUtil.occupy(template, order, team, games, win, draw, lose, goals, goals2, net, points);
 					mexItems.add(new MexObject(temp));
 				}
@@ -157,15 +157,15 @@ public class Extractors {
 						lastGroup = car;
 					}
 					String order = car + ma.group(1);
-					String team = StrUtil.extendByAscii(getPrettyText(ma.group(2)), 16);
+					String team = StrUtil.padRightAscii(getPrettyText(ma.group(2)), 16);
 					String games = ma.group(3);
 					String win = ma.group(4);
 					String draw = ma.group(5);
 					String lose = ma.group(6);
-					String goals = StrUtil.extendLeftward(ma.group(7), 3);
-					String goals2 = StrUtil.extendLeftward(ma.group(8), 3);
-					String net = StrUtil.extendLeftward(ma.group(9), 3);
-					String points = StrUtil.extendLeftward(ma.group(10), 3);
+					String goals = StrUtil.padLeft(ma.group(7), 3);
+					String goals2 = StrUtil.padLeft(ma.group(8), 3);
+					String net = StrUtil.padLeft(ma.group(9), 3);
+					String points = StrUtil.padLeft(ma.group(10), 3);
 					temp = StrUtil.occupy(template, order, team, games, win, draw, lose, goals, goals2, net, points);
 					mexItems.add(new MexObject(temp));
 				}
@@ -262,10 +262,10 @@ public class Extractors {
 				
 				while(ma.find()) {
 					int i = 1;
-					String order = "#" + StrUtil.extend(getPrettyText(ma.group(i++)), 3);
-					String playerCN = StrUtil.extendByAscii(getPrettyText(ma.group(i++)), 22);
-					String team = StrUtil.extendByAscii(getPrettyText(ma.group(i++)), 16);
-					String goals = StrUtil.extend(getPrettyText(ma.group(i++)), 6);
+					String order = "#" + StrUtil.padRight(getPrettyText(ma.group(i++)), 3);
+					String playerCN = StrUtil.padRightAscii(getPrettyText(ma.group(i++)), 22);
+					String team = StrUtil.padRightAscii(getPrettyText(ma.group(i++)), 16);
+					String goals = StrUtil.padRight(getPrettyText(ma.group(i++)), 6);
 					temp = StrUtil.occupy(template, order, playerCN, team, goals);
 					mexItems.add(new MexObject(temp));
 				}
@@ -291,13 +291,13 @@ public class Extractors {
 				
 				while(ma.find()) {
 					int i = 1;
-					String order = "#" + StrUtil.extend(getPrettyText(ma.group(i++)), 3);
-					String playerCN = StrUtil.extendByAscii(getPrettyText(ma.group(i++)), 22);
-					String player = StrUtil.extend(getPrettyText(ma.group(i++)), 26);
-					String team = StrUtil.extendByAscii(getPrettyText(ma.group(i++)), 16);
-					String position = StrUtil.extendByAscii(getPrettyText(ma.group(i++)), 4);
-					String goals = StrUtil.extendLeftward(getPrettyText(ma.group(i++)), 3);
-					String penalty = StrUtil.extend(getPrettyText(ma.group(i++)), 3);
+					String order = "#" + StrUtil.padRight(getPrettyText(ma.group(i++)), 3);
+					String playerCN = StrUtil.padRightAscii(getPrettyText(ma.group(i++)), 22);
+					String player = StrUtil.padRight(getPrettyText(ma.group(i++)), 26);
+					String team = StrUtil.padRightAscii(getPrettyText(ma.group(i++)), 16);
+					String position = StrUtil.padRightAscii(getPrettyText(ma.group(i++)), 4);
+					String goals = StrUtil.padLeft(getPrettyText(ma.group(i++)), 3);
+					String penalty = StrUtil.padRight(getPrettyText(ma.group(i++)), 3);
 					temp = StrUtil.occupy(template, order, playerCN, player, team, position, goals, penalty);
 					mexItems.add(new MexObject(temp));
 				}
@@ -396,12 +396,12 @@ public class Extractors {
 
 				while(ma.find()) {
 					StringBuffer sb = StrUtil.sb();
-					String goodOrder = "#" + StrUtil.extend(ma.group(1), 2);
+					String goodOrder = "#" + StrUtil.padRight(ma.group(1), 2);
 					sb.append(goodOrder).append(space2);
-					String team = StrUtil.extendByAscii(getPrettyText(ma.group(2)), 12);
+					String team = StrUtil.padRightAscii(getPrettyText(ma.group(2)), 12);
 					sb.append(team).append(space2);
 					for(int k = 0; k < len; k++) {
-						String item = StrUtil.extendLeftward(ma.group(k + 3), 5);
+						String item = StrUtil.padLeft(ma.group(k + 3), 5);
 						sb.append(item).append(space2);
 					}
 					mexItems.add(new MexObject(sb.toString()));

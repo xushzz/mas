@@ -84,7 +84,7 @@ public class MatrixCalendar {
 			
 			for(int i = 0; i < list.size(); i++) {
 				String record = list.get(i);
-				String temp = StrUtil.extend(record, tempMaxLen + 2);
+				String temp = StrUtil.padRight(record, tempMaxLen + 2);
 				list.set(i, temp);
 			}
 		}

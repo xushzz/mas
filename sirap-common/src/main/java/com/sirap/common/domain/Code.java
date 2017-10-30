@@ -136,9 +136,9 @@ public class Code extends MexItem implements Comparable<Code> {
 	@Override
 	public void print() {
 		StringBuffer sb = new StringBuffer();
-		sb.append(StrUtil.extendNice(name, 10));
-		sb.append(StrUtil.extendNice(type, 20));
-		sb.append(StrUtil.extendNice(meaning, 40));
+		sb.append(StrUtil.padRight(name, 10));
+		sb.append(StrUtil.padRight(type, 20));
+		sb.append(StrUtil.padRight(meaning, 40));
 		
 		C.pl(sb);
 	}

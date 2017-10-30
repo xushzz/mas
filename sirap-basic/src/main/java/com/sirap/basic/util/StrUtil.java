@@ -416,58 +416,20 @@ public class StrUtil {
 		}
 	}
 	
-	public static String extendNice(String source, int targetLength) {
-		return extend(source, targetLength, true);
-	}
-
-	public static String extend(String source, int targetLength) {
-		return extend(source, targetLength, false);
-	}
-
-	public static String extend(String source, int targetLength, boolean isNiceWay) {
-		if(source == null) {
-			return null;
-		}
-		
-		int len = source.length();
-		int diff = targetLength - len;
-		if(diff <= 0) {
-			if(isNiceWay) {
-				return source + " ";
-			} else {
-				return source;
-			}
-		}
-		
-		StringBuffer sb = new StringBuffer(source);
-		for(int i = 0; i < diff; i++) {
-			sb.append(" ");
-		}
-
-		return sb.toString();
-	}
-
-	public static String extendByAscii(String source, int targetLength) {
-		return extendByAscii(source, targetLength, " ");
+	public static String padRight(String source, int targetLength) {
+		return pad(source, false, targetLength, " ", true);
 	}
 	
-	public static String extendByAscii(String source, int targetLength, String whatToFill) {
-		if(source == null) {
-			return null;
-		}
-		
-		int len = countOfAscii(source);
-		int diff = targetLength - len;
-		if(diff <= 0) {
-			return source;
-		}
-		
-		StringBuffer sb = new StringBuffer(source);
-		for(int i = 0; i < diff; i++) {
-			sb.append(whatToFill);
-		}
+	public static String padRight(String source, int targetLength, String whatToFill) {
+		return pad(source, false, targetLength, whatToFill, true);
+	}
 
-		return sb.toString();
+	public static String padRightAscii(String source, int targetLength) {
+		return pad(source, false, targetLength, " ", false);
+	}
+	
+	public static String padRightAscii(String source, int targetLength, String whatToFill) {
+		return pad(source, false, targetLength, whatToFill, false);
 	}
 	
 	public static int countOfAscii(String source) {
@@ -485,72 +447,53 @@ public class StrUtil {
 		return bs.length;
 	}
 	
-	public static String extendLeftward(String source, int targetLen) {
-		return extendLeftward(source, targetLen, " ");
+	public static String padLeft(String source, int targetLen) {
+		return pad(source, true, targetLen, " ", true);
 	}
 	
-	public static String extendLeftward(String source, int targetLen, String whatToFill) {
-		if(source == null) {
-			return null;
-		}
-		
-		int len = source.length();
-		int diff = targetLen - len;
-		if(diff <= 0) {
-			return source;
-		}
-		
-		StringBuffer sb = new StringBuffer();
-		for(int i = 0; i < diff; i++) {
-			sb.append(whatToFill);
-		}
-		sb.append(source);
-	
-		return sb.toString();
+	public static String padLeft(String source, int targetLen, String whatToFill) {
+		return pad(source, true, targetLen, whatToFill, true);
 	}
 
-	public static String extendLeftwardByAscii(String source, int targetLen) {
-		return extendLeftwardByAscii(source, targetLen, " ");
+	public static String padLeftAscii(String source, int targetLen) {
+		return pad(source, true, targetLen, " ", false);
 	}
 	
-	public static String extendLeftwardByAscii(String source, int targetLen, String whatToFill) {
-		if(source == null) {
-			return null;
-		}
+	public static String padLeftAscii(String source, int targetLen, String whatToFill) {
+		return pad(source, true, targetLen, whatToFill, false);
+	}
+	
+	public static String pad(String source, boolean padLeft, int targetLength, String whatToFill, boolean lengthAsCharNumbers) {
+		XXXUtil.nullCheck(source, "source");
+		XXXUtil.nullCheck(whatToFill, "whatToFill");
 		
-		int len = countOfAscii(source);
-		int diff = targetLen - len;
+		int currentLength = lengthAsCharNumbers ? source.length() : countOfAscii(source);
+		int diff = targetLength - currentLength;
 		if(diff <= 0) {
 			return source;
 		}
 		
-		StringBuffer sb = new StringBuffer();
-		for(int i = 0; i < diff; i++) {
-			sb.append(whatToFill);
+		StringBuffer some = sb();
+		int step = 1;
+		if(!lengthAsCharNumbers) {
+			step = countOfAscii(whatToFill);
+			int remain = diff % step;
+			if(remain != 0) {
+				int low = targetLength - remain, high = low + step;
+				XXXUtil.alert("Can't sharply pad {0} with {1} to get length {2}, {3} or {4} will be good.", source, whatToFill, targetLength, low, high);
+			}
 		}
-		sb.append(source);
-	
-		return sb.toString();
-	}
-	
-	public static String extend(String source, int targetLen, String whatToFill) {
-		if(source == null) {
-			return null;
-		}
-		
-		int len = source.length();
-		int diff = targetLen - len;
-		if(diff <= 0) {
-			return source;
+		for(int i = 0; i < diff; i = i + step) {
+			some.append(whatToFill);
 		}
 		
-		StringBuffer sb = new StringBuffer(source);
-		for(int i = 0; i < diff; i++) {
-			sb.append(whatToFill);
+		if(padLeft) {
+			return some.append(source).toString();
+		} else {
+			return source + some.toString();
 		}
-	
-		return sb.toString();
 	}
+	
 
 	public static String repeat(char c, int times) {
 		return repeat(c + "", times);

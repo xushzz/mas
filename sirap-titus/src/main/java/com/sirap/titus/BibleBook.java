@@ -49,7 +49,7 @@ public class BibleBook extends MexItem implements Cloneable {
 	}
 
 	public String getNameWithNiceOrder() {
-		String value = StrUtil.extendLeftward(order + "", 2, "0") + " " + name;
+		String value = StrUtil.padLeft(order + "", 2, "0") + " " + name;
 		return value;
 	}
 

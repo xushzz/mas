@@ -145,10 +145,10 @@ public class SportsMatchItem extends MexItem {
 	public String toPrint(String options) {
 		int spaceNumber = OptionUtil.readIntegerPRI(options, "space", 3);
 		String spaceK = StrUtil.repeat(' ', spaceNumber);
-		String goodOrder = "#" + StrUtil.extend(order, 3);
+		String goodOrder = "#" + StrUtil.padRight(order, 3);
 		int len = 14;
-		String teamA = StrUtil.extendByAscii(homeTeam, len);
-		String teamB = StrUtil.extendLeftwardByAscii(awayTeam, len);
+		String teamA = StrUtil.padRightAscii(homeTeam, len);
+		String teamB = StrUtil.padLeftAscii(awayTeam, len);
 		StringBuffer sb = StrUtil.sb();
 		sb.append(goodOrder).append(spaceK);
 		sb.append(datetime).append(spaceK);
@@ -159,10 +159,10 @@ public class SportsMatchItem extends MexItem {
 			sb.append(group).append(spaceK);
 		}
 		if(round != null) {
-			sb.append(StrUtil.extendByAscii(round, 6)).append(spaceK);
+			sb.append(StrUtil.padRightAscii(round, 6)).append(spaceK);
 		}
 		sb.append(teamA).append(spaceK);
-		String goodStatus = StrUtil.extend(status, 3);
+		String goodStatus = StrUtil.padRight(status, 3);
 		sb.append(goodStatus).append(spaceK);
 		sb.append(teamB).append(spaceK);
 		
@@ -180,10 +180,10 @@ public class SportsMatchItem extends MexItem {
 
 	public String toString() {
 		String space2 = "  ";
-		String goodOrder = "#" + StrUtil.extend(order, 3);
+		String goodOrder = "#" + StrUtil.padRight(order, 3);
 		int len = 14;
-		String teamA = StrUtil.extendByAscii(homeTeam, len);
-		String teamB = StrUtil.extendLeftwardByAscii(awayTeam, len);
+		String teamA = StrUtil.padRightAscii(homeTeam, len);
+		String teamB = StrUtil.padLeftAscii(awayTeam, len);
 		StringBuffer sb = StrUtil.sb();
 		sb.append(goodOrder).append(space2);
 		sb.append(datetime).append(space2);
@@ -194,10 +194,10 @@ public class SportsMatchItem extends MexItem {
 			sb.append(group).append(space2);
 		}
 		if(round != null) {
-			sb.append(StrUtil.extendByAscii(round, 6, " ")).append(space2);
+			sb.append(StrUtil.padRightAscii(round, 6, " ")).append(space2);
 		}
 		sb.append(teamA).append(space2);
-		String goodStatus = StrUtil.extend(status, 3);
+		String goodStatus = StrUtil.padRight(status, 3);
 		sb.append(goodStatus).append(space2);
 		sb.append(teamB).append(space2);
 		

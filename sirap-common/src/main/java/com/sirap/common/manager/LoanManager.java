@@ -35,7 +35,7 @@ public class LoanManager {
 
 			InstallmentRecord record = new InstallmentRecord(capital, regularInterestBD, decreasedInterestBD);
 
-			String temp = StrUtil.extendLeftward(i + 1 + "", 2);
+			String temp = StrUtil.padLeft(i + 1 + "", 2);
 			record.setOrder(temp + ")");
 			items.add(record.toString());
 			

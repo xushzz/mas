@@ -139,7 +139,7 @@ public class China24JieqiExtractor extends Extractor<MexObject> {
 		StringBuffer sb = new StringBuffer();
 		while(m.find()) {
 			String numbers = m.group();
-			String fixed = StrUtil.extendLeftward(numbers, 2, "0");
+			String fixed = StrUtil.padLeft(numbers, 2, "0");
 			m.appendReplacement(sb, fixed);
 		}
 		m.appendTail(sb);
@@ -149,7 +149,7 @@ public class China24JieqiExtractor extends Extractor<MexObject> {
 	
 	public static String start(String dates) {
 		List<String> duo = StrUtil.findAllMatchedItems("\\d{1,2}", dates);
-		String start = StrUtil.extendLeftward(duo.get(0), 2, "0") +StrUtil.extendLeftward(duo.get(1), 2, "0");
+		String start = StrUtil.padLeft(duo.get(0), 2, "0") +StrUtil.padLeft(duo.get(1), 2, "0");
 		
 		return start;
 	}

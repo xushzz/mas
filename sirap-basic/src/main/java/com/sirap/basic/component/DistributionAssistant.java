@@ -23,7 +23,7 @@ public class DistributionAssistant {
 				display = number + "";
 			}
 			
-			String record = prefix + StrUtil.extendNice(key, lenOfKey + 2) + display;
+			String record = prefix + StrUtil.padRight(key, lenOfKey + 2) + display;
 			C.pl(record);
 		}
 		

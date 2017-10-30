@@ -94,8 +94,8 @@ public class WeatherRecord extends MexItem {
 	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
-		sb.append(StrUtil.extend(city, 6));
-		sb.append(StrUtil.extend(weather, 10));
+		sb.append(StrUtil.padRight(city, 6));
+		sb.append(StrUtil.padRight(weather, 10));
 		sb.append(celsius);
 		
 		return sb.toString();

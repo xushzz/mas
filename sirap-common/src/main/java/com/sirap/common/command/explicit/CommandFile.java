@@ -551,7 +551,7 @@ public class CommandFile extends CommandBase {
 						} else {
 							temp = StrUtil.connect(allItems, connector);
 						}
-						String lineNumber = showLineNumber ? StrUtil.occupy("L{0} ", StrUtil.extend(line + "", maxLen)) : "";
+						String lineNumber = showLineNumber ? StrUtil.occupy("L{0} ", StrUtil.padRight(line + "", maxLen)) : "";
 						items.add(lineNumber + temp);
 					}
 					

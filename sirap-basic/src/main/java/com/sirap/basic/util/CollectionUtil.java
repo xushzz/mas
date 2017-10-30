@@ -289,7 +289,7 @@ public class CollectionUtil {
 			int lineNumber = i + 1;
 			String line = "L" + lineNumber;
 			if(align) {
-				line = StrUtil.extend(line, maxLen + 1);
+				line = StrUtil.padRight(line, maxLen + 1);
 			}
 			
 			items.add(line + " " + records.get(i));

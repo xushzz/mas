@@ -88,10 +88,10 @@ public class AsciiRecord extends MexItem {
 	public static String getHeader() {
 		StringBuffer sb = new StringBuffer();
 		
-		sb.append(StrUtil.extend("[Binary", 12));
-		sb.append(StrUtil.extend("Octal", 7));
-		sb.append(StrUtil.extend("Dec", 7));
-		sb.append(StrUtil.extend("Hex", 6));
+		sb.append(StrUtil.padRight("[Binary", 12));
+		sb.append(StrUtil.padRight("Octal", 7));
+		sb.append(StrUtil.padRight("Dec", 7));
+		sb.append(StrUtil.padRight("Hex", 6));
 		sb.append("detail]");
 		
 		return sb.toString();

@@ -121,8 +121,8 @@ public class ForexRateRecord extends MexItem implements Comparable<ForexRateReco
 		int maxLenOfAmount = OptionUtil.readIntegerPRI(options, "maxLenOfAmount", 25);
 		StringBuffer sb = new StringBuffer();
 		sb.append(code);
-		sb.append("  ").append(StrUtil.extend(displayName, maxLenOfCurrency));
-		sb.append("  ").append(StrUtil.extendLeftward(getDisplayAmount(), maxLenOfAmount, " "));
+		sb.append("  ").append(StrUtil.padRight(displayName, maxLenOfCurrency));
+		sb.append("  ").append(StrUtil.padLeft(getDisplayAmount(), maxLenOfAmount, " "));
 		
 		return sb.toString();
 	}

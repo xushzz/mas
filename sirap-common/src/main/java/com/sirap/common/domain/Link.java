@@ -105,7 +105,7 @@ public class Link extends MexItem {
 	@Override
 	public String toPrint() {
 		StringBuffer sb = new StringBuffer();
-		sb.append(StrUtil.extend(name, 50));
+		sb.append(StrUtil.padRight(name, 50));
 		sb.append(href);
 		
 		return sb.toString();

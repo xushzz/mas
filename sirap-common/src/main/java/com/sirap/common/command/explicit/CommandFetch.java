@@ -12,6 +12,7 @@ import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.IOUtil;
+import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.WebReader;
 import com.sirap.common.command.CommandBase;
@@ -26,8 +27,7 @@ import com.sirap.common.manager.TimeZoneManager;
 public class CommandFetch extends CommandBase {
 
 	private static final String KEY_FETCH = "f";
-	private static final String KEY_WEB_PRETTY_PRINT = "=";
-	private static final String KEY_WEB_UGLY_PRINT = "==";
+	private static final String KEY_WEB_CONTENT_PRINT = "(={1,2})";
 	private static final String KEY_DATETIME_GMT = "d.";
 	private static final String KEY_DATETIME_TIMEZONE = "d\\.(.{1,20})";
 
@@ -103,32 +103,29 @@ public class CommandFetch extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_WEB_PRETTY_PRINT + KEY_HTTP_WWW);
-		if(solo != null) {
-			String pageUrl = equiHttpProtoclIfNeeded(solo);
+		params = parseParams(KEY_WEB_CONTENT_PRINT + KEY_HTTP_WWW);
+		if(params != null) {
+			boolean isPretty = params[0].length() == 1;
+			String pageUrl = equiHttpProtoclIfNeeded(params[1]);
 			WebReader xiu = new WebReader(pageUrl, g().getCharsetInUse(), true);
-			List<String> items = xiu.readIntoList();
+			xiu.setMethodPost(OptionUtil.readBooleanPRI(options, "post", false));
+			String tag;
+			if(isPretty) {
+				List<String> items = xiu.readIntoList();
+				tag = "lines: " + items.size();
+				export(items);
+			} else {
+				String content = xiu.readIntoString();
+				tag = "chars: " + content.length();
+				export(content);
+			}
 			String charsetInUse = xiu.getCharset();
 			String serverCharset = xiu.getServerCharset();
 			if(serverCharset == null) {
 				serverCharset = "unclear";
 			}
-			export(items);
-			C.pl2("charset in use: " + charsetInUse + ", charset on server: " + serverCharset);
-		}
-		
-		solo = parseSoloParam(KEY_WEB_UGLY_PRINT + KEY_HTTP_WWW);
-		if(solo != null) {
-			String pageUrl = equiHttpProtoclIfNeeded(solo);;
-			WebReader xiu = new WebReader(pageUrl, g().getCharsetInUse(), true);
-			String content = xiu.readIntoString();
-			String charsetInUse = xiu.getCharset();
-			String serverCharset = xiu.getServerCharset();
-			if(serverCharset == null) {
-				serverCharset = "unclear";
-			}
-			export(content);
-			C.pl2("chars: " + content.length() + ", charset in use: " + charsetInUse + ", charset on server: " + serverCharset);
+			String template = "{0}, charset: {1}, server: {2}.";
+			C.pl2(StrUtil.occupy(template, tag, charsetInUse, serverCharset));
 		}
 		
 		if(is(KEY_DATETIME_GMT)) {

@@ -59,7 +59,7 @@ public class CommandHelp extends CommandBase {
 			Map<String, Object> allHelpMeanings = getAllHelpMeanings();
 			for(String key : allKeys) {
 				String fileName = getHelpFileName(key);
-				String prefix = StrUtil.extend(key, maxLen, " ");
+				String prefix = StrUtil.padLeft(key, maxLen, " ");
 				List<String> items = FileUtil.readResourceFilesIntoList(fileName, prefix);
 				if(!EmptyUtil.isNullOrEmpty(items)) {
 					items = occupyDollarKeys(items, allHelpMeanings);

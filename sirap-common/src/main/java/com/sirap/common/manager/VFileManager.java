@@ -140,8 +140,8 @@ public class VFileManager {
 				return null;
 			}
 			
-			season = StrUtil.extendLeftward(season, 2, "0");
-			episode = StrUtil.extendLeftward(episode, 2, "0");
+			season = StrUtil.padLeft(season, 2, "0");
+			episode = StrUtil.padLeft(episode, 2, "0");
 			String temp = "S" + season + "E" + episode;
 			String criteria = source.replace(m.group(), temp);
 			

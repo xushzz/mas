@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sirap.basic.exception.MexException;
-import com.sirap.basic.tool.ArisDetail;
 
 @SuppressWarnings("rawtypes")
 public class ObjectUtil {

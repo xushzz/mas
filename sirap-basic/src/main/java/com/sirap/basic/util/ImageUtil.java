@@ -38,7 +38,7 @@ public class ImageUtil {
 				ThreadUtil.sleepInSeconds(1);
 			}
 			int index = i + 1;
-			String indexStr = StrUtil.extendLeftward(index + "", (count + "").length(), "0");
+			String indexStr = StrUtil.padLeft(index + "", (count + "").length(), "0");
 			String imagePath = StrUtil.occupy(temp, DateUtil.timestamp(), indexStr, format);
 			ScreenCaptor fang = new ScreenCaptor();
 			RenderedImage image = isEntireScreen ? fang.captureEntireScreen() : fang.captureCurrentWindow();

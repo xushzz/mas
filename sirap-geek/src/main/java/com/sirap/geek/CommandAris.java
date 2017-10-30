@@ -53,19 +53,26 @@ public class CommandAris extends CommandBase {
 			return true;
 		}
 
-		regex = KEY_PRINT_CLASS + "\\s+([a-zA-Z\\d_\\.\\$/\\\\]+)(|\\*)";
+		regex = KEY_PRINT_CLASS + "\\s+([a-zA-Z\\d_\\.\\$/\\\\]+)(|\\*)(|\\s\\S+)";
 		params = parseParams(regex);
 		if(params != null) {
 			String name = params[1].replace('/', '.').replace('\\', '.').replaceAll("\\.class$", "");
 			boolean showSameClassesInSamePackage = !EmptyUtil.isNullOrEmpty(params[2]);
+			String mexCriteria = params[3];
 			Class glass = ObjectUtil.forName(name);
 			String sourceLocation = ArisUtil.sourceLocation(glass);
+			List<String> items = null;
 			if(showSameClassesInSamePackage) {
 				String jarEntryName = name.replace('.', '/') + ".class";
-				export(ArisUtil.siblingClasses(sourceLocation, jarEntryName));
+				items = ArisUtil.siblingClasses(sourceLocation, jarEntryName);
 			} else {
-				List<String> items = ArisUtil.getClassDetail(glass);
+				items = ArisUtil.getClassDetail(glass);
+			}
+			
+			if(EmptyUtil.isNullOrEmpty(mexCriteria)) {
 				export(items);
+			} else {
+				exportItems(items, mexCriteria);
 			}
 			
 			return true;

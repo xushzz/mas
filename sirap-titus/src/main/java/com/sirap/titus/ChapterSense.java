@@ -23,7 +23,7 @@ public class ChapterSense extends MexItem {
 
 	public String getChapterNameWithNiceOrder() {
 		int maxLen = (book.getMaxChapter() + "").length();
-		String value = StrUtil.extendLeftward(chapterNumber + "", maxLen, "0");
+		String value = StrUtil.padLeft(chapterNumber + "", maxLen, "0");
 		return value;
 	}
 

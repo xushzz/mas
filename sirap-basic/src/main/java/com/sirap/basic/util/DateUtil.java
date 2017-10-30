@@ -361,7 +361,7 @@ public class DateUtil {
 		}
 		
 		if(month != null) {
-			return StrUtil.extendLeftward(month, 2, "0");
+			return StrUtil.padLeft(month, 2, "0");
 		}
 		
 		arr = SYMBOLS.getMonths();
@@ -374,7 +374,7 @@ public class DateUtil {
 		}
 		
 		if(month != null) {
-			return StrUtil.extendLeftward(month, 2, "0");
+			return StrUtil.padLeft(month, 2, "0");
 		}
 		
 		return null;
@@ -562,8 +562,8 @@ public class DateUtil {
 		
 		StringBuffer sb = new StringBuffer();
 		sb.append(hours).append(":");
-		sb.append(StrUtil.extendLeftward(minutes + "", 2, "0")).append(":");
-		sb.append(StrUtil.extendLeftward(seconds + "", 2, "0"));
+		sb.append(StrUtil.padLeft(minutes + "", 2, "0")).append(":");
+		sb.append(StrUtil.padLeft(seconds + "", 2, "0"));
 		
 		return sb.toString();
 	}

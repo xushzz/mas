@@ -98,7 +98,7 @@ public class RioCalendar {
 		StringBuffer sb = new StringBuffer();
 		for(int i = 1 ; i < weekDays.length; i++) {
 			String weekDay = fixWeekDay(weekDays[i]);
-			sb.append(StrUtil.extendLeftward(weekDay + " ", lenOfWeekDay));
+			sb.append(StrUtil.padLeft(weekDay + " ", lenOfWeekDay));
 		}
 		
 		records.add(sb.toString());
@@ -125,7 +125,7 @@ public class RioCalendar {
 		StringBuffer sb = new StringBuffer();
 		int count = 0;
 		for(int i = 1 ; i < weekDayOfFirstDayOfMonth; i++) {
-			sb.append(StrUtil.extend(" ", lenOfDayOfMonthStr));
+			sb.append(StrUtil.padRight(" ", lenOfDayOfMonthStr));
 			count++;
 		}
 
@@ -138,7 +138,7 @@ public class RioCalendar {
 			} else {
 				tempStr = " " + dayOfMonth + " ";
 			}
-			String decoratedDayOfMonth = StrUtil.extendLeftward(tempStr + "", 4);
+			String decoratedDayOfMonth = StrUtil.padLeft(tempStr + "", 4);
 			sb.append(decoratedDayOfMonth);
 			
 			count++;

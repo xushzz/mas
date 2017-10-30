@@ -27,7 +27,7 @@ public class KardManager {
 	}
 	
 	public void project(int year, int month, List<String> records) {
-		String monthStr = StrUtil.extendLeftward(month + "", 2, "0");
+		String monthStr = StrUtil.padLeft(month + "", 2, "0");
 		project(year + monthStr, records);
 	}
 

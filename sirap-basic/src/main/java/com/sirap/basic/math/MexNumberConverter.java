@@ -89,7 +89,7 @@ public class MexNumberConverter {
 		for(int i = 0; i < maxLen.size(); i++) {
 			String item = items.get(i);
 			int len = maxLen.get(i) + 2;
-			String value = StrUtil.extend(item, len);
+			String value = StrUtil.padRight(item, len);
 			sb.append(value);
 		}
 		

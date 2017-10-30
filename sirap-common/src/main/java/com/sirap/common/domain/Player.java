@@ -109,14 +109,14 @@ public class Player extends MexItem implements Cloneable, Comparable<Player> {
 	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
-		sb.append(StrUtil.extend(team, 25));
-		sb.append(StrUtil.extend(number, 5));
-		sb.append(StrUtil.extend(name, 25));
-		sb.append(StrUtil.extend(position, 5));
-		sb.append(StrUtil.extend(dob, 18));
-		sb.append(StrUtil.extend(country, 15));
-		sb.append(StrUtil.extend(height, 6));
-		sb.append(StrUtil.extend(weight, 5));
+		sb.append(StrUtil.padRight(team, 25));
+		sb.append(StrUtil.padRight(number, 5));
+		sb.append(StrUtil.padRight(name, 25));
+		sb.append(StrUtil.padRight(position, 5));
+		sb.append(StrUtil.padRight(dob, 18));
+		sb.append(StrUtil.padRight(country, 15));
+		sb.append(StrUtil.padRight(height, 6));
+		sb.append(StrUtil.padRight(weight, 5));
 		
 		return sb.toString();
 	}

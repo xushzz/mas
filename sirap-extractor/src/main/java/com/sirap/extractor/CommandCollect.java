@@ -255,8 +255,8 @@ public class CommandCollect extends CommandBase {
 			int month = Integer.parseInt(params[0]);
 			int day = Integer.parseInt(params[1]);
 			XXXUtil.checkMonthDayRange(month, day);
-			String month2 = StrUtil.extendLeftward(month + "", 2, "0");
-			String day2 = StrUtil.extendLeftward(day + "", 2, "0");
+			String month2 = StrUtil.padLeft(month + "", 2, "0");
+			String day2 = StrUtil.padLeft(day + "", 2, "0");
 			String urlParam = month2 + "-" + day2;
 			export(Extractors.fetchHistoryEventsByDay(urlParam));
 			return true;
@@ -272,10 +272,10 @@ public class CommandCollect extends CommandBase {
 			int[] maxDays = DateUtil.MAX_DAY_IN_MONTH_LEAP_YEAR;
 			List<MexObject> urlParams = Lists.newArrayList();
 			for(int k = 1; k <= 12; k++) {
-				String month = StrUtil.extendLeftward("" + k, 2, "0");
+				String month = StrUtil.padLeft("" + k, 2, "0");
 				int max = maxDays[k - 1];
 				for(int i = 1; i <= max; i++) {
-					String day = StrUtil.extendLeftward("" + i, 2, "0");
+					String day = StrUtil.padLeft("" + i, 2, "0");
 					urlParams.add(new MexObject(month + "-" + day));
 				}
 			}
@@ -297,8 +297,8 @@ public class CommandCollect extends CommandBase {
 			int day = Integer.parseInt(params[1]);
 			XXXUtil.checkMonthDayRange(month, day);
 			String month2 = DateUtil.getJanuaryLikeMonth(month, true).toLowerCase();
-			String month3 = StrUtil.extendLeftward(month + "", 2, "0");
-			String day2 = StrUtil.extendLeftward(day + "", 2, "0");
+			String month3 = StrUtil.padLeft(month + "", 2, "0");
+			String day2 = StrUtil.padLeft(day + "", 2, "0");
 			String urlParam = month2 + "-" + day2;
 			String monthDay = month3 + "/" + day2;
 			export(Extractors.fetchHistoryEventsByDay2(urlParam, monthDay));

@@ -161,7 +161,7 @@ public class ExtractorNetease {
 			String page = "";
 			if(i > 1) {
 				String pageTemp = i + "";
-				page = "_" + StrUtil.extendLeftward(pageTemp, 2, "0");
+				page = "_" + StrUtil.padLeft(pageTemp, 2, "0");
 			}
 			String url = StrUtil.occupy(urlTemplate, page);
 			links.add(new Link(url));

@@ -43,10 +43,10 @@ public class GeekManager {
 		List<MexItem> items = new ArrayList<>();
 		for(int i = range[0]; i <= range[1]; i++) {
 			AsciiRecord item = new AsciiRecord(i);
-			String binary = StrUtil.extendLeftward(Integer.toBinaryString(i), 8, "0");
-			String octal = StrUtil.extendLeftward(Integer.toOctalString(i), 3, "0");
-			String decimal = StrUtil.extendLeftward(Integer.toString(i), 3, "0");
-			String hex = StrUtil.extendLeftward(Integer.toHexString(i), 2, "0").toUpperCase();
+			String binary = StrUtil.padLeft(Integer.toBinaryString(i), 8, "0");
+			String octal = StrUtil.padLeft(Integer.toOctalString(i), 3, "0");
+			String decimal = StrUtil.padLeft(Integer.toString(i), 3, "0");
+			String hex = StrUtil.padLeft(Integer.toHexString(i), 2, "0").toUpperCase();
 			String info = XCodeUtil.ASCII_INFO.get(i);
 			
 			item.setBinary(binary);
@@ -94,7 +94,7 @@ public class GeekManager {
 		for(int k = 0; k < charsets.size(); k++) {
 			String code = charsets.get(k);
 			StringBuffer sb = new StringBuffer();
-			String prefix = StrUtil.extend(code, maxLen);
+			String prefix = StrUtil.padRight(code, maxLen);
 			sb.append(prefix).append("    ");
 			for(int i = 0; i < source.length(); i++) {
 				char ch = source.charAt(i);

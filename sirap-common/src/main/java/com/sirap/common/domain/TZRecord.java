@@ -86,10 +86,10 @@ public class TZRecord extends MexItem {
 	
 	public String toPrint(Locale locale, int maxLen) {
 		StringBuffer sb = new StringBuffer();
-		sb.append(StrUtil.extendNice(id, maxLen + 2));
+		sb.append(StrUtil.padRight(id, maxLen + 2));
 		if(diff != null) {
 			String signDiff = StrUtil.signValue(diff);
-			sb.append(StrUtil.extendNice(signDiff, 4));
+			sb.append(StrUtil.padRight(signDiff, 4));
 		}
 		if(datetime != null) {
 			sb.append(DateUtil.displayDate(datetime, dateFormat, locale));
