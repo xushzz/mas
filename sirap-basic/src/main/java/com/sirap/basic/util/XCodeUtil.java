@@ -4,12 +4,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.text.DateFormatSymbols;
-import java.util.ArrayList;
-import java.util.Currency;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,7 +14,6 @@ import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
 import com.sirap.basic.component.Konstants;
-import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.tool.C;
 
@@ -119,41 +114,20 @@ public class XCodeUtil {
 	}
 	
 	public static String decodeHexChars(String fourOrSixHex, String code) throws MexException {
-		byte[] bs = null;
-//		if(StrUtil.equals(code, Konstants.CODE_GBK) || StrUtil.equals(code, Konstants.CODE_UNICODE)) {
-			
-		if(StrUtil.equals(code, Konstants.CODE_UTF8)) {
-			String regex = REGEX_HEX_TAKE + REGEX_HEX_TAKE + REGEX_HEX_TAKE;
-			String[] params = StrUtil.parseParams(regex, fourOrSixHex);
-			if(params == null) {
-				throw new MexException("invalid source " + fourOrSixHex + ", " + code);
-			}
-			int len = params.length;
-			bs = new byte[len];
-			for(int i = 0; i < len; i++) {
-				String hex = params[i];
-				bs[i] = StrUtil.hexCharsToByte(hex);
-			}
-		} else {
-			String regex = REGEX_HEX_TAKE + REGEX_HEX_TAKE;
-			String[] params = StrUtil.parseParams(regex, fourOrSixHex);
-			if(params == null) {
-				throw new MexException("invalid source " + fourOrSixHex + ", " + code);
-			}
-			int len = params.length;
-			bs = new byte[len];
-			for(int i = 0; i < len; i++) {
-				String hex = params[i];
-				bs[i] = StrUtil.hexCharsToByte(hex);
-			}
+		List<String> items = StrUtil.findAllMatchedItems(REGEX_HEX, fourOrSixHex);
+		
+		int size = items.size();
+		byte[] bytes = new byte[size];
+		for(int k = 0; k < size; k++) {
+			int value = Integer.parseInt(items.get(k), 16);
+			bytes[k] = (byte)value; 
 		}
 		
 		try {
-			String value = new String(bs, code);
+			String value = new String(bytes, code);
 			return value;
 		} catch(Exception ex) {
-			ex.printStackTrace();
-			throw new MexException(ex.getMessage());
+			throw new MexException(ex);
 		}
 	}
 	
@@ -205,35 +179,20 @@ public class XCodeUtil {
 	 * @return 万A
 	 */
 	public static String replaceHexChars(String source, String code) {
-		if(source == null) {
-			return null;
-		}
+		XXXUtil.nullCheck(source, "source");
+		XXXUtil.nullCheck(code, "code");
 		
 		String temp = source;
-		String regex = null;
-		if (StrUtil.equals(code, Konstants.CODE_UTF8)) {
-			regex = "\\\\u([0-9A-F]{6})";
-		} else {
-			regex = "\\\\u([0-9A-F]{4})";
+		int[] digits = {6, 4, 2};
+		String late = "\\\\u([0-9A-F]{{0}})";
+		for(int k = 0; k < digits.length; k++) {
+			String regex = StrUtil.occupy(late, digits[k]);
+			Matcher mc = StrUtil.createMatcher(regex, source);
+			while(mc.find()) {
+				String value = decodeHexChars(mc.group(1), code);
+				temp = temp.replace(mc.group(), value);
+			}
 		}
-		
-//		if(StrUtil.equals(code, Konstants.CODE_GBK) || StrUtil.equals(code, Konstants.CODE_UNICODE)) {
-		
-		Matcher mc = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(temp);
-		while(mc.find()) {
-			String tempChar = mc.group(1);
-			String value = decodeHexChars(tempChar, code);
-			temp = temp.replace(mc.group(), value);
-		}
-		
-		regex = "\\\\u([0-9A-F]{2})";
-		mc = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(temp);
-		while(mc.find()) {
-			String tempChar = mc.group(1);
-			String value = (char)Integer.parseInt(tempChar, 16) + "";
-			temp = temp.replace(mc.group(), value);
-		}
-		
 		
 		return temp;
 	}
