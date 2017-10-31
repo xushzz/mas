@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-import com.sirap.basic.domain.MexObject;
+import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.Person;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.tool.C;
@@ -78,11 +78,11 @@ public class IDCardUtil {
 	}
 	
 	public static String getAreaInfo(String areaCode, List<String> allAreas) {
-		List<MexObject> items = CollectionUtil.search(allAreas, areaCode);
+		List<MexItem> items = CollectionUtil.filterRaw(allAreas, areaCode);
 		if(items.isEmpty()) {
 			return areaCode;
 		} else if(items.size() == 1) {
-			String record = items.get(0).getString().replace(areaCode, "").trim();
+			String record = items.get(0).toString().replace(areaCode, "").trim();
 			return record;
 		} else {
 			C.pl("Multiple records found, totally " + items.size());

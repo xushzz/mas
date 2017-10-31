@@ -436,13 +436,13 @@ public class StrUtil {
 		int len = 0;
 		for(int k = 0; k < source.length(); k++) {
 			char car = source.charAt(k);
-			len += howManyAscii(car);
+			len += countOfAscii(car);
 		}
 		
 		return len;
 	}
 	
-	public static int howManyAscii(char car) {
+	public static int countOfAscii(char car) {
 		byte[] bs = (car + "").getBytes();
 		return bs.length;
 	}

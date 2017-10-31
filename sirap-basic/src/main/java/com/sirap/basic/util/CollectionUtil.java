@@ -18,22 +18,12 @@ import com.sirap.basic.search.MexFilter;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class CollectionUtil {
 
-	public static List reverseOrder(List list) {
+	public static List reverse(List list) {
 		XXXUtil.nullCheck(list, "list");
 		List newList = new ArrayList();
 		
 		for(int i = list.size() - 1; i >= 0; i--) {
 			newList.add(list.get(i));
-		}
-		
-		return newList;
-	}
-
-	public static <T> List<T> convert(List list) {
-		List<T> newList = new ArrayList<T>();
-		
-		if(list != null) {
-			newList.addAll(list);
 		}
 		
 		return newList;
@@ -61,29 +51,6 @@ public class CollectionUtil {
 		}
 		
 		return subList;
-	}
-	
-	public static <T extends MexItem> List<T> map2List(Map<String, ? extends Collection<T>> map) {
-		List<T> allItems = new ArrayList<T>();
-		Iterator<String> it = map.keySet().iterator();
-		while(it.hasNext()) {
-			String key = it.next();
-			allItems.addAll(map.get(key));
-		}
-		
-		return allItems;
-	}
-	
-	public static List map2RegularList(Map map) {
-		List allItems = new ArrayList();
-		Iterator<String> it = map.keySet().iterator();
-		while(it.hasNext()) {
-			Object key = it.next();
-			Object value = map.get(key);
-			allItems.add(key + "=" + value);
-		}
-		
-		return allItems;
 	}
 	
 	public static void putAndIncrease(Map<String, Integer> typeValueMap, String type) {
@@ -190,33 +157,15 @@ public class CollectionUtil {
 		return records;
 	}
 	
-	public static List<MexObject> toMexedObjects(List items) {
-		List<MexObject> records = new ArrayList<MexObject>();
+	public static List<MexItem> toMexItems(List items) {
+		List<MexItem> records = new ArrayList<>();
 		
 		for(Object item:items) {
-			records.add(new MexObject(item));
-		}
-		
-		return records;
-	}
-	
-	public static List<Object> toRegularObjects(List<MexObject> items) {
-		List<Object> records = new ArrayList<Object>();
-		
-		for(MexObject item:items) {
-			records.add(item.getObj());
-		}
-		
-		return records;
-	}
-	
-	public static List<String> filterNullItems(List items) {
-		List<String> records = new ArrayList<String>();
-		for(Object obj:items) {
-			if(obj == null) {
-				continue;
+			if(item instanceof MexItem) {
+				records.add((MexItem)item);
+			} else {
+				records.add(new MexObject(item));
 			}
-			records.add(obj.toString());
 		}
 		
 		return records;
@@ -242,6 +191,10 @@ public class CollectionUtil {
 		
 		return files;
 	}
+	
+	public static List<MexItem> filterRaw(List items, String criteria) {
+		return filter(toMexItems(items), criteria, false);
+	}
 
 	public static <T extends MexItem> List<T> filter(List<T> mexItems, String mexCriteria) {
 		return filter(mexItems, mexCriteria, false);
@@ -250,15 +203,6 @@ public class CollectionUtil {
 	public static <T extends MexItem> List<T> filter(List<T> mexItems, String mexCriteria, boolean isCaseSensitive) {
 		MexFilter<T> filter = new MexFilter<T>(mexCriteria, mexItems, isCaseSensitive);
 		List<T> result = filter.process();
-		
-		return result;
-	}
-	
-	public static List<MexObject> search(List items, String criteria) {
-		List<MexObject> mexItems = toMexedObjects(items);
-		
-		MexFilter<MexObject> filter = new MexFilter<MexObject>(criteria, mexItems);
-		List<MexObject> result = filter.process();	
 		
 		return result;
 	}

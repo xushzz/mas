@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.List;
 
 import com.sirap.basic.component.Konstants;
-import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.domain.Person;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.tool.C;
@@ -71,8 +70,7 @@ public class CommandPirate extends CommandBase {
 				if(isText) {
 					String path = parseFile(source).getAbsolutePath();
 					List<String> allAreas = IOUtil.readFileIntoList(path, g().getCharsetInUse());
-					List<MexObject> items = CollectionUtil.search(allAreas, solo);
-					export(items);
+					export(CollectionUtil.filterRaw(allAreas, solo));
 				} else {
 					C.pl2("Not a text file: " + source);
 				}

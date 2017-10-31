@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sirap.basic.domain.MexObject;
+import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.IOUtil;
@@ -81,7 +81,7 @@ public class CommandDatabase extends CommandBase {
 			QueryWatcher ming = query(sql);
 
 			List<String> items = ming.exportLiteralStrings();
-			List<MexObject> result = CollectionUtil.search(items, solo);
+			List<MexItem> result = CollectionUtil.filterRaw(items, solo);
 			export(result);
 			
 			return true;

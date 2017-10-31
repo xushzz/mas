@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.component.TimestampIDGenerator;
 import com.sirap.basic.domain.MexItem;
@@ -126,13 +127,13 @@ public abstract class CommandBase {
 		return OptionUtil.readBooleanPRI(tempOptions, "case", false);
 	}
 	
-	public <T extends MexItem> void exportWithDefaultOptions(List<T> list) {
-		export(CollectionUtil.items2PrintRecords(list, options));
-	}
-	
 	public boolean isDebug() {
 		boolean debug = OptionUtil.readBooleanPRI(options, "debug", false);
 		return debug;
+	}
+	
+	public <T extends MexItem> void exportWithDefaultOptions(List<T> list) {
+		exportWithOptions(list, options);
 	}
 	
 	public <T extends MexItem> void exportWithOptions(List<T> list, String niceOptions) {
@@ -142,12 +143,40 @@ public abstract class CommandBase {
 		export(CollectionUtil.items2PrintRecords(list, niceOptions));
 	}
 	
+	protected void exportByCriteria(List<String> list, String criteria) {
+		List<MexItem> records = CollectionUtil.toMexItems(list);
+		if(criteria != null) {
+			List<MexItem> items = CollectionUtil.filter(records, criteria);
+			export(items);
+		} else {
+			export(records);
+		}
+	}
+	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void export(List list) {
-		if(EmptyUtil.isNullOrEmpty(list)) {
+		XXXUtil.nullCheck(list, "list");
+		List<Object> newList = list;
+		String mexCriteria = OptionUtil.readString(options, "z");
+		if(!EmptyUtil.isNullOrEmpty(mexCriteria)) {
+			newList = Lists.newArrayList();
+			boolean caseSensitive = isCaseSensitive();
+			for(Object obj : list) {
+				MexItem mex = null;
+				if(obj instanceof MexItem) {
+					mex = (MexItem)obj;
+				} else {
+					mex = new MexObject(obj);
+				}
+				if(mex.isMatched(mexCriteria, caseSensitive)) {
+					newList.add(mex);
+				}
+			}
+		}
+		if(EmptyUtil.isNullOrEmpty(newList)) {
 			exportEmptyMsg();
 		} else {
-			Exporter.exportList(input, list, whereToShot(), options);
+			Exporter.exportList(input, newList, whereToShot(), options);			
 		}
 	}
 	
@@ -163,16 +192,6 @@ public abstract class CommandBase {
 		}
 		
 		return target;
-	}
-	
-	protected void exportItems(List<String> list, String criteria) {
-		List<MexObject> records = CollectionUtil.toMexedObjects(list);
-		if(criteria != null) {
-			List<MexObject> items = CollectionUtil.filter(records, criteria);
-			export(items);
-		} else {
-			export(records);
-		}
 	}
 	
 	public void setIsPrintTotal(boolean isPrintTotal) {
@@ -203,7 +222,7 @@ public abstract class CommandBase {
 	}
 	
 	public void exportEmptyMsg() {
-		export("The result is empty.");
+		Exporter.exportList(input, Lists.newArrayList("The result is empty."), whereToShot(), options);		
 	}
 
 	public void export(Object content) {
@@ -495,7 +514,7 @@ public abstract class CommandBase {
 	}
 	
 	protected void executeInternalCmd(String conciseCommand) {
-		boolean printAlong = target instanceof TargetConsole;
+		boolean printAlong = OptionUtil.readBooleanPRI(options, "ing", false);
 		String newCommand = "cmd /c " + conciseCommand;
 		if(PanaceaBox.isMac()) {
 			newCommand = conciseCommand;

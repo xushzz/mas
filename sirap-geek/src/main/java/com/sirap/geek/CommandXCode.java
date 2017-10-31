@@ -132,8 +132,8 @@ public class CommandXCode extends CommandBase {
 		if(solo != null) {
 			List<MexItem> records = GeekManager.g().asciiAll();
 			
-			MexFilter<MexObject> filter = new MexFilter<MexObject>(solo, CollectionUtil.toMexedObjects(records));
-			List<MexObject> items = filter.process();
+			MexFilter<MexItem> filter = new MexFilter<MexItem>(solo, CollectionUtil.toMexItems(records));
+			List<MexItem> items = filter.process();
 			
 			if(!EmptyUtil.isNullOrEmpty(items)) {
 				items.add(0, new MexObject((AsciiRecord.getHeader())));
@@ -334,8 +334,8 @@ public class CommandXCode extends CommandBase {
 		solo = parseSoloParam(KEY_DATE_FORMAT_SYMBOL + "\\s(.+?)");
 		if(isSingleParamNotnull()) { 
 			List<String> records = LocaleUtil.getAllMonthWeekdays();
-			MexFilter<MexObject> filter = new MexFilter<MexObject>(solo, CollectionUtil.toMexedObjects(records));
-			List<MexObject> items = filter.process();
+			MexFilter<MexItem> filter = new MexFilter<MexItem>(solo, CollectionUtil.toMexItems(records));
+			List<MexItem> items = filter.process();
 
 			export(items);
 			

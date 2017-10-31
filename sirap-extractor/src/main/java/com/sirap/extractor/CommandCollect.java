@@ -194,8 +194,7 @@ public class CommandCollect extends CommandBase {
 		if(is(KEY_RSS)) {
 			Object result = ObjectUtil.execute(sourceOfRss(), "readAllRss", new Class[0], new Object[0]);
 			List<MexObject> items = (List<MexObject>)result;
-			items = CollectionUtil.reverseOrder(items);
-			export(items);
+			export(CollectionUtil.reverse(items));
 			
 			return true;
 		}
@@ -204,8 +203,7 @@ public class CommandCollect extends CommandBase {
 		if(solo != null) {
 			Object result = ObjectUtil.execute(sourceOfRss(), "readAllRss", new Class[0], new Object[0]);
 			List<MexObject> items = (List<MexObject>)result;
-			items = CollectionUtil.reverseOrder(CollectionUtil.filter(items, solo));
-			export(items);
+			export(CollectionUtil.reverse(CollectionUtil.filter(items, solo)));
 			
 			return true;
 		}
@@ -214,10 +212,7 @@ public class CommandCollect extends CommandBase {
 		solo = parseSoloParam(regex);
 		if(solo != null) {
 			Object result = ObjectUtil.execute(sourceOfRss(), "fetchRssByType", new Class[]{String.class}, new Object[]{solo});
-			List<MexObject> items = (List<MexObject>)result;
-			items = CollectionUtil.reverseOrder(items);
-			
-			export(items);
+			export(CollectionUtil.reverse((List<MexObject>)result));
 			
 			return true;
 		}

@@ -10,7 +10,6 @@ import java.util.UUID;
 
 import com.google.common.collect.Lists;
 import com.sirap.basic.domain.MexItem;
-import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.domain.MexZipEntry;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.json.JsonUtil;
@@ -59,7 +58,7 @@ public class CommandDev extends CommandBase {
 		solo = parseSoloParam(KEY_PATH + "\\s(.*?)");
 		if(solo != null) {
 			List<String> items = IOUtil.echoPath();
-			List<MexObject> result = CollectionUtil.search(items, solo);
+			List<MexItem> result = CollectionUtil.filterRaw(items, solo);
 			
 			export(result);
 			

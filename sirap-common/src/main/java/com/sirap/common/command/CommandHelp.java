@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.sirap.basic.domain.MexObject;
+import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.EmptyUtil;
@@ -69,7 +69,7 @@ public class CommandHelp extends CommandBase {
 
 			if(!EmptyUtil.isNullOrEmpty(results)) {
 				if(!solo.isEmpty()) {
-					List<MexObject> items = CollectionUtil.search(results, solo);
+					List<MexItem> items = CollectionUtil.filterRaw(results, solo);
 					results = CollectionUtil.items2PrintRecords(items);
 				}
 				results.add("");

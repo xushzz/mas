@@ -1,1 +1,1 @@
-ver=10/31/2017, II  Basic3.5.65-BANNON  
+ver=10/31/2017, II  Basic3.5.66-BANNON  

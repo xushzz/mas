@@ -401,7 +401,7 @@ public class CommandSirap extends CommandBase {
 			String userConfigFile = g().getUserConfigFileName();
 			if(userConfigFile != null) {
 				List<String> records = IOUtil.readFileIntoList(userConfigFile, g().getCharsetInUse());
-				exportItems(records, criteria);
+				exportByCriteria(records, criteria);
 				
 				return true;
 			}

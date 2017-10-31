@@ -72,7 +72,7 @@ public class CommandAris extends CommandBase {
 			if(EmptyUtil.isNullOrEmpty(mexCriteria)) {
 				export(items);
 			} else {
-				exportItems(items, mexCriteria);
+				exportByCriteria(items, mexCriteria);
 			}
 			
 			return true;

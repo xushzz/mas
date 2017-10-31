@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.sirap.basic.domain.MexFile;
-import com.sirap.basic.domain.MexObject;
+import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.output.PDFParams;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.CollectionUtil;
@@ -76,7 +76,7 @@ public class CommandMonitor extends CommandBase {
 			if(StrUtil.isRegexMatched("-(se|es)", criteria)) {
 				export(records);
 			} else {
-				List<MexObject> items = CollectionUtil.filter(CollectionUtil.toMexedObjects(records), criteria);
+				List<MexItem> items = CollectionUtil.filter(CollectionUtil.toMexItems(records), criteria);
 				
 				if(!items.isEmpty()) {
 					export(items);
@@ -260,7 +260,7 @@ public class CommandMonitor extends CommandBase {
 			String criteria = params[1];
 			List<String> list = FileUtil.readResourceFilesIntoList(Konfig.KEYS_FILE);
 			
-			exportItems(list, criteria);
+			exportByCriteria(list, criteria);
 			
 			return true;
 		}
@@ -272,7 +272,7 @@ public class CommandMonitor extends CommandBase {
 			List<String> recordsExtra = FileUtil.readResourceFilesIntoList(Konfig.EXTRA_FILE);
 			list.addAll(recordsExtra);
 			
-			exportItems(list, criteria);
+			exportByCriteria(list, criteria);
 			
 			return true;
 		}
