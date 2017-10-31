@@ -1,2 +1,4 @@
 fire               issue the command by using shortcut defined in user configuration
 c.dos_command      issue command and display the result like doing this in DOS
+mvn install        when mvn is configured in dos.prefix, then execute on current directory
+javac $+ing        options: $+ing, to print along while executing, instead of printing in one go

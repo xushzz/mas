@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.sirap.basic.component.Konstants;
+import com.sirap.basic.data.AsciiData;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.search.MexFilter;
@@ -47,7 +48,7 @@ public class GeekManager {
 			String octal = StrUtil.padLeft(Integer.toOctalString(i), 3, "0");
 			String decimal = StrUtil.padLeft(Integer.toString(i), 3, "0");
 			String hex = StrUtil.padLeft(Integer.toHexString(i), 2, "0").toUpperCase();
-			String info = XCodeUtil.ASCII_INFO.get(i);
+			String info = AsciiData.EGGS.get(i);
 			
 			item.setBinary(binary);
 			item.setOctal(octal);

@@ -2,7 +2,6 @@ package com.sirap.basic.util;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -207,12 +206,12 @@ public class CollectionUtil {
 		return result;
 	}
 	
-	public static List<String> toList(Map map) {
+	public static List<String> toList(Map map, String connector) {
 		List<String> list = new ArrayList<>();
 		Iterator it = map.keySet().iterator();
 		while(it.hasNext()) {
 			Object key = it.next();
-			list.add(key + " => " + map.get(key));
+			list.add(key + connector + map.get(key));
 		}
 
 		return list;

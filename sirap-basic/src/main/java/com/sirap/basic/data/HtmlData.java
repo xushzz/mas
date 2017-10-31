@@ -248,7 +248,7 @@ public class HtmlData {
 		EGGS.put("diams", new HtmlEntity("diams", 9830, "diamond"));
 	}
 	
-	public static List<HtmlEntity> showEggs() {
+	public static List<HtmlEntity> eggs() {
 		List<HtmlEntity> list = new ArrayList<>(HtmlData.EGGS.values()); 
 		Collections.sort(list); 
 		
