@@ -30,9 +30,10 @@ import com.sirap.common.framework.command.target.TargetHtml;
 import com.sirap.common.framework.command.target.TargetPDF;
 import com.sirap.common.framework.command.target.TargetTxtFile;
 
+@SuppressWarnings("rawtypes")
 public class Exporter {
 	
-	public static void exportList(String command, List<Object> records, Target target, String options) {
+	public static void exportList(String command, List records, Target target, String options) {
 		if(EmptyUtil.isNullOrEmpty(records)) {
 			return;
 		}

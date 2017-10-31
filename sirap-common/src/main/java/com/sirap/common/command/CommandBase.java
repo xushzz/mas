@@ -156,22 +156,10 @@ public abstract class CommandBase {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void export(List list) {
 		XXXUtil.nullCheck(list, "list");
-		List<Object> newList = list;
+		List<MexItem> newList = list;
 		String mexCriteria = OptionUtil.readString(options, "z");
 		if(!EmptyUtil.isNullOrEmpty(mexCriteria)) {
-			newList = Lists.newArrayList();
-			boolean caseSensitive = isCaseSensitive();
-			for(Object obj : list) {
-				MexItem mex = null;
-				if(obj instanceof MexItem) {
-					mex = (MexItem)obj;
-				} else {
-					mex = new MexObject(obj);
-				}
-				if(mex.isMatched(mexCriteria, caseSensitive)) {
-					newList.add(mex);
-				}
-			}
+			newList = CollectionUtil.filter(CollectionUtil.toMexItems(list), mexCriteria, isCaseSensitive());
 		}
 		if(EmptyUtil.isNullOrEmpty(newList)) {
 			exportEmptyMsg();
