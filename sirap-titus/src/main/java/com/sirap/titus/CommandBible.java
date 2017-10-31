@@ -106,7 +106,7 @@ public class CommandBible extends CommandBase {
 					C.pr("Looking for book " + book.getName() + " chapter " + chapter + ". ");
 				}
 				
-				dealWith(book, chapter);
+				dealWith(book, chapter, params[3]);
 			}
 		}
 		
@@ -127,11 +127,11 @@ public class CommandBible extends CommandBase {
 		return false;
 	}
 	
-	public void dealWith(BibleBook book, int chapter) {
+	public void dealWith(BibleBook book, int chapter, String verseInfo) {
 		ChapterSense sense = new ChapterSense(book, chapter);
 		List items = readChapterDetail(sense);
-		if(params[3] != null) {
-			int verseNumber = Integer.parseInt(params[3]);
+		if(verseInfo != null) {
+			int verseNumber = Integer.parseInt(verseInfo);
 			XXXUtil.shouldBePositive(verseNumber);
 			XXXUtil.nullOrEmptyCheck(items);
 			String verse = BibleManager.g().readVerse(items, verseNumber);
@@ -144,11 +144,9 @@ public class CommandBible extends CommandBase {
 	@SuppressWarnings("rawtypes")
 	public List readChapterDetail(ChapterSense sense) {
 		boolean fetchForcibly = OptionUtil.readBooleanPRI(options, "force", false);
-		String bookName = sense.getBook().getName();
-		int chapter = sense.getChapterNumber();
 		List items = null;
 		if(fetchForcibly) {
-			items = BibleManager.g().fetchChapter(bookName, chapter);
+			items = BibleManager.g().fetchChapterFromSirap(sense);
 		} else {
 			String version = g().getUserValueOf("bible.versionXXXXXX", "niv");
 			String versionCode = BibleManager.g().getVersion(version).getCode();
@@ -166,7 +164,7 @@ public class CommandBible extends CommandBase {
 			
 			if(EmptyUtil.isNullOrEmpty(items)) {
 				C.pl("Not found in storage " + chapterLocation);
-				items = BibleManager.g().fetchChapter(bookName, chapter);
+				items = BibleManager.g().fetchChapterFromSirap(sense);
 			}
 		}
 		

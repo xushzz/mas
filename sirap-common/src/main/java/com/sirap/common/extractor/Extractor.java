@@ -21,6 +21,7 @@ public abstract class Extractor<T extends MexItem> {
 	protected boolean printFetching = false;
 	protected boolean printExceptionIfNeeded = true;
 	protected boolean isAllBeingWell = true;
+	protected boolean readIntoSourceList = false;
 
 	protected String source;
 	protected List<String> sourceList;
@@ -76,7 +77,11 @@ public abstract class Extractor<T extends MexItem> {
 		xiu.setMethodPost(isMethodPost);
 		xiu.setRequestParams(requestParams);
 
-		source = xiu.readIntoString();
+		if(readIntoSourceList) {
+			sourceList = xiu.readIntoList();
+		} else {
+			source = xiu.readIntoString();
+		}
 	}
 	
 	public void setUrl(String url) {

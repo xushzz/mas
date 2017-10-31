@@ -18,7 +18,7 @@ import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.domain.Link;
 import com.sirap.common.extractor.Extractor;
 import com.sirap.titus.extractor.BibleBooksExtractor;
-import com.sirap.titus.extractor.BibleChapterExtractor;
+import com.sirap.titus.extractor.BibleChapterFromSirapExtractor;
 
 public class BibleManager {
 	
@@ -166,12 +166,14 @@ public class BibleManager {
 		return theBook;
 	}
 	
-	public List<MexObject> fetchChapter(String fullBookName, int chapter) {
-		Extractor<MexObject> nick = new BibleChapterExtractor(fullBookName, chapter);
-		nick.process();
-		List<MexObject> items = nick.getMexItems();
+	public List<MexObject> fetchChapterFromSirap(ChapterSense sense) {
+		String bookName = sense.getBook().getNameWithNiceOrder();
+		String chapter = sense.getChapterNameWithNiceOrder();
 		
-		return items;
+		String urlInfo = StrUtil.occupy("{0}/{1}.txt", bookName, chapter);
+		Extractor<MexObject> nick = new BibleChapterFromSirapExtractor(urlInfo);
+		
+		return nick.process().getMexItems();
 	}
 	
 	public List<Link> fetchBooksByVersionCode(String versionCode) {
@@ -225,7 +227,7 @@ public class BibleManager {
 		return links;
 	}
 	
-	public String readVerse(List<String> items, int verseYouWant) {
+	public String readVerse(List items, int verseYouWant) {
 		List<VerseSake> verses = getPureVerses(items);
 		int maxVerse = verses.size();
 		if(verseYouWant > maxVerse) {
