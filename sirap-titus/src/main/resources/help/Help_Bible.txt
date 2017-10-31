@@ -2,11 +2,11 @@ bible              display all bible book names and max chapter number respectiv
 bb job             display all bible book names and max chapter number matching given name
 gen23              display the verses in given book and chapter, gen23 means Genesis 23, $+force
 john8:32           display the verse 32 in book john chapter 8, same as john8.32, john8-32, $+force
-luke23             display verses, courtesy of https://www.biblegateway.com, $+force
+luke23             display verses, courtesy of https://gitee.com/thewire/bible
 #2.3.5             display book no. 2, chapter 3 and verse 5, also for #2.3, #2-3
 verse              display random verse from bible library. $+force
 bball              display all bible versions and its links
 bball chinese      display bible versions matching given criteria
-bb.kjv             display all book links with version KJV, fetch
+bb.kjv             display all book links with version KJV, fetch, https://www.biblegateway.com, $+force
 bb.kjv.load        download given version bible to storage/bible as txt files, ignore if exists, $+force
-ver=10/31/2017, II  SIRAP-BIBLE1.0.7-TITUS
+ver=10/31/2017, II  BIBLE1.0.7-TITUS
