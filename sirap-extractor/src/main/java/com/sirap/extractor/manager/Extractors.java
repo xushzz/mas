@@ -314,7 +314,7 @@ public class Extractors {
 			public String getUrl() {
 				printFetching = true;
 				String url = "https://soccer.hupu.com/schedule/schedule.server.php";
-				return StrUtil.occupy(url, leagueId);
+				return url;
 			}
 
 			@Override
@@ -325,7 +325,8 @@ public class Extractors {
 				regex += "<td[^<>]*>(.+?)</td>\\s*";
 				regex += "<td[^<>]*>(.+?)</td>\\s*";
 				regex += "<td[^<>]*>(.+?)</td>\\s*";
-				regex += "<td[^<>]*>(.+?)</a></span>\\s*</td>";
+				regex += "<td[^<>]*>(.+?)(|</a>)</span>\\s*</td>";
+				
 				Matcher ma = createMatcher(regex, source);
 				int count = 0;
 				while(ma.find()) {

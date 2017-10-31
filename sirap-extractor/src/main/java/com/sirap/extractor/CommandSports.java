@@ -24,20 +24,21 @@ public class CommandSports extends CommandBase {
 	private static final String KEY_SPORTS_SCHEDULE = "-s";
 	private static final String KEY_SPORTS_GOALS = "-g";
 	private static final String KEY_LEAGUES;
-	private static final String KEY_BIG5;
-	private static final String KEY_BIG5_NAMES;
+	private static final String KEY_BIG5_CHINA;
+	private static final String KEY_BIG5_CHINA_NAMES;
 
-	public static final Map<String, Integer> BIG5_IDS = Maps.newHashMap();
+	public static final Map<String, Integer> BIG5_CHINA_IDS = Maps.newHashMap();
 	static {
-		BIG5_IDS.put("eng", 2);
-		BIG5_IDS.put("esp", 3);
-		BIG5_IDS.put("ita", 4);
-		BIG5_IDS.put("ger", 5);
-		BIG5_IDS.put("fra", 6);
+		BIG5_CHINA_IDS.put("eng", 2);
+		BIG5_CHINA_IDS.put("esp", 3);
+		BIG5_CHINA_IDS.put("ita", 4);
+		BIG5_CHINA_IDS.put("ger", 5);
+		BIG5_CHINA_IDS.put("fra", 6);
+		BIG5_CHINA_IDS.put("china", 128);
 
-		List<String> items = new ArrayList<>(BIG5_IDS.keySet());
+		List<String> items = new ArrayList<>(BIG5_CHINA_IDS.keySet());
 		items.add("\\d{1,3}");
-		KEY_BIG5 = "(" + StrUtil.connect(items, "|") + ")";
+		KEY_BIG5_CHINA = "(" + StrUtil.connect(items, "|") + ")";
 	}
 
 	public static final Map<String, int[]> BIG5_LEVELS = Maps.newHashMap();
@@ -58,14 +59,13 @@ public class CommandSports extends CommandBase {
 		BIG5_NAMES.put("fra", "France");
 
 		List<String> items = new ArrayList<>(BIG5_NAMES.keySet());
-		KEY_BIG5_NAMES = "(" + StrUtil.connect(items, "|") + ")";
+		KEY_BIG5_CHINA_NAMES = "(" + StrUtil.connect(items, "|") + ")";
 	}
 
 	public static final Map<String, Integer> LEAGUE_IDS = Maps.newHashMap();
 	static {
-		LEAGUE_IDS.putAll(BIG5_IDS);
+		LEAGUE_IDS.putAll(BIG5_CHINA_IDS);
 		LEAGUE_IDS.put("uefa", 9);
-		LEAGUE_IDS.put("china", 128);
 		
 		List<String> items = new ArrayList<>(LEAGUE_IDS.keySet());
 		items.add("\\d{1,9}");
@@ -104,13 +104,13 @@ public class CommandSports extends CommandBase {
 			return true;
 		}
 		
-		params = parseParams(KEY_BIG5_NAMES + KEY_SPORTS_TABLE + "(|\\s+\\S+)");
+		params = parseParams(KEY_BIG5_CHINA_NAMES + KEY_SPORTS_TABLE + "(|\\s+\\S+)");
 		if(params != null) {
 			String nameInfo = params[0].toLowerCase();
 			String criteria = params[1];
 			String name = BIG5_NAMES.get(nameInfo);
 			if(name == null) {
-				C.pl2("Illegal name " + name + ", must be one of " + KEY_BIG5_NAMES);
+				C.pl2("Illegal name " + name + ", must be one of " + KEY_BIG5_CHINA_NAMES);
 			} else {
 				List<MexObject> items = Extractors.fetchHupuFootballBig5Table(name);
 				if(OptionUtil.readBooleanPRI(options, "mark", true)) {
@@ -129,22 +129,21 @@ public class CommandSports extends CommandBase {
 			return true;
 		}
 		
-		params = parseParams(KEY_BIG5 + KEY_SPORTS_SCHEDULE + "(|\\s+\\S+|\\.\\.)");
+		params = parseParams(KEY_BIG5_CHINA + KEY_SPORTS_SCHEDULE + "(|\\s+\\S+|\\.\\.)");
 		if(params != null) {
 			String idInfo = params[0].toLowerCase();
 			String criteria = params[1];
 			Integer id = MathUtil.toInteger(idInfo);
 			if(id == null) {
-				id = BIG5_IDS.get(idInfo);
+				id = BIG5_CHINA_IDS.get(idInfo);
 			}
 			if(id == null) {
-				C.pl2("Illegal id " + id + ", must be one of " + BIG5_IDS);
+				C.pl2("Illegal id " + id + ", must be one of " + BIG5_CHINA_IDS);
 			} else {
 				List<SportsMatchItem> items = Extractors.fetchHupuFootballSchedule(id);
 				if(StrUtil.equals(KEY_2DOTS, criteria)) {
 					exportWithDefaultOptions(items);
-				}
-				if(EmptyUtil.isNullOrEmpty(criteria)) {
+				} else if(EmptyUtil.isNullOrEmpty(criteria)) {
 					String today = DateUtil.displayNow("yyyy-MM-dd");
 					Integer lastK = OptionUtil.readInteger(options, "L");
 					List<SportsMatchItem> todayItems = null;

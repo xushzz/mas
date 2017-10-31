@@ -9,8 +9,8 @@ ita-t              options: $-mark, show no level info, just simple order. no le
 uefa-t             ita for Italy, -t for big five only, aka eng, esp, ita, ger and fra
 eng-s              s for schedule, list next K=10 matches info of premier league, K=16 when uefa
 eng-s..            list all matches info, aka schedule info of premier league
-eng-s              eng for England, -s for big five only, aka eng, esp, ita, ger and fra, uefa
+eng-s              eng for England, -s for big five only, aka eng, esp, ita, ger and fra, uefa, china 128
 eng-s criteria     list matches info that matching given criteria, courtesy of https://soccer.hupu.com 
 eng-s              options: $l=7 previous seven games from today, $n=7 next seven games from today
 uefa-s #8          #8   2017-09-13 02:45  D TA vs TB, #D for group D
-ver=10/29/2017, VII  EXTRACTOR-SPORTS1.0.2-KANE
+ver=10/31/2017, II  EXTRACTOR-SPORTS1.0.3-KANE
