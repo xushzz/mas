@@ -51,7 +51,7 @@ public class PermutationGenerator {
 			Integer idx = i;
 			positions.add(idx);
 			walk(positions);
-			positions.remove(idx.intValue() - 1);
+			positions.remove(positions.size() - 1);
 		}
 	}
 }
