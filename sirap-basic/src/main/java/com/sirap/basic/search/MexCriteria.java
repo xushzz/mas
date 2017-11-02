@@ -27,4 +27,9 @@ public class MexCriteria {
 	public void setCriterias(List<String> criterias) {
 		this.criterias = criterias;
 	}
+	
+	public String toString() {
+		String msg = logic + ", " + criterias;
+		return msg;
+	}
 }

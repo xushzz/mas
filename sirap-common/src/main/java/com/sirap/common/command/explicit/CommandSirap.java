@@ -71,7 +71,7 @@ public class CommandSirap extends CommandBase {
 	private static final String KEY_TIMESTAMP_ENABLED_SWITCH = "tx";
 	private static final String KEY_HOST = "host";
 	private static final String KEY_MAC = "mac";
-	private static final String KEY_ASSIGN_CHARSET = "gbk,utf8,utf-8,gb2312";
+	private static final String KEY_ASSIGN_CHARSET = "gbk,utf8,utf-8,gb2312,unicode";
 
 	{
 		helpMeanings.put("image.formats", Konstants.IMG_FORMATS);
@@ -457,7 +457,7 @@ public class CommandSirap extends CommandBase {
 		if(isIn(KEY_ASSIGN_CHARSET)) {
 			String charset = command.replace("-", "").toUpperCase();
 			g().setCharsetInUse(charset);
-			C.pl2("Charset in use: " + charset);
+			C.pl2("Charset in use: " + command);
 			
 			return true;
 		}

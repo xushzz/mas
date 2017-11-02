@@ -5,15 +5,19 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.exception.MexException;
+import com.sirap.basic.util.RandomUtil;
+import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 
 public class MexFilter<T extends MexItem> {
 	
 	public static final String LOGIC_AND = "and";
 	public static final String LOGIC_OR = "or";
-	
+
+	public static final char ESCAPE = '\\';
 	public static final String SYMBOL_AND = "&";
 	public static final String SYMBOL_OR = "|";
 	
@@ -109,10 +113,10 @@ public class MexFilter<T extends MexItem> {
 		List<String> list = new ArrayList<String>(); 
 		
 		if(criteria.indexOf(SYMBOL_AND) != -1) {
-			String[] criteriaArr = criteria.split(SYMBOL_AND);
+			List<String> whats = snort(criteria, SYMBOL_AND, ESCAPE);
 			
-			for(int i = 0; i < criteriaArr.length; i++) {
-				String temp = criteriaArr[i].trim();
+			for(String what : whats) {
+				String temp = what.trim();
 				if(temp.length() != 0) {
 					list.add(temp);
 				}
@@ -122,10 +126,10 @@ public class MexFilter<T extends MexItem> {
 				return new MexCriteria(LOGIC_AND, list);
 			}
 		} else if(criteria.indexOf(SYMBOL_OR) != -1) {
-			String[] criteriaArr2 = criteria.split("\\" + SYMBOL_OR);
+			List<String> whats = snort(criteria, SYMBOL_OR, ESCAPE);
 			
-			for(int i = 0; i < criteriaArr2.length; i++) {
-				String temp = criteriaArr2[i].trim();
+			for(String what : whats) {
+				String temp = what.trim();
 				if(temp.length() != 0) {
 					list.add(temp);
 				}
@@ -140,5 +144,17 @@ public class MexFilter<T extends MexItem> {
 		}
 
 		return null;
+	}
+	
+	public static List<String> snort(String source, String by, char escape) {
+		String random = RandomUtil.digits(99);
+		String temp = source.replace(escape + by, random);
+		List<String> items = StrUtil.split(temp, by);
+		List<String> recover = Lists.newArrayList();
+		for(String item : items) {
+			recover.add(item.replace(random, by));
+		}
+		
+		return recover;
 	}
 }
