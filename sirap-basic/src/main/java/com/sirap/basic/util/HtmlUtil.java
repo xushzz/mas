@@ -22,6 +22,13 @@ public class HtmlUtil {
 		return temp;
 	}
 	
+	public static String removeComment(String source) {
+		XXXUtil.nullCheck(source, "source");
+		String temp = source.replaceAll("<!--.+?-->", "");
+		
+		return temp;
+	}
+	
 	/****
 	 * https://en.wikipedia.org/wiki/Unicode
 	 * Unicode defines a code space of 1,114,112 code points in the range 0hex to 10FFFFhex.

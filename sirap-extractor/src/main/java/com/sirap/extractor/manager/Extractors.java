@@ -9,12 +9,46 @@ import java.util.regex.Matcher;
 
 import com.google.common.collect.Maps;
 import com.sirap.basic.domain.MexObject;
+import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.extractor.Extractor;
 import com.sirap.extractor.domain.SportsMatchItem;
 
 public class Extractors {
+	
+	public static List<MexObject> fetchAnjukeHouse(String city, String town, int pageNumber) {
+		Extractor<MexObject> neymar = new Extractor<MexObject>() {
+
+			@Override
+			public String getUrl() {
+				printFetching = true;
+				String temp = "https://{0}.anjuke.com/community/{1}p{2}";
+				String townInfo = EmptyUtil.isNullOrEmpty(town) ? "": (town + "/");
+				String url = StrUtil.occupy(temp, city, townInfo, pageNumber);
+				return url;
+			}
+			
+			@Override
+			protected void parseContent() {
+				String regex = "<div _soj=\"xqlb\"[^<>]+>\\s*";
+				regex += "<a.+?/a>\\s*";
+				regex = "<div class=\"li-info\">(.*?)</div>\\s*";
+				regex += "<div class=\"li-side\">(.*?)</div>\\s";
+				Matcher ma = createMatcher(regex, source);
+				
+				while(ma.find()) {
+					String location = getPrettyText(ma.group(1));
+					location = location.replaceAll("\\)[^\\)\\(]+", ")");
+					String price = getPrettyText(ma.group(2));
+					String temp = location + " " + price;
+					mexItems.add(new MexObject(temp));
+				}
+			}
+		};
+		
+		return neymar.process().getMexItems();
+	}
 	
 	public static List<MexObject> fetchHupuFootballChinaTable() {
 		Extractor<MexObject> neymar = new Extractor<MexObject>() {

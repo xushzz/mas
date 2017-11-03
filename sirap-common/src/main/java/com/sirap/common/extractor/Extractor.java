@@ -146,6 +146,7 @@ public abstract class Extractor<T extends MexItem> {
 	
 	public String getPrettyText(String source) {
 		String temp = source;
+		temp = HtmlUtil.removeComment(temp);
 		temp = HtmlUtil.removeHttpTag(temp);
 		temp = HtmlUtil.replaceRawUnicode(temp);
 		temp = HtmlUtil.replaceHtmlEntities(temp);

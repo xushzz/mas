@@ -1,0 +1,5 @@
+anju nanning..6    list house items in city 'nanning', 6 pages at most
+anju nanning.qingxiu.6 list houst items in town 'qingxiu'
+anju nanning..     list houst items, one page only
+anju ..            list default items in default city
+ver=11/3/2017, V  EXTRACTOR-Estate0.1-DOST
