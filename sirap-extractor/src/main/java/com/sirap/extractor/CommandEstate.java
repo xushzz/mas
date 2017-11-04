@@ -1,9 +1,11 @@
 package com.sirap.extractor;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
-import com.google.common.collect.Lists;
-import com.sirap.basic.domain.MexItem;
+import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.common.command.CommandBase;
@@ -23,16 +25,22 @@ public class CommandEstate extends CommandBase {
 			}
 			String town = params[1];
 			int maxPage = MathUtil.toInteger(params[2], 1);
-			List<MexItem> allItems = Lists.newArrayList();
+			Set<MexObject> allItems = new LinkedHashSet<MexObject>();
 			for(int k = 1; k <= maxPage; k++) {
-				List<MexItem> items = Extractors.fetchAnjukeHouse(city, town, k);
+				List<MexObject> items = Extractors.fetchAnjukeHouse(city, town, k);
 				if(EmptyUtil.isNullOrEmpty(items)) {
 					break;
 				}
+				
+				int before = allItems.size();
 				allItems.addAll(items);
+				int after = allItems.size();
+				if(after <= before) {
+					break;
+				}
 			}
 			
-			export(allItems);
+			export(new ArrayList<>(allItems));
 			
 			return true;
 		}
