@@ -60,12 +60,12 @@ public class IOUtil {
 	}
 
 	public static String readURL(String address, String charset, boolean printException) {
-		WebReader xiu = new WebReader(address, charset, true);
+		WebReader xiu = new WebReader(address, charset);
 		return xiu.readIntoString();
 	}
 
 	public static List<String> readURLIntoList(String address, String charset, boolean printException) {
-		WebReader xiu = new WebReader(address, charset, true);
+		WebReader xiu = new WebReader(address, charset);
 		return xiu.readIntoList();
 	}
 	

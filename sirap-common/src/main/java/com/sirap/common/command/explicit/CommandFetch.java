@@ -107,7 +107,7 @@ public class CommandFetch extends CommandBase {
 		if(params != null) {
 			boolean isPretty = params[0].length() == 1;
 			String pageUrl = equiHttpProtoclIfNeeded(params[1]);
-			WebReader xiu = new WebReader(pageUrl, g().getCharsetInUse(), true);
+			WebReader xiu = new WebReader(pageUrl, g().getCharsetInUse());
 			xiu.setMethodPost(OptionUtil.readBooleanPRI(options, "post", false));
 			String tag;
 			if(isPretty) {

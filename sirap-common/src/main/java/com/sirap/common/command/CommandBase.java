@@ -35,6 +35,7 @@ import com.sirap.common.framework.command.target.TargetFolder;
 public abstract class CommandBase {
 
 	public static final String KEY_2DOTS = "..";
+	public static final String KEY_LOAD = "load";
 	public static final String KEY_EQUALS = "=";
 	public static final String KEY_REFRESH = "r";
 	public static final String KEY_EXIT = "q,e,quit,exit";
@@ -102,7 +103,11 @@ public abstract class CommandBase {
 					stv.append(XXXUtil.getStackTrace(ex));
 				}
 			} else {
-				stv.append(ex);
+				if(ex.getOrigin() != null) {
+					stv.append(ex.getOrigin());
+				} else {
+					stv.append(ex);
+				}
 			}
 			export(stv);
 			

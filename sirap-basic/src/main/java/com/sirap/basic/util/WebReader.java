@@ -12,12 +12,10 @@ import java.util.Map;
 import java.util.Set;
 
 import com.sirap.basic.exception.MexException;
-import com.sirap.basic.tool.C;
 
 public class WebReader {
 	
 	private String url;
-	private boolean printException;
 	private String charset;
 	private String serverCharset;
 	private boolean isMethodPost;
@@ -27,10 +25,9 @@ public class WebReader {
 		this.url = url;
 	}
 	
-	public WebReader(String url, String charset, boolean printException) {
+	public WebReader(String url, String charset) {
 		this.url = url;
 		this.charset = charset;
-		this.printException = printException;
 		requestParams = StrUtil.findFirstMatchedItem("\\?(.+)", url);
 	}
 	
@@ -68,11 +65,7 @@ public class WebReader {
 			sb.setLength(0);
 			br.close();
 		} catch (Exception ex) {
-			String msg = ex + "\nURL=>" + url + "\nLocation=>" + WebReader.class.getName();
-			if (printException) {
-				C.pl2(msg);
-			}
-			
+			String msg = ex + "\nURL=>" + url + "\nLocation=>" + getClass().getName();
 			throw new MexException(msg);
 		}
 
@@ -94,35 +87,25 @@ public class WebReader {
 
 			br.close();
 		} catch (Exception ex) {
-			if (printException) {
-				C.pl2(ex + "\nURL=>" + url + "\nLocation=>" + IOUtil.class.getName());
-			}
+			String msg = ex + "\nURL=>" + url + "\nLocation=>" + getClass().getName();
+			throw new MexException(msg);
 		}
 
 		return records;
 	}
 	
-	private BufferedReader createReader() {
-		try {
-			URLConnection conn = new URL(url).openConnection();
-			equip(conn);
-			String charsetInHeader = parseWebCharsetByHeader(conn);
-			if(charsetInHeader != null) {
-				charset = charsetInHeader;
-				serverCharset = charsetInHeader;
-			}
-			InputStreamReader isr = new InputStreamReader(conn.getInputStream(), charset);
-			BufferedReader br = new BufferedReader(isr);
-			
-			return br;
-		} catch (Exception ex) {
-			String msg = ex + "\nURL=>" + url + "\nLocation=>" + WebReader.class.getName();
-			if (printException) {
-				C.pl2(msg);
-			}
-			
-			throw new MexException(msg);
+	private BufferedReader createReader() throws Exception {
+		URLConnection conn = new URL(url).openConnection();
+		equip(conn);
+		String charsetInHeader = parseWebCharsetByHeader(conn);
+		if(charsetInHeader != null) {
+			charset = charsetInHeader;
+			serverCharset = charsetInHeader;
 		}
+		InputStreamReader isr = new InputStreamReader(conn.getInputStream(), charset);
+		BufferedReader br = new BufferedReader(isr);
+		
+		return br;
 	}
 	
 	public static String parseWebCharsetByHeader(URLConnection conn) {

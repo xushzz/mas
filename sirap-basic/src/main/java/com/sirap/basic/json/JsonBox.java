@@ -346,6 +346,12 @@ public class JsonBox {
 	}
 	
 	private static Object parseValue(String source) {
+		XXXUtil.nullCheckOnly(source);
+		
+		if(source.isEmpty()) {
+			return null;
+		}
+		
 		BigDecimal bd = MathUtil.toBigDecimal(source);
 		if(bd != null) {
 			return bd;
@@ -375,7 +381,9 @@ public class JsonBox {
 		List list = new ArrayList();
 		for(String item : items) {
 			Object subValue = parseValue(item.trim());
-			list.add(subValue);
+			if(subValue != null) {
+				list.add(subValue);
+			}
 		}
 		
 		return list;

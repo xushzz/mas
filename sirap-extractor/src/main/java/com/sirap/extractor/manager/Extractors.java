@@ -9,13 +9,143 @@ import java.util.regex.Matcher;
 
 import com.google.common.collect.Maps;
 import com.sirap.basic.domain.MexObject;
+import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.common.domain.Link;
 import com.sirap.common.extractor.Extractor;
 import com.sirap.extractor.domain.SportsMatchItem;
 
 public class Extractors {
+
+	public static Link fetchHangyangLocation(String plateNo) {
+		Extractor<Link> neymar = new Extractor<Link>() {
+
+			@Override
+			public String getUrl() {
+				printFetching = true;
+				String param = encodeURLParam(plateNo);
+				String temp = "http://m.gwwg.com/wap/keytop/getParkingPaymentInfo_APP.htm?plateNo=" + param;
+				return temp;
+			}
+			
+			@Override
+			protected void parseContent() {
+				String fields = "floorName,area,spaceNo";
+				List<String> keys = StrUtil.split(fields);
+				String connector = ", ";
+				StringBuffer sb = StrUtil.sb();
+				for(String key : keys) {
+					String item = JsonUtil.getFirstStringValueByKey(source, key);
+					if(!EmptyUtil.isNullOrEmptyOrBlank(item)) {
+						sb.append(item.trim()).append(connector);
+					}
+				}
+				String href = JsonUtil.getFirstStringValueByKey(source, "carImage");
+				String temp = sb.toString().replaceAll(connector + "$", "");
+				
+				if(EmptyUtil.isNullOrEmpty(href) && EmptyUtil.isNullOrEmpty(href)) {
+					return;
+				}
+				
+				mexItem = new Link(temp, href);
+			}
+		};
+		
+		return neymar.process().getMexItem();
+	}
+
+	public static List<Link> fetchHangyangPlates(String fuzzy) {
+		Extractor<Link> neymar = new Extractor<Link>() {
+
+			@Override
+			public String getUrl() {
+				printFetching = true;
+				String temp = "http://m.gwwg.com/wap/keytop/getFuzzyCarInfo.htm?plateNo=" + fuzzy;
+				return temp;
+			}
+			
+			@Override
+			protected void parseContent() {
+				String regex = "\\{(.+?)\\}";
+				Matcher ma = createMatcher(regex, source);
+				while(ma.find()) {
+					String section = ma.group(1);
+					String href = JsonUtil.getFirstStringValueByKey(section, "imgName");
+					String plate = JsonUtil.getFirstStringValueByKey(section, "plateNo");
+					String when = JsonUtil.getFirstStringValueByKey(section, "entryTime");
+					mexItems.add(new Link(plate + ", " + when, href));
+				}
+			}
+		};
+		
+		return neymar.process().getMexItems();
+	}
+	
+	public static List<MexObject> fetchNanningPolice() {
+		Extractor<MexObject> neymar = new Extractor<MexObject>() {
+
+			@Override
+			public String getUrl() {
+				printFetching = true;
+				String temp = "http://www.nngaj.gov.cn/Ajax/PoliceCoordinate.ashx?HandleType=GetPoliceCoordinateList";
+				return temp;
+			}
+			
+			@Override
+			protected void parseContent() {
+				String regex = "\\{(.+?)\\}";
+				Matcher ma = createMatcher(regex, source);
+				List<String> keys = StrUtil.split("Name,ADDRESS,PHONE1,PHONE2,Lon,Lat");
+				String connector = ", ";
+				while(ma.find()) {
+					String section = ma.group(1);
+					StringBuffer sb = StrUtil.sb();
+					for(String key : keys) {
+						String item = JsonUtil.getFirstStringValueByKey(section, key);
+						if(!EmptyUtil.isNullOrEmptyOrBlank(item)) {
+							sb.append(item.trim()).append(connector);
+						}
+					}
+					String temp = sb.toString().replaceAll(connector + "$", "");
+					mexItems.add(new MexObject(temp));
+				}
+			}
+		};
+		
+		return neymar.process().getMexItems();
+	}
+
+	public static List<MexObject> fetchAnjukeCities() {
+		Extractor<MexObject> neymar = new Extractor<MexObject>() {
+
+			@Override
+			public String getUrl() {
+				printFetching = true;
+				String temp = "https://www.anjuke.com/sy-city.html";
+				return temp;
+			}
+			
+			@Override
+			protected void parseContent() {
+				String regexDiv = "<label class=\"label_letter\">[a-z]</label>\\s*<div class=\"city_list\">(.+?)</div>";
+				List<String> divs = StrUtil.findAllMatchedItems(regexDiv, source);
+
+				String regex = "<a href=\"https://([^\"]+).anjuke.com\"([^<>]*)>([^<>]+)</a>";
+				for(String div : divs) {
+					Matcher ma = createMatcher(regex, div);
+					while(ma.find()) {
+						String code = ma.group(1);
+						String name = ma.group(3);
+						mexItems.add(new MexObject(code + " " + name));
+					}
+				}
+			}
+		};
+		
+		return neymar.process().getMexItems();
+	}
 	
 	public static List<MexObject> fetchAnjukeHouse(String city, String town, int pageNumber) {
 		Extractor<MexObject> neymar = new Extractor<MexObject>() {

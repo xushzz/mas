@@ -1,7 +1,7 @@
 package com.sirap.common.domain;
 
 import com.sirap.basic.domain.MexItem;
-import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.OptionUtil;
 
 @SuppressWarnings("serial")
 public class Link extends MexItem {
@@ -103,9 +103,12 @@ public class Link extends MexItem {
 	}
 
 	@Override
-	public String toPrint() {
+	public String toPrint(String options) {
+		boolean showName = OptionUtil.readBooleanPRI(options, "name", true);
 		StringBuffer sb = new StringBuffer();
-		sb.append(StrUtil.padRight(name, 50));
+		if(showName) {
+			sb.append(name).append(", ");
+		}
 		sb.append(href);
 		
 		return sb.toString();

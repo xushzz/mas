@@ -6,6 +6,7 @@ import java.util.regex.Matcher;
 
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexItem;
+import com.sirap.basic.exception.MexException;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.HtmlUtil;
@@ -73,14 +74,22 @@ public abstract class Extractor<T extends MexItem> {
 			C.pl("Fetching... " + target + temp);
 		}
 		
-		WebReader xiu = new WebReader(target, charset, true);
+		WebReader xiu = new WebReader(target, charset);
 		xiu.setMethodPost(isMethodPost);
 		xiu.setRequestParams(requestParams);
 
-		if(readIntoSourceList) {
-			sourceList = xiu.readIntoList();
-		} else {
-			source = xiu.readIntoString();
+		try {
+			if(readIntoSourceList) {
+				sourceList = xiu.readIntoList();
+			} else {
+				source = xiu.readIntoString();
+			}
+		} catch (MexException ex) {
+			if(printExceptionIfNeeded) {
+				C.pl(ex);
+			} else {
+				throw ex;
+			}
 		}
 	}
 	
