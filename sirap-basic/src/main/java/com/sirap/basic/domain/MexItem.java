@@ -150,4 +150,8 @@ public abstract class MexItem implements Serializable {
 		
 		return sb.toString();
 	}
+
+	public static StringBuffer sb() {
+		return new StringBuffer();
+	}
 }

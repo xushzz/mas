@@ -145,7 +145,8 @@ public abstract class CommandBase {
 		if(isDebug()) {
 			D.ts("options: " + niceOptions);
 		}
-		export(CollectionUtil.items2PrintRecords(list, niceOptions));
+		List<String> list2 = CollectionUtil.items2PrintRecords(list, niceOptions);
+		export(list2);
 	}
 	
 	protected void exportByCriteria(List<String> list, String criteria) {
@@ -158,18 +159,23 @@ public abstract class CommandBase {
 		}
 	}
 	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({ "rawtypes"})
 	public void export(List list) {
+		export(list, options);
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void export(List list, String finalOptions) {
 		XXXUtil.nullCheck(list, "list");
 		List<MexItem> newList = list;
-		String mexCriteria = OptionUtil.readString(options, "z");
+		String mexCriteria = OptionUtil.readString(finalOptions, "z");
 		if(!EmptyUtil.isNullOrEmpty(mexCriteria)) {
 			newList = CollectionUtil.filter(CollectionUtil.toMexItems(list), mexCriteria, isCaseSensitive());
 		}
 		if(EmptyUtil.isNullOrEmpty(newList)) {
 			exportEmptyMsg();
 		} else {
-			Exporter.exportList(input, newList, whereToShot(), options);			
+			Exporter.exportList(input, newList, whereToShot(), finalOptions);
 		}
 	}
 	

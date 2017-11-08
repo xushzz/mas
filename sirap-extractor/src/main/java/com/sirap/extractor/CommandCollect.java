@@ -5,12 +5,14 @@ import java.util.List;
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexObject;
+import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.output.PDFParams;
 import com.sirap.basic.thread.Master;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
+import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.ObjectUtil;
 import com.sirap.basic.util.OptionUtil;
@@ -35,6 +37,7 @@ import com.sirap.extractor.manager.BaiduExtractorManager;
 import com.sirap.extractor.manager.Extractors;
 import com.sirap.extractor.manager.FinancialTimesChineseExtractorManager;
 import com.sirap.extractor.manager.ForexManager;
+import com.sirap.extractor.manager.IcibaManager;
 import com.sirap.extractor.manager.RssExtractorManager;
 import com.sirap.extractor.manager.WeatherManager;
 
@@ -116,8 +119,36 @@ public class CommandCollect extends CommandBase {
 				
 		solo = parseSoloParam(KEY_TRANSLATE + "\\s+(.+?)");
 		if(solo != null) {
-			List<MexObject> items = getTranslation(solo);
-			export(items);
+			String word = solo;
+			String key = "iciba.source";
+			String filePath = g().getUserValueOf(key);
+			boolean fetchOnly = false;
+			if(filePath == null) {
+				fetchOnly = true;
+			} else if(!FileUtil.exists(filePath)) {
+				String msg = "Non-exist path {0} with key {1}.";
+				C.pl(StrUtil.occupy(msg, filePath, key));
+			}
+			
+			if(fetchOnly) {
+				ValuesItem vi = IcibaManager.g().fetchFromWebsite(word);
+				List<ValuesItem> items = Lists.newArrayList(vi);
+				exportWithOptions(items, "conn=\n");
+			} else {
+				C.pl("Reading... " + filePath);
+				boolean isSensitive = OptionUtil.readBooleanPRI(options, "case", false);
+				List<ValuesItem> items = IcibaManager.g().readFromDatabase(word, filePath, g().getCharsetInUse(), isSensitive);
+				if(EmptyUtil.isNullOrEmpty(items)) {
+					ValuesItem vi = IcibaManager.g().fetchFromWebsite(word);
+					if(vi != null) {
+						IcibaManager.g().saveToDatabase(vi, filePath, g().getCharsetInUse());
+						C.pl("Saving... " + filePath);
+						items = Lists.newArrayList(vi);
+					}
+				}
+
+				exportWithOptions(items, "conn=\n");
+			}
 			
 			return true;
 		}
@@ -335,14 +366,6 @@ public class CommandCollect extends CommandBase {
 		}
 		
 		return value;
-	}
-	
-	public static List<MexObject> getTranslation(String word) {
-		Extractor<MexObject> frank = new IcibaTranslationExtractor(word);
-		frank.process();
-		List<MexObject> items = frank.getMexItems();
-		
-		return items;
 	}
 	
 	public static List<MexObject> lookupDictionary(String word) {

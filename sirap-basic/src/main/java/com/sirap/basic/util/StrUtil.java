@@ -538,13 +538,17 @@ public class StrUtil {
 		
 		return null;
 	}
-	
+
 	public static String[] parseParams(String regex, String source) {
+		return parseParams(regex, source, Pattern.CASE_INSENSITIVE);
+	}
+	
+	public static String[] parseParams(String regex, String source, int flags) {
 		if(regex == null || source == null) {
 			return null;
 		}
 		
-		Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
+		Matcher m = Pattern.compile(regex, flags).matcher(source);
 		if(m.matches()) {
 			int count = m.groupCount();
 			String[] strArr = new String[count];

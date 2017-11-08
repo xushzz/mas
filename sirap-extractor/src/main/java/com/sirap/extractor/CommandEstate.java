@@ -110,8 +110,6 @@ public class CommandEstate extends CommandBase {
 			List<String> allKeys = Lists.newArrayList();
 			allKeys.addAll(MathUtil.permutation(StrUtil.ALPHANUMERIC, 1));
 			allKeys.addAll(MathUtil.permutation(StrUtil.ALPHANUMERIC, 2));
-			allKeys.addAll(MathUtil.permutation(StrUtil.ALPHANUMERIC, 3));
-//			allKeys.addAll(MathUtil.permutation(StrUtil.ALPHANUMERIC, 4));
 			List<MexItem> keyWords = CollectionUtil.toMexItems(allKeys);
 			List<Link> links = getAllFuzzyPlates(keyWords);
 

@@ -1,13 +1,14 @@
 package com.sirap.extractor.impl;
 
 import java.util.List;
+import java.util.regex.Matcher;
 
-import com.sirap.basic.domain.MexObject;
-import com.sirap.basic.util.HtmlUtil;
+import com.sirap.basic.domain.ValuesItem;
+import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.extractor.Extractor;
 
-public class IcibaTranslationExtractor extends Extractor<MexObject> {
+public class IcibaTranslationExtractor extends Extractor<ValuesItem> {
 	
 	public static final String HOMEPAGE = "http://www.iciba.com";
 	public static final String URL_TEMPLATE = HOMEPAGE + "/{0}";
@@ -20,15 +21,25 @@ public class IcibaTranslationExtractor extends Extractor<MexObject> {
 
 	@Override
 	protected void parseContent() {
+		ValuesItem vi = new ValuesItem();
+		
+		String regexHead = "<h1 class=\"keyword\">([^<>]+)</h1>";
+		Matcher ma = createMatcher(regexHead);
+		if(ma.find()) {
+			vi.add(getPrettyText(ma.group(1)));
+		}
+				
 		String regex = "<li class=\"clearfix\">(.*?)</li>";
 		List<String> items = StrUtil.findAllMatchedItems(regex, source);
-		int order = 0;
-		for(String item : items) {
-			String temp = HtmlUtil.removeHttpTag(item).trim();
-			temp = StrUtil.reduceMultipleSpacesToOne(temp);
-
-			order++;
-			mexItems.add(new MexObject(order + ") " + temp));
+		if(!EmptyUtil.isNullOrEmpty(items)) {
+			int order = 0;
+			for(String item : items) {
+				order++;
+				vi.add(order + ") " + getPrettyText(item));
+			}
+			
+			mexItem = vi;
 		}
+		
 	}
 }
