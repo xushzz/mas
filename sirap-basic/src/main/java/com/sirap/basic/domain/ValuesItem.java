@@ -36,6 +36,16 @@ public class ValuesItem extends MexItem {
 		return toPrint(options);
 	}
 	
+	public boolean isMatched(String keyWord) {
+		for(Object item : values) {
+			if(StrUtil.contains(item + "", keyWord)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
 	@Override
 	public boolean parse(String record) {
 		List<String> items = StrUtil.split(record, "|");

@@ -49,6 +49,7 @@ public class CommandCollect extends CommandBase {
 
 	private static final String KEY_WEATHER = "w";	
 	private static final String KEY_CAR = "car";	
+	private static final String KEY_CARNO = "carno";
 	private static final String KEY_PHONE_MOBILE = "@";
 	private static final String KEY_DICTONARY = "ia";
 	private static final String KEY_TRANSLATE = "i";
@@ -76,15 +77,30 @@ public class CommandCollect extends CommandBase {
 	
 	public boolean handle() {
 
-		if(is(KEY_CAR + KEY_2DOTS)) {
-			export(Extractors.fetchCarList());
+		solo = parseSoloParam(KEY_CAR + "\\s+([^\\.]+)");
+		if(solo != null) {
+			List<MexItem> items = Extractors.fetchCarList();
+			exportWithDefaultOptions(CollectionUtil.filter(items, solo));
+			
+			return true;
+		}
+
+		solo = parseSoloParam(KEY_CAR + "-([^\\.]+)");
+		if(solo != null) {
+			export(Extractors.fetchCarDetail(solo));
+			
+			return true;
+		}
+
+		if(is(KEY_CARNO + KEY_2DOTS)) {
+			export(Extractors.fetchCarNoList());
 			
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_CAR + "\\s([^\\.]+)");
+		solo = parseSoloParam(KEY_CARNO + "\\s([^\\.]+)");
 		if(solo != null) {
-			List<MexObject> items = Extractors.fetchCarList();
+			List<MexObject> items = Extractors.fetchCarNoList();
 			export(CollectionUtil.filter(items, solo));
 			
 			return true;
@@ -381,6 +397,7 @@ public class CommandCollect extends CommandBase {
 	}
 	
 	private void getTranslation(boolean fetchOnly, String word, String warehouse) {
+		String charset = Konstants.CODE_UTF8;
 		List<ValuesItem> items = null;
 		if(fetchOnly) {
 			ValuesItem vi = IcibaManager.g().fetchFromWebsite(word);
@@ -388,11 +405,11 @@ public class CommandCollect extends CommandBase {
 		} else {
 			//C.pl("Reading... " + filePath);
 			boolean isSensitive = OptionUtil.readBooleanPRI(options, "case", false);
-			items = IcibaManager.g().readFromDatabase(word, warehouse, g().getCharsetInUse(), isSensitive);
+			items = IcibaManager.g().readFromDatabase(word, warehouse, charset, isSensitive);
 			if(EmptyUtil.isNullOrEmpty(items)) {
 				ValuesItem vi = IcibaManager.g().fetchFromWebsite(word);
 				if(vi != null) {
-					IcibaManager.g().saveToDatabase(vi, warehouse, g().getCharsetInUse());
+					IcibaManager.g().saveToDatabase(vi, warehouse, charset);
 					C.pl("Saving... " + warehouse);
 					items = Lists.newArrayList(vi);
 				}
@@ -408,9 +425,9 @@ public class CommandCollect extends CommandBase {
 			public void process(MexItem obj) {
 				String word = obj.toString();
 				int count = countOfTasks - tasks.size();
-				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "async translating...", word);
+				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "translating...", word);
 				getTranslation(fetchOnly, word, warehouse);
-				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "async translated", word);
+				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "translated", word);
 			}
 			
 		});

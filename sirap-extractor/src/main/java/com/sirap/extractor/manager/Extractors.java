@@ -8,7 +8,10 @@ import java.util.Set;
 import java.util.regex.Matcher;
 
 import com.google.common.collect.Maps;
+import com.sirap.basic.domain.KeyValuesItem;
+import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexObject;
+import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.IOUtil;
@@ -740,7 +743,7 @@ public class Extractors {
 		return neymar.process().getMexItems();
 	}
 
-	public static List<MexObject> fetchCarList() {
+	public static List<MexObject> fetchCarNoList() {
 		Extractor<MexObject> neymar = new Extractor<MexObject>() {
 
 			@Override
@@ -769,6 +772,65 @@ public class Extractors {
 				}
 				
 				return sea;
+			}
+		};
+		
+		return neymar.process().getMexItems();
+	}
+
+	public static List<MexItem> fetchCarList() {
+		Extractor<MexItem> neymar = new Extractor<MexItem>() {
+
+			@Override
+			public String getUrl() {
+				useGBK();
+				printFetching = true;
+				return "http://data.ecar168.cn";
+			}
+			
+			@Override
+			protected void parseContent() {
+				String regex = "\"/selectcar/([^\"]+)\">([^<>]+)</a></dd";
+				Matcher ma = createMatcher(regex);
+				while(ma.find()) {
+					KeyValuesItem item = new KeyValuesItem("id", ma.group(1));
+					item.add("name", ma.group(2));
+					mexItems.add(item);
+				}
+			}
+		};
+		
+		return neymar.process().getMexItems();
+	}
+
+	public static List<MexItem> fetchCarDetail(Object id) {
+		Extractor<MexItem> neymar = new Extractor<MexItem>() {
+
+			@Override
+			public String getUrl() {
+				useGBK();
+				printFetching = true;
+				String temp = "http://data.ecar168.cn/car/" + id;
+				return temp;
+			}
+			
+			@Override
+			protected void parseContent() {
+				ValuesItem vi = new ValuesItem();
+				
+				String name = StrUtil.findFirstMatchedItem(">([^<>]+)</a></h3>", source);
+				vi.add(name);
+
+				String price = StrUtil.findFirstMatchedItem("<span class=\"jiage\">([^<>]+)</span>", source);
+				vi.add(price);
+				
+				String regex = "</label>([^<>]+)<";
+				Matcher ma = createMatcher(regex);
+				while(ma.find()) {
+					vi.add(getPrettyText(ma.group(1)));
+				}
+				
+				mexItems.add(vi);
 			}
 		};
 		
