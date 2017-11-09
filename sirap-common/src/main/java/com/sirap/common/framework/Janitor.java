@@ -18,7 +18,6 @@ import com.sirap.common.manager.CommandHistoryManager;
 public class Janitor extends Checker {
 	
 	protected Konfig konfig;
-	private List<Class<?>> commandList = new ArrayList<Class<?>>();
 	
 	private boolean expirationCheckNeeded;
 
@@ -41,10 +40,10 @@ public class Janitor extends Checker {
 		return instance;
 	}
 	
-	private void initCommandList() {
+	private List<Class<?>> initCommandList() {
 		List<String> commandNodes = SimpleKonfig.g().getCommandClassNames();
-		
-		commandList.clear();
+
+		List<Class<?>> commandList = new ArrayList<Class<?>>();
 		for(String className : commandNodes) {
 			try {
 				Class<?> clazz = Class.forName(className);
@@ -53,6 +52,8 @@ public class Janitor extends Checker {
 				e.printStackTrace();
 			}
 		}
+		
+		return commandList;
 	}
 
     public void process(String origin) {
@@ -102,7 +103,7 @@ public class Janitor extends Checker {
     		return;
     	}
     	
-    	initCommandList();
+    	List<Class<?>> commandList = initCommandList();
     	
 		if(EmptyUtil.isNullOrEmpty(commandList)) {
 			C.pl2("Uncanny, no command nodes configured.");

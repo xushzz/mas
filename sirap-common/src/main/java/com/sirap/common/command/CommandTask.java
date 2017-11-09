@@ -3,8 +3,11 @@ package com.sirap.common.command;
 import java.io.File;
 import java.util.List;
 
+import com.sirap.basic.domain.MexItem;
+import com.sirap.basic.thread.Master;
+import com.sirap.basic.thread.Worker;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.tool.D;
+import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.StrUtil;
@@ -94,7 +97,6 @@ public class CommandTask extends CommandBase {
 				executeActions(tasks);
 			} else {
 				List<String> actions = StrUtil.split(solo);
-				D.pl(actions);
 				executeActions(actions);
 			}
 
@@ -108,8 +110,18 @@ public class CommandTask extends CommandBase {
 		String str = DateUtil.displayDate(DateUtil.HOUR_Min_Sec_AM_WEEK_DATE, g().getLocale());
 		return "** " + str + " **";
 	}
-	
+
 	private void executeActions(List<String> actions) {
+		int threads = g().getUserNumberValueOf("task.how", 1);
+		if(threads <= 1) {
+			executeSequentially(actions);
+		} else {
+			List<MexItem> mexItems = CollectionUtil.toMexItems(actions);
+			executeConcurrently(mexItems, threads);
+		}
+	}
+
+	private void executeSequentially(List<String> actions) {
 		for(int i = 0; i < actions.size(); i++) {
 			String action = actions.get(i);
 			if(EmptyUtil.isNullOrEmpty(action)) {
@@ -119,5 +131,21 @@ public class CommandTask extends CommandBase {
 			Janitor.g().process(action.trim());
 			C.pl("********** end of action " + (i + 1) + "/" + actions.size() + ": " + action + " **********");
 		}
+	}
+	
+	private void executeConcurrently(List<MexItem> actions, final int threads) {
+		Master<MexItem> george = new Master<MexItem>(actions, new Worker<MexItem>() {
+			@Override
+			public void process(MexItem obj) {
+				String action = obj.toString();
+				int count = tasks.size() + 1;
+				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "async dealing...", action);
+				Janitor.g().process(action.trim());
+				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "async done", action);
+			}
+			
+		});
+		
+		george.sitAndWait();
 	}
 }

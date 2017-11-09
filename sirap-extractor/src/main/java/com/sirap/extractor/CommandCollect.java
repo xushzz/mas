@@ -122,7 +122,7 @@ public class CommandCollect extends CommandBase {
 			String word = solo;
 			String key = "iciba.source";
 			String filePath = g().getUserValueOf(key);
-			boolean fetchOnly = false;
+			boolean fetchOnly = false | OptionUtil.readBooleanPRI(options, "fetch", false);
 			if(filePath == null) {
 				fetchOnly = true;
 			} else if(!FileUtil.exists(filePath)) {
@@ -135,7 +135,7 @@ public class CommandCollect extends CommandBase {
 				List<ValuesItem> items = Lists.newArrayList(vi);
 				exportWithOptions(items, "conn=\n");
 			} else {
-				C.pl("Reading... " + filePath);
+				//C.pl("Reading... " + filePath);
 				boolean isSensitive = OptionUtil.readBooleanPRI(options, "case", false);
 				List<ValuesItem> items = IcibaManager.g().readFromDatabase(word, filePath, g().getCharsetInUse(), isSensitive);
 				if(EmptyUtil.isNullOrEmpty(items)) {
