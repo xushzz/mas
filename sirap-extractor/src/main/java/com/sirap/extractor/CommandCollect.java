@@ -1,13 +1,16 @@
 package com.sirap.extractor;
 
+import java.io.File;
 import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
+import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.output.PDFParams;
 import com.sirap.basic.thread.Master;
+import com.sirap.basic.thread.Worker;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.DateUtil;
@@ -19,6 +22,7 @@ import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
+import com.sirap.common.component.FileOpener;
 import com.sirap.common.domain.WeatherRecord;
 import com.sirap.common.extractor.Extractor;
 import com.sirap.common.framework.command.target.TargetPDF;
@@ -119,7 +123,6 @@ public class CommandCollect extends CommandBase {
 				
 		solo = parseSoloParam(KEY_TRANSLATE + "\\s+(.+?)");
 		if(solo != null) {
-			String word = solo;
 			String key = "iciba.source";
 			String filePath = g().getUserValueOf(key);
 			boolean fetchOnly = false | OptionUtil.readBooleanPRI(options, "fetch", false);
@@ -130,26 +133,15 @@ public class CommandCollect extends CommandBase {
 				C.pl(StrUtil.occupy(msg, filePath, key));
 			}
 			
-			if(fetchOnly) {
-				ValuesItem vi = IcibaManager.g().fetchFromWebsite(word);
-				List<ValuesItem> items = Lists.newArrayList(vi);
-				exportWithOptions(items, "conn=\n");
+			File file = parseFile(solo);
+			if(file != null && FileOpener.isTextFile(file.getAbsolutePath())) {
+				List<String> words = FileOpener.readTextContent(file.getAbsolutePath());
+				getBatchTranslation(fetchOnly, CollectionUtil.toMexItems(words), filePath);
 			} else {
-				//C.pl("Reading... " + filePath);
-				boolean isSensitive = OptionUtil.readBooleanPRI(options, "case", false);
-				List<ValuesItem> items = IcibaManager.g().readFromDatabase(word, filePath, g().getCharsetInUse(), isSensitive);
-				if(EmptyUtil.isNullOrEmpty(items)) {
-					ValuesItem vi = IcibaManager.g().fetchFromWebsite(word);
-					if(vi != null) {
-						IcibaManager.g().saveToDatabase(vi, filePath, g().getCharsetInUse());
-						C.pl("Saving... " + filePath);
-						items = Lists.newArrayList(vi);
-					}
-				}
-
-				exportWithOptions(items, "conn=\n");
+				String word = solo;
+				getTranslation(fetchOnly, word, filePath);
 			}
-			
+
 			return true;
 		}
 		
@@ -387,4 +379,43 @@ public class CommandCollect extends CommandBase {
 		
 		return  instance;
 	}
+	
+	private void getTranslation(boolean fetchOnly, String word, String warehouse) {
+		List<ValuesItem> items = null;
+		if(fetchOnly) {
+			ValuesItem vi = IcibaManager.g().fetchFromWebsite(word);
+			items = Lists.newArrayList(vi);
+		} else {
+			//C.pl("Reading... " + filePath);
+			boolean isSensitive = OptionUtil.readBooleanPRI(options, "case", false);
+			items = IcibaManager.g().readFromDatabase(word, warehouse, g().getCharsetInUse(), isSensitive);
+			if(EmptyUtil.isNullOrEmpty(items)) {
+				ValuesItem vi = IcibaManager.g().fetchFromWebsite(word);
+				if(vi != null) {
+					IcibaManager.g().saveToDatabase(vi, warehouse, g().getCharsetInUse());
+					C.pl("Saving... " + warehouse);
+					items = Lists.newArrayList(vi);
+				}
+			}
+		}
+
+		exportWithOptions(items, "conn=\n");
+	}
+	
+	private void getBatchTranslation(boolean fetchOnly, List<MexItem> words, String warehouse) {
+		Master<MexItem> george = new Master<MexItem>(words, new Worker<MexItem>() {
+			@Override
+			public void process(MexItem obj) {
+				String word = obj.toString();
+				int count = countOfTasks - tasks.size();
+				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "async translating...", word);
+				getTranslation(fetchOnly, word, warehouse);
+				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "async translated", word);
+			}
+			
+		});
+		
+		george.sitAndWait();
+	}
+
 }

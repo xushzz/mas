@@ -22,7 +22,7 @@ public class IcibaManager {
 		return instance;
 	}
 	
-	public boolean saveToDatabase(ValuesItem item, String location, String charset) {
+	public synchronized boolean saveToDatabase(ValuesItem item, String location, String charset) {
 		List<String> items = null;
 		if(FileUtil.exists(location)) {
 			items = IOUtil.readFileIntoList(location, charset);
@@ -34,7 +34,7 @@ public class IcibaManager {
 		return IOUtil.saveAsTxtWithCharset(items, location, charset);
 	}
 	
-	public List<ValuesItem> readFromDatabase(String word, String location, String charset, boolean caseSensitive) {
+	public synchronized List<ValuesItem> readFromDatabase(String word, String location, String charset, boolean caseSensitive) {
 		if(!FileUtil.exists(location)) {
 			return null;
 		}
