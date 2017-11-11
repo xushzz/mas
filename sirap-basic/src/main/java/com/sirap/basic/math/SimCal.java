@@ -17,11 +17,12 @@ public class SimCal {
 	}
 	
 	public static String evaluate(String content, int scale) {
+		XXXUtil.checkRange(scale, 0, 99);
 		String temp = preProcess(content);
 		
 		double tempResult = evalSimple(temp);
 		BigDecimal bd = MathUtil.divide(tempResult, 1, scale);
-		String result = StrUtil.removePointZeroes(bd.toPlainString());
+		String result = bd.toPlainString();
 
 		return result;
 	}

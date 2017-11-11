@@ -5,7 +5,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
+import com.sirap.basic.exception.MexException;
 import com.sirap.basic.math.FormulaCalculator;
 import com.sirap.basic.math.MexColorConverter;
 import com.sirap.basic.math.MexNumberConverter;
@@ -15,6 +17,7 @@ import com.sirap.basic.tool.C;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.MathUtil;
+import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
 
@@ -25,41 +28,41 @@ public class CommandSimpleMath extends CommandBase {
 	private static final String KEY_PERMUTATION = "p=";
 	private static final String KEY_TO_DATE = "td";
 	private static final String KEY_TO_LONG = "tl";
-	private static final String KEY_CALCULATE = "cal";
 	
 	@Override
 	public boolean handle() {
 
 		String regexCalculate = "([\\s_\\d\\.+\\-x\\*/\\(\\)]{2,})";
-		solo = parseSoloParam(KEY_CALCULATE + "\\s+" + regexCalculate);
-		if(solo != null) {
-			int scale = g().getUserNumberValueOf("calculator.scale", 2);
-			String math = SimCal.evaluate(solo, scale);
-			if(math != null) {
-				List<String> results = new ArrayList<String>();
-				results.add(solo + " = " + math);
-				if(math.length() > 9) {
-					results.add("Result contains " + math.length() + " chars.");
+		params = parseParams("(cal\\s+|)" + regexCalculate);
+		if(params != null) {
+			boolean ignoreIfException = params[0].isEmpty();
+			String expression = params[1];
+			int scale = OptionUtil.readIntegerPRI(options, "s", 2);
+			try {
+				String math = SimCal.evaluate(expression, scale);
+				if(math != null) {
+					String temp = math;
+					boolean keepZero = OptionUtil.readBooleanPRI(options, "k", false);
+					if(!keepZero) {
+						temp = StrUtil.removePointZeroes(temp);
+					}
+					List<String> results = Lists.newArrayList();
+					results.add(expression + " = " + temp);
+					if(temp.length() > 5) {
+						results.add("Result contains " + temp.length() + " chars.");
+					}
+					export(results);
+					return true;
 				}
-				export(results);
-				return true;
+			} catch (Exception ex) {
+				if(ignoreIfException) {
+					//
+				} else {
+					throw new MexException(ex);
+				}
 			}
 		}
 
-		try {
-			solo = parseSoloParam(regexCalculate);
-			int scale = g().getUserNumberValueOf("calculator.scale", 2);
-			String math = SimCal.evaluate(solo, scale);
-			if(math != null) {
-				List<String> results = new ArrayList<String>();
-				results.add(solo + "=" + math);
-				export(results);
-				return true;
-			}
-		} catch (Exception ex) {
-			//
-		}
-		
 		String math = FormulaCalculator.evaluate(command);
 		if(math != null) {
 			List<String> results = new ArrayList<String>();

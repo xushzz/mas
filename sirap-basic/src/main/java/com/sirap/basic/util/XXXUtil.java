@@ -24,6 +24,12 @@ public class XXXUtil {
 		}
 	}
 	
+	public static void checkRange(int value, int min, int max) {
+		if(value < min || value > max) {
+			throw new MexException("Value '{0}' out of range, should be between {1} and {2}, both inclusive.", value, min, max);
+		}
+	}
+	
 	public static void checkMonthDayRange(int month, int day) {
 		checkMonthRange(month);
 		int maxDay = DateUtil.MAX_DAY_IN_MONTH_LEAP_YEAR[month - 1];
