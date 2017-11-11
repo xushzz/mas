@@ -49,7 +49,7 @@ import com.sirap.common.manager.VFileManager;
 
 public class CommandFile extends CommandBase {
 
-	private static final String KEY_EXTENSIBLE = "x";
+	private static final String KEY_SENDEMAIL = "x";
 	private static final String KEY_VERY_IMPORTANT_FOLDER = "v";
 	private static final String KEY_OPEN_EXPLORER = "<";
 	private static final String KEY_ALL_DISKS_SINGLE_COLON = ":";
@@ -71,7 +71,7 @@ public class CommandFile extends CommandBase {
 	@SuppressWarnings("all")
 	@Override
 	public boolean handle() {
-		solo = parseSoloParam(KEY_EXTENSIBLE + "\\s(.*?)");
+		solo = parseSoloParam(KEY_SENDEMAIL + "\\s(.*?)");
 		if(solo != null) {
 			if(target instanceof TargetConsole) {
 				if(isEmailEnabled()) {
@@ -91,7 +91,7 @@ public class CommandFile extends CommandBase {
 				
 				item = item.trim();
 				
-				String[] fileParams = StrUtil.parseParams("(\\${1,2}|)(.+?)", item);
+				String[] fileParams = StrUtil.parseParams("(#{1,2}|)(.+?)", item);
 				if(fileParams == null) {
 					continue;
 				}
@@ -125,7 +125,7 @@ public class CommandFile extends CommandBase {
 					}
 					continue;
 				}
-				
+
 				File folder = parseFolder(value);
 				if(folder != null) {
 					folder.list(new FilenameFilter() {
@@ -500,18 +500,14 @@ public class CommandFile extends CommandBase {
 			String source = IOUtil.readURL(pageUrl, g().getCharsetInUse(), true);
 			if(source != null) {
 				boolean showOrder = OptionUtil.readBooleanPRI(options, "order", false);
+				String itemConnector = OptionUtil.readString(options, "icon", ", ").replace("\\s", " ");
 				List<List<String>> allItems = StrUtil.findAllMatchedListedItems(regex, source, isCaseSensitive());
 				List tempList = new ArrayList();
 				int count = 0;
 				for(List<String> list : allItems) {
 					count++;
-					String lineNumber = showOrder ? StrUtil.occupy("#{0} ", count) : "";
-					boolean singleItem = list.size() == 1;
-					if(singleItem) {
-						tempList.add(lineNumber + list.get(0));
-					} else {
-						tempList.add(lineNumber + list);
-					}
+					String order = showOrder ? StrUtil.occupy("#{0} ", count) : "";
+					tempList.add(order + StrUtil.connect(list, itemConnector));
 				}
 				
 				export(tempList);
@@ -530,29 +526,41 @@ public class CommandFile extends CommandBase {
 				String filePath = tempFile.getAbsolutePath();
 				if(FileOpener.isTextFile(filePath)) {
 					boolean showLineNumber = OptionUtil.readBooleanPRI(options, "line", false);
-					String connector = OptionUtil.readString(options, "conn", "; ").replace("\\s", " ");
-					
+					String groupConnector = OptionUtil.readString(options, "gcon", "; ").replace("\\s", " ");
+					String itemConnector = OptionUtil.readString(options, "icon", ", ").replace("\\s", " ");
 					List<String> items = new ArrayList<String>();
 					List<String> txtContent = FileOpener.readTextContent(filePath);
 					int line = 0;
 					int maxLen = (txtContent.size() + "").length();
-					for(String record:txtContent) {
+					for(String record : txtContent) {
 						line++;
-						List<List<String>> allItems = StrUtil.findAllMatchedListedItems(regex, record, isCaseSensitive());
+						List<List<String>> allLists = StrUtil.findAllMatchedListedItems(regex, record, isCaseSensitive());
 
-						if(EmptyUtil.isNullOrEmpty(allItems)) {
+						if(EmptyUtil.isNullOrEmpty(allLists)) {
 							continue;
 						}
 						
-						boolean singleItem = allItems.size() == 1;
-						String temp = null;
-						if(singleItem) {
-							temp = StrUtil.connect(allItems.get(0), connector);
+						if(OptionUtil.readBooleanPRI(options, "one", false)) {
+							for(List<String> list : allLists) {
+								items.addAll(list);
+							}
+						} else if (OptionUtil.readBooleanPRI(options, "group", false)) {
+							for(List<String> list : allLists) {
+								items.add(StrUtil.connect(list, itemConnector));
+							}
 						} else {
-							temp = StrUtil.connect(allItems, connector);
+							StringBuffer sb = StrUtil.sb();
+							boolean toConnect = false;
+							for(List<String> list : allLists) {
+								if(toConnect) {
+									sb.append(groupConnector);
+								}
+								toConnect = true;
+								sb.append(StrUtil.connect(list, itemConnector));
+							}
+							String lineNumber = showLineNumber ? StrUtil.occupy("L{0} ", StrUtil.padRight(line + "", maxLen)) : "";
+							items.add(lineNumber + sb.toString());
 						}
-						String lineNumber = showLineNumber ? StrUtil.occupy("L{0} ", StrUtil.padRight(line + "", maxLen)) : "";
-						items.add(lineNumber + temp);
 					}
 					
 					export(items);
