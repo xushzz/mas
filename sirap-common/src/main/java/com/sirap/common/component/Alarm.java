@@ -7,7 +7,10 @@ import com.sirap.basic.component.Konstants;
 import com.sirap.basic.component.MexedTimer;
 import com.sirap.basic.component.MomentCalculator;
 import com.sirap.basic.tool.C;
+import com.sirap.basic.tool.D;
 import com.sirap.basic.util.DateUtil;
+import com.sirap.basic.util.EmptyUtil;
+import com.sirap.basic.util.StrUtil;
 import com.sirap.common.manager.AlarmManager;
 
 public abstract class Alarm extends MexedTimer implements Comparable<Alarm> {
@@ -16,8 +19,8 @@ public abstract class Alarm extends MexedTimer implements Comparable<Alarm> {
 
 	public static final String TYPE_DELAY = "+";
 	public static final String TYPE_FIXED = "@";
-	public static final String TYPE_REPEAT_NOW = "#";
-	public static final String TYPE_REPEAT_DELAY = "##";
+	public static final String BANG = "#";
+	public static final String BANGBANG = "##";
 	
 	private boolean isActive = true; 
 	private String order;
@@ -47,7 +50,7 @@ public abstract class Alarm extends MexedTimer implements Comparable<Alarm> {
 		this.type = type;
 		this.face = face;
 		this.action = action;
-		
+		D.pl(type, face, action);
 		if(sharpHourAlarm()) {
 			this.targetMoment = DateUtil.nextSharpHour(1);
 		} else {
@@ -57,9 +60,16 @@ public abstract class Alarm extends MexedTimer implements Comparable<Alarm> {
 		tick();
 	}
 	
+	private boolean isOneBang() {
+		return StrUtil.equals(BANG, type);
+	}
+	
+	private boolean isTwoBangs() {
+		return StrUtil.equals(BANGBANG, type);
+	}
+	
 	public boolean sharpHourAlarm() {
-		boolean flag = face.isEmpty() && ("#".equals(type) || "##".equals(type));
-		return flag;
+		return EmptyUtil.isNullOrEmpty(face) && (isOneBang() || isTwoBangs());
 	}
 	
 	public Alarm(Date theMoment, String action) {
@@ -74,39 +84,30 @@ public abstract class Alarm extends MexedTimer implements Comparable<Alarm> {
 		return theMoment;
 	}
 	
-	private boolean isRepeat() {
-		boolean flag = TYPE_REPEAT_NOW.equals(type) || TYPE_REPEAT_DELAY.equals(type);
-		return flag;
-	}
-	
 	private void tick() {
 		if(targetMoment == null) {
+			C.pl("Empty target moment.");
 			return;
 		}
 		
 		long diffInMilli = targetMoment.getTime() - (new Date()).getTime();
 		if(sharpHourAlarm()) {
 			setDelayMillis(diffInMilli);
-			if("##".equals(type)) {
+			if(isTwoBangs()) {
 				setPeriodMills(Konstants.MILLI_PER_HOUR);
 			}
 		} else {
-			if(isRepeat()) {
-				int least = 3000;
-				if(diffInMilli < least) {
-					C.pl("Minimum repeat interval would be changed to " + least + " milliseconds.");
-					diffInMilli = least;
-				}
+			int least = 3000;
+			if(diffInMilli < least) {
+				C.pl("Minimum repeat interval would be changed to " + least + " milliseconds.");
+				diffInMilli = least;
+			}
+			setDelayMillis(diffInMilli);
+			if(isOneBang() || isTwoBangs()) {
 				setPeriodMills(diffInMilli);
-				setDelayMillis(diffInMilli);
-				if(TYPE_REPEAT_NOW.equals(type)) {
+				if(isOneBang()) {
 					execute();
 				}
-			} else {
-				if(diffInMilli < 0) {
-					diffInMilli = 0;
-				}
-				setDelayMillis(diffInMilli);
 			}
 		}
 		
@@ -126,9 +127,11 @@ public abstract class Alarm extends MexedTimer implements Comparable<Alarm> {
 	@Override
 	protected void timerAction()  {
 		execute();
-		if(sharpHourAlarm() && "##".equals(type)) {
-			targetMoment = DateUtil.hourDiff(targetMoment, 1);
-		} else if(isRepeat()) {
+		if(sharpHourAlarm()) {
+			if(isTwoBangs()) {
+				targetMoment = DateUtil.hourDiff(targetMoment, 1);
+			}
+		} else if(isOneBang() || isTwoBangs()) {
 			targetMoment = jamie.recalculateTargetMoment();
 		} else {
 			cancel();
