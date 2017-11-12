@@ -48,7 +48,7 @@ public class Extractors {
 				String href = JsonUtil.getFirstStringValueByKey(source, "carImage");
 				String temp = sb.toString().replaceAll(connector + "$", "");
 				
-				if(EmptyUtil.isNullOrEmpty(href) && EmptyUtil.isNullOrEmpty(href)) {
+				if(EmptyUtil.isNullOrEmpty(href)) {
 					return;
 				}
 				
@@ -59,8 +59,8 @@ public class Extractors {
 		return neymar.process().getMexItem();
 	}
 
-	public static List<Link> fetchHangyangPlates(String fuzzy) {
-		Extractor<Link> neymar = new Extractor<Link>() {
+	public static List<KeyValuesItem> fetchHangyangPlates(String fuzzy) {
+		Extractor<KeyValuesItem> neymar = new Extractor<KeyValuesItem>() {
 
 			@Override
 			public String getUrl() {
@@ -75,10 +75,14 @@ public class Extractors {
 				Matcher ma = createMatcher(regex, source);
 				while(ma.find()) {
 					String section = ma.group(1);
-					String href = JsonUtil.getFirstStringValueByKey(section, "imgName");
+					String image = JsonUtil.getFirstStringValueByKey(section, "imgName");
 					String plate = JsonUtil.getFirstStringValueByKey(section, "plateNo");
 					String when = JsonUtil.getFirstStringValueByKey(section, "entryTime");
-					mexItems.add(new Link(plate + ", " + when, href));
+					KeyValuesItem item = new KeyValuesItem();
+					item.add("plate", plate);
+					item.add("when", when);
+					item.add("image", image);
+					mexItems.add(item);
 				}
 			}
 		};
