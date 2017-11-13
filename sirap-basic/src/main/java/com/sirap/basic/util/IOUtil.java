@@ -581,7 +581,7 @@ public class IOUtil {
 	 * @param targetFolder
 	 * @return
 	 */
-	public static int[] copyFilesToFolder(List<File> sourceFiles, String targetFolder)  {
+	public static int[] copyFilesSequentially(List<File> sourceFiles, String targetFolder)  {
 		int[] results = new int[2];
 		for(File file:sourceFiles) {
 			boolean flag = copyFileToFolder(file, targetFolder);

@@ -195,6 +195,10 @@ public class CollUtil {
 	}
 	
 	public static List filterMix(List rawItems, String mexCriteria, boolean isCaseSensitive) {
+		if(EmptyUtil.isNullOrEmpty(mexCriteria)) {
+			return rawItems;
+		}
+		
 		List<MexItem> mexItems = Lists.newArrayList();
 		for(Object obj : rawItems) {
 			if(obj instanceof MexItem) {

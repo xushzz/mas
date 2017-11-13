@@ -397,7 +397,7 @@ public class CommandSirap extends CommandBase {
 		
 		params = parseParams(userConfig + "(|(.*?))");
 		if(params != null) {
-			String criteria = params[1];
+			String criteria = params[0];
 			String userConfigFile = g().getUserConfigFileName();
 			if(userConfigFile != null) {
 				List<String> records = IOUtil.readFileIntoList(userConfigFile, g().getCharsetInUse());

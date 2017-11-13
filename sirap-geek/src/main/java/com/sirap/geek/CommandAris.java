@@ -69,7 +69,6 @@ public class CommandAris extends CommandBase {
 			} else {
 				items = ArisUtil.getClassDetail(glass, isDebug());
 			}
-			
 			export(CollUtil.filterMix(items, mexCriteria, isCaseSensitive()));
 			
 			return true;

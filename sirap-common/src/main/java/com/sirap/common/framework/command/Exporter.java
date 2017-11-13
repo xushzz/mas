@@ -17,6 +17,7 @@ import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
+import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.TrumpUtil;
 import com.sirap.common.component.FileOpener;
@@ -155,7 +156,11 @@ public class Exporter {
 			
 			if(normalFiles.size() > 0) {
 				long start = System.currentTimeMillis();
-				IOUtil.copyFiles(normalFiles, targetFolder);
+				if(OptionUtil.readBooleanPRI(options, "sync", false)) {
+					IOUtil.copyFilesSequentially(normalFiles, targetFolder);
+				} else {
+					IOUtil.copyFiles(normalFiles, targetFolder);
+				}
 				long end = System.currentTimeMillis();
 				C.time2(start, end);
 			}
