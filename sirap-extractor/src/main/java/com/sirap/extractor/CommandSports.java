@@ -7,7 +7,7 @@ import java.util.Map;
 import com.google.common.collect.Maps;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.CollectionUtil;
+import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.MathUtil;
@@ -86,17 +86,17 @@ public class CommandSports extends CommandBase {
 			} else {
 				List<MexObject> items = Extractors.fetchHupuFootballScorers(id);
 				if(StrUtil.equals(KEY_2DOTS, criteria)) {
-					exportWithDefaultOptions(items);
+					export(items);
 				} else {
 					int topN = OptionUtil.readIntegerPRI(options, "n", 10);
 					if(topN > 0) {
-						items = CollectionUtil.top(items, topN + 1);
+						items = CollUtil.top(items, topN + 1);
 					}
 					
 					if(EmptyUtil.isNullOrEmpty(criteria)) {
 						export(items);
 					} else {
-						export(CollectionUtil.filter(items, criteria));
+						export(CollUtil.filter(items, criteria));
 					}
 				}
 			}
@@ -122,7 +122,7 @@ public class CommandSports extends CommandBase {
 				if(EmptyUtil.isNullOrEmpty(criteria)) {
 					export(items);
 				} else {
-					export(CollectionUtil.filter(items, criteria));
+					export(CollUtil.filter(items, criteria));
 				}
 			}
 			
@@ -142,23 +142,23 @@ public class CommandSports extends CommandBase {
 			} else {
 				List<SportsMatchItem> items = Extractors.fetchHupuFootballSchedule(id);
 				if(StrUtil.equals(KEY_2DOTS, criteria)) {
-					exportWithDefaultOptions(items);
+					export(items);
 				} else if(EmptyUtil.isNullOrEmpty(criteria)) {
 					String today = DateUtil.displayNow("yyyy-MM-dd");
 					Integer lastK = OptionUtil.readInteger(options, "L");
 					List<SportsMatchItem> todayItems = null;
 					if(lastK != null && lastK > 0) {
-						todayItems = CollectionUtil.filter(items, "<=" + today);
-						exportWithDefaultOptions(CollectionUtil.last(todayItems, lastK));
+						todayItems = CollUtil.filter(items, "<=" + today);
+						export(CollUtil.last(todayItems, lastK));
 					} else {
 						int nextK = OptionUtil.readIntegerPRI(options, "N", 10);
 						if(nextK > 0) {
-							todayItems = CollectionUtil.filter(items, ">=" + today);
-							exportWithDefaultOptions(CollectionUtil.top(todayItems, nextK));
+							todayItems = CollUtil.filter(items, ">=" + today);
+							export(CollUtil.top(todayItems, nextK));
 						} 
 					}
 				} else {
-					exportWithDefaultOptions(CollectionUtil.filter(items, criteria));
+					export(CollUtil.filter(items, criteria));
 				}
 			}
 			
@@ -171,7 +171,7 @@ public class CommandSports extends CommandBase {
 			if(EmptyUtil.isNullOrEmpty(solo)) {
 				export(items);
 			} else {
-				export(CollectionUtil.filter(items, solo));
+				export(CollUtil.filter(items, solo));
 			}
 			
 			return true;
@@ -183,7 +183,7 @@ public class CommandSports extends CommandBase {
 			if(EmptyUtil.isNullOrEmpty(solo)) {
 				export(items);
 			} else {
-				export(CollectionUtil.filter(items, solo));
+				export(CollUtil.filter(items, solo));
 			}
 			
 			return true;
@@ -200,17 +200,17 @@ public class CommandSports extends CommandBase {
 				Integer lastK = OptionUtil.readInteger(options, "L");
 				List<SportsMatchItem> todayItems = null;
 				if(lastK != null && lastK > 0) {
-					todayItems = CollectionUtil.filter(items, "<=" + today);
-					export(CollectionUtil.last(todayItems, lastK));
+					todayItems = CollUtil.filter(items, "<=" + today);
+					export(CollUtil.last(todayItems, lastK));
 				} else {
 					int nextK = OptionUtil.readIntegerPRI(options, "N", 16);
 					if(nextK > 0) {
-						todayItems = CollectionUtil.filter(items, ">=" + today);
-						export(CollectionUtil.top(todayItems, nextK));
+						todayItems = CollUtil.filter(items, ">=" + today);
+						export(CollUtil.top(todayItems, nextK));
 					} 
 				}
 			} else {
-				export(CollectionUtil.filter(items, criteria));
+				export(CollUtil.filter(items, criteria));
 			}
 		}
 

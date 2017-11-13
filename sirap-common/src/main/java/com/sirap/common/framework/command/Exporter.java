@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.component.html.HtmlExporter;
 import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.email.EmailCenter;
@@ -12,7 +13,7 @@ import com.sirap.basic.output.ExcelParams;
 import com.sirap.basic.output.HtmlParams;
 import com.sirap.basic.output.PDFParams;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.CollectionUtil;
+import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
@@ -136,20 +137,25 @@ public class Exporter {
 		
 		if(target instanceof TargetFolder) {
 			TargetFolder folder = (TargetFolder)target;
-			String filePath = folder.getPath();
-			List<MexFile> mexedFiles = new ArrayList<MexFile>();
+			String targetFolder = folder.getPath();
+			List<File> normalFiles = Lists.newArrayList();
 			for(Object item: records) {
 				if(item instanceof File) {
 					File file = (File)item;
-					mexedFiles.add(new MexFile(file));
+					if(file.isFile()) {
+						normalFiles.add(file);
+					}
 				} else if (item instanceof MexFile) {
-					mexedFiles.add((MexFile)item);
+					MexFile mexFile = (MexFile)item;
+					if(mexFile.getFile().isFile()) {
+						normalFiles.add(mexFile.getFile());
+					}
 				}
 			}
 			
-			if(mexedFiles.size() > 0) {
+			if(normalFiles.size() > 0) {
 				long start = System.currentTimeMillis();
-				IOUtil.copyMexedFiles(mexedFiles, filePath);
+				IOUtil.copyFiles(normalFiles, targetFolder);
 				long end = System.currentTimeMillis();
 				C.time2(start, end);
 			}
@@ -167,7 +173,6 @@ public class Exporter {
 		return;
 	}
 	
-	@SuppressWarnings("rawtypes")
 	public static void simplePrint(List records, ConsoleParams params) {
 		if(params == null) {
 			params = new ConsoleParams(true, false);
@@ -175,7 +180,7 @@ public class Exporter {
 		
 		if(params.isToSplit()) {
 			for(Object record:records) {
-				List<String> splittedRecords = CollectionUtil.splitIntoRecords(record + "", params.getCharsPerLineWhenSplit());
+				List<String> splittedRecords = CollUtil.splitIntoRecords(record + "", params.getCharsPerLineWhenSplit());
 				C.listWithoutTotal(splittedRecords);
 			}
 			

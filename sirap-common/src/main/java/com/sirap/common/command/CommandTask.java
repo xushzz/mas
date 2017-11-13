@@ -3,11 +3,9 @@ package com.sirap.common.command;
 import java.io.File;
 import java.util.List;
 
-import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.thread.Master;
 import com.sirap.basic.thread.Worker;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.StrUtil;
@@ -116,8 +114,7 @@ public class CommandTask extends CommandBase {
 		if(threads <= 1) {
 			executeSequentially(actions);
 		} else {
-			List<MexItem> mexItems = CollectionUtil.toMexItems(actions);
-			executeConcurrently(mexItems, threads);
+			executeConcurrently(actions, threads);
 		}
 	}
 
@@ -133,11 +130,10 @@ public class CommandTask extends CommandBase {
 		}
 	}
 	
-	private void executeConcurrently(List<MexItem> actions, final int threads) {
-		Master<MexItem> george = new Master<MexItem>(actions, new Worker<MexItem>() {
+	private void executeConcurrently(List<String> actions, final int threads) {
+		Master<String> george = new Master<String>(actions, new Worker<String>() {
 			@Override
-			public void process(MexItem obj) {
-				String action = obj.toString();
+			public void process(String action) {
 				int count = queue.size() + 1;
 				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "async dealing...", action);
 				Janitor.g().process(action.trim());

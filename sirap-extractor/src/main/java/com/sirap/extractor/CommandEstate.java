@@ -11,7 +11,8 @@ import com.sirap.basic.exception.MexException;
 import com.sirap.basic.thread.MasterItemsOriented;
 import com.sirap.basic.thread.WorkerItemsOritented;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.CollectionUtil;
+import com.sirap.basic.tool.D;
+import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.OptionUtil;
@@ -90,7 +91,10 @@ public class CommandEstate extends CommandBase {
 		solo = parseSoloParam(regex);
 		if(solo != null) {
 			List<KeyValuesItem> items = Extractors.fetchHangyangPlates(solo);
-			exportWithDefaultOptions(items);
+			D.ts(199);
+			export(items);
+			D.ts(99);
+			export(items);
 			return true;
 		}
 		
@@ -101,10 +105,10 @@ public class CommandEstate extends CommandBase {
 			for(int i = 1; i <= max; i++) {
 				allKeys.addAll(MathUtil.permutation(StrUtil.ALPHANUMERIC, i));
 			}
-			allKeys = CollectionUtil.top(allKeys, 10);
+			allKeys = CollUtil.top(allKeys, 10);
 			List<KeyValuesItem> links = getAllFuzzyPlates(allKeys);
 
-			exportWithDefaultOptions(new ArrayList<>(new LinkedHashSet<>(links)));
+			export(new ArrayList<>(new LinkedHashSet<>(links)));
 			return true;
 		}
 

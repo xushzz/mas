@@ -33,7 +33,6 @@ import java.util.Properties;
 
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.component.MexedMap;
-import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.output.ExcelParams;
 import com.sirap.basic.output.PDFParams;
@@ -41,8 +40,8 @@ import com.sirap.basic.thirdparty.excel.ExcelHelper;
 import com.sirap.basic.thirdparty.pdf.PdfHelper;
 import com.sirap.basic.thread.Master;
 import com.sirap.basic.thread.MasterItemOriented;
+import com.sirap.basic.thread.Worker;
 import com.sirap.basic.thread.business.InternetFileFetcher;
-import com.sirap.basic.thread.business.NormalFileCopier;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
 import com.sirap.basic.tool.MexedAudioPlayer;
@@ -607,21 +606,20 @@ public class IOUtil {
 	}
 	
 	public static boolean copyFileToFolder(File sourceFile, String targetFolder)  {
-    	if(sourceFile == null ||targetFolder == null) {
+    	XXXUtil.nullOrEmptyCheck(sourceFile, "sourceFile");
+    	XXXUtil.nullOrEmptyCheck(targetFolder, "targetFolder");
+    	
+    	if(sourceFile.getParentFile().equals(new File(targetFolder))) {
+    		XXXUtil.info("File [{0}] is already out there [{1}].", sourceFile, targetFolder);
     		return false;
     	}
-    	
-    	if(isInTheFolder(sourceFile, targetFolder)) {
-    		return true;
-    	}
 
     	BufferedInputStream inBuff = null;
         BufferedOutputStream outBuff = null;
         try {
-        	String fileName = sourceFile.getName();
-        	FileUtil.makeDirectoriesIfNonExist(targetFolder);
-        	String targetPath = StrUtil.useSeparator(targetFolder, fileName); 
             inBuff = new BufferedInputStream(new FileInputStream(sourceFile));
+        	String targetPath = StrUtil.useSeparator(targetFolder, sourceFile.getName()); 
+        	FileUtil.makeDirectoriesIfNonExist(targetFolder);
             outBuff = new BufferedOutputStream(new FileOutputStream(targetPath));
 
             byte[] b = new byte[Konstants.FILE_SIZE_STEP * 5];
@@ -648,52 +646,18 @@ public class IOUtil {
         return false;
     }
 	
-	public static boolean copyFile(String sourcePath, String targetPath)  {
-    	BufferedInputStream inBuff = null;
-        BufferedOutputStream outBuff = null;
-        try {
-            inBuff = new BufferedInputStream(new FileInputStream(sourcePath));
-            outBuff = new BufferedOutputStream(new FileOutputStream(targetPath));
-
-            byte[] b = new byte[Konstants.FILE_SIZE_STEP * 5];
-            int len;
-            while ((len = inBuff.read(b)) != -1) {
-                outBuff.write(b, 0, len);
-            }
-            outBuff.flush();
-            
-            return true;
-        } catch (Exception ex) {
-        	ex.printStackTrace();        	
-        } finally {
-        	try {
-                if (inBuff != null)
-                    inBuff.close();
-                if (outBuff != null)
-                    outBuff.close();
-			} catch (IOException e) {
-				e.printStackTrace();
+	public static void copyFiles(List<File> sourcefiles, final String targetFolder) {
+		Master<File> george = new Master<File>(sourcefiles, new Worker<File>() {
+			public void process(File normalFile) {
+				String sourceFilepath = normalFile.getPath();
+				String targetFilepath = StrUtil.useSeparator(targetFolder, normalFile.getName());
+				int count = countOfTasks - queue.size();
+				status(STATUS_FILE_COPY, count, countOfTasks, "Copying...", sourceFilepath, targetFolder);
+				IOUtil.copyFileToFolder(sourceFilepath, targetFolder);
+				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "Copied", targetFilepath);
 			}
-        }
-        
-        return false;
-    }
-	
-	public static int[] copyMexedFiles(List<MexFile> sourcefiles, String targetFolder) {
-		return copyMexedFiles(sourcefiles, targetFolder, -1);
-	}
-	
-	public static int[] copyMexedFiles(List<MexFile> sourcefiles, String targetFolder, final int threads) {
-		Master<MexFile> george = new Master<MexFile>(sourcefiles, new NormalFileCopier(targetFolder)) {
-			@Override
-			protected int countOfThread() {
-				int temp = threads <= 0 ? super.countOfThread() : threads;
-				return temp;
-			}
-		};
+		});
 		george.sitAndWait();
-		
-		return null;
 	}
 	
 	public static List<String> downloadFiles(String storage, List<String> links, String suffixWhenObscure, final int threads) {

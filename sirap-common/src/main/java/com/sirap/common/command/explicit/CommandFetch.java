@@ -7,7 +7,7 @@ import java.util.List;
 
 import com.sirap.basic.output.PDFParams;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.CollectionUtil;
+import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.IOUtil;
@@ -91,7 +91,7 @@ public class CommandFetch extends CommandBase {
 			}
 			
 			if(target.isFileRelated()) {
-				export(CollectionUtil.toFileList(pathList));
+				export(CollUtil.toFileList(pathList));
 			} else {
 				export(pathList);
 			}
@@ -147,10 +147,9 @@ public class CommandFetch extends CommandBase {
 					int[] cellsAlign = {0, 1, 2};
 					PDFParams pdfParams = new PDFParams(cellsWidth, cellsAlign);
 					target.setParams(pdfParams);
-					List<List<String>> items = CollectionUtil.items2PDFRecords(records);
-					export(items);
+					export(CollUtil.items2PDFRecords(records));
 				} else {
-					export(CollectionUtil.items2PrintRecords(records));					
+					export(CollUtil.items2PrintRecords(records));					
 				}
 
 	    		return true;

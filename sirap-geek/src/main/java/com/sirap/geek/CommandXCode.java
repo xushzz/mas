@@ -11,7 +11,7 @@ import com.sirap.basic.domain.MexLocale;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.search.MexFilter;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.CollectionUtil;
+import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
@@ -130,10 +130,7 @@ public class CommandXCode extends CommandBase {
 		
 		solo = parseSoloParam(KEY_ASCII_SHORT + "\\s(.+?)");
 		if(solo != null) {
-			List<MexItem> records = GeekManager.g().asciiAll();
-			
-			MexFilter<MexItem> filter = new MexFilter<MexItem>(solo, CollectionUtil.toMexItems(records));
-			List<MexItem> items = filter.process();
+			List<MexItem> items = CollUtil.filter(GeekManager.g().asciiAll(), solo, isCaseSensitive());
 			
 			if(!EmptyUtil.isNullOrEmpty(items)) {
 				items.add(0, new MexObject((AsciiRecord.getHeader())));
@@ -334,10 +331,7 @@ public class CommandXCode extends CommandBase {
 		solo = parseSoloParam(KEY_DATE_FORMAT_SYMBOL + "\\s(.+?)");
 		if(isSingleParamNotnull()) { 
 			List<String> records = LocaleUtil.getAllMonthWeekdays();
-			MexFilter<MexItem> filter = new MexFilter<MexItem>(solo, CollectionUtil.toMexItems(records));
-			List<MexItem> items = filter.process();
-
-			export(items);
+			export(CollUtil.filterMix(records, solo, isCaseSensitive()));
 			
 			return true;
 		}
@@ -348,7 +342,7 @@ public class CommandXCode extends CommandBase {
 			C.pl(LocaleUtil.getIso3Header(extraLocales));
 			
 			Map mexItemParams = creteaLocaleParams();
-			export(CollectionUtil.items2PrintRecords(records, mexItemParams));
+			export(CollUtil.items2PrintRecords(records, mexItemParams));
 			
 			return true;
 		}
@@ -364,7 +358,7 @@ public class CommandXCode extends CommandBase {
 			}
 
 			Map mexItemParams = creteaLocaleParams();
-			export(CollectionUtil.items2PrintRecords(items, mexItemParams));
+			export(CollUtil.items2PrintRecords(items, mexItemParams));
 			
 			return true;
 		}
@@ -394,9 +388,9 @@ public class CommandXCode extends CommandBase {
 			} else {
 				C.pl("[" + solo + "] is not a valid locale, did you mean one of these?");
 				if(EmptyUtil.isNullOrEmpty(items)) {
-					C.listSome(CollectionUtil.items2PrintRecords(LocaleUtil.AAM_LOCALES, mexItemParams), 10);
+					C.listSome(CollUtil.items2PrintRecords(LocaleUtil.AAM_LOCALES, mexItemParams), 10);
 				} else {
-					C.list(CollectionUtil.items2PrintRecords(items, mexItemParams));
+					C.list(CollUtil.items2PrintRecords(items, mexItemParams));
 					C.pl();
 				}
 			}

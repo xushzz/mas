@@ -23,7 +23,7 @@ import com.sirap.basic.email.EmailCenter;
 import com.sirap.basic.output.PDFParams;
 import com.sirap.basic.search.TextSearcher;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.CollectionUtil;
+import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
@@ -234,10 +234,10 @@ public class CommandSirap extends CommandBase {
 					int[] cellsAlign = {0, 0};
 					PDFParams pdfParams = new PDFParams(cellsWidth, cellsAlign);
 					target.setParams(pdfParams);
-					List<List<String>> items = CollectionUtil.items2PDFRecords(records);
+					List<List<String>> items = CollUtil.items2PDFRecords(records);
 					export(items);
 				} else {
-					export(CollectionUtil.items2PrintRecords(records));	
+					export(CollUtil.items2PrintRecords(records));	
 				}
 				
 	    		return true;
@@ -373,7 +373,7 @@ public class CommandSirap extends CommandBase {
 						tempOptions += ",+kids";
 					}
 
-					exportWithOptions(allFiles, tempOptions);
+					export(allFiles, tempOptions);
 				}
 				return true;
 			}
@@ -401,7 +401,7 @@ public class CommandSirap extends CommandBase {
 			String userConfigFile = g().getUserConfigFileName();
 			if(userConfigFile != null) {
 				List<String> records = IOUtil.readFileIntoList(userConfigFile, g().getCharsetInUse());
-				exportByCriteria(records, criteria);
+				export(CollUtil.filterMix(records, criteria, isCaseSensitive()));
 				
 				return true;
 			}
@@ -525,7 +525,7 @@ public class CommandSirap extends CommandBase {
 			String engineOptions = engine.getOptions();
 			List<MexTextSearchRecord> list = TextSearcher.search(folders, fileCriteria, contentCriteria, g().getCharsetInUse());
 			String finalOptions = OptionUtil.mergeOptions(options, engineOptions);
-			exportWithOptions(list, finalOptions);
+			export(list, finalOptions);
 			
 			return true;
 		}
@@ -704,7 +704,7 @@ public class CommandSirap extends CommandBase {
 				}
 			}
 		} else {
-			List<MexObject> filePaths = CollectionUtil.filter(new ArrayList<MexObject>(mapLastModified.values()), criteria);
+			List<MexObject> filePaths = CollUtil.filter(new ArrayList<MexObject>(mapLastModified.values()), criteria);
 			
 			int size = filePaths.size();
 			if(size == 1) {

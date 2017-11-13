@@ -7,7 +7,7 @@ import java.util.List;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.CollectionUtil;
+import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.StrUtil;
@@ -117,7 +117,7 @@ public class CommandWholesale extends CommandBase {
 		} 
 		
 		if(target.isFileRelated()) {
-			export(CollectionUtil.toFileList(pathList));
+			export(CollUtil.toFileList(pathList));
 		} else {
 			export(pathList);
 		}

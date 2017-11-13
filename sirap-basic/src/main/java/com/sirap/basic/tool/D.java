@@ -114,6 +114,18 @@ public class D {
 		C.list(list);
 	}
 	
+	public static void list2(List list) {
+		D.pl("D.list start");
+		if(EmptyUtil.isNullOrEmpty(list)) {
+			D.sink("empty list");
+		}
+		
+		for(Object obj : list) {
+			D.pl((obj != null ? obj.getClass() + "  " : "") + obj);
+		}
+		D.pl("D.list end");
+	}
+	
 	public static void list(List list) {
 		D.pl("D.list start");
 		if(EmptyUtil.isNullOrEmpty(list)) {

@@ -4,7 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.sirap.basic.util.CollectionUtil;
+import com.sirap.basic.util.CollUtil;
 
 public class AsciiData {
 	public static Map<Integer, String> EGGS = new LinkedHashMap<Integer, String>();
@@ -98,6 +98,6 @@ public class AsciiData {
 	}
 
 	public static List<String> eggs() {
-		return CollectionUtil.toList(EGGS, ", ");
+		return CollUtil.toList(EGGS, ", ");
 	}
 }

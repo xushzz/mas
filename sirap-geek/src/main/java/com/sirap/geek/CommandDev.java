@@ -17,7 +17,7 @@ import com.sirap.basic.search.MexFilter;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.ScreenCaptor;
 import com.sirap.basic.util.ArisUtil;
-import com.sirap.basic.util.CollectionUtil;
+import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.ImageUtil;
@@ -58,9 +58,8 @@ public class CommandDev extends CommandBase {
 		solo = parseSoloParam(KEY_PATH + "\\s(.*?)");
 		if(solo != null) {
 			List<String> items = IOUtil.echoPath();
-			List<MexItem> result = CollectionUtil.filterRaw(items, solo);
 			
-			export(result);
+			export(CollUtil.filterMix(items, solo, isCaseSensitive()));
 			
 			return true;
 		}
@@ -295,11 +294,11 @@ public class CommandDev extends CommandBase {
 			}
 			
 			if(KEY_2DOTS.equals(criteria)) {
-				exportWithOptions(allItems, tempOptions);
+				export(allItems, tempOptions);
 			} else {
 				MexFilter<MexZipEntry> filter = new MexFilter<MexZipEntry>(criteria, allItems, isCaseSensitive(tempOptions));
 				List<MexZipEntry> result = filter.process();
-				exportWithOptions(result, tempOptions);
+				export(result, tempOptions);
 			}
 			
 			return true;

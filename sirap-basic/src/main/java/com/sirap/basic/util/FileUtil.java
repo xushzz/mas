@@ -212,7 +212,7 @@ public class FileUtil {
 		if(EmptyUtil.isNullOrEmpty(fileCriteria)) {
 			return allFiles;
 		} else {
-			List<MexFile> items = CollectionUtil.filter(allFiles, fileCriteria);
+			List<MexFile> items = CollUtil.filter(allFiles, fileCriteria);
 			return items;
 		}
 	}
@@ -389,8 +389,8 @@ public class FileUtil {
 			possibleFileNames.add(param);
 			possibleFileNames.add(param + Konstants.SUFFIX_TXT);
 		} else {
-			possibleFileNames.add(defaultFolder + param);
-			possibleFileNames.add(defaultFolder + param + Konstants.SUFFIX_TXT);
+			possibleFileNames.add(StrUtil.useSeparator(defaultFolder, param));
+			possibleFileNames.add(StrUtil.useSeparator(defaultFolder, param + Konstants.SUFFIX_TXT));
 		}
 		
 		return parseNormalFile(possibleFileNames);

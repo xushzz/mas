@@ -5,9 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.CollectionUtil;
+import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
@@ -24,6 +23,7 @@ public class CommandHelp extends CommandBase {
 	private static final String TEMPLATE_HELP = "/help/Help_{0}.txt";
 	private static final String TEMPLATE_HELP_XX = "/help/Help_{0}_{1}.txt";
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public boolean handle() {
 		
@@ -54,7 +54,7 @@ public class CommandHelp extends CommandBase {
 			allKeys.add(KEY_TASK);
 			allKeys.add(KEY_BASIC);
 			
-			List<String> results = new ArrayList<>();
+			List results = new ArrayList<>();
 			int maxLen = StrUtil.maxLengthOf(allKeys);
 			Map<String, Object> allHelpMeanings = getAllHelpMeanings();
 			for(String key : allKeys) {
@@ -69,8 +69,7 @@ public class CommandHelp extends CommandBase {
 
 			if(!EmptyUtil.isNullOrEmpty(results)) {
 				if(!solo.isEmpty()) {
-					List<MexItem> items = CollectionUtil.filterRaw(results, solo);
-					results = CollectionUtil.items2PrintRecords(items);
+					results = CollUtil.filterMix(results, solo, isCaseSensitive());
 				}
 				results.add("");
 				results.add(versionAndCopyright());

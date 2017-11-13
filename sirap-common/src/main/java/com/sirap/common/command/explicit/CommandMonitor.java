@@ -6,10 +6,9 @@ import java.util.Date;
 import java.util.List;
 
 import com.sirap.basic.domain.MexFile;
-import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.output.PDFParams;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.CollectionUtil;
+import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
@@ -76,10 +75,8 @@ public class CommandMonitor extends CommandBase {
 			if(StrUtil.isRegexMatched("-(se|es)", criteria)) {
 				export(records);
 			} else {
-				List<MexItem> items = CollectionUtil.filter(CollectionUtil.toMexItems(records), criteria);
-				
-				if(!items.isEmpty()) {
-					export(items);
+				if(!records.isEmpty()) {
+					export(CollUtil.filterMix(records, criteria, isCaseSensitive()));
 				} else {
 					export(StrUtil.split(criteria, '\\'));
 				}
@@ -162,10 +159,10 @@ public class CommandMonitor extends CommandBase {
 				List<LoginRecord> records = LoginHistoryManager.g().search(solo);
 				if(target instanceof TargetPDF) {
 					target.setParams(LH_PDF_PARAMS);
-					List<List<String>> items = CollectionUtil.items2PDFRecords(records);
+					List<List<String>> items = CollUtil.items2PDFRecords(records);
 					export(items);
 				} else {
-					export(CollectionUtil.items2PrintRecords(records));
+					export(CollUtil.items2PrintRecords(records));
 				}
 				return true;
 			}
@@ -176,10 +173,10 @@ public class CommandMonitor extends CommandBase {
 				List<LoginRecord> records = LoginHistoryManager.g().getLoginRecords(count);
 				if(target instanceof TargetPDF) {
 					target.setParams(LH_PDF_PARAMS);
-					List<List<String>> items = CollectionUtil.items2PDFRecords(records);
+					List<List<String>> items = CollUtil.items2PDFRecords(records);
 					export(items);
 				} else {
-					export(CollectionUtil.items2PrintRecords(records));
+					export(CollUtil.items2PrintRecords(records));
 				}
 				
 				return true;
@@ -189,10 +186,10 @@ public class CommandMonitor extends CommandBase {
 				List<LoginRecord> records = LoginHistoryManager.g().getAllInputRecords();
 				if(target instanceof TargetPDF) {
 					target.setParams(LH_PDF_PARAMS);
-					List<List<String>> items = CollectionUtil.items2PDFRecords(records);
+					List<List<String>> items = CollUtil.items2PDFRecords(records);
 					export(items);
 				} else {
-					export(CollectionUtil.items2PrintRecords(records));
+					export(CollUtil.items2PrintRecords(records));
 				}
 				
 				return true;
@@ -208,7 +205,7 @@ public class CommandMonitor extends CommandBase {
 					} else {
 						if(OptionUtil.readBooleanPRI(options, "n", false)) {
 							int count = MathUtil.toInteger(solo, 20);
-							records = CollectionUtil.last(records, count);
+							records = CollUtil.last(records, count);
 						} else {
 							records = CommandHistoryManager.g().search(solo);
 						}
@@ -217,10 +214,10 @@ public class CommandMonitor extends CommandBase {
 				
 				if(target instanceof TargetPDF) {
 					target.setParams(CH_PDF_PARAMS);
-					List<List<String>> items = CollectionUtil.items2PDFRecords(records);
+					List<List<String>> items = CollUtil.items2PDFRecords(records);
 					export(items);
 				} else {
-					export(CollectionUtil.items2PrintRecords(records));
+					export(CollUtil.items2PrintRecords(records));
 				}
 				
 				return true;
@@ -260,7 +257,7 @@ public class CommandMonitor extends CommandBase {
 			String criteria = params[1];
 			List<String> list = FileUtil.readResourceFilesIntoList(Konfig.KEYS_FILE);
 			
-			exportByCriteria(list, criteria);
+			export(CollUtil.filterMix(list, criteria, isCaseSensitive()));
 			
 			return true;
 		}
@@ -272,7 +269,7 @@ public class CommandMonitor extends CommandBase {
 			List<String> recordsExtra = FileUtil.readResourceFilesIntoList(Konfig.EXTRA_FILE);
 			list.addAll(recordsExtra);
 			
-			exportByCriteria(list, criteria);
+			export(CollUtil.filterMix(list, criteria, isCaseSensitive()));
 			
 			return true;
 		}

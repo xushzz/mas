@@ -26,7 +26,7 @@ import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.FileDeeper;
 import com.sirap.basic.tool.MexFactory;
 import com.sirap.basic.util.ArisUtil;
-import com.sirap.basic.util.CollectionUtil;
+import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
@@ -49,7 +49,7 @@ import com.sirap.common.manager.VFileManager;
 
 public class CommandFile extends CommandBase {
 
-	private static final String KEY_SENDEMAIL = "x";
+	private static final String KEY_MIX = "x";
 	private static final String KEY_VERY_IMPORTANT_FOLDER = "v";
 	private static final String KEY_OPEN_EXPLORER = "<";
 	private static final String KEY_ALL_DISKS_SINGLE_COLON = ":";
@@ -71,7 +71,7 @@ public class CommandFile extends CommandBase {
 	@SuppressWarnings("all")
 	@Override
 	public boolean handle() {
-		solo = parseSoloParam(KEY_SENDEMAIL + "\\s(.*?)");
+		solo = parseSoloParam(KEY_MIX + "\\s(.*?)");
 		if(solo != null) {
 			if(target instanceof TargetConsole) {
 				if(isEmailEnabled()) {
@@ -143,7 +143,7 @@ public class CommandFile extends CommandBase {
 				
 				objs.add(item);
 			}
-			
+
 			export(objs);
 			
 			return true;
@@ -156,7 +156,7 @@ public class CommandFile extends CommandBase {
 			
 			if(!target.isFileRelated() && FileOpener.isZipFile(filePath)) {
 				List<MexZipEntry> items = ArisUtil.parseZipEntries(filePath);
-				exportWithDefaultOptions(items);
+				export(items);
 				return true;
 			}
 			
@@ -175,11 +175,11 @@ public class CommandFile extends CommandBase {
 				} else {
 					boolean sensitive = isCaseSensitive();
 					if(OptionUtil.readBooleanPRI(options, "sort", false)) {
-						CollectionUtil.sort(records, sensitive);
+						CollUtil.sort(records, sensitive);
 					}
 
 					if(OptionUtil.readBooleanPRI(options, "mark", false)) {
-						records = CollectionUtil.sortAndMarkSame(records, sensitive);
+						records = CollUtil.sortAndMarkOccurrence(records, sensitive);
 					}
 
 					if(OptionUtil.readBooleanPRI(options, "uniq", false)) {
@@ -202,7 +202,7 @@ public class CommandFile extends CommandBase {
 					}
 
 					if(OptionUtil.readBooleanPRI(options, "line", false)) {
-						records = CollectionUtil.lineNumber(records, true);
+						records = CollUtil.lineNumber(records, true);
 					}
 
 					export(records);	
@@ -300,7 +300,7 @@ public class CommandFile extends CommandBase {
 				
 				if(!EmptyUtil.isNullOrEmpty(allFiles)) {
 					if(target.isFileRelated()) {
-						export(CollectionUtil.toFileList(allFiles));
+						export(CollUtil.toFileList(allFiles));
 					} else {
 						boolean orderByNameAsc = OptionUtil.readBooleanPRI(options, "byname", true);
 						MexFileComparator cesc = new MexFileComparator(orderByNameAsc);
@@ -314,7 +314,7 @@ public class CommandFile extends CommandBase {
 							tempOptions += ",+size";
 						}
 						String finalOptions = OptionUtil.mergeOptions(options, tempOptions);
-						exportWithOptions(allFiles, finalOptions);
+						export(allFiles, finalOptions);
 					}
 					
 					return true;
@@ -337,8 +337,8 @@ public class CommandFile extends CommandBase {
 			
 			if(FileOpener.isTextFile(filePath)) {
 				List<MexObject> all = readFileIntoList(filePath, g().getCharsetInUse());
-				List<MexObject> items = CollectionUtil.filter(all, criteria, isCaseSensitive());
-				export(CollectionUtil.items2PrintRecords(items, options));
+				List<MexObject> items = CollUtil.filter(all, criteria, isCaseSensitive());
+				export(CollUtil.items2PrintRecords(items, options));
 			} else if(FileUtil.isAnyTypeOf(filePath, FileUtil.SUFFIXES_EXCEL)) {
 				Integer index = MathUtil.toInteger(criteria);
 				if(index == null) {
@@ -400,7 +400,7 @@ public class CommandFile extends CommandBase {
 				if(EmptyUtil.isNullOrEmpty(nameCriteria)) {
 					allMexedFiles.addAll(allFiles);
 				} else {
-					List<MexFile> items = CollectionUtil.filter(allFiles, nameCriteria, isCaseSensitive());
+					List<MexFile> items = CollUtil.filter(allFiles, nameCriteria, isCaseSensitive());
 					allMexedFiles.addAll(items);
 				}
 			}
@@ -427,7 +427,7 @@ public class CommandFile extends CommandBase {
 					Collections.sort(allMexedFiles, cesc);
 					String tempOptions = jack.isShowDetail() ? "+size" : "";
 					String finalOptions = OptionUtil.mergeOptions(options, tempOptions);
-					exportWithOptions(allMexedFiles, finalOptions);
+					export(allMexedFiles, finalOptions);
 				}
 			}
 			
@@ -446,7 +446,7 @@ public class CommandFile extends CommandBase {
 			List<MexFile> records = VFileManager.g().getFileRecordsByName(criteria, isCaseSensitive());
 			if(target.isFileRelated()) {
 				Collections.sort(records);
-				export(CollectionUtil.toFileList(records));
+				export(CollUtil.toFileList(records));
 			} else {
 				boolean orderByNameAsc = OptionUtil.readBooleanPRI(options, "byname", true);
 				MexFileComparator cesc = new MexFileComparator(orderByNameAsc); 
@@ -455,7 +455,7 @@ public class CommandFile extends CommandBase {
 				Collections.sort(records, cesc);
 				String tempOptions = detail ? "+size" : "";
 				String finalOptions = OptionUtil.mergeOptions(options, tempOptions);
-				exportWithOptions(records, finalOptions);
+				export(records, finalOptions);
 			}
 			
 			return true;
@@ -470,9 +470,9 @@ public class CommandFile extends CommandBase {
 			Collections.sort(records, cesc);
 
 			if(target.isFileRelated()) {
-				export(CollectionUtil.toFileList(records));
+				export(CollUtil.toFileList(records));
 			} else {
-				exportWithDefaultOptions(records);
+				export(records);
 			}
 			
 			return true;
@@ -620,7 +620,7 @@ public class CommandFile extends CommandBase {
 				} else if(StrUtil.equals(KEY_PRINT_TXT, type)) {
 					List<String> records = FileOpener.readTextContent(filePath, true);
 					if(OptionUtil.readBooleanPRI(options, "line", false)) {
-						export(CollectionUtil.lineNumber(records, true));
+						export(CollUtil.lineNumber(records, true));
 					} else {
 						export(records);
 					}
@@ -850,7 +850,7 @@ public class CommandFile extends CommandBase {
 			}
 			
 			List<MemoryRecord> records = readRecords();
-			export(CollectionUtil.items2PrintRecords(records));
+			export(CollUtil.items2PrintRecords(records));
 			
 			return true;
 		}

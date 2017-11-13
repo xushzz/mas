@@ -12,7 +12,7 @@ import com.sirap.basic.output.PDFParams;
 import com.sirap.basic.thread.Master;
 import com.sirap.basic.thread.Worker;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.CollectionUtil;
+import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
@@ -80,7 +80,7 @@ public class CommandCollect extends CommandBase {
 		solo = parseSoloParam(KEY_CAR + "\\s+([^\\.]+)");
 		if(solo != null) {
 			List<MexItem> items = Extractors.fetchCarList();
-			exportWithDefaultOptions(CollectionUtil.filter(items, solo));
+			export(CollUtil.filter(items, solo));
 			
 			return true;
 		}
@@ -101,7 +101,7 @@ public class CommandCollect extends CommandBase {
 		solo = parseSoloParam(KEY_CARNO + "\\s([^\\.]+)");
 		if(solo != null) {
 			List<MexObject> items = Extractors.fetchCarNoList();
-			export(CollectionUtil.filter(items, solo));
+			export(CollUtil.filter(items, solo));
 			
 			return true;
 		}
@@ -152,7 +152,7 @@ public class CommandCollect extends CommandBase {
 			File file = parseFile(solo);
 			if(file != null && FileOpener.isTextFile(file.getAbsolutePath())) {
 				List<String> words = FileOpener.readTextContent(file.getAbsolutePath());
-				getBatchTranslation(fetchOnly, CollectionUtil.toMexItems(words), filePath);
+				getBatchTranslation(fetchOnly, words, filePath);
 			} else {
 				String word = solo;
 				getTranslation(fetchOnly, word, filePath);
@@ -233,7 +233,7 @@ public class CommandCollect extends CommandBase {
 		if(is(KEY_RSS)) {
 			Object result = ObjectUtil.execute(sourceOfRss(), "readAllRss", new Class[0], new Object[0]);
 			List<MexObject> items = (List<MexObject>)result;
-			export(CollectionUtil.reverse(items));
+			export(CollUtil.reverse(items));
 			
 			return true;
 		}
@@ -242,7 +242,7 @@ public class CommandCollect extends CommandBase {
 		if(solo != null) {
 			Object result = ObjectUtil.execute(sourceOfRss(), "readAllRss", new Class[0], new Object[0]);
 			List<MexObject> items = (List<MexObject>)result;
-			export(CollectionUtil.reverse(CollectionUtil.filter(items, solo)));
+			export(CollUtil.reverse(CollUtil.filter(items, solo)));
 			
 			return true;
 		}
@@ -251,7 +251,7 @@ public class CommandCollect extends CommandBase {
 		solo = parseSoloParam(regex);
 		if(solo != null) {
 			Object result = ObjectUtil.execute(sourceOfRss(), "fetchRssByType", new Class[]{String.class}, new Object[]{solo});
-			export(CollectionUtil.reverse((List<MexObject>)result));
+			export(CollUtil.reverse((List<MexObject>)result));
 			
 			return true;
 		}
@@ -355,7 +355,7 @@ public class CommandCollect extends CommandBase {
 		solo = parseSoloParam(KEY_NOBEL_PRIZE + "\\s([^\\.]+)");
 		if(solo != null) {
 			List<MexObject> items = Extractors.fetchAllNobelPrizes();
-			export(CollectionUtil.filter(items, solo));
+			export(CollUtil.filter(items, solo));
 			
 			return true;
 		}
@@ -416,14 +416,13 @@ public class CommandCollect extends CommandBase {
 			}
 		}
 
-		exportWithOptions(items, "conn=\n");
+		export(items, "conn=\n");
 	}
 	
-	private void getBatchTranslation(boolean fetchOnly, List<MexItem> words, String warehouse) {
-		Master<MexItem> george = new Master<MexItem>(words, new Worker<MexItem>() {
+	private void getBatchTranslation(boolean fetchOnly, List<String> words, String warehouse) {
+		Master<String> george = new Master<String>(words, new Worker<String>() {
 			@Override
-			public void process(MexItem obj) {
-				String word = obj.toString();
+			public void process(String word) {
 				int count = countOfTasks - queue.size();
 				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "translating...", word);
 				getTranslation(fetchOnly, word, warehouse);

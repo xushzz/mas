@@ -10,7 +10,7 @@ import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.Person;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.CollectionUtil;
+import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.IDCardUtil;
@@ -70,7 +70,7 @@ public class CommandPirate extends CommandBase {
 				if(isText) {
 					String path = parseFile(source).getAbsolutePath();
 					List<String> allAreas = IOUtil.readFileIntoList(path, g().getCharsetInUse());
-					export(CollectionUtil.filterRaw(allAreas, solo));
+					export(CollUtil.filterMix(allAreas, solo, isCaseSensitive()));
 				} else {
 					C.pl2("Not a text file: " + source);
 				}

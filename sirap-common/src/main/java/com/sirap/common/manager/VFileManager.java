@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.CollectionUtil;
+import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.MathUtil;
@@ -114,11 +114,11 @@ public class VFileManager {
 	public List<MexFile> getFileRecordsByName(String criteria, boolean caseSensitive) {
 		showTipIfNeeded();
 		List<MexFile> files = getAllRecords(false);
-		List<MexFile> items = CollectionUtil.filter(files, criteria, caseSensitive);
+		List<MexFile> items = CollUtil.filter(files, criteria, caseSensitive);
 		
 		String fixedCriteria = fixCriteria(criteria);
 		if(!EmptyUtil.isNullOrEmpty(fixedCriteria)) {
-			items.addAll(CollectionUtil.filter(files, fixedCriteria));
+			items.addAll(CollUtil.filter(files, fixedCriteria));
 		}
 
 		return items;

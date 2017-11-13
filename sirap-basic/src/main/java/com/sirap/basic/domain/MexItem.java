@@ -93,7 +93,7 @@ public abstract class MexItem implements Serializable {
 		return toString();
 	}
 	
-	public String toPrint(Map<String, Object> params) {
+	public String toPrint(Map<String, Object> options) {
 		return toPrint();
 	}
 	

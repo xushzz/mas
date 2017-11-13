@@ -122,6 +122,10 @@ public class XXXUtil {
 	public static void info(String msg) {
 		C.pl(msg);
 	}
+
+	public static void info(String msg, Object... values) {
+		C.pl(StrUtil.occupy(msg, values));
+	}
 	
 	public static String getStackTrace(Throwable ex) {
 		 StringWriter sw = new StringWriter();  

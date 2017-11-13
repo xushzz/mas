@@ -32,11 +32,11 @@ public class MexObject extends MexItem {
 			return null;
 		}
 		
-		String source = obj.toString();
-		
+		String source;
 		if(obj instanceof List) {
-			List items = (List)obj;
-			source = StrUtil.connect(items, ", ");
+			source = StrUtil.connect((List)obj, ", ");
+		} else {
+			source = obj.toString();
 		}
 		
 		return source;

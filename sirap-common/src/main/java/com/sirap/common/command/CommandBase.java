@@ -10,11 +10,12 @@ import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.component.TimestampIDGenerator;
 import com.sirap.basic.domain.MexItem;
+import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.output.ConsoleParams;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
-import com.sirap.basic.util.CollectionUtil;
+import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
@@ -136,45 +137,62 @@ public abstract class CommandBase {
 		return debug;
 	}
 	
-	public <T extends MexItem> void exportWithDefaultOptions(List<T> list) {
-		exportWithOptions(list, options);
-	}
-	
-	public <T extends MexItem> void exportWithOptions(List<T> list, String niceOptions) {
-		if(isDebug()) {
-			D.ts("options: " + niceOptions);
-		}
-		List<String> list2 = CollectionUtil.items2PrintRecords(list, niceOptions);
-		export(list2);
-	}
-	
-	protected void exportByCriteria(List<String> list, String criteria) {
-		List<MexItem> records = CollectionUtil.toMexItems(list);
-		if(criteria != null) {
-			List<MexItem> items = CollectionUtil.filter(records, criteria);
-			export(items);
-		} else {
-			export(records);
-		}
-	}
-	
 	@SuppressWarnings({ "rawtypes"})
 	public void export(List list) {
 		export(list, options);
 	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private List applyMexCriteriaOnMexItems(List rawItems, String mexCriteria, boolean isCaseSensitive) {
+		List<MexItem> mexItems = Lists.newArrayList();
+		List nonItems = Lists.newArrayList();
+		for(Object obj : rawItems) {
+			if(obj instanceof MexItem) {
+				mexItems.add((MexItem)obj);
+			} else if(obj instanceof String) {
+				mexItems.add(new MexObject(obj));
+			} else {
+				nonItems.add(obj);
+			}
+		}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+		List<MexItem> after = CollUtil.filter(mexItems, mexCriteria, isCaseSensitive);
+		
+		nonItems.addAll(after);
+		
+		return nonItems;
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private List toPrintIfMex(List items, String options) {
+		List records = new ArrayList<String>();
+		
+		for(Object item : items) {
+			if(item instanceof MexItem) {
+				MexItem mi = (MexItem)item;
+				records.add(mi.toPrint(options));
+			} else {
+				records.add(item);
+			}
+		}
+		
+		return records;
+	}
+
+	@SuppressWarnings({"rawtypes" })
 	public void export(List list, String finalOptions) {
 		XXXUtil.nullCheck(list, "list");
-		List<MexItem> newList = list;
+		List newList = list;
 		String mexCriteria = OptionUtil.readString(finalOptions, "z");
+		Target where = whereToShot();
 		if(!EmptyUtil.isNullOrEmpty(mexCriteria)) {
-			newList = CollectionUtil.filter(CollectionUtil.toMexItems(list), mexCriteria, isCaseSensitive());
+			newList = applyMexCriteriaOnMexItems(list, mexCriteria, isCaseSensitive(finalOptions));
 		}
+		newList = toPrintIfMex(newList, finalOptions);
 		if(EmptyUtil.isNullOrEmpty(newList)) {
 			exportEmptyMsg();
 		} else {
-			Exporter.exportList(input, newList, whereToShot(), finalOptions);
+			Exporter.exportList(input, newList, where, finalOptions);
 		}
 	}
 	
@@ -199,26 +217,7 @@ public abstract class CommandBase {
 			params.setPrintTotal(isPrintTotal);
 		}
 	}
-	
-	public void exportFile(String filePath) {
-		File file = FileUtil.getIfNormalFile(filePath);
-		export(file);
-	}
 
-	public void export(File file) {
-		if(file == null) {
-			exportEmptyMsg();
-			return;
-		}
-		
-		List<Object> list = new ArrayList<Object>();
-		if(file != null && file.isFile()) {
-			list.add(file);
-		}
-		
-		export(list);
-	}
-	
 	public void exportEmptyMsg() {
 		Exporter.exportList(input, Lists.newArrayList("The result is empty."), whereToShot(), options);		
 	}
@@ -373,7 +372,7 @@ public abstract class CommandBase {
 			}
 			
 			if(target.isFileRelated()) {
-				exportFile(filePath);
+				export(FileUtil.getIfNormalFile(filePath));
 			} else {
 				export(filePath);
 			}

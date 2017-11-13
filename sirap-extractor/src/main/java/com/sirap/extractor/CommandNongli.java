@@ -4,7 +4,7 @@ package com.sirap.extractor;
 import java.util.List;
 
 import com.sirap.basic.domain.MexObject;
-import com.sirap.basic.util.CollectionUtil;
+import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.OptionUtil;
@@ -72,7 +72,7 @@ public class CommandNongli extends CommandBase {
 				export(items);
 			} else {
 				String criteria = EmptyUtil.isNullOrEmpty(params[0]) ? DateUtil.displayNow("MM/") : params[1];
-				export(CollectionUtil.filter(items, criteria));
+				export(CollUtil.filter(items, criteria));
 			}
 			
 			return true;

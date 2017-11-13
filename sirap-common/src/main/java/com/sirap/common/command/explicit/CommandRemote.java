@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.sirap.basic.domain.EmailCommandRecord;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.CollectionUtil;
+import com.sirap.basic.util.CollUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.manager.RemoteCommandManager;
 
@@ -36,7 +36,7 @@ public class CommandRemote extends CommandBase {
 		
 		if(is(KEY_REMOTE_COMMANDS)) {
 			List<EmailCommandRecord> records = RemoteCommandManager.g().getAllRemoteCommands();
-			export(CollectionUtil.items2PrintRecords(records));
+			export(CollUtil.items2PrintRecords(records));
 			
 			return true;
 		}

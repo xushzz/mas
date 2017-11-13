@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.CollectionUtil;
+import com.sirap.basic.util.CollUtil;
 
 @SuppressWarnings("serial")
 public class MexedList implements Serializable {
@@ -46,7 +46,7 @@ public class MexedList implements Serializable {
 		}
 		
 		if(items != null) {
-			list.addAll(CollectionUtil.items2PrintRecords(items));
+			list.addAll(CollUtil.items2PrintRecords(items));
 		}
 		
 		if(footer != null) {
