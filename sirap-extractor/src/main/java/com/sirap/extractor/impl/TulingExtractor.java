@@ -24,9 +24,9 @@ public class TulingExtractor extends Extractor<MexObject> {
 		Map naive = JsonUtil.toMap(source);
 		Object code = naive.get("code");
 		if(StrUtil.equals(CODE_SUCCESS, code + "")) {
-			mexItem = new MexObject(naive.get("text"));
+			item = new MexObject(naive.get("text"));
 		} else {
-			mexItem = new MexObject(source);
+			item = new MexObject(source);
 		}
 	}
 }

@@ -21,6 +21,6 @@ public class MMKManager {
 		Extractor<MMKChannelItem> tanaka = new MMKChannelsExtractor();
 		tanaka.process();
 
-		return tanaka.getMexItems();
+		return tanaka.getItems();
 	}
 }

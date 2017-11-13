@@ -41,7 +41,7 @@ public class CommandFancy extends CommandBase {
 			List<MexObject> items = new ArrayList<>();
 			MeituImageLinksExtractor justin = new MeituImageLinksExtractor(solo);
 			justin.process();
-			items.addAll(justin.getMexItems());
+			items.addAll(justin.getItems());
 			
 			boolean showAll = OptionUtil.readBooleanPRI(options, "all", false);
 			if(showAll) {

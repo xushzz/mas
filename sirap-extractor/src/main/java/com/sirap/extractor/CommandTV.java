@@ -42,7 +42,7 @@ public class CommandTV extends CommandBase {
 			String apiId = CCTVManager.g().findApiIdByName(channel);
 			Extractor<MexObject> mike = new CCTVProgramExtractor(apiId, date);
 			mike.process();
-			export(mike.getMexItems());
+			export(mike.getItems());
 			
 			return true;
 		}
@@ -64,7 +64,7 @@ public class CommandTV extends CommandBase {
 				
 			Extractor<MexObject> mike = new MMKProgramExtractor(channel, cnDayOfWeek);
 			mike.process();
-			export(mike.getMexItems());
+			export(mike.getItems());
 			
 			return true;
 		}

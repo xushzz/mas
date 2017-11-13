@@ -32,6 +32,6 @@ public class MobilePhoneLocationExtractor extends Extractor<MexObject> {
 			sb.append(" " + temp);
 		}
 		
-		mexItem = new MexObject(sb.toString());
+		item = new MexObject(sb.toString());
 	}
 }

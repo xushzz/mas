@@ -41,7 +41,7 @@ public class CommandWholesale extends CommandBase {
 		
 		solo = parseSoloParam(KEY_SOGOU + "\\s(.*?)");
 		if(isSingleParamNotnull()) {
-			List<MexObject> links = ExtractorUtil.sogouImageLinks(solo);
+			List<String> links = ExtractorUtil.sogouImageLinks(solo);
 			if(!EmptyUtil.isNullOrEmpty(links)) {
 				String folderName = FileUtil.generateLegalFileName(solo);
 				String path = pathWithSeparator("storage.sogou", Konstants.FOLDER_SOGOU);
@@ -55,7 +55,7 @@ public class CommandWholesale extends CommandBase {
 		
 		solo = parseSoloParam(KEY_QIHU360 + "\\s(.*?)");
 		if(isSingleParamNotnull()) {
-			List<MexObject> links = ExtractorUtil.qihu360ImageLinks(solo);
+			List<String> links = ExtractorUtil.qihu360ImageLinks(solo);
 			if(!EmptyUtil.isNullOrEmpty(links)) {
 				String folderName = FileUtil.generateLegalFileName(solo);
 				String path = pathWithSeparator("storage.so360", FOLDER_QIHU360);
@@ -102,7 +102,7 @@ public class CommandWholesale extends CommandBase {
 		return false;
 	}
 	
-	public boolean batchDownload(List<MexObject> links, String whereToSave) {
+	public boolean batchDownload(List<String> links, String whereToSave) {
 		long start = System.currentTimeMillis();
 		
 		List<String> pathList = downloadFiles(whereToSave, links, Konstants.SUFFIX_JPG);

@@ -7,11 +7,9 @@ import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.sirap.basic.domain.KeyValuesItem;
-import com.sirap.basic.domain.MexItem;
-import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.exception.MexException;
-import com.sirap.basic.thread.MasterMexItemsOriented;
-import com.sirap.basic.thread.WorkerMexItemsOritented;
+import com.sirap.basic.thread.MasterItemsOriented;
+import com.sirap.basic.thread.WorkerItemsOritented;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.CollectionUtil;
 import com.sirap.basic.util.EmptyUtil;
@@ -45,10 +43,10 @@ public class CommandEstate extends CommandBase {
 			}
 			String town = params[1];
 			int maxPage = MathUtil.toInteger(params[2], 1);
-			Set<MexObject> allItems = new LinkedHashSet<MexObject>();
+			Set<String> allItems = new LinkedHashSet<String>();
 			for(int k = 1; k <= maxPage; k++) {
 				try {
-					List<MexObject> items = Extractors.fetchAnjukeHouse(city, town, k);
+					List<String> items = Extractors.fetchAnjukeHouse(city, town, k);
 					if(EmptyUtil.isNullOrEmpty(items)) {
 						break;
 					}
@@ -98,13 +96,13 @@ public class CommandEstate extends CommandBase {
 		
 		if(is(KEY_HANGYANG + "." + KEY_LOAD)) {
 			List<String> allKeys = Lists.newArrayList();
-			int max = OptionUtil.readIntegerPRI(options, "max", 2);
+			int max = OptionUtil.readIntegerPRI(options, "max", 1);
 			XXXUtil.checkRange(max, 1, 4);
 			for(int i = 1; i <= max; i++) {
 				allKeys.addAll(MathUtil.permutation(StrUtil.ALPHANUMERIC, i));
 			}
-			List<MexItem> keyWords = CollectionUtil.toMexItems(allKeys);
-			List<KeyValuesItem> links = getAllFuzzyPlates(keyWords);
+			allKeys = CollectionUtil.top(allKeys, 10);
+			List<KeyValuesItem> links = getAllFuzzyPlates(allKeys);
 
 			exportWithDefaultOptions(new ArrayList<>(new LinkedHashSet<>(links)));
 			return true;
@@ -113,12 +111,11 @@ public class CommandEstate extends CommandBase {
 		return false;
 	}
 	
-	public static List<KeyValuesItem> getAllFuzzyPlates(List<MexItem> keyWords) {
-		MasterMexItemsOriented<MexItem, KeyValuesItem> master = new MasterMexItemsOriented<MexItem, KeyValuesItem>(keyWords, new WorkerMexItemsOritented<MexItem, KeyValuesItem>() {
+	public static List<KeyValuesItem> getAllFuzzyPlates(List<String> keyWords) {
+		MasterItemsOriented<String, KeyValuesItem> master = new MasterItemsOriented<String, KeyValuesItem>(keyWords, new WorkerItemsOritented<String, KeyValuesItem>() {
 			@Override
-			public List<KeyValuesItem> process(MexItem mo) {
-				String keyword = mo.toString();
-				int count = countOfTasks - tasks.size();
+			public List<KeyValuesItem> process(String keyword) {
+				int count = countOfTasks - queue.size();
 				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "Fetching...", keyword);
 				List<KeyValuesItem> items = Extractors.fetchHangyangPlates(keyword);
 				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "Fetched.", "");
@@ -126,8 +123,6 @@ public class CommandEstate extends CommandBase {
 				return items;
 			}
 		});
-		
-		master.sitAndWait();
 		
 		return master.getAllMexItems();
 	}

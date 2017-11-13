@@ -197,7 +197,7 @@ public class CommandCollect extends CommandBase {
 			Extractor<MexObject> mike = new TulingExtractor(key, solo);
 			mike.process();
 			String tulingInChinese = StrUtil.utf8ToWhatever("\\uE59BBE\\uE781B5");
-			export(tulingInChinese + ": " + mike.getMexItem());
+			export(tulingInChinese + ": " + mike.getItem());
 			
 			return true;
 		}
@@ -206,7 +206,7 @@ public class CommandCollect extends CommandBase {
 		if(solo != null) {
 			Extractor<ZhihuRecord> mike = new ZhihuSearchExtractor(solo);
 			mike.process();
-			export(mike.getMexItems());
+			export(mike.getItems());
 			
 			return true;
 		}
@@ -225,7 +225,7 @@ public class CommandCollect extends CommandBase {
 		if(solo != null) {
 			Extractor<MexObject> mike = new WikiSummaryExtractor(solo);
 			mike.process();
-			export(mike.getMexItems());
+			export(mike.getItems());
 			
 			return true;
 		}
@@ -260,7 +260,7 @@ public class CommandCollect extends CommandBase {
 		if(solo != null) {
 			Extractor<MexObject> mike = new FindJarExtractor(solo);
 			mike.process();
-			export(mike.getMexItems());
+			export(mike.getItems());
 			
 			return true;
 		}
@@ -269,7 +269,7 @@ public class CommandCollect extends CommandBase {
 		if(solo != null) {
 			Extractor<MexObject> mike = new WeixinSearchExtractor(solo);
 			mike.process();
-			export(mike.getMexItems());
+			export(mike.getItems());
 			
 			return true;
 		}
@@ -366,7 +366,7 @@ public class CommandCollect extends CommandBase {
 	public static String getMobilePhoneLocation(String phoneNumber) {
 		Extractor<MexObject> frank = new MobilePhoneLocationExtractor(phoneNumber);
 		frank.process();
-		MexObject mo = frank.getMexItem();
+		MexObject mo = frank.getItem();
 		
 		String value = null;
 		if(mo != null) {
@@ -379,7 +379,7 @@ public class CommandCollect extends CommandBase {
 	public static List<MexObject> lookupDictionary(String word) {
 		Extractor<MexObject> frank = new EnglishDictionaryExtractor(word);
 		frank.process();
-		List<MexObject> items = frank.getMexItems();
+		List<MexObject> items = frank.getItems();
 		
 		return items;
 	}
@@ -424,7 +424,7 @@ public class CommandCollect extends CommandBase {
 			@Override
 			public void process(MexItem obj) {
 				String word = obj.toString();
-				int count = countOfTasks - tasks.size();
+				int count = countOfTasks - queue.size();
 				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "translating...", word);
 				getTranslation(fetchOnly, word, warehouse);
 				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "translated", word);

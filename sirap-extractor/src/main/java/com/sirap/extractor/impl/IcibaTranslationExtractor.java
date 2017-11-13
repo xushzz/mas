@@ -38,7 +38,7 @@ public class IcibaTranslationExtractor extends Extractor<ValuesItem> {
 				vi.add(order + ") " + getPrettyText(item));
 			}
 			
-			mexItem = vi;
+			item = vi;
 		}
 		
 	}

@@ -17,12 +17,13 @@
 		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
 	</properties>
 	
+	<!-- 
 	<build>
 		<finalName>
 			${project.artifactId}-${project.version}_${maven.build.timestamp}
 		</finalName>
 	</build>
-
+	-->
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>

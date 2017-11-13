@@ -6,8 +6,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.sirap.basic.domain.MexObject;
-import com.sirap.basic.thread.MasterMexItemsOriented;
-import com.sirap.basic.thread.WorkerMexItemsOritented;
+import com.sirap.basic.thread.MasterItemsOriented;
+import com.sirap.basic.thread.WorkerItemsOritented;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.extractor.Extractor;
 import com.sirap.extractor.domain.MeituLassItem;
@@ -33,7 +33,7 @@ public class MeituManager {
 		Extractor<MeituOrgItem> justin = new MeituOrgsExtractor(toExplode);
 		justin.process();
 		
-		return justin.getMexItems();
+		return justin.getItems();
 	}
 	
 	public List<MexObject> explode(String base, int count) {
@@ -52,69 +52,63 @@ public class MeituManager {
 	
 	public List<MeituLassItem> getAllLassItems() {
 		List<MeituOrgItem> items = getAllOrgItems(true);
-		MasterMexItemsOriented<MeituOrgItem, MeituLassItem> master = new MasterMexItemsOriented<MeituOrgItem, MeituLassItem>(items, new WorkerMexItemsOritented<MeituOrgItem, MeituLassItem>() {
+		MasterItemsOriented<MeituOrgItem, MeituLassItem> master = new MasterItemsOriented<MeituOrgItem, MeituLassItem>(items, new WorkerItemsOritented<MeituOrgItem, MeituLassItem>() {
 
 			@Override
 			public List<MeituLassItem> process(MeituOrgItem orgItem) {
 				
 				Extractor<MeituLassItem> justin = new MeituLassExtractor(orgItem);
 				
-				int count = countOfTasks - tasks.size();
+				int count = countOfTasks - queue.size();
 				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "Fetching...", orgItem);
 				justin.process();
 				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "Fetched.", "");
 				
-				return justin.getMexItems();
+				return justin.getItems();
 			}
 			
 		});
-		
-		master.sitAndWait();
 		
 		return master.getAllMexItems();
 	}
 	
 	public List<MexObject> getImageLinks(List<MexObject> morePages) {
-		MasterMexItemsOriented<MexObject, MexObject> master = new MasterMexItemsOriented<MexObject, MexObject>(morePages, new WorkerMexItemsOritented<MexObject, MexObject>() {
+		MasterItemsOriented<MexObject, MexObject> master = new MasterItemsOriented<MexObject, MexObject>(morePages, new WorkerItemsOritented<MexObject, MexObject>() {
 
 			@Override
 			public List<MexObject> process(MexObject orgItem) {
 				
 				Extractor<MexObject> justin = new MeituImageLinksExtractor(orgItem.getString());
 				
-				int count = countOfTasks - tasks.size();
+				int count = countOfTasks - queue.size();
 				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "Fetching...", orgItem);
 				justin.process();
 				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "Fetched.", "");
 				
-				return justin.getMexItems();
+				return justin.getItems();
 			}
 			
 		});
-		
-		master.sitAndWait();
 		
 		return master.getAllMexItems();
 	}
 	
 	public List<MeituLassItem> getAllLassIntros(List<MexObject> morePages) {
-		MasterMexItemsOriented<MexObject, MeituLassItem> master = new MasterMexItemsOriented<MexObject, MeituLassItem>(morePages, new WorkerMexItemsOritented<MexObject, MeituLassItem>() {
+		MasterItemsOriented<MexObject, MeituLassItem> master = new MasterItemsOriented<MexObject, MeituLassItem>(morePages, new WorkerItemsOritented<MexObject, MeituLassItem>() {
 
 			@Override
 			public List<MeituLassItem> process(MexObject obj) {
 				Extractor<MeituLassItem> justin = new MeituLassIntroExtractor(obj.toString());
 				
-				int count = countOfTasks - tasks.size();
+				int count = countOfTasks - queue.size();
 				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "Fetching...", obj);
 				justin.process();
 				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "Fetched.", "");
 				
-				return justin.getMexItems();
+				return justin.getItems();
 			}
 			
 		});
-		
-		master.sitAndWait();
 		
 		return master.getAllMexItems();
 	}

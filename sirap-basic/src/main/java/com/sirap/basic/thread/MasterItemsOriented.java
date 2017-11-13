@@ -5,19 +5,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.sirap.basic.domain.MexItem;
+public class MasterItemsOriented<PARAM extends Object, RETURN extends Object> extends MasterBase<PARAM> {
 
-public class MasterMexItemsOriented<T extends MexItem, RETURN extends MexItem> extends MasterBase<T> {
-
-	private Map<T, List<RETURN>> result = new ConcurrentHashMap<T, List<RETURN>>();
+	private Map<PARAM, List<RETURN>> result = new ConcurrentHashMap<PARAM, List<RETURN>>();
 	
-	public MasterMexItemsOriented(List<T> tasks, WorkerMexItemsOritented<T, RETURN> w) {
+	public MasterItemsOriented(List<PARAM> tasks, WorkerItemsOritented<PARAM, RETURN> w) {
 		setTasks(tasks);
 		init(w);
 		startWorking();
 	}
 	
-	protected void init(WorkerMexItemsOritented<T, RETURN> w) {
+	protected void init(WorkerItemsOritented<PARAM, RETURN> w) {
 		super.init(w);
 		w.setResult(result);
 	}
@@ -26,7 +24,7 @@ public class MasterMexItemsOriented<T extends MexItem, RETURN extends MexItem> e
 		sitAndWait();
 		
 		List<RETURN> items = new ArrayList<RETURN>();
-		for(Map.Entry<T, List<RETURN>> entry : result.entrySet()) {
+		for(Map.Entry<PARAM, List<RETURN>> entry : result.entrySet()) {
 			List<RETURN> value = entry.getValue();
 			items.addAll(value);
 		}

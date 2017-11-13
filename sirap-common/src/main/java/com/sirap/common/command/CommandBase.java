@@ -10,7 +10,6 @@ import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.component.TimestampIDGenerator;
 import com.sirap.basic.domain.MexItem;
-import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.output.ConsoleParams;
 import com.sirap.basic.tool.C;
@@ -478,11 +477,11 @@ public abstract class CommandBase {
 		return null;
 	}
 	
-	protected List<String> downloadFiles(String destination, List<MexObject> links) {
+	protected List<String> downloadFiles(String destination, List<String> links) {
 		return downloadFiles(destination, links, null);
 	}
 	
-	protected List<String> downloadFiles(String destination, List<MexObject> links, String suffixWhenObscure) {
+	protected List<String> downloadFiles(String destination, List<String> links, String suffixWhenObscure) {
 		int threads = SimpleKonfig.g().getUserNumberValueOf("threads.download");
 		boolean useUniqueFilename = g().isExportWithTimestampEnabled(options);
 		return IOUtil.downloadFiles(destination, links, suffixWhenObscure, threads, useUniqueFilename);

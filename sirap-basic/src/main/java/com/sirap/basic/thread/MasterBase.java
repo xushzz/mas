@@ -2,17 +2,15 @@ package com.sirap.basic.thread;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.LinkedBlockingQueue;
 
-import com.sirap.basic.domain.MexItem;
-
-public abstract class MasterBase<T extends MexItem> {
-	private List<T> tasks;
+public abstract class MasterBase<PARAM extends Object> {
+	private List<PARAM> tasks;
 	private CountDownLatch latch;
 	private List<Thread> threads = new ArrayList<Thread>();
 	
-	protected void setTasks(List<T> tasks) {
+	protected void setTasks(List<PARAM> tasks) {
 		this.tasks = tasks;
 	}
 	
@@ -20,7 +18,7 @@ public abstract class MasterBase<T extends MexItem> {
 		return 50;
 	}
 	
-	private void createThreads(int count, WorkerBase<T> w) {
+	private void createThreads(int count, WorkerBase<PARAM> w) {
 		for(int i = 0; i < count; i++) {
 			Thread t = new Thread(w);
 			threads.add(t);
@@ -33,11 +31,11 @@ public abstract class MasterBase<T extends MexItem> {
 		}
 	}
 	
-	protected void init(WorkerBase<T> w) {
+	protected void init(WorkerBase<PARAM> w) {
 		int count = countOfThread();
 		latch = new CountDownLatch(count);
 		w.setLatch(latch);
-		w.setTasks(new ConcurrentLinkedQueue<T>(tasks));
+		w.initQueue(new LinkedBlockingQueue<PARAM>(tasks));
 		createThreads(count, w);
 	}
 	

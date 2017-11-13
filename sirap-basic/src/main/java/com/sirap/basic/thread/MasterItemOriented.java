@@ -6,24 +6,23 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.sirap.basic.component.Konstants;
-import com.sirap.basic.domain.MexItem;
 
-public class MasterGeneralItemOriented<T extends MexItem> extends MasterBase<T> {
+public class MasterItemOriented<PARAM extends Object> extends MasterBase<PARAM> {
 
-	private Map<T, Object> results = new ConcurrentHashMap<T, Object>();
+	private Map<PARAM, Object> results = new ConcurrentHashMap<PARAM, Object>();
 	
-	public MasterGeneralItemOriented(List<T> tasks, WorkerGeneralItemOriented<T> w) {
+	public MasterItemOriented(List<PARAM> tasks, WorkerItemOriented<PARAM> w) {
 		setTasks(tasks);
 		init(w);
 		startWorking();
 	}
 	
-	protected void init(WorkerGeneralItemOriented<T> w) {
+	protected void init(WorkerItemOriented<PARAM> w) {
 		super.init(w);
 		w.setResults(results);
 	}
 	
-	public Map<T, Object> getResults() {
+	public Map<PARAM, Object> getResults() {
 		sitAndWait();
 		
 		return results;

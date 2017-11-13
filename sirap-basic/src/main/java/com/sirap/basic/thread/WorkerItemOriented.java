@@ -3,26 +3,25 @@ package com.sirap.basic.thread;
 import java.util.Map;
 
 import com.sirap.basic.component.Konstants;
-import com.sirap.basic.domain.MexItem;
 
-public abstract class WorkerGeneralItemOriented<T extends MexItem> extends WorkerBase<T> {
+public abstract class WorkerItemOriented<PARAM extends Object> extends WorkerBase<PARAM> {
 
-	protected Map<T, Object> results;
+	protected Map<PARAM, Object> results;
 	
-	public abstract Object process(T obj);
+	public abstract Object process(PARAM obj);
 	
-	public void setResults(Map<T, Object> results) {
+	public void setResults(Map<PARAM, Object> results) {
 		this.results = results;
 	}
 
 	@Override
 	public void run() {
-		if(tasks == null) {
+		if(queue == null) {
 			return;
 		}
 		
 		while(true) {
-			T job = tasks.poll();
+			PARAM job = queue.poll();
 			if(job == null) {
 				break;
 			}

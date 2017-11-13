@@ -4,27 +4,25 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import com.sirap.basic.domain.MexItem;
+public abstract class WorkerItemsOritented<PARAM extends Object, RETURN extends Object> extends WorkerBase<PARAM> {
 
-public abstract class WorkerMexItemsOritented<T extends MexItem, RETURN extends MexItem> extends WorkerBase<T> {
-
-	protected Map<T, List<RETURN>> results;
+	protected Map<PARAM, List<RETURN>> results;
 	
-	public abstract List<RETURN> process(T obj);
+	public abstract List<RETURN> process(PARAM obj);
 	
-	public void setResult(Map<T, List<RETURN>> results) {
+	public void setResult(Map<PARAM, List<RETURN>> results) {
 		this.results = results;
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public void run() {
-		if(tasks == null) {
+		if(queue == null) {
 			return;
 		}
 		
 		while(true) {
-			T job = tasks.poll();
+			PARAM job = queue.poll();
 			if(job == null) {
 				break;
 			}

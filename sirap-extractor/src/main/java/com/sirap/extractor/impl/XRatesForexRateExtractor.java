@@ -27,7 +27,6 @@ public class XRatesForexRateExtractor extends Extractor<ForexRateRecord> {
 	public static void main(String[] args) {
 		XRatesForexRateExtractor frank = new XRatesForexRateExtractor("HKD", "100.5689");
 		frank.process();
-		frank.list();
 	}
 
 	@Override

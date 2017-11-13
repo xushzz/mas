@@ -138,7 +138,7 @@ public class CommandTask extends CommandBase {
 			@Override
 			public void process(MexItem obj) {
 				String action = obj.toString();
-				int count = tasks.size() + 1;
+				int count = queue.size() + 1;
 				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "async dealing...", action);
 				Janitor.g().process(action.trim());
 				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "async done", action);

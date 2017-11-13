@@ -114,7 +114,7 @@ public class CommandDev extends CommandBase {
 		if(solo != null) {
 			Extractor<MexItem> frank = new GithubIssuesExtractor(solo);
 			frank.process();
-			List<MexItem> items = frank.getMexItems();
+			List<MexItem> items = frank.getItems();
 			export(items);
 			
 			return true;

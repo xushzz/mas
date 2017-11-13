@@ -52,7 +52,7 @@ public class BaiduExtractorManager extends RssExtractorManager {
 		
 		justin.process();
 		
-		return justin.getMexItems();
+		return justin.getItems();
 	}
 	
 	public List<MexObject> fetchRssByType(final String typeInfo) {
@@ -116,7 +116,7 @@ public class BaiduExtractorManager extends RssExtractorManager {
 		
 		justin.process();
 		
-		return justin.getMexItems();
+		return justin.getItems();
 	}
 	
 	public List<MexObject> fetchBaiduSummary(final String keywordOrUrl, boolean withOtherSameNames) {
@@ -204,7 +204,7 @@ public class BaiduExtractorManager extends RssExtractorManager {
 		
 		justin.process();
 		
-		return justin.getMexItems();
+		return justin.getItems();
 		
 	}
 }

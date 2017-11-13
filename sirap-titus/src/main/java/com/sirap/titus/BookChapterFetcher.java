@@ -39,11 +39,11 @@ public class BookChapterFetcher extends Worker<ChapterSense> {
 			return;
 		}
 
-		int count = countOfTasks - tasks.size();
+		int count = countOfTasks - queue.size();
 		status(STATUS_FILE_COPY, count, countOfTasks, "Downloading...", sense.getBook().getName() + " " + sense.getChapterNumber(), storage);
 		Extractor<MexObject> nick = new BibleChapterExtractor(sense.getChapterHref());
 		nick.process();
-		List<MexObject> items = nick.getMexItems();
+		List<MexObject> items = nick.getItems();
 		if(StrUtil.equals(Konstants.SUFFIX_TXT, fileType)) {
 			IOUtil.saveAsTxt(items, fullFileName);
 		} else if(StrUtil.equals(Konstants.SUFFIX_PDF, fileType)) {

@@ -14,7 +14,7 @@ public class NormalFileCopier extends Worker<MexFile> {
 	@Override
 	public void process(MexFile obj) {
 		String path = obj.getPath();
-		int count = countOfTasks - tasks.size();
+		int count = countOfTasks - queue.size();
 		status(STATUS_FILE_COPY, count, countOfTasks, "Copying...", path, storage);
 		IOUtil.copyFileToFolder(path, storage);
 		status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "Copied", storage + obj.getName());

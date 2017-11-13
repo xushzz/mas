@@ -52,11 +52,11 @@ public class Extractors {
 					return;
 				}
 				
-				mexItem = new Link(temp, href);
+				item = new Link(temp, href);
 			}
 		};
 		
-		return neymar.process().getMexItem();
+		return neymar.process().getItem();
 	}
 
 	public static List<KeyValuesItem> fetchHangyangPlates(String fuzzy) {
@@ -87,11 +87,11 @@ public class Extractors {
 			}
 		};
 		
-		return neymar.process().getMexItems();
+		return neymar.process().getItems();
 	}
 	
-	public static List<MexObject> fetchNanningPolice() {
-		Extractor<MexObject> neymar = new Extractor<MexObject>() {
+	public static List<String> fetchNanningPolice() {
+		Extractor<String> neymar = new Extractor<String>() {
 
 			@Override
 			public String getUrl() {
@@ -116,16 +116,16 @@ public class Extractors {
 						}
 					}
 					String temp = sb.toString().replaceAll(connector + "$", "");
-					mexItems.add(new MexObject(temp));
+					mexItems.add(temp);
 				}
 			}
 		};
 		
-		return neymar.process().getMexItems();
+		return neymar.process().getItems();
 	}
 
-	public static List<MexObject> fetchAnjukeCities() {
-		Extractor<MexObject> neymar = new Extractor<MexObject>() {
+	public static List<String> fetchAnjukeCities() {
+		Extractor<String> neymar = new Extractor<String>() {
 
 			@Override
 			public String getUrl() {
@@ -145,17 +145,17 @@ public class Extractors {
 					while(ma.find()) {
 						String code = ma.group(1);
 						String name = ma.group(3);
-						mexItems.add(new MexObject(code + " " + name));
+						mexItems.add(code + " " + name);
 					}
 				}
 			}
 		};
 		
-		return neymar.process().getMexItems();
+		return neymar.process().getItems();
 	}
 	
-	public static List<MexObject> fetchAnjukeHouse(String city, String town, int pageNumber) {
-		Extractor<MexObject> neymar = new Extractor<MexObject>() {
+	public static List<String> fetchAnjukeHouse(String city, String town, int pageNumber) {
+		Extractor<String> neymar = new Extractor<String>() {
 
 			@Override
 			public String getUrl() {
@@ -179,12 +179,12 @@ public class Extractors {
 					location = location.replaceAll("\\)[^\\)\\(]+", ")");
 					String price = getPrettyText(ma.group(2));
 					String temp = location + " " + price;
-					mexItems.add(new MexObject(temp));
+					mexItems.add(temp);
 				}
 			}
 		};
 		
-		return neymar.process().getMexItems();
+		return neymar.process().getItems();
 	}
 	
 	public static List<MexObject> fetchHupuFootballChinaTable() {
@@ -266,7 +266,7 @@ public class Extractors {
 			}
 		};
 		
-		return neymar.process().getMexItems();
+		return neymar.process().getItems();
 	}
 	
 	public static List<MexObject> fetchUefaChampionsTable() {
@@ -343,7 +343,7 @@ public class Extractors {
 			}
 		};
 		
-		return neymar.process().getMexItems();
+		return neymar.process().getItems();
 	}
 
 	public static List<SportsMatchItem> fetchUefaChampionsSchedule() {
@@ -388,7 +388,7 @@ public class Extractors {
 			}
 		};
 		
-		return neymar.process().getMexItems();
+		return neymar.process().getItems();
 	}
 	
 	public static List<MexObject> fetchHupuFootballScorers(int leagueId) {
@@ -475,7 +475,7 @@ public class Extractors {
 			}
 		};
 		
-		return neymar.process().getMexItems();
+		return neymar.process().getItems();
 	}
 
 	public static List<SportsMatchItem> fetchHupuFootballSchedule(int leagueId) {
@@ -518,7 +518,7 @@ public class Extractors {
 		neymar.setMethodPost(true);
 		neymar.setRequestParams("league_id=" + leagueId);
 		
-		return neymar.process().getMexItems();
+		return neymar.process().getItems();
 	}
 	
 	public static List<MexObject> fetchHupuFootballBig5Table(String leagueName) {
@@ -581,7 +581,7 @@ public class Extractors {
 			}
 		};
 		
-		return neymar.process().getMexItems();
+		return neymar.process().getItems();
 	}
 	
 	public static List<MexObject> fetchAllNobelPrizes() {
@@ -612,7 +612,7 @@ public class Extractors {
 			}
 		};
 		
-		return neymar.process().getMexItems();
+		return neymar.process().getItems();
 	}
 	
 	public static List<MexObject> fetchHtmlEntities() {
@@ -640,7 +640,7 @@ public class Extractors {
 			}
 		};
 		
-		return nikita.process().getMexItems();
+		return nikita.process().getItems();
 	}
 	
 	/**
@@ -669,7 +669,7 @@ public class Extractors {
 			}
 		};
 		
-		return neymar.process().getMexItems();
+		return neymar.process().getItems();
 	}
 
 	/***
@@ -714,7 +714,7 @@ public class Extractors {
 			}
 		};
 		
-		return neymar.process().getMexItems();
+		return neymar.process().getItems();
 	}
 
 	/***
@@ -744,7 +744,7 @@ public class Extractors {
 			}
 		};
 		
-		return neymar.process().getMexItems();
+		return neymar.process().getItems();
 	}
 
 	public static List<MexObject> fetchCarNoList() {
@@ -779,7 +779,7 @@ public class Extractors {
 			}
 		};
 		
-		return neymar.process().getMexItems();
+		return neymar.process().getItems();
 	}
 
 	public static List<MexItem> fetchCarList() {
@@ -804,7 +804,7 @@ public class Extractors {
 			}
 		};
 		
-		return neymar.process().getMexItems();
+		return neymar.process().getItems();
 	}
 
 	public static List<MexItem> fetchCarDetail(Object id) {
@@ -838,6 +838,6 @@ public class Extractors {
 			}
 		};
 		
-		return neymar.process().getMexItems();
+		return neymar.process().getItems();
 	}
 }

@@ -5,16 +5,14 @@ import java.util.List;
 import java.util.regex.Matcher;
 
 import com.sirap.basic.component.Konstants;
-import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.HtmlUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.WebReader;
 import com.sirap.basic.util.XCodeUtil;
 
-public abstract class Extractor<T extends MexItem> {
+public abstract class Extractor<T extends Object> {
 
 	private String url;
 	private String charset = Konstants.CODE_UTF8;
@@ -26,9 +24,8 @@ public abstract class Extractor<T extends MexItem> {
 
 	protected String source;
 	protected List<String> sourceList;
-	protected T mexItem;
+	protected T item;
 	protected List<T> mexItems = new ArrayList<>();
-	protected List<Object> objItems = new ArrayList<>();
 	private boolean isMethodPost;
 	private String requestParams;
 	
@@ -117,38 +114,16 @@ public abstract class Extractor<T extends MexItem> {
 		return getUrl() != null && getUrl().length() > 10;
 	}
 
-	public List<T> getMexItems() {
+	public List<T> getItems() {
 		return mexItems;
 	}
 
-	public T getMexItem() {
-		return mexItem;
-	}
-	
-	public List<Object> getObjectItems() {
-		return objItems;
+	public T getItem() {
+		return item;
 	}
 
 	protected abstract void parseContent();
-
-	public void list() {
-		if(!EmptyUtil.isNullOrEmpty(mexItems)) {
-			for(Object obj:mexItems) {
-				C.pl(obj);
-			}
-			C.pl("size:" + mexItems.size());
-		} else {
-			listObjectItems();
-		}
-	}
-	
-	public void listObjectItems() {
-		for(Object obj:objItems) {
-			C.pl(obj);
-		}
-		C.pl("size:" + objItems.size());
-	}
-	
+		
 	public boolean isAllBeingWell() {
 		return isAllBeingWell;
 	}

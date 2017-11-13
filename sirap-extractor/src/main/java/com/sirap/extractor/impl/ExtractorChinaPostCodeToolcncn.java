@@ -6,8 +6,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.sirap.basic.domain.MexObject;
-import com.sirap.basic.thread.MasterMexItemsOriented;
-import com.sirap.basic.thread.WorkerMexItemsOritented;
+import com.sirap.basic.thread.MasterItemsOriented;
+import com.sirap.basic.thread.WorkerItemsOritented;
 import com.sirap.common.extractor.Extractor;
 
 public class ExtractorChinaPostCodeToolcncn {
@@ -19,7 +19,7 @@ public class ExtractorChinaPostCodeToolcncn {
 		List<MexObject> cityNamePostCodes = new ArrayList<>();
 		List<MexObject> countyLinks = getAllCountyLinks(cityNamePostCodes);
 		
-		MasterMexItemsOriented<MexObject, MexObject> master = new MasterMexItemsOriented<MexObject, MexObject>(countyLinks, new WorkerMexItemsOritented<MexObject, MexObject>() {
+		MasterItemsOriented<MexObject, MexObject> master = new MasterItemsOriented<MexObject, MexObject>(countyLinks, new WorkerItemsOritented<MexObject, MexObject>() {
 
 			/***
 			 * /youbian/hechi-jinchengjiang
@@ -61,17 +61,16 @@ public class ExtractorChinaPostCodeToolcncn {
 					}
 				};
 				
-				int count = countOfTasks - tasks.size();
+				int count = countOfTasks - queue.size();
 				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "Fetching...", url);
 				frank.process();
 				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "Fetched.", "");
 				
-				return frank.getMexItems();
+				return frank.getItems();
 			}
 			
 		});
 		
-		master.sitAndWait();
 		List<MexObject> allItems = master.getAllMexItems();
 		allItems.addAll(cityNamePostCodes);
 		
@@ -86,7 +85,7 @@ public class ExtractorChinaPostCodeToolcncn {
 		
 		List<MexObject> cityLinks = getAllCityLinks();
 		
-		MasterMexItemsOriented<MexObject, MexObject> master = new MasterMexItemsOriented<MexObject, MexObject>(cityLinks, new WorkerMexItemsOritented<MexObject, MexObject>() {
+		MasterItemsOriented<MexObject, MexObject> master = new MasterItemsOriented<MexObject, MexObject>(cityLinks, new WorkerItemsOritented<MexObject, MexObject>() {
 
 			/***
 			 * /zibo-youbian
@@ -135,17 +134,15 @@ public class ExtractorChinaPostCodeToolcncn {
 					}
 				};
 				
-				int count = countOfTasks - tasks.size();
+				int count = countOfTasks - queue.size();
 				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "Fetching...", url);
 				frank.process();
 				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "Fetched.", "");
 				
-				return frank.getMexItems();
+				return frank.getItems();
 			}
 			
 		});
-		
-		master.sitAndWait();
 		
 		return master.getAllMexItems();
 	}
@@ -179,6 +176,6 @@ public class ExtractorChinaPostCodeToolcncn {
 		
 		frank.process();
 
-		return frank.getMexItems();
+		return frank.getItems();
 	}
 }

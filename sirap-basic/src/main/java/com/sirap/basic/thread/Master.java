@@ -2,11 +2,9 @@ package com.sirap.basic.thread;
 
 import java.util.List;
 
-import com.sirap.basic.domain.MexItem;
+public class Master<PARAM extends Object> extends MasterBase<PARAM> {
 
-public class Master<T extends MexItem> extends MasterBase<T> {
-
-	public Master(List<T> tasks, Worker<T> w) {
+	public Master(List<PARAM> tasks, Worker<PARAM> w) {
 		setTasks(tasks);
 		init(w);
 		startWorking();

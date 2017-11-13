@@ -30,7 +30,7 @@ public class HistoryEventsFetcher extends Worker<MexObject> {
 			return;
 		}
 
-		int count = countOfTasks - tasks.size();
+		int count = countOfTasks - queue.size();
 		status(STATUS_FILE_COPY, count, countOfTasks, "Downloading...", urlParam, location);
 		List<MexObject> items = Extractors.fetchHistoryEventsByDay(urlParam);
 		IOUtil.saveAsTxt(items, fullFileName);

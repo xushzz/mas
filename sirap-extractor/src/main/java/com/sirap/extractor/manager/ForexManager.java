@@ -91,7 +91,7 @@ public class ForexManager {
 		
 		XRatesForexRateExtractor zhang = new XRatesForexRateExtractor(baseCurrency, amount);
 		zhang.process();
-		List<ForexRateRecord> mexItems = zhang.getMexItems();
+		List<ForexRateRecord> mexItems = zhang.getItems();
 		
 		if(EmptyUtil.isNullOrEmpty(criteria)) {
 			String temp = StrUtil.connect(TOP_CURRENCIES, MexFilter.SYMBOL_OR);

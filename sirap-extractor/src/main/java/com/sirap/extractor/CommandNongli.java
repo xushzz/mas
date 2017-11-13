@@ -51,14 +51,14 @@ public class CommandNongli extends CommandBase {
 			String year = params[0];
 			Extractor<MexObject> mike = new China24JieqiExtractor(year);
 			mike.process();
-			export(mike.getMexItems());
+			export(mike.getItems());
 			
 			return true;
 		}
 		
 		if(is(KEY_24_JIEQI)) {
 			Extractor<MexObject> mike = new China24JieqiExtractor();
-			export(mike.process().getMexItems());
+			export(mike.process().getItems());
 			
 			return true;
 		}
@@ -66,7 +66,7 @@ public class CommandNongli extends CommandBase {
 		params = parseParams(KEY_CHINA_JIERI + "(|\\s+(.+))");
 		if(params != null) {
 			Extractor<MexObject> mike = new ChinaJieriExtractor();
-			List<MexObject> items = mike.process().getMexItems();
+			List<MexObject> items = mike.process().getItems();
 			boolean showAll = OptionUtil.readBooleanPRI(options, "all", false);
 			if(showAll) {
 				export(items);

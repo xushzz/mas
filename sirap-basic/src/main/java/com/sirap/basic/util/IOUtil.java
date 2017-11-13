@@ -34,14 +34,13 @@ import java.util.Properties;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.component.MexedMap;
 import com.sirap.basic.domain.MexFile;
-import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.output.ExcelParams;
 import com.sirap.basic.output.PDFParams;
 import com.sirap.basic.thirdparty.excel.ExcelHelper;
 import com.sirap.basic.thirdparty.pdf.PdfHelper;
 import com.sirap.basic.thread.Master;
-import com.sirap.basic.thread.MasterGeneralItemOriented;
+import com.sirap.basic.thread.MasterItemOriented;
 import com.sirap.basic.thread.business.InternetFileFetcher;
 import com.sirap.basic.thread.business.NormalFileCopier;
 import com.sirap.basic.tool.C;
@@ -697,17 +696,17 @@ public class IOUtil {
 		return null;
 	}
 	
-	public static List<String> downloadFiles(String storage, List<MexObject> links, String suffixWhenObscure, final int threads) {
+	public static List<String> downloadFiles(String storage, List<String> links, String suffixWhenObscure, final int threads) {
 		return downloadFiles(storage, links, suffixWhenObscure, threads, false);
 	}
 	
-	public static List<String> downloadFiles(String storage, List<MexObject> links, String suffixWhenObscure, final int threads, boolean useUniqueFilename) {
+	public static List<String> downloadFiles(String storage, List<String> links, String suffixWhenObscure, final int threads, boolean useUniqueFilename) {
 		FileUtil.makeDirectoriesIfNonExist(storage);
 		
 		InternetFileFetcher dinesh = new InternetFileFetcher(storage, suffixWhenObscure);
 		dinesh.setUseUniqueFilename(useUniqueFilename);
 		
-		MasterGeneralItemOriented<MexObject> master = new MasterGeneralItemOriented<MexObject>(links, dinesh){
+		MasterItemOriented<String> master = new MasterItemOriented<String>(links, dinesh){
 			@Override
 			protected int countOfThread() {
 				int temp = threads <= 0 ? super.countOfThread() : threads;
@@ -715,7 +714,6 @@ public class IOUtil {
 			}
 		};
 
-		master.sitAndWait();
 		return master.getValidStringResults();
 	}
 	

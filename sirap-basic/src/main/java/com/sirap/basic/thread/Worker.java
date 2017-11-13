@@ -1,19 +1,18 @@
 package com.sirap.basic.thread;
 
-import com.sirap.basic.domain.MexItem;
 
-public abstract class Worker<T extends MexItem> extends WorkerBase<T> {
+public abstract class Worker<PARAM extends Object> extends WorkerBase<PARAM> {
 
-	public abstract void process(T obj);
+	public abstract void process(PARAM obj);
 	
 	@Override
 	public void run() {
-		if(tasks == null) {
+		if(queue == null) {
 			return;
 		}
 		
 		while(true) {
-			T job = tasks.poll();
+			PARAM job = queue.poll();
 			if(job == null) {
 				break;
 			}

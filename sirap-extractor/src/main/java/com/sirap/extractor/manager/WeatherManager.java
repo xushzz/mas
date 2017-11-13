@@ -32,7 +32,7 @@ public class WeatherManager {
 	public List<WeatherRecord> allRecords() {
 		NationalWeatherExtractor yoko = new NationalWeatherExtractor();
 		yoko.process();
-		List<WeatherRecord> records = yoko.getMexItems();
+		List<WeatherRecord> records = yoko.getItems();
 		
 		return records;
 	}

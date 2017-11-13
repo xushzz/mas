@@ -62,6 +62,6 @@ public class IcibaManager {
 	
 	public ValuesItem fetchFromWebsite(String word) {
 		Extractor<ValuesItem> frank = new IcibaTranslationExtractor(word);
-		return frank.process().getMexItem();
+		return frank.process().getItem();
 	}
 }

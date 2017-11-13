@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.sirap.basic.thread.MasterMexItemsOriented;
-import com.sirap.basic.thread.WorkerMexItemsOritented;
+import com.sirap.basic.thread.MasterItemsOriented;
+import com.sirap.basic.thread.WorkerItemsOritented;
 import com.sirap.basic.util.TrumpUtil;
 import com.sirap.common.domain.Link;
 import com.sirap.common.extractor.Extractor;
@@ -36,7 +36,7 @@ public class ExtractorFancy {
 			events.add(new Link(url));
 		}
 		
-		MasterMexItemsOriented<Link, Link> master = new MasterMexItemsOriented<Link, Link>(events, new WorkerMexItemsOritented<Link, Link>() {
+		MasterItemsOriented<Link, Link> master = new MasterItemsOriented<Link, Link>(events, new WorkerItemsOritented<Link, Link>() {
 
 			@Override
 			public List<Link> process(Link link) {
@@ -60,17 +60,15 @@ public class ExtractorFancy {
 					}
 				};
 				
-				int count = countOfTasks - tasks.size();
+				int count = countOfTasks - queue.size();
 				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "Fetching...", url);
 				frank.process();
 				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "Fetched.", "");
 				
-				return frank.getMexItems();
+				return frank.getItems();
 			}
 			
 		});
-		
-		master.sitAndWait();
 		
 		return ExtractorUtil.items2Links(master.getAllMexItems());
 	}
@@ -84,7 +82,7 @@ public class ExtractorFancy {
 			events.add(new Link(url));
 		}
 		
-		MasterMexItemsOriented<Link, Link> master = new MasterMexItemsOriented<Link, Link>(events, new WorkerMexItemsOritented<Link, Link>() {
+		MasterItemsOriented<Link, Link> master = new MasterItemsOriented<Link, Link>(events, new WorkerItemsOritented<Link, Link>() {
 
 			@Override
 			public List<Link> process(Link link) {
@@ -108,17 +106,15 @@ public class ExtractorFancy {
 					}
 				};
 				
-				int count = countOfTasks - tasks.size();
+				int count = countOfTasks - queue.size();
 				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "Fetching...", url);
 				frank.process();
 				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "Fetched.", "");
 				
-				return frank.getMexItems();
+				return frank.getItems();
 			}
 			
 		});
-		
-		master.sitAndWait();
 		
 		return ExtractorUtil.items2Links(master.getAllMexItems());
 	}
@@ -135,7 +131,7 @@ public class ExtractorFancy {
 			events.add(new Link(url));
 		}
 		
-		MasterMexItemsOriented<Link, Link> master = new MasterMexItemsOriented<Link, Link>(events, new WorkerMexItemsOritented<Link, Link>() {
+		MasterItemsOriented<Link, Link> master = new MasterItemsOriented<Link, Link>(events, new WorkerItemsOritented<Link, Link>() {
 
 			@Override
 			public List<Link> process(Link link) {
@@ -159,22 +155,20 @@ public class ExtractorFancy {
 					}
 				};
 				
-				int count = countOfTasks - tasks.size();
+				int count = countOfTasks - queue.size();
 				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "Fetching...", url);
 				frank.process();
 				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "Fetched.", "");
 				
-				return frank.getMexItems();
+				return frank.getItems();
 			}
 		});
-		
-		master.sitAndWait();
 		
 		return carverFullPhotos(master.getAllMexItems());
 	}
 
 	private static List<String> carverFullPhotos(List<Link> events) {
-		MasterMexItemsOriented<Link, Link> master = new MasterMexItemsOriented<Link, Link>(events, new WorkerMexItemsOritented<Link, Link>() {
+		MasterItemsOriented<Link, Link> master = new MasterItemsOriented<Link, Link>(events, new WorkerItemsOritented<Link, Link>() {
 
 			@Override
 			public List<Link> process(Link link) {
@@ -198,16 +192,14 @@ public class ExtractorFancy {
 					}
 				};
 				
-				int count = countOfTasks - tasks.size();
+				int count = countOfTasks - queue.size();
 				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "Fetching...", url);
 				frank.process();
 				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "Fetched.", "");
 				
-				return frank.getMexItems();
+				return frank.getItems();
 			}
 		});
-		
-		master.sitAndWait();
 		
 		return ExtractorUtil.items2Links(master.getAllMexItems());
 	}

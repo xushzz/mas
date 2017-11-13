@@ -1,12 +1,11 @@
 package com.sirap.basic.thread.business;
 
 import com.sirap.basic.component.TimestampIDGenerator;
-import com.sirap.basic.domain.MexObject;
-import com.sirap.basic.thread.WorkerGeneralItemOriented;
+import com.sirap.basic.thread.WorkerItemOriented;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 
-public class InternetFileFetcher extends WorkerGeneralItemOriented<MexObject> {
+public class InternetFileFetcher extends WorkerItemOriented<String> {
 	private String storage;
 	private String suffixWhenObscure;
 	private boolean useUniqueFilename;
@@ -29,14 +28,11 @@ public class InternetFileFetcher extends WorkerGeneralItemOriented<MexObject> {
 	}
 
 	@Override
-	public Object process(MexObject link) {
-		Object tempObj = link.getObj();
-		if(tempObj == null) {
+	public Object process(String url) {
+		if(url == null) {
 			return null;
 		}
-		
-		String url = tempObj.toString();
-		int count = countOfTasks - tasks.size();
+		int count = countOfTasks - queue.size();
 		String unique = "";
 		if(useUniqueFilename) {
 			unique = TimestampIDGenerator.nextId() + "_";

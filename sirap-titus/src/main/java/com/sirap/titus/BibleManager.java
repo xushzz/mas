@@ -173,19 +173,19 @@ public class BibleManager {
 		String urlInfo = StrUtil.occupy("{0}/{1}.txt", bookName, chapter);
 		Extractor<MexObject> nick = new BibleChapterFromSirapExtractor(urlInfo);
 		
-		return nick.process().getMexItems();
+		return nick.process().getItems();
 	}
 	
 	public List<Link> fetchBooksByVersionCode(String versionCode) {
 		Extractor<Link> nick = new BibleBooksExtractor(versionCode);
 		nick.process();
 		
-		return nick.getMexItems();
+		return nick.getItems();
 	}
 	
 	public String downloadAllBooks(String bibleFolder, String versionCode, String fileType) {
 		Extractor<Link> nick = new BibleBooksExtractor(versionCode);
-		List<Link> bookLinks = nick.process().getMexItems();
+		List<Link> bookLinks = nick.process().getItems();
 		
 		int size = bookLinks.size();
 		int[] range = BibleData.CHAPTERS_OLD_NEW_ALL.get(size);

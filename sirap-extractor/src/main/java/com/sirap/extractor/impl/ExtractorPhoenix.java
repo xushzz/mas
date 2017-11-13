@@ -6,8 +6,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.sirap.basic.domain.MexItem;
-import com.sirap.basic.thread.MasterMexItemsOriented;
-import com.sirap.basic.thread.WorkerMexItemsOritented;
+import com.sirap.basic.thread.MasterItemsOriented;
+import com.sirap.basic.thread.WorkerItemsOritented;
 import com.sirap.common.domain.Link;
 import com.sirap.common.extractor.Extractor;
 import com.sirap.extractor.ExtractorUtil;
@@ -24,7 +24,7 @@ public class ExtractorPhoenix {
 	}
 	
 	private static List<String> getAllLinksInEvents(List<Link> events) {
-		MasterMexItemsOriented<Link, Link> master = new MasterMexItemsOriented<Link, Link>(events, new WorkerMexItemsOritented<Link, Link>() {
+		MasterItemsOriented<Link, Link> master = new MasterItemsOriented<Link, Link>(events, new WorkerItemsOritented<Link, Link>() {
 
 			@Override
 			public List<Link> process(Link link) {
@@ -48,17 +48,15 @@ public class ExtractorPhoenix {
 					}
 				};
 				
-				int count = countOfTasks - tasks.size();
+				int count = countOfTasks - queue.size();
 				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "Fetching...", url);
 				frank.process();
 				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "Fetched.", "");
 				
-				return frank.getMexItems();
+				return frank.getItems();
 			}
 			
 		});
-		
-		master.sitAndWait();
 		
 		return ExtractorUtil.items2Links(master.getAllMexItems());
 	}

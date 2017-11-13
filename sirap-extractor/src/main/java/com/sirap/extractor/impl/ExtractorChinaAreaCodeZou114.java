@@ -5,8 +5,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.sirap.basic.domain.MexObject;
-import com.sirap.basic.thread.MasterMexItemsOriented;
-import com.sirap.basic.thread.WorkerMexItemsOritented;
+import com.sirap.basic.thread.MasterItemsOriented;
+import com.sirap.basic.thread.WorkerItemsOritented;
 import com.sirap.basic.util.HtmlUtil;
 import com.sirap.common.extractor.Extractor;
 
@@ -17,7 +17,7 @@ public class ExtractorChinaAreaCodeZou114 {
 	public static List<MexObject> getAllAreaCodes() {
 		
 		List<MexObject> areaLinks = getAllAreaLinks();
-		MasterMexItemsOriented<MexObject, MexObject> master = new MasterMexItemsOriented<MexObject, MexObject>(areaLinks, new WorkerMexItemsOritented<MexObject, MexObject>() {
+		MasterItemsOriented<MexObject, MexObject> master = new MasterItemsOriented<MexObject, MexObject>(areaLinks, new WorkerItemsOritented<MexObject, MexObject>() {
 
 			@Override
 			public List<MexObject> process(MexObject areaLink) {
@@ -49,17 +49,15 @@ public class ExtractorChinaAreaCodeZou114 {
 					}
 				};
 				
-				int count = countOfTasks - tasks.size();
+				int count = countOfTasks - queue.size();
 				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "Fetching...", url);
 				frank.process();
 				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "Fetched.", "");
 				
-				return frank.getMexItems();
+				return frank.getItems();
 			}
 			
 		});
-		
-		master.sitAndWait();
 		
 		return master.getAllMexItems();
 	}
@@ -94,6 +92,6 @@ public class ExtractorChinaAreaCodeZou114 {
 		
 		frank.process();
 
-		return frank.getMexItems();
+		return frank.getItems();
 	}
 }

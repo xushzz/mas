@@ -48,7 +48,7 @@ public class FinancialTimesChineseExtractorManager extends RssExtractorManager {
 		
 		justin.process();
 		
-		return justin.getMexItems();
+		return justin.getItems();
 	}
 	
 	public List<MexObject> fetchRssByType(final String type) {
@@ -104,6 +104,6 @@ public class FinancialTimesChineseExtractorManager extends RssExtractorManager {
 		
 		justin.process();
 		
-		return justin.getMexItems();
+		return justin.getItems();
 	}
 }

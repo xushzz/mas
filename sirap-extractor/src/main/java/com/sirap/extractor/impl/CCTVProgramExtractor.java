@@ -44,7 +44,7 @@ public class CCTVProgramExtractor extends Extractor<MexObject> {
 			
 			MexObject mo = new MexObject(channelName + " " + prefix + time + " " + what);
 			if(isAlive) {
-				mexItem = mo;
+				item = mo;
 			}
 			mexItems.add(mo);
 		}

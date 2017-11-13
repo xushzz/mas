@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.domain.Link;
 import com.sirap.common.extractor.Extractor;
@@ -17,8 +16,8 @@ public class ExtractorUtil {
 	public static final String HOMEPAGE_QIHU360 = "http://image.so.com";
 	public static final String HOMEPAGE_SOGOU = "http://pic.sogou.com";
 
-	public static List<MexObject> sogouImageLinks(final String keyword) {
-		Extractor<MexObject> frank = new Extractor<MexObject>() {
+	public static List<String> sogouImageLinks(final String keyword) {
+		Extractor<String> frank = new Extractor<String>() {
 			
 			public static final String URL = HOMEPAGE_SOGOU + "/pics?query=";
 			
@@ -35,18 +34,18 @@ public class ExtractorUtil {
 				Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
 				while(m.find()) {
 					String imageUrl = m.group(1);
-					mexItems.add(new MexObject(imageUrl));
+					mexItems.add(imageUrl);
 				}
 			}
 		};
 		
 		frank.process();
 		
-		return frank.getMexItems();
+		return frank.getItems();
 	}
 	
-	public static List<MexObject> qihu360ImageLinks(final String keyword) {
-		Extractor<MexObject> frank = new Extractor<MexObject>() {
+	public static List<String> qihu360ImageLinks(final String keyword) {
+		Extractor<String> frank = new Extractor<String>() {
 			
 			public static final String URL = HOMEPAGE_QIHU360 + "/i?q=";
 			
@@ -64,14 +63,14 @@ public class ExtractorUtil {
 				while(m.find()) {
 					String temp = m.group(1);
 					String item = temp.replace("\\", "");
-					mexItems.add(new MexObject(item));
+					mexItems.add(item);
 				}
 			}
 		};
 		
 		frank.process();
 		
-		return frank.getMexItems();
+		return frank.getItems();
 	}
 	
 	public static List<String> items2Links(List<Link> links) {
@@ -124,6 +123,6 @@ public class ExtractorUtil {
 		
 		frank.process();
 		
-		return ExtractorUtil.items2Links(frank.getMexItems());
+		return ExtractorUtil.items2Links(frank.getItems());
 	}
 }

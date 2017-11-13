@@ -57,7 +57,7 @@ public class CCTVManager {
 			String apiId = CCTVManager.g().findApiIdByName(channel);
 			Extractor<MexObject> mike = new CCTVProgramExtractor(apiId, date, false);
 			mike.process();
-			items.add(mike.getMexItem() + "");
+			items.add(mike.getItem() + "");
 		}
 		
 		return items;
