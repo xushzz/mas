@@ -11,7 +11,6 @@ import com.sirap.basic.exception.MexException;
 import com.sirap.basic.thread.MasterItemsOriented;
 import com.sirap.basic.thread.WorkerItemsOritented;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.tool.D;
 import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.MathUtil;
@@ -91,9 +90,6 @@ public class CommandEstate extends CommandBase {
 		solo = parseSoloParam(regex);
 		if(solo != null) {
 			List<KeyValuesItem> items = Extractors.fetchHangyangPlates(solo);
-			D.ts(199);
-			export(items);
-			D.ts(99);
 			export(items);
 			return true;
 		}

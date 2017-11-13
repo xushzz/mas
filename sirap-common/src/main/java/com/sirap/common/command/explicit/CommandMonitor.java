@@ -76,7 +76,7 @@ public class CommandMonitor extends CommandBase {
 				export(records);
 			} else {
 				if(!records.isEmpty()) {
-					export(CollUtil.filterMix(records, criteria, isCaseSensitive()));
+					export2(records, criteria);
 				} else {
 					export(StrUtil.split(criteria, '\\'));
 				}

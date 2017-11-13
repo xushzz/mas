@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
@@ -80,7 +79,7 @@ public class CommandDatabase extends CommandBase {
 			QueryWatcher ming = query(sql);
 
 			List<String> items = ming.exportLiteralStrings();
-			export(CollUtil.filterMix(items, solo, isCaseSensitive()));
+			export2(items, solo);
 			
 			return true;
 		}

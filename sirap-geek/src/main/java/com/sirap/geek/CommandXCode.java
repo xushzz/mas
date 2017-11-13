@@ -331,7 +331,7 @@ public class CommandXCode extends CommandBase {
 		solo = parseSoloParam(KEY_DATE_FORMAT_SYMBOL + "\\s(.+?)");
 		if(isSingleParamNotnull()) { 
 			List<String> records = LocaleUtil.getAllMonthWeekdays();
-			export(CollUtil.filterMix(records, solo, isCaseSensitive()));
+			export2(records, solo);
 			
 			return true;
 		}

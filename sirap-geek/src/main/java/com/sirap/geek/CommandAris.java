@@ -6,7 +6,6 @@ import java.util.List;
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.util.ArisUtil;
-import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.ObjectUtil;
@@ -69,7 +68,7 @@ public class CommandAris extends CommandBase {
 			} else {
 				items = ArisUtil.getClassDetail(glass, isDebug());
 			}
-			export(CollUtil.filterMix(items, mexCriteria, isCaseSensitive()));
+			export2(items, mexCriteria);
 			
 			return true;
 		}

@@ -70,7 +70,7 @@ public class CommandPirate extends CommandBase {
 				if(isText) {
 					String path = parseFile(source).getAbsolutePath();
 					List<String> allAreas = IOUtil.readFileIntoList(path, g().getCharsetInUse());
-					export(CollUtil.filterMix(allAreas, solo, isCaseSensitive()));
+					export2(allAreas, solo);
 				} else {
 					C.pl2("Not a text file: " + source);
 				}

@@ -142,6 +142,12 @@ public abstract class CommandBase {
 		export(list, options);
 	}
 	
+	@SuppressWarnings("rawtypes")
+	public void export2(List list, String criteria) {
+		List list2 = CollUtil.filterMix(list, criteria, isCaseSensitive());
+		export(list2, options);
+	}
+	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private List applyMexCriteriaOnMexItems(List rawItems, String mexCriteria, boolean isCaseSensitive) {
 		List<MexItem> mexItems = Lists.newArrayList();

@@ -59,7 +59,7 @@ public class CommandDev extends CommandBase {
 		if(solo != null) {
 			List<String> items = IOUtil.echoPath();
 			
-			export(CollUtil.filterMix(items, solo, isCaseSensitive()));
+			export2(items, solo);
 			
 			return true;
 		}
