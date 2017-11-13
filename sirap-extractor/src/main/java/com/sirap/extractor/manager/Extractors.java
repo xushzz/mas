@@ -22,6 +22,31 @@ import com.sirap.extractor.domain.SportsMatchItem;
 
 public class Extractors {
 
+	public static List<String> fetchJapaneseNames() {
+		Extractor<String> neymar = new Extractor<String>() {
+
+			@Override
+			public String getUrl() {
+				printFetching = true;
+				String temp = "http://www.for68.com/new/201006/li1871181518601022640.htm";
+				return temp;
+			}
+			
+			@Override
+			protected void parseContent() {
+				String regex = "</p><p>(.+?)</p></div>";
+				String names = StrUtil.findFirstMatchedItem(regex, source);
+				List<String> list = StrUtil.splitByRegex(names, "<br\\s*/>");
+				for(String item : list) {
+					String temp = item.replaceAll("^([^a-zA-Z]+)", "").trim();
+					mexItems.add(temp);
+				}
+			}
+		};
+		
+		return neymar.process().getItems();
+	}
+
 	public static Link fetchHangyangLocation(String plateNo) {
 		Extractor<Link> neymar = new Extractor<Link>() {
 

@@ -11,7 +11,6 @@ import com.sirap.basic.exception.MexException;
 import com.sirap.basic.thread.MasterItemsOriented;
 import com.sirap.basic.thread.WorkerItemsOritented;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.OptionUtil;
@@ -96,12 +95,11 @@ public class CommandEstate extends CommandBase {
 		
 		if(is(KEY_HANGYANG + "." + KEY_LOAD)) {
 			List<String> allKeys = Lists.newArrayList();
-			int max = OptionUtil.readIntegerPRI(options, "max", 1);
+			int max = OptionUtil.readIntegerPRI(options, "max", 2);
 			XXXUtil.checkRange(max, 1, 4);
 			for(int i = 1; i <= max; i++) {
 				allKeys.addAll(MathUtil.permutation(StrUtil.ALPHANUMERIC, i));
 			}
-			allKeys = CollUtil.top(allKeys, 10);
 			List<KeyValuesItem> links = getAllFuzzyPlates(allKeys);
 
 			export(new ArrayList<>(new LinkedHashSet<>(links)));

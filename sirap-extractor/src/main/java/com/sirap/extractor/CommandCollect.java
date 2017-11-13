@@ -47,7 +47,7 @@ import com.sirap.extractor.manager.WeatherManager;
 
 public class CommandCollect extends CommandBase {
 
-	private static final String KEY_WEATHER = "w";	
+	private static final String KEY_WEATHER = "wea";	
 	private static final String KEY_CAR = "car";	
 	private static final String KEY_CARNO = "carno";
 	private static final String KEY_PHONE_MOBILE = "@";
@@ -64,6 +64,7 @@ public class CommandCollect extends CommandBase {
 	private static final String KEY_THIS_DAY_IN_HISTORY_CHINESE = "this";
 	private static final String KEY_THIS_DAY_IN_HISTORY = "hist";
 	private static final String KEY_NOBEL_PRIZE = "nobel";
+	private static final String KEY_JAPANESE_NAME = "ono";
 
 	{
 		helpMeanings.put("money.forex.url", XRatesForexRateExtractor.URL_X_RATES);
@@ -77,7 +78,7 @@ public class CommandCollect extends CommandBase {
 	
 	public boolean handle() {
 
-		solo = parseSoloParam(KEY_CAR + "\\s+([^\\.]+)");
+		solo = parseSoloParam(KEY_CAR + "\\s+(.+)");
 		if(solo != null) {
 			List<MexItem> items = Extractors.fetchCarList();
 			export(CollUtil.filter(items, solo));
@@ -92,13 +93,7 @@ public class CommandCollect extends CommandBase {
 			return true;
 		}
 
-		if(is(KEY_CARNO + KEY_2DOTS)) {
-			export(Extractors.fetchCarNoList());
-			
-			return true;
-		}
-		
-		solo = parseSoloParam(KEY_CARNO + "\\s([^\\.]+)");
+		solo = parseSoloParam(KEY_CARNO + "\\s(.+)");
 		if(solo != null) {
 			List<MexObject> items = Extractors.fetchCarNoList();
 			export(CollUtil.filter(items, solo));
@@ -106,14 +101,7 @@ public class CommandCollect extends CommandBase {
 			return true;
 		}
 
-		if(is(KEY_WEATHER + KEY_2DOTS)) {
-			List<WeatherRecord> items = WeatherManager.g().allRecords();
-			export(items);
-			
-			return true;
-		}
-		
-		solo = parseSoloParam(KEY_WEATHER + "\\.([^\\.]+)");
+		solo = parseSoloParam(KEY_WEATHER + "\\s(.+)");
 		if(solo != null) {
 			List<WeatherRecord> items = WeatherManager.g().search(solo);
 			export(items);
@@ -121,7 +109,7 @@ public class CommandCollect extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_PHONE_MOBILE + "(.+?)");
+		solo = parseSoloParam(KEY_PHONE_MOBILE + "(.+)");
 		if(solo != null) {
 			String number = StrUtil.takeDigitsOnly(solo);
 
@@ -161,7 +149,7 @@ public class CommandCollect extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_DICTONARY + "\\s+(.+?)");
+		solo = parseSoloParam(KEY_DICTONARY + "\\s+(.+)");
 		if(solo != null) {
 			List<MexObject> items = lookupDictionary(solo);
 			export(items);
@@ -191,7 +179,7 @@ public class CommandCollect extends CommandBase {
 			}
 		}
 		
-		solo = parseSoloParam(KEY_TULING_ASK + "(.+?)");
+		solo = parseSoloParam(KEY_TULING_ASK + "(.+)");
 		if(solo != null) {
 			String key = g().getUserValueOf("tuling.key", "e8c190a005adc401867efd1ad2602f70");
 			Extractor<MexObject> mike = new TulingExtractor(key, solo);
@@ -202,7 +190,7 @@ public class CommandCollect extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_ZHIHU_ASK + "(.+?)");
+		solo = parseSoloParam(KEY_ZHIHU_ASK + "(.+)");
 		if(solo != null) {
 			Extractor<ZhihuRecord> mike = new ZhihuSearchExtractor(solo);
 			mike.process();
@@ -211,7 +199,7 @@ public class CommandCollect extends CommandBase {
 			return true;
 		}
 		
-		params = parseParams(KEY_BAIDU_BAIKE_SUMMARY + "\\s(\\*?)(.+?)");
+		params = parseParams(KEY_BAIDU_BAIKE_SUMMARY + "\\s(\\*?)(.+)");
 		if(params != null) {
 			boolean withOtherSameNames = !params[0].isEmpty() || OptionUtil.readBooleanPRI(options, "all", false);
 			String keywordOrUrl = params[1];
@@ -221,7 +209,7 @@ public class CommandCollect extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_WIKI_SUMMARY + "\\s(.+?)");
+		solo = parseSoloParam(KEY_WIKI_SUMMARY + "\\s(.+)");
 		if(solo != null) {
 			Extractor<MexObject> mike = new WikiSummaryExtractor(solo);
 			mike.process();
@@ -238,7 +226,7 @@ public class CommandCollect extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_RSS + "\\s(.+?)");
+		solo = parseSoloParam(KEY_RSS + "\\s(.+)");
 		if(solo != null) {
 			Object result = ObjectUtil.execute(sourceOfRss(), "readAllRss", new Class[0], new Object[0]);
 			List<MexObject> items = (List<MexObject>)result;
@@ -247,7 +235,7 @@ public class CommandCollect extends CommandBase {
 			return true;
 		}
 		
-		regex = KEY_RSS + "\\.(.+?)";
+		regex = KEY_RSS + "\\.(.+)";
 		solo = parseSoloParam(regex);
 		if(solo != null) {
 			Object result = ObjectUtil.execute(sourceOfRss(), "fetchRssByType", new Class[]{String.class}, new Object[]{solo});
@@ -256,7 +244,7 @@ public class CommandCollect extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_JAR + "\\s+(.+?)");
+		solo = parseSoloParam(KEY_JAR + "\\s+(.+)");
 		if(solo != null) {
 			Extractor<MexObject> mike = new FindJarExtractor(solo);
 			mike.process();
@@ -265,7 +253,7 @@ public class CommandCollect extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_WEIXIN_SEARCH + "\\s+(.+?)");
+		solo = parseSoloParam(KEY_WEIXIN_SEARCH + "\\s+(.+)");
 		if(solo != null) {
 			Extractor<MexObject> mike = new WeixinSearchExtractor(solo);
 			mike.process();
@@ -345,17 +333,18 @@ public class CommandCollect extends CommandBase {
 			export(Extractors.fetchHistoryEventsByDay2(urlParam, monthDay));
 			return true;
 		}
-
-		if(is(KEY_NOBEL_PRIZE + KEY_2DOTS)) {
-			export(Extractors.fetchAllNobelPrizes());
+		
+		solo = parseSoloParam(KEY_NOBEL_PRIZE + "\\s(.+)");
+		if(solo != null) {
+			List<MexObject> items = Extractors.fetchAllNobelPrizes();
+			export2(items, solo);
 			
 			return true;
 		}
-		
-		solo = parseSoloParam(KEY_NOBEL_PRIZE + "\\s([^\\.]+)");
+
+		solo = parseSoloParam(KEY_JAPANESE_NAME + "\\s(.+)");
 		if(solo != null) {
-			List<MexObject> items = Extractors.fetchAllNobelPrizes();
-			export(CollUtil.filter(items, solo));
+			export2(Extractors.fetchJapaneseNames(), solo);
 			
 			return true;
 		}
