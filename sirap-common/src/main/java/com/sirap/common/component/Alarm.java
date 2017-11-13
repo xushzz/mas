@@ -50,7 +50,6 @@ public abstract class Alarm extends MexedTimer implements Comparable<Alarm> {
 		this.type = type;
 		this.face = face;
 		this.action = action;
-		D.pl(type, face, action);
 		if(sharpHourAlarm()) {
 			this.targetMoment = DateUtil.nextSharpHour(1);
 		} else {
@@ -130,13 +129,15 @@ public abstract class Alarm extends MexedTimer implements Comparable<Alarm> {
 		if(sharpHourAlarm()) {
 			if(isTwoBangs()) {
 				targetMoment = DateUtil.hourDiff(targetMoment, 1);
+				return;
 			}
 		} else if(isOneBang() || isTwoBangs()) {
 			targetMoment = jamie.recalculateTargetMoment();
-		} else {
-			cancel();
-			AlarmManager.g().removeAlarm(this);
+			return;
 		}
+
+		cancel();
+		AlarmManager.g().removeAlarm(this);
     }
 	
 	protected abstract void execute(); 
