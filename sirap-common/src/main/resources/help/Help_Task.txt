@@ -1,9 +1,10 @@
-al@12:20           set fixed time alarm for default action, like 12, 12:20, 21:00:00
-al+10s             set fixed delay alarm for default action, like 10s, 10m, 10h or combo like 10h10m,4m5h8s
-al#10s             set repeat alarm, no delay for default action 
-al##10s            set repeat alarm with delay for default action
-al#                set alarm at next sharp hour such as 5, 6, 13, 19, no repeat
-al##               set repeat alarm at next sharp hour such as 5, 6, 13, 19, repeat
+al@12:20           set alarm, set off at 12:20 AM, also for other forms like 12, 12:20, 21:00:00
+al+10s             set alarm, delay ten seconds, also for 10s, 10m, 10h or combo like 10h10m,4m5h8s
+al#10s             set alarm, right away, repeat every ten seconds
+al+#10s            set alarm, delay ten seconds, repeat every ten seconds
+al+7s#10s          set alarm, delay seven seconds, repeat every ten seconds
+al@                set alarm at next sharp hour such as 5, 6, 13, 19
+al@@               set alarm at next sharp hour, repeat every hour
 al@12:20 A[,B]     set alarm for specified actions like A and B and more, same goes for delay mode
 al                 list all active alarms
 ac                 cancel all active alarms

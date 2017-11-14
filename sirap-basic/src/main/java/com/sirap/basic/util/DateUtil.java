@@ -4,7 +4,6 @@ import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -85,6 +84,19 @@ public class DateUtil {
 		cal.set(Calendar.MILLISECOND, 0);
 				
 		return calendarToDate(cal);
+	}
+	
+	public static Calendar nextSharpHourCalendar(int diff) {
+		Calendar cal = Calendar.getInstance();
+		int hour = cal.get(Calendar.HOUR_OF_DAY);
+		int next = hour + diff;
+
+		cal.set(Calendar.HOUR_OF_DAY, next);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+				
+		return cal;
 	}
 	
 	public static Date add(Date date, int field, int value) {
@@ -587,4 +599,69 @@ public class DateUtil {
 		
 		throw new MexException("Invalid month '{0}'", monthJanuaryToDecember);
 	}
+	
+	//5:05,5:04:07
+	public static int[] parseHmsByColon(String source) {
+		String msg = StrUtil.occupy("Invalid time: {0}, should be like {1}.", source, "13:34:54");
+
+		int[] values = new int[3];
+		List<String> items = StrUtil.split(source, ":");
+		if(items.size() > 3) {
+			XXXUtil.alert(msg);
+		}
+
+		boolean allEmpty = true;
+		for(int k = 0; k < items.size(); k++) {
+			String va = items.get(k);
+			if(va.isEmpty()) {
+				continue;
+			}
+			allEmpty = false;
+			String regex = "\\d{1,9}";
+			if(StrUtil.isRegexMatched(regex, va)) {
+				values[k] = Integer.parseInt(va);
+			} else {
+				XXXUtil.alert(msg);
+			}
+		}
+		
+		if(allEmpty) {
+			XXXUtil.alert(msg);
+		}
+		
+		return values;
+	}
+	
+	public static int[] parseHmsByUnit(String source) {
+		String msg = StrUtil.occupy("Invalid time: {0}, should be like {1}.", source, "13h34m54s");
+		
+		String holder = "&";
+		List<String> units = StrUtil.split("h,m,s");
+		int[] values = new int[3];
+		
+		String temp = source;
+		if(StrUtil.isRegexMatched("(\\d{1,9})", source)) {
+			values[0] = Integer.parseInt(source);
+			return values;
+		}
+		
+		for(int k = 0; k < units.size(); k++) {
+			String va = units.get(k);
+			String regex = "(\\d{1,9})" + va;
+			Matcher ma = StrUtil.createMatcher(regex, temp);
+			if(ma.find()) {
+				String whole = ma.group(0);
+				String number = ma.group(1);
+				values[k] = Integer.parseInt(number);
+				temp = temp.replaceFirst(whole, holder);
+			}
+		}
+		
+		if(!StrUtil.isRegexMatched(holder + "+", temp)) {
+			XXXUtil.alert(msg);
+		}
+
+		return values;
+	}
+
 }

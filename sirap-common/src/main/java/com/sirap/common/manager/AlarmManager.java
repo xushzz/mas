@@ -14,10 +14,6 @@ public class AlarmManager {
 	
 	private List<Alarm> alarms = new ArrayList<Alarm>();
 	
-	private AlarmManager() {
-		
-	}
-
 	public static AlarmManager g() {
 		if(instance == null) {
 			instance = new AlarmManager();
@@ -63,7 +59,7 @@ public class AlarmManager {
 			if(orderIdList != null && orderIdList.indexOf(order) < 0) {
 				continue;
 			}
-			C.pl("Cancelled [" + al.display() + "]");
+			C.pl("Cancelled " + al.display());
 			al.cancel();
 			countOfCancelled++;
 		}

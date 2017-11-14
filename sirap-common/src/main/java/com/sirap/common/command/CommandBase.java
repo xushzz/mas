@@ -134,6 +134,7 @@ public abstract class CommandBase {
 	
 	public boolean isDebug() {
 		boolean debug = OptionUtil.readBooleanPRI(options, "debug", false);
+		debug = debug || g().isYes("debug");
 		return debug;
 	}
 	

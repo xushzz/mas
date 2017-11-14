@@ -527,9 +527,8 @@ public class StrUtil {
 	}
 
 	public static String parseParam(String regex, String source) {
-		if(regex == null || source == null) {
-			return null;
-		}
+		XXXUtil.nullCheck(regex, "regex");
+		XXXUtil.nullCheck(source, "source");
 		
 		Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
 		if(m.matches()) {

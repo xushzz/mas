@@ -3,6 +3,7 @@ package com.sirap.basic.util;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Collection;
+import java.util.GregorianCalendar;
 import java.util.Map;
 
 import com.sirap.basic.exception.MexException;
@@ -33,6 +34,20 @@ public class XXXUtil {
 	public static void checkMonthDayRange(int month, int day) {
 		checkMonthRange(month);
 		int maxDay = DateUtil.MAX_DAY_IN_MONTH_LEAP_YEAR[month - 1];
+		if(day < 1 || day > maxDay) {
+			throw new MexException("Bad day '{0}', should be between 1 and {1}.", day, maxDay);
+		}
+	}
+	
+	public static void checkMonthDayRange(int month, int day, int year) {
+		int[] maxDays;
+		if(new GregorianCalendar().isLeapYear(year)) {
+			maxDays = DateUtil.MAX_DAY_IN_MONTH_LEAP_YEAR;
+		} else {
+			maxDays = DateUtil.MAX_DAY_IN_MONTH;
+		}
+		checkMonthRange(month);
+		int maxDay = maxDays[month - 1];
 		if(day < 1 || day > maxDay) {
 			throw new MexException("Bad day '{0}', should be between 1 and {1}.", day, maxDay);
 		}
