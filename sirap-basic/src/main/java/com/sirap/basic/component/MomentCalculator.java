@@ -2,6 +2,8 @@ package com.sirap.basic.component;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
 
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.StrUtil;
@@ -9,7 +11,8 @@ import com.sirap.basic.util.XXXUtil;
 
 public class MomentCalculator {
 	
-	private static final int[][] RANGE_OF_HMS = {{0,23},{0,59},{0,59}};	
+	private static final int[][] RANGE_OF_HMS = {{0, 23}, {0, 59}, {0, 59}};
+	private static final String REGEX_HMS_VALUE = "\\d{1,9}";
 
 	private Calendar theMoment;
 	private int[] hms;	
@@ -129,14 +132,14 @@ public class MomentCalculator {
 	
 	private int[] readHMS(String timeOnly, boolean rangeSensitive) {
 		if(StrUtil.isRegexFound("[hms]", timeOnly)) {
-			int[] byUnit = DateUtil.parseHmsByUnit(timeOnly);
+			int[] byUnit = parseHmsByUnit(timeOnly);
 			if(byUnit != null) {
 				if(!rangeSensitive || checkRange(byUnit)) {
 					return byUnit;
 				}
 			}
 		} else {
-			int[] byColon = DateUtil.parseHmsByColon(timeOnly);
+			int[] byColon = parseHmsByColon(timeOnly);
 			if(byColon != null) {
 				if(!rangeSensitive || checkRange(byColon)) {
 					return byColon;
@@ -181,5 +184,68 @@ public class MomentCalculator {
 		}
 		
 		return true;
+	}
+	
+	//5:05,5:04:07
+	private int[] parseHmsByColon(String source) {
+		String msg = StrUtil.occupy("Invalid time: {0}, should be like {1}.", source, "13:34:54");
+
+		int[] values = new int[3];
+		List<String> items = StrUtil.split(source, ":");
+		if(items.size() > 3) {
+			XXXUtil.alert(msg);
+		}
+
+		boolean allEmpty = true;
+		for(int k = 0; k < items.size(); k++) {
+			String va = items.get(k);
+			if(va.isEmpty()) {
+				continue;
+			}
+			allEmpty = false;
+			if(StrUtil.isRegexMatched(REGEX_HMS_VALUE, va)) {
+				values[k] = Integer.parseInt(va);
+			} else {
+				XXXUtil.alert(msg);
+			}
+		}
+		
+		if(allEmpty) {
+			XXXUtil.alert(msg);
+		}
+		
+		return values;
+	}
+	
+	private int[] parseHmsByUnit(String source) {
+		String msg = StrUtil.occupy("Invalid time: {0}, should be like {1}.", source, "13h34m54s");
+		
+		String holder = "&";
+		List<String> units = StrUtil.split("h,m,s");
+		int[] values = new int[3];
+		
+		String temp = source;
+		if(StrUtil.isRegexMatched(REGEX_HMS_VALUE, source)) {
+			values[0] = Integer.parseInt(source);
+			return values;
+		}
+		
+		for(int k = 0; k < units.size(); k++) {
+			String va = units.get(k);
+			String regex = "(" + REGEX_HMS_VALUE +")" + va;
+			Matcher ma = StrUtil.createMatcher(regex, temp);
+			if(ma.find()) {
+				String whole = ma.group(0);
+				String number = ma.group(1);
+				values[k] = Integer.parseInt(number);
+				temp = temp.replaceFirst(whole, holder);
+			}
+		}
+		
+		if(!StrUtil.isRegexMatched(holder + "+", temp)) {
+			XXXUtil.alert(msg);
+		}
+
+		return values;
 	}
 }

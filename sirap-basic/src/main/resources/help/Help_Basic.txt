@@ -1,1 +1,1 @@
-ver=11/13/2017, I  Basic3.5.68-THOR
+ver=11/14/2017, II  Basic3.5.69-THOR

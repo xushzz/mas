@@ -23,6 +23,7 @@ import com.sirap.basic.component.CleverFolder;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.exception.MexException;
+import com.sirap.basic.tool.FileSizeCalculator;
 import com.sirap.basic.tool.FileWalker;
 
 @SuppressWarnings("unchecked")
@@ -543,6 +544,11 @@ public class FileUtil {
 		String record = StrUtil.occupy(template, params[1], params[0]); 
 		
 		return record;
+	}
+	
+	public static long getFileSize(String fileOrFolderPath) {
+		FileSizeCalculator james = new FileSizeCalculator(fileOrFolderPath);
+		return james.getTotalSize();
 	}
 	
 	public static String formatFileSize(String filePath) {

@@ -22,6 +22,15 @@ public class MexFile extends MexItem implements Comparable<MexFile> {
 	public File getFile() {
 		return file;
 	}
+
+	private long folderSize = -1;
+	public long getFileFize() {
+		if(folderSize == -1) {
+			folderSize = FileUtil.getFileSize(file.getAbsolutePath());
+		}
+		
+		return folderSize;
+	}
 	
 	public String getKids() {
 		if(!file.isDirectory()) {
@@ -143,6 +152,12 @@ public class MexFile extends MexItem implements Comparable<MexFile> {
 		if(showSize) {
 			sb.append("  ");
 			sb.append(FileUtil.formatFileSize(file.length()));
+		}
+		
+		boolean showSizeWithFolder = OptionUtil.readBooleanPRI(optionsStr, "sizes", false);
+		if(showSizeWithFolder) {
+			sb.append("  ");
+			sb.append(FileUtil.formatFileSize(getFileFize()));
 		}
 
 		boolean showDate = OptionUtil.readBooleanPRI(optionsStr, "date", false);
