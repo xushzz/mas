@@ -221,8 +221,14 @@ public class CommandFile extends CommandBase {
 			return true;
 		}
 				
-		params = parseParams("(" + KEY_SHOW_DETAIL + "|" + KEY_FOLDER_DEPTH + "|)([^<]*)(<|)");
+		InputAnalyzer sean = new FileSizeInputAnalyzer(input);
+		regex = "(" + KEY_SHOW_DETAIL + "|" + KEY_FOLDER_DEPTH + "|)([^<]*)(<|)";
+		params = StrUtil.parseParams(regex, sean.getCommand());
 		if(params != null) {
+			this.command = sean.getCommand();
+			this.target = sean.getTarget();
+			this.options = sean.getOptions();
+			
 			String does = params[0];
 			String path = params[1];
 			String type = params[2];
@@ -352,7 +358,7 @@ public class CommandFile extends CommandBase {
 			return true;
 		}
 		
-		InputAnalyzer sean = new FileSizeInputAnalyzer(input);
+		sean = new FileSizeInputAnalyzer(input);
 		SearchComponent jack = parseFolderPathAndCriterias(sean.getCommand());
 		if(jack != null) {
 			this.command = sean.getCommand();
