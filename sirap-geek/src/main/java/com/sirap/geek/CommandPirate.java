@@ -37,7 +37,7 @@ public class CommandPirate extends CommandBase {
 			if(file != null) {
 				String filePath = file.getAbsolutePath();
 				if(FileOpener.isTextFile(filePath)) {
-					List<String> records = IOUtil.readFileIntoList(filePath, g().getCharsetInUse());
+					List<String> records = IOUtil.readFileIntoList(filePath);
 					boolean byDays = StrUtil.equals("hdays", params[1]);
 					boolean descend = StrUtil.equals("-", params[2]);
 
@@ -68,7 +68,7 @@ public class CommandPirate extends CommandBase {
 				boolean isText = FileOpener.isTextFile(source);
 				if(isText) {
 					String path = parseFile(source).getAbsolutePath();
-					List<String> allAreas = IOUtil.readFileIntoList(path, g().getCharsetInUse());
+					List<String> allAreas = IOUtil.readFileIntoList(path);
 					export2(allAreas, solo);
 				} else {
 					C.pl2("Not a text file: " + source);
@@ -155,7 +155,7 @@ public class CommandPirate extends CommandBase {
 			boolean isText = FileOpener.isTextFile(source);
 			if(isText) {
 				String path = parseFile(source).getAbsolutePath();
-				List<String> allAreas = IOUtil.readFileIntoList(path, g().getCharsetInUse());
+				List<String> allAreas = IOUtil.readFileIntoList(path);
 				String areaName = IDCardUtil.getAreaInfo(areaCode, allAreas);
 				saul.setAreaName(areaName);
 			}

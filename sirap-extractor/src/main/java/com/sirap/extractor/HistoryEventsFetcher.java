@@ -14,8 +14,8 @@ import com.sirap.extractor.manager.Extractors;
 public class HistoryEventsFetcher extends Worker<MexObject> {
 	private String location;
 	
-	public HistoryEventsFetcher(String location) {
-		this.location = StrUtil.useSeparator(location, "hist");
+	public HistoryEventsFetcher(String location, String newFolderName) {
+		this.location = StrUtil.useSeparator(location, newFolderName);
 	}
 	
 	@Override

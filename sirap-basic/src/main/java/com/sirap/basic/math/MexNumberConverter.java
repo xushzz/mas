@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sirap.basic.util.EmptyUtil;
-import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.StrUtil;
 
 public class MexNumberConverter {
@@ -42,35 +41,40 @@ public class MexNumberConverter {
 				continue;
 			}
 			
-			Integer dec = parseIntByType(exp, type);
+			Long dec = parseIntByType(exp, type);
 			if(dec == null) {
 				continue;
 			}
 			
-			decList.add(Integer.toString(dec));
-			hexList.add(Integer.toHexString(dec).toUpperCase());
-			octList.add(Integer.toOctalString(dec));
-			String binStr = Integer.toBinaryString(dec);
+			decList.add(Long.toString(dec));
+			hexList.add(Long.toHexString(dec).toUpperCase());
+			octList.add(Long.toOctalString(dec));
+			String binStr = Long.toBinaryString(dec);
 			binList.add(binStr);
 			maxLen.add(binStr.length());
 		}
 	}
 	
-	private Integer parseIntByType(String source, String type) {
-		Integer value = null;
-		if(StrUtil.existsIgnoreCase(HEXDECIMAL.split(","), type)) {
-			value = MathUtil.toIntegerByRadius(source, 16);
-		} else if(StrUtil.existsIgnoreCase(DECIMAL.split(","), type)) {
-			value = MathUtil.toIntegerByRadius(source, 10);
-		} else if(StrUtil.existsIgnoreCase(OCTAL.split(","), type)) {
-			value = MathUtil.toIntegerByRadius(source, 8);
-		} else if(StrUtil.existsIgnoreCase(BINARY.split(","), type)) {
-			value = MathUtil.toIntegerByRadius(source, 2);
-		} else {
-			value = MathUtil.toInteger(source);
+	private Long toLongByRadius(String src, int radius) {
+		try {
+			return Long.parseLong(src, radius);
+		} catch (Exception ex) {
+			return null;
 		}
-		
-		return value;
+	}
+	
+	private Long parseIntByType(String source, String type) {
+		if(StrUtil.existsIgnoreCase(HEXDECIMAL.split(","), type)) {
+			return toLongByRadius(source, 16);
+		} else if(StrUtil.existsIgnoreCase(DECIMAL.split(","), type)) {
+			return toLongByRadius(source, 10);
+		} else if(StrUtil.existsIgnoreCase(OCTAL.split(","), type)) {
+			return toLongByRadius(source, 8);
+		} else if(StrUtil.existsIgnoreCase(BINARY.split(","), type)) {
+			return toLongByRadius(source, 2);
+		} else {
+			return toLongByRadius(source, 10);
+		}
 	}
 	
 	private void organizeResults() {

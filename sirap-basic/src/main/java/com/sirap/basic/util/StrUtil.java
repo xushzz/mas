@@ -1007,7 +1007,7 @@ public class StrUtil {
 		return sb.toString();
 	}
 	
-	public static String useDelimiter(String what, Object... items) {
+	public static String useDelimiter(String delimiter, Object... items) {
 		StringBuffer sb = new StringBuffer();
 		for(int i = 0; i < items.length; i++) {
 			String item = items[i] + "";
@@ -1017,8 +1017,8 @@ public class StrUtil {
 				break;
 			}
 
-			if(!item.endsWith(what)) {
-				sb.append(what);
+			if(!item.endsWith(delimiter)) {
+				sb.append(delimiter);
 			}
 		}
 		

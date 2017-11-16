@@ -8,6 +8,7 @@ tl                 not team leader, but convert current date to long in millisec
 l.abcdefgh         display the length of specified string
 max                display maximal and minimum values for long, integer, short and byte
 min                display maximal and minimum values for long, integer, short and byte
+0xF45232           starts with 0x, display decimal value of hex value
 1+2.3x(4.5-_6)/8   yield 4.01875, basic calculation like add, subtract, multiply and divide
 cal 1+2.3x(_6)/8    explicitly evaluate given expression, options: $s=3, set scale as 3, +k keep zeroes
 p=20,3             permutation, like how many ways could you choose from three out of 20? 6840!

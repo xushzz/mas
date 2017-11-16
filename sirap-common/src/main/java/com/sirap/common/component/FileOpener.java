@@ -129,6 +129,11 @@ public class FileOpener {
 	}
 	
 	public static List<String> readTextContent(String filePath, boolean readAsTextAnyway) {
+		String charset = IOUtil.charsetOfTextFile(filePath);
+		return readTextContent(filePath, readAsTextAnyway, charset);
+	}
+	
+	public static List<String> readTextContent(String filePath, boolean readAsTextAnyway, String charset) {
 		
 		List<String> records = new ArrayList<String>();
 		if(FileUtil.isAnyTypeOf(filePath, FileUtil.SUFFIX_MEX)) {
@@ -147,7 +152,7 @@ public class FileOpener {
 				records.add(content);
 			}
 		} else if(readAsTextAnyway || isAcceptableFormat(filePath, FileUtil.SUFFIXES_TEXT, KEY_TEXT)) {
-			List<String> temp = IOUtil.readFileIntoList(filePath, SimpleKonfig.g().getCharsetInUse());
+			List<String> temp = IOUtil.readFileIntoList(filePath, charset);
 			if(temp != null) {
 				records.addAll(temp);
 			}

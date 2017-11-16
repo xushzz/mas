@@ -34,7 +34,7 @@ public class CommandAris extends CommandBase {
 			}
 			File file = parseFile(solo);
 			if(file != null ) {
-				List<String> javacodes = IOUtil.readFileIntoList(file.getAbsolutePath(), g().getCharsetInUse());
+				List<String> javacodes = IOUtil.readFileIntoList(file.getAbsolutePath());
 				if(StrUtil.endsWith(solo, Konstants.SUFFIX_JAVA)) {
 					export(instance.executeJavaFileStyle(javacodes, classpath));
 				} else {

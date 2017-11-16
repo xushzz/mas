@@ -10,7 +10,6 @@ import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.MexUtil;
 import com.sirap.common.domain.MemoryRecord;
-import com.sirap.common.framework.SimpleKonfig;
 
 public class MemorableDayManager {
 	
@@ -51,8 +50,7 @@ public class MemorableDayManager {
 	
 	public synchronized List<MemoryRecord> getAllRecords(boolean isForcibly) {
 		if(EmptyUtil.isNullOrEmpty(ALL_RECORDS) || isForcibly) {
-			String charset = SimpleKonfig.g().getCharsetInUse();
-			ALL_RECORDS = MexUtil.readMexItemsViaExplicitClass(filePath, MemoryRecord.class, charset);
+			ALL_RECORDS = MexUtil.readMexItemsViaExplicitClass(filePath, MemoryRecord.class);
 		}
 		
 		return ALL_RECORDS;

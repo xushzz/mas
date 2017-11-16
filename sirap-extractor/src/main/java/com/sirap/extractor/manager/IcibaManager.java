@@ -25,7 +25,7 @@ public class IcibaManager {
 	public synchronized boolean saveToDatabase(ValuesItem item, String location, String charset) {
 		List<String> items = null;
 		if(FileUtil.exists(location)) {
-			items = IOUtil.readFileIntoList(location, charset);
+			items = IOUtil.readFileIntoList(location);
 		} else {
 			items = Lists.newArrayList();
 		}

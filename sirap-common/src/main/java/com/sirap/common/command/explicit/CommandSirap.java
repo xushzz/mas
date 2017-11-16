@@ -400,7 +400,7 @@ public class CommandSirap extends CommandBase {
 			String criteria = params[0];
 			String userConfigFile = g().getUserConfigFileName();
 			if(userConfigFile != null) {
-				List<String> records = IOUtil.readFileIntoList(userConfigFile, g().getCharsetInUse());
+				List<String> records = IOUtil.readFileIntoList(userConfigFile);
 				export2(records, criteria);
 				
 				return true;
@@ -523,7 +523,7 @@ public class CommandSirap extends CommandBase {
 			String folders = engine.getFolders();
 			String fileCriteria = engine.getFileCriteria();
 			String engineOptions = engine.getOptions();
-			List<MexTextSearchRecord> list = TextSearcher.search(folders, fileCriteria, contentCriteria, g().getCharsetInUse());
+			List<MexTextSearchRecord> list = TextSearcher.search(folders, fileCriteria, contentCriteria);
 			String finalOptions = OptionUtil.mergeOptions(options, engineOptions);
 			export(list, finalOptions);
 			

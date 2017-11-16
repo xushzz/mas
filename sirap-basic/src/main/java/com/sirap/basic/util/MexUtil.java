@@ -141,15 +141,12 @@ public class MexUtil {
 	}
 	
 	public static <E extends MexItem> List<E> readMexItemsViaExplicitClass(String fileName, Class<?> clazz) {
-		return readMexItemsViaExplicitClass(fileName, clazz, null);
-	}
-	
-	public static <E extends MexItem> List<E> readMexItemsViaExplicitClass(String fileName, Class<?> clazz, String charset) {
-		return readMexItemsViaClassName(fileName, clazz.getName(), charset);
+		return readMexItemsViaClassName(fileName, clazz.getName());
 	}
 	
 	public static <E extends MexItem> List<E> readMexItemsViaClassName(String fileName, String className) {
-		return readMexItemsViaClassName(fileName, className, null);
+		String charset = IOUtil.charsetOfTextFile(fileName);
+		return readMexItemsViaClassName(fileName, className, charset);
 	}
 	 
 	@SuppressWarnings("unchecked")

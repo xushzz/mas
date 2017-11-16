@@ -33,8 +33,8 @@ public abstract class Konfig {
 		if(is == null) {
 			XXXUtil.alert("[Configuration] System config file unavailable, please check [" + KONFIG_FILE + "].");
 		}
-		
-		MexedMap temp = IOUtil.readKeyValuesIntoMexedMap(is);
+		String cat = IOUtil.charsetOfStream(getClass().getResourceAsStream(KONFIG_FILE));
+		MexedMap temp = IOUtil.readKeyValuesIntoMexedMap(is, cat);
 		if(temp != null) {
 			systemProperties = temp;
 		}
@@ -43,7 +43,8 @@ public abstract class Konfig {
 		if(is == null) {
 			C.pl("[Configuration] Extra config file unavailable, please check [" + EXTRA_FILE + "].");
 		} else {
-			temp = IOUtil.readKeyValuesIntoMexedMap(is);
+			cat = IOUtil.charsetOfStream(getClass().getResourceAsStream(EXTRA_FILE));
+			temp = IOUtil.readKeyValuesIntoMexedMap(is, cat);
 			if(temp != null) {
 				systemProperties.getContainer().putAll(temp.getContainer());
 			}

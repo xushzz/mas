@@ -45,7 +45,7 @@ public class CommandDatabase extends CommandBase {
 				if(FileOpener.isTextFile(file.getAbsolutePath())) {
 					checkTooBigToHandle(file, g().getUserValueOf(SQL_MAX_SIZE_KEY, SQL_MAX_SIZE_DEFAULT));
 					String filePath = file.getAbsolutePath();
-					String charset = g().getCharsetInUse();
+					String charset = IOUtil.charsetOfTextFile(filePath);
 					String temp = IOUtil.readFileWithLineSeparator(filePath, " ", charset, "--");
 					String sql = StrUtil.reduceMultipleSpacesToOne(temp).trim();
 					dealWith(sql);

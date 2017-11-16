@@ -29,8 +29,10 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
+import com.google.common.collect.Maps;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.component.MexedMap;
 import com.sirap.basic.exception.MexException;
@@ -43,7 +45,6 @@ import com.sirap.basic.thread.MasterItemOriented;
 import com.sirap.basic.thread.Worker;
 import com.sirap.basic.thread.business.InternetFileFetcher;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.tool.D;
 import com.sirap.basic.tool.MexedAudioPlayer;
 
 @SuppressWarnings({"rawtypes","unchecked"})
@@ -116,23 +117,16 @@ public class IOUtil {
 	}
 
 	public static String readFileWithoutLineSeparator(String fileName) {
-		return readFileWithLineSeparator(fileName, "", null);
+		return readFileWithLineSeparator(fileName, "");
 	}
 
 	public static String readFileWithRegularLineSeparator(String fileName) {
-		return readFileWithLineSeparator(fileName, Konstants.NEWLINE, null);
+		return readFileWithLineSeparator(fileName, Konstants.NEWLINE);
 	}
 	
 	public static String readFileWithLineSeparator(String fileName, String lineSeperator) {
-		return readFileWithLineSeparator(fileName, lineSeperator, null, new String[0]);
-	}
-
-	public static String readFileWithoutLineSeparator(String fileName, String charset) {
-		return readFileWithLineSeparator(fileName, "", charset);
-	}
-
-	public static String readFileWithRegularLineSeparator(String fileName, String charset) {
-		return readFileWithLineSeparator(fileName, Konstants.NEWLINE, charset);
+		String charset = charsetOfTextFile(fileName);
+		return readFileWithLineSeparator(fileName, lineSeperator, charset);
 	}
 	
 	public static String readFileWithLineSeparator(String fileName, String lineSeperator, String charset) {
@@ -181,7 +175,8 @@ public class IOUtil {
 	}
 	
 	public static List<String> readFileIntoList(String fileName) {
-		return readFileIntoList(fileName, null);
+		String cat = charsetOfTextFile(fileName);
+		return readFileIntoList(fileName, cat);
 	}
 	
 	public static List<String> readFileIntoList(String fileName, String charset) {
@@ -228,7 +223,8 @@ public class IOUtil {
 	public static MexedMap createMexedMapByRegularFile(String filePath) {
 		try {
 			InputStream inputStream = new FileInputStream(filePath);
-			return readKeyValuesIntoMexedMap(inputStream);
+			String cat = charsetOfTextFile(filePath);
+			return readKeyValuesIntoMexedMap(inputStream, cat);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -238,8 +234,9 @@ public class IOUtil {
 	
 	public static MexedMap createMexedMapByResourceFile(String filePath) {
 		InputStream inputStream = InputStream.class.getResourceAsStream(filePath);
+		String cat = charsetOfTextFile(filePath);
 		
-		return readKeyValuesIntoMexedMap(inputStream);
+		return readKeyValuesIntoMexedMap(inputStream, cat);
 	}
 	
 	public static MexedMap createMexedMapByProperties(Properties props) {
@@ -281,11 +278,11 @@ public class IOUtil {
 		return props;
 	}
 	
-	public static MexedMap readKeyValuesIntoMexedMap(InputStream stream) {
+	public static MexedMap readKeyValuesIntoMexedMap(InputStream stream, String charset) {
 		XXXUtil.nullCheck(stream, "InputStream stream");
 		MexedMap map = new MexedMap();
 		try {
-			BufferedReader reader =new BufferedReader(new InputStreamReader(stream, "gbk"));
+			BufferedReader reader =new BufferedReader(new InputStreamReader(stream, charset));
 			String record;
 			while ((record = reader.readLine()) != null) {
 				String temp = record.trim();
@@ -307,10 +304,8 @@ public class IOUtil {
 				if(key.isEmpty() || value.isEmpty()) {
 					continue;
 				}
-				
 				map.put(key, value);
 			}
-			
 			return map;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -325,11 +320,11 @@ public class IOUtil {
 		return null;
 	}
 	
-	public static MexedMap readPropertiesIntoMexedMap(InputStream stream) {
+	public static MexedMap readPropertiesIntoMexedMap(InputStream stream, String charset) {
 		XXXUtil.nullCheck(stream, "InputStream stream");
 		
 		try {
-			BufferedReader reader =new BufferedReader(new InputStreamReader(stream, "gbk"));
+			BufferedReader reader =new BufferedReader(new InputStreamReader(stream, charset));
 			Properties props = new Properties();
 			props.load(reader);
 			return createMexedMapByProperties(props);
@@ -535,31 +530,11 @@ public class IOUtil {
 	}
 
 	public static Object readObject(String fileName) {
-		Object obj = null;
-		ObjectInputStream ois = null;
-		FileInputStream fis = null;
-		try {
-			fis = new FileInputStream(fileName);
-			ois = new ObjectInputStream(fis);
-			obj = ois.readObject();
+		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName))) {
+			return ois.readObject();
 		} catch (Exception e) {
-			D.debug(IOUtil.class, "readObject", fileName);
-			e.printStackTrace();
-		} finally {
-			try {
-				if(fis != null) {
-					fis.close();
-				}
-				
-				if(ois != null) {
-					ois.close();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			throw new MexException("{0}, {1}, {2}.", IOUtil.class, "readObject", fileName);
 		}
-		
-		return obj;
 	}
 
 	public static boolean saveObject(Serializable obj, String fileName) {
@@ -754,5 +729,34 @@ public class IOUtil {
 		} catch (Exception ex) {
 			throw new MexException(ex);
 		}
+	}
+	
+	public static String charsetOfTextFile(String filepath) {
+		try(InputStream lucy = new FileInputStream(filepath)) {
+		    return charsetOfStream(lucy);
+		} catch (Exception ex) {
+			throw new MexException(ex);
+		}
+	}
+	
+	public static String charsetOfStream(InputStream stream) {
+	    Integer key0xefbb = 61371, key0xfeff = 65279, key0xfffe = 65534;
+		Map<Integer, String> headAndType = Maps.newConcurrentMap();
+		headAndType.put(key0xefbb, "UTF-8");
+		headAndType.put(key0xfeff, "UTF-16BE");
+		headAndType.put(key0xfffe, "Unicode");
+
+		try(BufferedInputStream lucy = new BufferedInputStream(stream)) {
+			String code = "GBK";
+		    int head = (lucy.read() << 8) + lucy.read();
+		    String temp = headAndType.get(head);
+		    if(temp != null) {
+		    	code = temp;
+		    }
+			return code;
+		} catch (Exception ex) {
+			throw new MexException(ex);
+		}
+		
 	}
 }

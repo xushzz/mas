@@ -291,7 +291,7 @@ public class CommandMonitor extends CommandBase {
 				List<MexFile> mexItems = FileUtil.scanFolders(folders, false, ".java$");
 				for(MexFile item : mexItems) {
 					KeysReader pycelle = new KeysReader(item.getFile(), methodList);
-					keys.addAll(pycelle.readKeysFromFile(g().getCharsetInUse()));
+					keys.addAll(pycelle.readKeysFromFile());
 				}
 			}
 			

@@ -16,6 +16,7 @@ import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
+import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.ObjectUtil;
 import com.sirap.basic.util.OptionUtil;
@@ -62,7 +63,7 @@ public class CommandCollect extends CommandBase {
 	private static final String KEY_JAR= "jar";
 	private static final String KEY_WEIXIN_SEARCH= "wei";
 	private static final String KEY_THIS_DAY_IN_HISTORY_CHINESE = "this";
-	private static final String KEY_THIS_DAY_IN_HISTORY = "hist";
+	private static final String KEY_THIS_DAY_IN_HISTORY_ENGLISH = "hist";
 	private static final String KEY_NOBEL_PRIZE = "nobel";
 	private static final String KEY_JAPANESE_NAME = "ono";
 
@@ -129,7 +130,7 @@ public class CommandCollect extends CommandBase {
 		if(solo != null) {
 			String key = "iciba.source";
 			String filePath = g().getUserValueOf(key);
-			boolean fetchOnly = false | OptionUtil.readBooleanPRI(options, "fetch", false);
+			boolean fetchOnly = false | OptionUtil.readBooleanPRI(options, "force", false);
 			if(filePath == null) {
 				fetchOnly = true;
 			} else if(!FileUtil.exists(filePath)) {
@@ -138,8 +139,12 @@ public class CommandCollect extends CommandBase {
 			}
 			
 			File file = parseFile(solo);
-			if(file != null && FileOpener.isTextFile(file.getAbsolutePath())) {
-				List<String> words = FileOpener.readTextContent(file.getAbsolutePath());
+			if(file != null) {
+				String cat = IOUtil.charsetOfTextFile(file.getAbsolutePath());
+				if(OptionUtil.readBooleanPRI(options, "x", false)) {
+					cat = switchChartset(cat);
+				}
+				List<String> words = FileOpener.readTextContent(file.getAbsolutePath(), false, cat);
 				getBatchTranslation(fetchOnly, words, filePath);
 			} else {
 				String word = solo;
@@ -304,7 +309,7 @@ public class CommandCollect extends CommandBase {
 			
 			String location = getTargetLocation(storage());
 
-			HistoryEventsFetcher dinesh = new HistoryEventsFetcher(location);
+			HistoryEventsFetcher dinesh = new HistoryEventsFetcher(location, "thisdays");
 			Master<MexObject> master = new Master<MexObject>(urlParams, dinesh);
 
 			master.sitAndWait();
@@ -313,7 +318,7 @@ public class CommandCollect extends CommandBase {
 			return true;
 		}
 
-		params = parseParams(KEY_THIS_DAY_IN_HISTORY + "(\\d{1,2})[\\./\\-](\\d{1,2})");
+		params = parseParams(KEY_THIS_DAY_IN_HISTORY_ENGLISH + "(\\d{1,2})[\\./\\-](\\d{1,2})");
 		if(params != null) {
 			int month = Integer.parseInt(params[0]);
 			int day = Integer.parseInt(params[1]);
@@ -327,7 +332,7 @@ public class CommandCollect extends CommandBase {
 			return true;		
 		}
 
-		if(is(KEY_THIS_DAY_IN_HISTORY)) {
+		if(is(KEY_THIS_DAY_IN_HISTORY_ENGLISH)) {
 			String urlParam = DateUtil.displayNow("MMMM-dd").toLowerCase();
 			String monthDay = DateUtil.displayNow("MM/dd");
 			export(Extractors.fetchHistoryEventsByDay2(urlParam, monthDay));

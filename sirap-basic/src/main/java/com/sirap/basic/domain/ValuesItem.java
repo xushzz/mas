@@ -3,6 +3,7 @@ package com.sirap.basic.domain;
 import java.util.List;
 
 import com.google.common.collect.Lists;
+import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 
@@ -48,6 +49,9 @@ public class ValuesItem extends MexItem {
 
 	@Override
 	public boolean parse(String record) {
+		if(EmptyUtil.isNullOrEmptyOrBlank(record)) {
+			return false;
+		}
 		List<String> items = StrUtil.split(record, "|");
 		values.clear();
 		values.addAll(items);

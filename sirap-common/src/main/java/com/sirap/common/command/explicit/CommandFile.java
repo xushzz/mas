@@ -107,7 +107,11 @@ public class CommandFile extends CommandBase {
 				if(file != null) {
 					String filePath = file.getAbsolutePath();
 					if(FileOpener.isTextFile(filePath)) {
-						List<String> txtContent = FileOpener.readTextContent(filePath);
+						String cat = IOUtil.charsetOfTextFile(filePath);
+						if(OptionUtil.readBooleanPRI(options, "x", false)) {
+							cat = switchChartset(cat);
+						}
+						List<String> txtContent = FileOpener.readTextContent(filePath, true, cat);
 						if(type.length() == 1) {
 							objs.add(file);
 						} else if(type.length() == 2) {
@@ -167,9 +171,14 @@ public class CommandFile extends CommandBase {
 			}
 			
 			if(!target.isFileRelated() && FileOpener.isTextFile(filePath) && options != null) {
-				List<String> records = FileOpener.readTextContent(filePath, true);
+				String cat = IOUtil.charsetOfTextFile(file.getAbsolutePath());
+				if(OptionUtil.readBooleanPRI(options, "x", false)) {
+					cat = switchChartset(cat);
+				}
+				
+				List<String> records = FileOpener.readTextContent(filePath, true, cat);
 				if(OptionUtil.readBooleanPRI(options, "one", false)) {
-					String temp = IOUtil.readFileWithoutLineSeparator(filePath, g().getCharsetInUse());
+					String temp = IOUtil.readFileWithLineSeparator(filePath, "", cat);
 					String result = StrUtil.reduceMultipleSpacesToOne(temp);
 					export(result);
 				} else {
@@ -342,7 +351,7 @@ public class CommandFile extends CommandBase {
 			String criteria = filepathAndCriteria[1];
 			
 			if(FileOpener.isTextFile(filePath)) {
-				List<MexObject> all = readFileIntoList(filePath, g().getCharsetInUse());
+				List<MexObject> all = readFileIntoList(filePath);
 				List<MexObject> items = CollUtil.filter(all, criteria, isCaseSensitive());
 				export(CollUtil.items2PrintRecords(items, options));
 			} else if(FileUtil.isAnyTypeOf(filePath, FileUtil.SUFFIXES_EXCEL)) {
@@ -525,6 +534,10 @@ public class CommandFile extends CommandBase {
 		//list regex matched items in local text file
 		params = parseParams("(.+)@(.+)");
 		if(params != null) {
+			String cat = IOUtil.charsetOfTextFile(file.getAbsolutePath());
+			if(OptionUtil.readBooleanPRI(options, "x", false)) {
+				cat = switchChartset(cat);
+			}
 			String regex = params[0].trim();
 			String value = params[1].trim();
 			File tempFile = parseFile(value);
@@ -535,7 +548,7 @@ public class CommandFile extends CommandBase {
 					String groupConnector = OptionUtil.readString(options, "gcon", "; ").replace("\\s", " ");
 					String itemConnector = OptionUtil.readString(options, "icon", ", ").replace("\\s", " ");
 					List<String> items = new ArrayList<String>();
-					List<String> txtContent = FileOpener.readTextContent(filePath);
+					List<String> txtContent = FileOpener.readTextContent(filePath, true, cat);
 					int line = 0;
 					int maxLen = (txtContent.size() + "").length();
 					for(String record : txtContent) {
@@ -597,6 +610,7 @@ public class CommandFile extends CommandBase {
 						int[] count = IOUtil.countOfLinesChars(filePath);
 						items.add("lines: " + count[0]);
 						items.add("chars: " + count[1]);
+						items.add("coding: " + IOUtil.charsetOfTextFile(filePath));
 					} else if(FileOpener.isImageFile(filePath)) {
 						items.add("area: " + ImageUtil.readImageWidthHeight(filePath, " x "));
 						String format = ImageUtil.getRealFormat(filePath);
@@ -618,13 +632,16 @@ public class CommandFile extends CommandBase {
 				} 
 				
 				checkTooBigToHandle(file, g().getUserValueOf("text.max", DEFAULT_TEXT_MAX_SIZE));
-				
+				String cat = IOUtil.charsetOfTextFile(file.getAbsolutePath());
+				if(OptionUtil.readBooleanPRI(options, "x", false)) {
+					cat = switchChartset(cat);
+				}
 				if(StrUtil.equals(KEY_PRINT_TXT_ONELINE, type)) {
-					String temp = IOUtil.readFileWithoutLineSeparator(filePath, g().getCharsetInUse());
+					String temp = IOUtil.readFileWithLineSeparator(filePath, "", cat);
 					String result = StrUtil.reduceMultipleSpacesToOne(temp);
 					export(result);
 				} else if(StrUtil.equals(KEY_PRINT_TXT, type)) {
-					List<String> records = FileOpener.readTextContent(filePath, true);
+					List<String> records = FileOpener.readTextContent(filePath, true, cat);
 					if(OptionUtil.readBooleanPRI(options, "line", false)) {
 						export(CollUtil.lineNumber(records, true));
 					} else {
@@ -747,15 +764,11 @@ public class CommandFile extends CommandBase {
 		return false;
 	}
 	
-	public static List<MexObject> readFileIntoList(String fileName, String charset) {
+	public static List<MexObject> readFileIntoList(String fileName) {
+		String cat = IOUtil.charsetOfTextFile(fileName);
 		List<MexObject> list = new ArrayList<>();
 		try {
-			InputStreamReader isr = null;
-			if(charset != null) {
-				isr = new InputStreamReader(new FileInputStream(fileName), charset);
-			} else {
-				isr = new InputStreamReader(new FileInputStream(fileName));
-			}
+			InputStreamReader isr = new InputStreamReader(new FileInputStream(fileName), cat);
 			BufferedReader br = new BufferedReader(isr);
 			String record = br.readLine();
 			int line = 0;
@@ -897,3 +910,4 @@ class SearchComponent {
 	}
 	
 }
+//你好老总把那个

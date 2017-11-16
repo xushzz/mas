@@ -28,12 +28,19 @@ public class CommandSimpleMath extends CommandBase {
 	private static final String KEY_PERMUTATION = "p=";
 	private static final String KEY_TO_DATE = "td";
 	private static final String KEY_TO_LONG = "tl";
+	private static final String REGEX_HEX8 = "0x([0-9a-f]{1,16})";
 	
 	@Override
 	public boolean handle() {
+		solo = parseSoloParam(REGEX_HEX8);
+		if(solo != null) {
+			export(Long.parseLong(solo, 16));
+			
+			return true;
+		}
 
-		String regexCalculate = "([\\s_\\d\\.+\\-x\\*/\\(\\)]{2,})";
-		params = parseParams("(cal\\s+|)" + regexCalculate);
+		regex = "([\\s_\\d\\.+\\-x\\*/\\(\\)]{2,})";
+		params = parseParams("(cal\\s+|)" + regex);
 		if(params != null) {
 			boolean ignoreIfException = params[0].isEmpty();
 			String expression = params[1];

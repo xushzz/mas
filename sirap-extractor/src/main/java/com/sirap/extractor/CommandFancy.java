@@ -79,7 +79,7 @@ public class CommandFancy extends CommandBase {
 			if(file != null) {
 				String filePath = file.getAbsolutePath();
 				if(FileOpener.isTextFile(filePath)) {
-					List<String> records = IOUtil.readFileIntoList(filePath, g().getCharsetInUse());
+					List<String> records = IOUtil.readFileIntoList(filePath);
 					List<MexObject> items = MeituManager.g().readLassPath(records);
 					List<MeituLassItem> intros = MeituManager.g().getAllLassIntros(items);
 					Collections.sort(intros);

@@ -7,6 +7,8 @@ import com.sirap.basic.thread.Master;
 import com.sirap.basic.thread.Worker;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
+import com.sirap.basic.util.IOUtil;
+import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.component.Alarm;
 import com.sirap.common.component.FileOpener;
@@ -88,7 +90,11 @@ public class CommandTask extends CommandBase {
 		if(solo != null) {
 			File file = parseFile(solo);
 			if(file != null && FileOpener.isTextFile(file.getAbsolutePath())) {
-				List<String> tasks = FileOpener.readTextContent(file.getAbsolutePath());
+				String cat = IOUtil.charsetOfTextFile(file.getAbsolutePath());
+				if(OptionUtil.readBooleanPRI(options, "x", false)) {
+					cat = switchChartset(cat);
+				}
+				List<String> tasks = FileOpener.readTextContent(file.getAbsolutePath(), false, cat);
 				executeActions(tasks);
 			} else {
 				List<String> actions = StrUtil.split(solo);

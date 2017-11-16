@@ -49,7 +49,7 @@ public class CommandFetch extends CommandBase {
 			if(file != null) {
 				String filePath = file.getAbsolutePath();
 				if(FileOpener.isTextFile(filePath)) {
-					records = IOUtil.readFileIntoList(filePath, g().getCharsetInUse());
+					records = IOUtil.readFileIntoList(filePath);
 				}
 			}
 			

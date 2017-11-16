@@ -4,7 +4,7 @@ car Benz           display car code and name of all cars in the market of http:/
 car-251            display car detail info such as name, price, SUV, year, 2.0L, Auto/Manual 
 @15789451236       fetch seven-digit mobile phone location info, courtesy of ${phone.char.url}
 i de facto         get Chinese translation for this English word, courtesy of ${iciba.url}
-i fact             options, $+fetch, forcibly fetch only
+i fact             options, $+force, forcibly fetch only
 i E:\fa.txt        batch translation by iciba
 ia de facto        look up dictionary for this English word, courtesy of ${dictionary.url}
 $CNY10000          how much could you have in other currencies by trading given amount of given currency

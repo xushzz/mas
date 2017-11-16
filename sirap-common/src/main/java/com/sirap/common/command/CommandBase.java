@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.component.TimestampIDGenerator;
 import com.sirap.basic.domain.MexItem;
@@ -229,9 +230,15 @@ public abstract class CommandBase {
 		Exporter.exportList(input, Lists.newArrayList("The result is empty."), whereToShot(), options);		
 	}
 
+	@SuppressWarnings("rawtypes")
 	public void export(Object content) {
 		if(content == null) {
 			exportEmptyMsg();
+			return;
+		}
+		
+		if(content instanceof List) {
+			export((List)content);
 			return;
 		}
 		
@@ -544,5 +551,13 @@ public abstract class CommandBase {
 		params.put(key, value);
 		
 		return params;
+	}
+	
+	protected String switchChartset(String key) {
+		Map<String, String> ma = Maps.newConcurrentMap();
+		ma.put(Konstants.CODE_GBK, Konstants.CODE_UTF8);
+		ma.put(Konstants.CODE_UTF8, Konstants.CODE_GBK);
+		
+		return ma.get(key);
 	}
 }

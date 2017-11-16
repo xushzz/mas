@@ -16,8 +16,8 @@ public class TextSearcher {
 //	private static Map<String, TextSearcher> instances = new HashMap<>();
 	private List<MexTextSearchRecord> allItems;
 	
-	private TextSearcher(List<String> folders, String fileNameCriteria, String charset) {
-		allItems = readAllItems(folders, fileNameCriteria, charset);
+	private TextSearcher(List<String> folders, String fileNameCriteria) {
+		allItems = readAllItems(folders, fileNameCriteria);
 	}
 //	
 //	private synchronized static TextSearcher getInstance(String engineName, List<String> folders, String fileNameCriteria, String charset) {
@@ -30,17 +30,13 @@ public class TextSearcher {
 //		return wang;
 //	}
 	
-	public static List<MexTextSearchRecord> search(String foldersStr, String fileNameCriteria, String criteria, String charset) {
+	public static List<MexTextSearchRecord> search(String foldersStr, String fileNameCriteria, String criteria) {
 		List<String> folders = StrUtil.splitByRegex(foldersStr);
-		return search(folders, fileNameCriteria, criteria, charset);
+		return search(folders, fileNameCriteria, criteria);
 	}
 	
 	public static List<MexTextSearchRecord> search(List<String> folders, String fileNameCriteria, String criteria) {
-		return search(folders, fileNameCriteria, criteria, null);
-	}
-	
-	public static List<MexTextSearchRecord> search(List<String> folders, String fileNameCriteria, String criteria, String charset) {
-		TextSearcher wang = new TextSearcher(folders, fileNameCriteria, charset);
+		TextSearcher wang = new TextSearcher(folders, fileNameCriteria);
 		List<MexTextSearchRecord> result = CollUtil.filter(wang.allItems, criteria);
 		
 		return result;
@@ -59,13 +55,13 @@ public class TextSearcher {
 //		return result;
 //	}
 	
-	private List<MexTextSearchRecord> readAllItems(List<String> folders, String fileCriteria, String charset) {
+	private List<MexTextSearchRecord> readAllItems(List<String> folders, String fileCriteria) {
 		List<MexFile> allMexFiles = FileUtil.scanFolders(folders, false, fileCriteria);
 		
 		List<MexTextSearchRecord> allItems = new ArrayList<>();
 		for(MexFile file : allMexFiles) {
 			String fileName = file.getPath();
-			List<MexTextSearchRecord> items = readEachFile(fileName, charset);
+			List<MexTextSearchRecord> items = readEachFile(fileName);
 			allItems.addAll(items);
 		}
 		
@@ -73,12 +69,12 @@ public class TextSearcher {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private List<MexTextSearchRecord> readEachFile(String filename, String charset) {
+	private List<MexTextSearchRecord> readEachFile(String filename) {
 		if(!FileUtil.isNormalFile(filename)) {
 			return Collections.EMPTY_LIST;
 		}
 		
-		List<String> items = IOUtil.readFileIntoList(filename, charset);
+		List<String> items = IOUtil.readFileIntoList(filename);
 		
 		List<MexTextSearchRecord> mexItems = new ArrayList<>();
 		for(int i = 0; i < items.size(); i++) {
