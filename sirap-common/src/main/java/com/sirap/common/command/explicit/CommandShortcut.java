@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
+import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.framework.Janitor;
@@ -31,7 +32,13 @@ public class CommandShortcut extends CommandBase {
 			List<String> items = StrUtil.split(dosPrefix);
 			for(String item : items) {
 				if(StrUtil.equalsCaseSensitive(command, item) || command.startsWith(item + " ")) {
-					executeInternalCmd(command);
+					String temp = command;
+					String path = OptionUtil.readString(options, "p");
+					if(!EmptyUtil.isNullOrEmpty(path)) {
+						temp = translatePath(temp, path);
+						C.pl(temp);
+					}
+					executeInternalCmd(temp);
 					return true;
 				}
 			}
@@ -84,5 +91,27 @@ public class CommandShortcut extends CommandBase {
 		}
 		
 		return null;
+	}
+	
+	private String translatePath(String dosCommand, String path) {
+		String gitWithSpace = "git ";
+		if(StrUtil.startsWith(dosCommand, gitWithSpace)) {
+			String gitFile = StrUtil.useSeparator(path, ".git");
+			String info = "--work-tree=" + gitFile + " --git-dir=" + gitFile + " ";
+			return dosCommand.replace(gitWithSpace, gitWithSpace + info);
+		}
+		
+		String mvnWithSpace = "mvn ";
+		if(StrUtil.startsWith(dosCommand, mvnWithSpace)) {
+			String info = " -f";
+			if(StrUtil.endsWith(path, ".xml")) {
+				info += path;
+			} else {
+				info += StrUtil.useSeparator(path, "pom.xml");
+			}
+			return dosCommand + info;
+		}
+		
+		return dosCommand;
 	}
 }

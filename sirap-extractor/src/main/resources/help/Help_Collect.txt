@@ -1,5 +1,5 @@
 wea cityName       display weather info of China cities, like sz/shenzhen/10/duoyun, from ${china.weather.url}
-carno cityName     display car plate info of China cities, like nanning/A, from http://www.ip138.com/carlist.htm
+kar cityName     display car plate info of China cities, like nanning/A, from http://www.ip138.com/carlist.htm
 car Benz           display car code and name of all cars in the market of http://data.ecar168.cn
 car-251            display car detail info such as name, price, SUV, year, 2.0L, Auto/Manual 
 @15789451236       fetch seven-digit mobile phone location info, courtesy of ${phone.char.url}
@@ -33,4 +33,4 @@ hist               list events in this day in history, courtesy of http://www.hi
 hist5.6            list events in May 6th in history, same as 5/26,5-16, courtesy of http://www.historynet.com
 nobel 2007&james   list nobel prize info, filter by mex criteria
 ono suzuki         list japanese names, http://www.for68.com/new/201006/li1871181518601022640.htm
-ver=11/14/2017, I  EXTRACTOR-COLLECT1.0.14-CANTONA
+ver=11/18/2017, VI  EXTRACTOR-COLLECT1.0.15-CANTONA

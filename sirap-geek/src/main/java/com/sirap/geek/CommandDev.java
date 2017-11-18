@@ -17,7 +17,6 @@ import com.sirap.basic.search.MexFilter;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.ScreenCaptor;
 import com.sirap.basic.util.ArisUtil;
-import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.ImageUtil;

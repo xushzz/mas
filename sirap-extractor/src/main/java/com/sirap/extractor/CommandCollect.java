@@ -50,7 +50,7 @@ public class CommandCollect extends CommandBase {
 
 	private static final String KEY_WEATHER = "wea";	
 	private static final String KEY_CAR = "car";	
-	private static final String KEY_CARNO = "carno";
+	private static final String KEY_CARNO = "kar";
 	private static final String KEY_PHONE_MOBILE = "@";
 	private static final String KEY_DICTONARY = "ia";
 	private static final String KEY_TRANSLATE = "i";
