@@ -71,16 +71,17 @@ public class ArisExecutor {
 		
 		ma.appendTail(sb);
 		String remain = sb.toString().trim();
-		String expression = StrUtil.findFirstMatchedItem("^=(.+)", remain);
-		String line = null;
-		if(expression != null) {
-			expression = expression.replaceAll("[,\\.;]+$", "");
-			line = StrUtil.occupy("System.out.println({0});", expression);
+		if(StrUtil.isRegexMatched(Konstants.REGEX_JAVA_IDENTIFIER + "\\.class", remain)) {
+			items.add(StrUtil.occupy("C.list(ArisUtil.getClassDetail({0}, true));", remain));
 		} else {
-			line = remain + (remain.endsWith(";") ? "" : ";");
+			String expression = StrUtil.findFirstMatchedItem("^=(.+)", remain);
+			if(expression != null) {
+				expression = expression.replaceAll("[,\\.;]+$", "");
+				items.add(StrUtil.occupy("System.out.println({0});", expression));
+			} else {
+				items.add(remain + (remain.endsWith(";") ? "" : ";"));
+			}
 		}
-		
-		items.add(line);
 		
 		this.manualJavacode = items;
 		this.configClasspath = configClasspath;

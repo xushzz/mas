@@ -1,5 +1,6 @@
 ar java code       compile and execute java code, options: $+p, print command $+k, keep java&class files
 ar =42+323         compile and execute java code, System.out.println(42+323);
+ar Date.class      compile and execute, with ArisUtil.getClassDetail(Date.class), could be other class.
 ar D:\aris.txt     read text file, construct java code and execute
 ar D:\aris.java    read original java file, construct java code and execute
 jre                print runtime library such as C:\Java\jdk1.8.0_05\jre\lib

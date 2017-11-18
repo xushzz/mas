@@ -52,6 +52,7 @@ public class ArisDetail {
 		List<String> importInfo = createImportSentences();
 
 		if(!EmptyUtil.isNullOrEmpty(location)) {
+			content.add(glass + "");
 			content.add(location);
 			content.add("");
 		}

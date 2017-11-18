@@ -18,6 +18,7 @@ public class CommandAris extends CommandBase {
 	private static final String KEY_JRE_LOCATION = "jre";
 	private static final String KEY_PRINT_CLASS = "(cl|class)";
 
+	@SuppressWarnings("rawtypes")
 	public boolean handle() {
 		
 		solo = parseSoloParam(KEY_EXECUTE_JAVACODE + "\\s+(.+)");
