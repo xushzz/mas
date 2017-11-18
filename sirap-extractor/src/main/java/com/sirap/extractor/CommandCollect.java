@@ -147,8 +147,12 @@ public class CommandCollect extends CommandBase {
 				List<String> words = FileOpener.readTextContent(file.getAbsolutePath(), false, cat);
 				getBatchTranslation(fetchOnly, words, filePath);
 			} else {
-				String word = solo;
-				getTranslation(fetchOnly, word, filePath);
+				List<String> words = StrUtil.split(solo);
+				List<ValuesItem> items = Lists.newArrayList();
+				for(String single : words) {
+					items.addAll(getTranslation(fetchOnly, single, filePath));
+				}
+				export(items, "conn=\n");
 			}
 
 			return true;
@@ -390,7 +394,7 @@ public class CommandCollect extends CommandBase {
 		return  instance;
 	}
 	
-	private void getTranslation(boolean fetchOnly, String word, String warehouse) {
+	private List<ValuesItem> getTranslation(boolean fetchOnly, String word, String warehouse) {
 		String charset = Konstants.CODE_UTF8;
 		List<ValuesItem> items = null;
 		if(fetchOnly) {
@@ -410,7 +414,7 @@ public class CommandCollect extends CommandBase {
 			}
 		}
 
-		export(items, "conn=\n");
+		return items;
 	}
 	
 	private void getBatchTranslation(boolean fetchOnly, List<String> words, String warehouse) {

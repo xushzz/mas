@@ -52,6 +52,7 @@ public class CommandMonitor extends CommandBase {
 	private static final int[] LH_cellsAlign = {0, 1, 2};
 	private static final PDFParams LH_PDF_PARAMS = new PDFParams(LH_cellsWidth, LH_cellsAlign);
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public boolean handle() {
 		solo = parseSoloParam(KEY_ECHO + "\\s(.+?)");
@@ -75,8 +76,9 @@ public class CommandMonitor extends CommandBase {
 			if(StrUtil.isRegexMatched("-(se|es)", criteria)) {
 				export(records);
 			} else {
-				if(!records.isEmpty()) {
-					export2(records, criteria);
+				List list2 = CollUtil.filterMix(records, criteria, isCaseSensitive());
+				if(!list2.isEmpty()) {
+					export(list2);
 				} else {
 					export(StrUtil.split(criteria, '\\'));
 				}
