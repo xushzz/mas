@@ -28,8 +28,8 @@ public class GeekExtractors {
 				if(StrUtil.equals("...", methodName)) {
 					temp = "[^<>]+";
 				}
-				String regex = "<a name=\"([^\"]+)\">\\s*</a>\\s*<ul class=\"blockList\">\\s*";
-				regex += "<li class=\"blockList\">\\s*<h4>" + temp + "</h4>(.+?)</li>";
+				String regex = "<a name=\"([^\"]+)\">\\s*</a>\\s*<ul [^<>]+>\\s*";
+				regex += "<li [^<>]+>\\s*<h4>" + temp + "</h4>(.+?)</li>";
 				Matcher ma = createMatcher(regex);
 				int count = 0;
 				while(ma.find()) {
@@ -44,7 +44,19 @@ public class GeekExtractors {
 				while(ma.find()) {
 					String temp = getUrl() + "#" + encodeURLParam(anchor);
 					mexItems.add(count + ") " +getPrettyText(ma.group(1)) + dent + temp);
-					mexItems.add(getPrettyText(ma.group(2)));
+					List<String> cats = StrUtil.splitByRegex(ma.group(2), "<p>");
+					boolean theFirst = true;
+					for(String cat : cats) {
+						String goodCat = getPrettyText(cat);
+						if(EmptyUtil.isNullOrEmpty(goodCat)) {
+							continue;
+						}
+						if(!theFirst) {
+							mexItems.add("");
+						}
+						mexItems.add(goodCat);
+						theFirst = false;
+					}
 					String dallas = ma.group(3);
 					parseDallas(dallas);
 				}
@@ -52,11 +64,11 @@ public class GeekExtractors {
 			
 			private void parseDallas(String dallas) {
 				List<String> dogs = StrUtil.split(dallas, "<dt>");
-				boolean hasMeaning = false;
 				for(String dog : dogs) {
 					if(EmptyUtil.isNullOrEmpty(dog)) {
 						continue;
 					}
+					boolean hasMeaning = false;
 					List<String> legs = StrUtil.split(dog, "</dt>");
 					for(String leg : legs) {
 						hasMeaning = true;
@@ -70,12 +82,15 @@ public class GeekExtractors {
 						}
 						
 						if(!isClaw) {
-							mexItems.add(getPrettyText(leg));
+							String goodLeg = getPrettyText(leg);
+							if(!EmptyUtil.isNullOrEmpty(goodLeg)) {
+								mexItems.add(goodLeg);
+							}
 						}
 					}
-				}
-				if(hasMeaning) {
-					mexItems.add("");
+					if(hasMeaning) {
+						mexItems.add("");
+					}
 				}
 			}
 		};
