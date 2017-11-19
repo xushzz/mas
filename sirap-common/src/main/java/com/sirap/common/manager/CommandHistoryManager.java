@@ -37,7 +37,7 @@ public class CommandHistoryManager {
 		return instance;
 	}
 	
-	public void start() {
+	public synchronized void start() {
 		isEnabled = SimpleKonfig.g().isHistoryEnabled();
 		if(!isEnabled) {
 			return;
@@ -50,7 +50,7 @@ public class CommandHistoryManager {
 		filePath = location + fileName;
 	}
 	
-	public void loadHistoryFiles() {
+	public synchronized void loadHistoryFiles() {
 		File fodler = FileUtil.getIfNormalFolder(location);
 		if(fodler == null) {
 			C.pl("Uncanny, invalid input history location [" + location + "].");
@@ -70,7 +70,7 @@ public class CommandHistoryManager {
 		});
 	}
 	
-	public void collect(String input) {
+	public synchronized void collect(String input) {
 		String moment = DateUtil.displayNow(DateUtil.DATETIME);
 		CURRENT_RECORDS.add(new InputRecord(moment, input));
 		if(isEnabled && filePath != null) {
@@ -79,7 +79,7 @@ public class CommandHistoryManager {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<InputRecord> getNRecords(int latestCount) {
+	public synchronized List<InputRecord> getNRecords(int latestCount) {
 		if(latestCount <= 0) {
 			return Collections.EMPTY_LIST;
 		}
@@ -90,7 +90,7 @@ public class CommandHistoryManager {
 		return records;
 	}
 	
-	public List<InputRecord> search(String keyWord) {
+	public synchronized List<InputRecord> search(String keyWord) {
 		List<InputRecord> records = getAllRecords();
 		MexFilter<InputRecord> filter = new MexFilter<InputRecord>(keyWord, records);
 		List<InputRecord> list = filter.process();
@@ -99,7 +99,7 @@ public class CommandHistoryManager {
 		return list;
 	}
 	
-	public List<InputRecord> getAllRecords() {
+	public synchronized List<InputRecord> getAllRecords() {
 		List<InputRecord> historyRecords = new ArrayList<InputRecord>();
 		if(EmptyUtil.isNullOrEmpty(HISTORY_RECORDS)) {
 			for(File file: historyFileList) {

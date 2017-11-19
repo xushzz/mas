@@ -23,6 +23,7 @@ import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.PanaceaBox;
+import com.sirap.basic.util.RandomUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.component.FileOpener;
@@ -354,51 +355,70 @@ public abstract class CommandBase {
 		}
 		
 		String url = equiHttpProtoclIfNeeded(temp);
+		Boolean toViewPage = OptionUtil.readBoolean(options, "web");
+		if(toViewPage != null) {
+			 if(toViewPage) {
+				 viewPage(url);
+			 } else {
+				 downloadFile(url);
+			 }
+			 
+			 return true;
+		}
 		
-		boolean getNormalFile = FileOpener.isPossibleNormalFile(url);
-		if(getNormalFile) {
-			String httpUrl = url;
-			String unique = "";
-			boolean useUniqueFilename = g().isExportWithTimestampEnabled(options);
-			if(useUniqueFilename) {
-				unique = TimestampIDGenerator.nextId() + "_";
-			}
-			String fileName = unique + FileUtil.generateFilenameByUrl(httpUrl);
-			String storage = pathWithSeparator("storage.misc", Konstants.FOLDER_MISC);
-			String filePath = storage + fileName;
-			if(FileUtil.exists(filePath)) {
-				C.pl("Existed => " + filePath);
-			} else {
-				FileUtil.makeDirectoriesIfNonExist(storage);
-				C.pl("Fetching... " + httpUrl);
-				boolean flag = IOUtil.downloadNormalFile(httpUrl, filePath, true);
-				if(flag) {
-					C.pl2("Saved => " + filePath);
-				}
-			}
-
-			if(g().isGeneratedFileAutoOpen()) {
-				FileOpener.open(filePath);
-			}
-			
-			if(target instanceof TargetConsole) {
-				return true;
-			}
-			
-			if(target.isFileRelated()) {
-				export(FileUtil.getIfNormalFile(filePath));
-			} else {
-				export(filePath);
-			}
-			
-			return true;
-			
+		boolean toDownload = FileOpener.isPossibleNormalFile(url);
+		if(toDownload) {
+			downloadFile(url);
 		} else {
-			FileOpener.playThing(url, "page.viewer", true);
-			C.pl2("View Page.");
+			viewPage(url);
 		}
 		
 		return true;
+	}
+	
+	private void downloadFile(String url) {
+		String httpUrl = url;
+		String unique = "";
+		boolean useUniqueFilename = g().isExportWithTimestampEnabled(options);
+		if(useUniqueFilename) {
+			unique = TimestampIDGenerator.nextId() + "_";
+		}
+		String jack = FileUtil.generateFilenameByUrl(httpUrl);
+		if(EmptyUtil.isNullOrEmpty(jack)) {
+			jack = RandomUtil.letters(7);
+		}
+		String fileName = unique + jack;
+		String storage = pathWithSeparator("storage.misc", Konstants.FOLDER_MISC);
+		String filePath = storage + fileName;
+		if(FileUtil.exists(filePath)) {
+			C.pl("Existed => " + filePath);
+		} else {
+			FileUtil.makeDirectoriesIfNonExist(storage);
+			C.pl("Fetching... " + httpUrl);
+			boolean flag = IOUtil.downloadNormalFile(httpUrl, filePath, false);
+			if(flag) {
+				C.pl2("Saved => " + filePath);
+			}
+		}
+
+		if(g().isGeneratedFileAutoOpen()) {
+			FileOpener.open(filePath);
+		}
+		
+		if(target instanceof TargetConsole) {
+			return;
+		}
+		
+		if(target.isFileRelated()) {
+			export(FileUtil.getIfNormalFile(filePath));
+		} else {
+			export(filePath);
+		}
+	}
+	
+	private void viewPage(String url) {
+		FileOpener.playThing(url, "page.viewer", true);
+		C.pl2("View Page.");
 	}
 	
 	protected String[] generateQRCodeImageFilenameAndFormat(String nameInfo, String defName, String defFormat) {

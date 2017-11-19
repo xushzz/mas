@@ -11,13 +11,15 @@ import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.ObjectUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.XCodeUtil;
 import com.sirap.common.command.CommandBase;
+import com.sirap.common.framework.Janitor;
 import com.sirap.geek.util.GeekExtractors;
 
 public class CommandAris extends CommandBase {
 	private static final String KEY_EXECUTE_JAVACODE = "ar";
 	private static final String KEY_JRE_LOCATION = "jre";
-	private static final String KEY_PRINT_CLASS = "(cl|class)";
+	private static final String KEY_PRINT_CLASS = "(cl|class|interface)";
 
 	@SuppressWarnings("rawtypes")
 	public boolean handle() {
@@ -59,23 +61,31 @@ public class CommandAris extends CommandBase {
 		params = parseParams(regex);
 		if(params != null) {
 			String name = params[1].replace('/', '.').replace('\\', '.').replaceAll("\\.class$", "");
-			boolean showSameClassesInSamePackage = !EmptyUtil.isNullOrEmpty(params[2]);
-			String mexCriteria = params[3];
-			Class glass = ObjectUtil.forName(name);
-			String sourceLocation = ArisUtil.sourceLocation(glass);
-			List<String> items = null;
-			if(showSameClassesInSamePackage) {
-				String jarEntryName = name.replace('.', '/') + ".class";
-				items = ArisUtil.siblingClasses(sourceLocation, jarEntryName);
-				export(items);
+			boolean toGetSourceCode = OptionUtil.readBooleanPRI(options, "code", false);
+			if(toGetSourceCode) {
+				String temp = "https://gitee.com/thewire/jdk8/raw/master/src/{0}.java";
+				String url = StrUtil.occupy(temp, name.replace('.', '/'));
+				Janitor.g().process(url);
 			} else {
-				String method = OptionUtil.readString(options, "m");
-				if(!EmptyUtil.isNullOrEmpty(method)) {
-					items = GeekExtractors.fetchJDK7Api(name.replace('.', '/'), method);
+				boolean showSameClassesInSamePackage = !EmptyUtil.isNullOrEmpty(params[2]);
+				String mexCriteria = params[3];
+				Class glass = ObjectUtil.forName(name);
+				String sourceLocation = ArisUtil.sourceLocation(glass);
+				List<String> items = null;
+				if(showSameClassesInSamePackage) {
+					String jarEntryName = name.replace('.', '/') + ".class";
+					items = ArisUtil.siblingClasses(sourceLocation, jarEntryName);
 					export(items);
 				} else {
-					items = ArisUtil.getClassDetail(glass, isDebug());
-					export2(items, mexCriteria);
+					String method = OptionUtil.readString(options, "m");
+					if(!EmptyUtil.isNullOrEmpty(method)) {
+						String temp = XCodeUtil.urlDecodeUTF8(method);
+						items = GeekExtractors.fetchJDK7Api(name.replace('.', '/'), temp);
+						export(items);
+					} else {
+						items = ArisUtil.getClassDetail(glass, isDebug());
+						export2(items, mexCriteria);
+					}
 				}
 			}
 			

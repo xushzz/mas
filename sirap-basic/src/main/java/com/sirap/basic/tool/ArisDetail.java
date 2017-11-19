@@ -51,11 +51,11 @@ public class ArisDetail {
 		List<String> methods = readMethods();
 		List<String> importInfo = createImportSentences();
 
+		content.add("//" + glass + "");
 		if(!EmptyUtil.isNullOrEmpty(location)) {
-			content.add(glass + "");
-			content.add(location);
-			content.add("");
+			content.add("//" + location);
 		}
+		content.add("");
 		if(!EmptyUtil.isNullOrEmpty(packageInfo)) {
 			content.add(packageInfo);
 			content.add("");
@@ -78,6 +78,12 @@ public class ArisDetail {
 			content.addAll(methods);
 		}
 		content.add("}");
+		content.add("");
+		content.add("//" + glass + "");
+		if(!EmptyUtil.isNullOrEmpty(location)) {
+			content.add("//" + location);
+		}
+
 		
 		return content;
 	}
