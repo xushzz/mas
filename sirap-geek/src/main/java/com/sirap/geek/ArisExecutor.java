@@ -71,8 +71,11 @@ public class ArisExecutor {
 		
 		ma.appendTail(sb);
 		String remain = sb.toString().trim();
-		if(StrUtil.isRegexMatched(Konstants.REGEX_JAVA_IDENTIFIER + "\\.class", remain)) {
-			items.add(StrUtil.occupy("C.list(ArisUtil.getClassDetail({0}, true));", remain));
+		String regex = "([a-zA-Z\\d_\\.\\$]+\\.|)([a-zA-Z_$][\\da-zA-Z_$]*)(\\.{3,}|\\.class)";
+		String[] params = StrUtil.parseParams(regex, remain);
+		if(params != null) {
+			String glass = params[0] + params[1] + Konstants.SUFFIX_CLASS;
+			items.add(StrUtil.occupy("C.list(ArisUtil.getClassDetail({0}, false));", glass));
 		} else {
 			String expression = StrUtil.findFirstMatchedItem("^=(.+)", remain);
 			if(expression != null) {

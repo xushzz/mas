@@ -150,7 +150,9 @@ public class ArisDetail {
 			}
 		}
 
-		if(arrValue != null) {
+		if(value == null) {
+			return null;
+		} else if(arrValue != null) {
 			return arrValue;
 		} else if("char".equals(type.toString()) || Character.class.equals(type)) {
 			return "\'" + value + "\'";

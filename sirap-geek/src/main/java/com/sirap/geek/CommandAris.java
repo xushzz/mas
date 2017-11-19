@@ -12,6 +12,7 @@ import com.sirap.basic.util.ObjectUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
+import com.sirap.geek.util.GeekExtractors;
 
 public class CommandAris extends CommandBase {
 	private static final String KEY_EXECUTE_JAVACODE = "ar";
@@ -66,10 +67,17 @@ public class CommandAris extends CommandBase {
 			if(showSameClassesInSamePackage) {
 				String jarEntryName = name.replace('.', '/') + ".class";
 				items = ArisUtil.siblingClasses(sourceLocation, jarEntryName);
+				export(items);
 			} else {
-				items = ArisUtil.getClassDetail(glass, isDebug());
+				String method = OptionUtil.readString(options, "m");
+				if(!EmptyUtil.isNullOrEmpty(method)) {
+					items = GeekExtractors.fetchJDK7Api(name.replace('.', '/'), method);
+					export(items);
+				} else {
+					items = ArisUtil.getClassDetail(glass, isDebug());
+					export2(items, mexCriteria);
+				}
 			}
-			export2(items, mexCriteria);
 			
 			return true;
 		}

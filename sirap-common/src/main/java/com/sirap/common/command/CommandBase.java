@@ -525,7 +525,7 @@ public abstract class CommandBase {
 	}
 	
 	protected void executeInternalCmd(String conciseCommand) {
-		boolean printAlong = OptionUtil.readBooleanPRI(options, "ing", false);
+		boolean printAlong = OptionUtil.readBooleanPRI(options, "ing", true);
 		String newCommand = "cmd /c " + conciseCommand;
 		if(PanaceaBox.isMac()) {
 			newCommand = conciseCommand;
