@@ -7,7 +7,9 @@ import com.sirap.basic.exception.MexException;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.ObjectUtil;
+import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.ThreadUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.command.CommandHelp;
 import com.sirap.common.command.CommandTask;
@@ -90,11 +92,25 @@ public class Janitor extends Checker {
     	String options = fara.getOptions();
     	Target target = fara.getTarget();
     	
+    	boolean newThread = OptionUtil.readBooleanPRI(options, "new", false);
+    	if(newThread) {
+    		ThreadUtil.executeInNewThread(new Runnable() {
+				@Override
+				public void run() {
+					executionUnit(input, command, options, target);
+				}
+			});
+    	} else {
+    		executionUnit(input, command, options, target);
+    	}
+    }
+    
+    private void executionUnit(String input, String command, String options, Target target) {
     	if(EmptyUtil.isNullOrEmpty(command)) {
     		return;
     	}
     	
-    	cmd = new CommandHelp();
+    	CommandBase cmd = new CommandHelp();
     	cmd.setInstructions(input, command, options, target);
     	if(cmd.process()) {
     		if(cmd.isToCollect()) {

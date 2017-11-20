@@ -108,7 +108,7 @@ public class CommandTask extends CommandBase {
 	}
 	
 	private void executeActions(List<String> actions) {
-		if(g().isYes("async")) {
+		if(g().isYes("task.sync")) {
 			executeSequentially(actions);
 		} else {
 			executeConcurrently(actions);
