@@ -2,8 +2,9 @@ path               display what you would get when "echo %PATH%"
 path tomcat        display PATH any record containing 'tomcat'
 maven              display home and repository for Maven, mvn help:system
 pwd                present working directory
-deps D:\pom.xml    display all Maven related jars implied in this pom.xml
-deps D:\project    display all Maven related jars implied in pom.xml under this folder
+deps               display all depended jars in project that user.dir indicates
+deps $p=D:\pom.xml display all depended jars in project that pom.xml rests
+deps $p=D:\project display all depended jars in given project
 mvn help:system    retrieve system properties and environment variables via Maven
 iss piratesea/mas  display the latest Github issues in this repo, www.github.com
 jk                 display the location of Jenkins server

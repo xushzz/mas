@@ -9,6 +9,7 @@
 search             the aforementioned rules apply for any other searching commands
 search             such as 'ch fire', 'F: water' and so on
 quit               ${guest.quits}
+ABC $+new          any operation could be performed in a new thread, options: $+new
 ABC>$              the yielded files will be copied to folder export,!> escape export, !$ escape options
 ABC>$E:            export escaper is ${guest.escaper}, the yielded files will be copied to E:
 ABC>$E:=           the yielded files will be copied to E:\ABC

@@ -3,15 +3,16 @@ package com.sirap.geek.manager;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XmlUtil;
-import com.sirap.common.framework.SimpleKonfig;
 
 public class MavenManager {
 
@@ -69,18 +70,13 @@ public class MavenManager {
 		return repo;
 	}
 	
-	public List<String> getDependencies(String pomFilepath) {
-		String repo = SimpleKonfig.g().getUserValueOf("maven.repo");
-		if(EmptyUtil.isNullOrEmpty(repo)) {
-			repo = getMavenRepo();
-		}
+	public List<String> getDependencies(String mvnCommand) {
 		
-		String cmd = "mvn dependency:list -f" + pomFilepath;
-		String newCommand = "cmd /c " + cmd;
-		C.pl2("building... " + cmd);
+		String newCommand = "cmd /c " + mvnCommand;
+		C.pl2("building... " + mvnCommand);
 		
 		List<String> buildResult = PanaceaBox.executeAndRead(newCommand);
-		List<String> deps = validateAndParseDeps(repo, buildResult);
+		List<String> deps = validateAndParseDeps(getMavenRepo(), buildResult);
 		
 		return deps;
 	}
@@ -100,7 +96,7 @@ public class MavenManager {
 		}
 		
 		List<String> items = StrUtil.split(temp, BUILD_INFO);
-		List<String> deps = new ArrayList<String>();
+		Set<String> deps = new TreeSet<String>();
 		for(String item : items) {
 			String dep = parseDetailAndConstructPath(repoWithoutSeparator, item);
 			if(dep != null) {
@@ -108,7 +104,7 @@ public class MavenManager {
 			}
 		}
 		
-		return deps;
+		return Lists.newArrayList(deps);
 	}
 	
 	/***
@@ -118,7 +114,7 @@ public class MavenManager {
 	 * @param source
 	 * @return
 	 */
-	public static String parseDetailAndConstructPath(String repoWithoutSeparator, String source) {
+	public static String parseDetailAndConstructPath(String repo, String source) {
 		String[] params = source.split(":");
 		int size = params.length;
 		if(size < 5) {
@@ -132,11 +128,11 @@ public class MavenManager {
 		String version = hasClassifier ? params[4]:params[3];
 		String classifier = hasClassifier ? params[3]: null;
 		
-		String guard = File.separator;
+		String guard = "/";
 		String lady = "-";
 		
-		StringBuffer sb = new StringBuffer(repoWithoutSeparator);
-		sb.append(guard).append(groupId.replace(".", guard));
+		StringBuffer sb = new StringBuffer();
+		sb.append(groupId.replace(".", guard));
 		sb.append(guard).append(artifactId);
 		sb.append(guard).append(version);
 		sb.append(guard).append(artifactId).append(lady).append(version);
@@ -145,6 +141,6 @@ public class MavenManager {
 		}
 		sb.append(".").append(type);
 		
-		return sb.toString();
+		return StrUtil.useSeparator(repo, sb);
 	}
 }

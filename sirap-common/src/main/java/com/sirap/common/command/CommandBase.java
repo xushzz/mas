@@ -580,4 +580,26 @@ public abstract class CommandBase {
 		
 		return ma.get(key);
 	}
+	
+	protected String translatePath(String dosCommand, String path) {
+		String gitWithSpace = "git ";
+		if(StrUtil.startsWith(dosCommand, gitWithSpace)) {
+			String gitFile = StrUtil.useSeparator(path, ".git");
+			String info = "--work-tree=" + gitFile + " --git-dir=" + gitFile + " ";
+			return dosCommand.replace(gitWithSpace, gitWithSpace + info);
+		}
+		
+		String mvnWithSpace = "mvn ";
+		if(StrUtil.startsWith(dosCommand, mvnWithSpace)) {
+			String info = " -f";
+			if(StrUtil.endsWith(path, ".xml")) {
+				info += path;
+			} else {
+				info += StrUtil.useSeparator(path, "pom.xml");
+			}
+			return dosCommand + info;
+		}
+		
+		return dosCommand;
+	}
 }

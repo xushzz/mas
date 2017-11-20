@@ -17,10 +17,13 @@ import com.sirap.basic.search.MexFilter;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.ScreenCaptor;
 import com.sirap.basic.util.ArisUtil;
+import com.sirap.basic.util.CollUtil;
+import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.ImageUtil;
 import com.sirap.basic.util.MathUtil;
+import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
@@ -84,28 +87,20 @@ public class CommandDev extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_DEPS + "\\s(.*?)");
-		if(solo != null) {
-			String filepath = null;
-			File file = FileUtil.getIfNormalFile(solo);
-			if(file != null) {
-				filepath = file.getAbsolutePath();
+		if(is(KEY_DEPS)) {
+			String mvnCommand = "mvn dependency:list";
+			String path = OptionUtil.readString(options, "p");
+			if(!EmptyUtil.isNullOrEmpty(path)) {
+				mvnCommand = translatePath(mvnCommand, path);
+			}
+			List<String> items = MavenManager.g().getDependencies(mvnCommand);
+			if(target.isFileRelated()) {
+				export(CollUtil.toFileList(items));
 			} else {
-				File folder = FileUtil.getIfNormalFolder(solo);
-				if(folder != null) {
-					String temp = folder.getAbsolutePath() + File.separatorChar + "pom.xml";
-					if(FileUtil.exists(temp)) {
-						filepath = temp;
-					}
-				}
+				export(items);
 			}
-			
-			if(filepath != null) {
-				List<String> result = MavenManager.g().getDependencies(filepath);
-				export(result);
 
-				return true;
-			}
+			return true;
 		}
 		
 		solo = parseSoloParam(KEY_ISSUE + " ([A-Za-z0-9\\-_]+/[A-Za-z0-9\\-_]+)");

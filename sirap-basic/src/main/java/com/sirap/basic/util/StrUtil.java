@@ -1000,7 +1000,7 @@ public class StrUtil {
 			}
 
 			if(!item.endsWith("/") && !item.endsWith("\\")) {
-				sb.append(File.separator);
+				sb.append("/");
 			}
 		}
 		
