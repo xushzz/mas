@@ -38,7 +38,7 @@ import com.sirap.basic.component.MexedMap;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.output.ExcelParams;
 import com.sirap.basic.output.PDFParams;
-import com.sirap.basic.thirdparty.excel.ExcelHelper;
+import com.sirap.basic.thirdparty.msoffice.MsExcelHelper;
 import com.sirap.basic.thirdparty.pdf.PdfHelper;
 import com.sirap.basic.thread.Master;
 import com.sirap.basic.thread.MasterItemOriented;
@@ -665,7 +665,7 @@ public class IOUtil {
 	}
 	
 	public static boolean saveAsExcel(List objList, String fullFileName, ExcelParams params) {
-		return ExcelHelper.export(objList, fullFileName, params);
+		return MsExcelHelper.export(objList, fullFileName, params);
 	}
 	
 	public static List<String> echoPath() {

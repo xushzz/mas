@@ -1,4 +1,4 @@
-package com.sirap.basic.thirdparty.excel;
+package com.sirap.basic.thirdparty.msoffice;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -22,7 +22,7 @@ import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.StrUtil;
 
 @SuppressWarnings("all")
-public class ExcelHelper {
+public class MsExcelHelper {
 
 	public static final String TYPE_NORMAL = ".xls";
 	public static final String TYPE_X = ".xlsx";

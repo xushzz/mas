@@ -20,7 +20,8 @@ import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.domain.MexZipEntry;
 import com.sirap.basic.email.EmailCenter;
 import com.sirap.basic.exception.MexException;
-import com.sirap.basic.thirdparty.excel.ExcelHelper;
+import com.sirap.basic.thirdparty.msoffice.MsExcelHelper;
+import com.sirap.basic.thirdparty.msoffice.MsWordHelper;
 import com.sirap.basic.thirdparty.pdf.PdfHelper;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.FileDeeper;
@@ -359,7 +360,7 @@ public class CommandFile extends CommandBase {
 				if(index == null) {
 					C.pl("try index like 0, 1, 2, 3... with " + filePath);
 				} else {
-					List<List<Object>> data = ExcelHelper.readSheetByIndex(filePath, index); 
+					List<List<Object>> data = MsExcelHelper.readSheetByIndex(filePath, index); 
 					export(data);
 				}
 			}
@@ -600,12 +601,15 @@ public class CommandFile extends CommandBase {
 						items.add(0, filePath);
 					}
 					if(FileUtil.isAnyTypeOf(filePath, FileUtil.SUFFIXES_PDF)) {
-						int lines = PdfHelper.howManyPages(filePath);
+						int lines = PdfHelper.pagesOf(filePath);
 						items.add("pages: " + lines);
 					} else if(FileUtil.isAnyTypeOf(filePath, FileUtil.SUFFIXES_EXCEL)) {
-						List<String> sheets = ExcelHelper.readSheetNames(filePath);
+						List<String> sheets = MsExcelHelper.readSheetNames(filePath);
 						String msg = StrUtil.occupy("sheets({0}): {1}", sheets.size(), StrUtil.connect(sheets, ", "));
 						items.add(msg);
+					} else if(FileUtil.isAnyTypeOf(filePath, FileUtil.SUFFIXES_WORD)) {
+						int lines = MsWordHelper.pagesOf(filePath);
+						items.add("pages: " + lines);
 					} else if(FileOpener.isTextFile(filePath)) {
 						int[] count = IOUtil.countOfLinesChars(filePath);
 						items.add("lines: " + count[0]);

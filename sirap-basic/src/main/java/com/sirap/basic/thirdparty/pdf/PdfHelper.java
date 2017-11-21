@@ -175,7 +175,7 @@ public class PdfHelper {
         return newFilepath;
 	}
 	
-	public static int howManyPages(String filepath) {
+	public static int pagesOf(String filepath) {
 		File file = FileUtil.getIfNormalFile(filepath);
 		XXXUtil.nullCheck(file, ":Invalid file path : " + filepath);
 		
