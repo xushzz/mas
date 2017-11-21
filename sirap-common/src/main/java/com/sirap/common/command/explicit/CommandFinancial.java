@@ -52,6 +52,6 @@ public class CommandFinancial extends CommandBase {
 	}
 
 	public String cardPath() {
-		return pathWithSeparator("storage.card", "xyk");
+		return pathOf("storage.card", "xyk");
 	}
 }

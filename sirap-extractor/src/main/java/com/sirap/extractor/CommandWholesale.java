@@ -44,7 +44,7 @@ public class CommandWholesale extends CommandBase {
 			List<String> links = ExtractorUtil.sogouImageLinks(solo);
 			if(!EmptyUtil.isNullOrEmpty(links)) {
 				String folderName = FileUtil.generateLegalFileName(solo);
-				String path = pathWithSeparator("storage.sogou", Konstants.FOLDER_SOGOU);
+				String path = pathOf("storage.sogou", Konstants.FOLDER_SOGOU);
 				String whereToSave = path + folderName + File.separator;
 				
 				batchDownload(links, whereToSave);
@@ -58,7 +58,7 @@ public class CommandWholesale extends CommandBase {
 			List<String> links = ExtractorUtil.qihu360ImageLinks(solo);
 			if(!EmptyUtil.isNullOrEmpty(links)) {
 				String folderName = FileUtil.generateLegalFileName(solo);
-				String path = pathWithSeparator("storage.so360", FOLDER_QIHU360);
+				String path = pathOf("storage.so360", FOLDER_QIHU360);
 				String whereToSave = path + folderName + File.separator;
 				
 				batchDownload(links, whereToSave);

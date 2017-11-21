@@ -178,7 +178,7 @@ public class SimpleKonfig extends Konfig {
 		return timeoutMinutes;
 	}
 
-	public String getStorageWithSeprator() {
+	public String getStorage() {
 		return storage + File.separator;
 	}
 
@@ -342,21 +342,20 @@ public class SimpleKonfig extends Konfig {
 		this.isGeneratedFileAutoOpen = isViewerOn;
 	}
 	
-	public String pathWithSeparator(String key, String defFolderName) {
-		return pathWithSeparator(key, defFolderName, true);
+	public String pathOf(String key, String defFolderName) {
+		return pathOf(key, defFolderName, true);
 	}
 	
-	public String pathWithSeparator(String key, String defFolderName, boolean toCreate) {
+	public String pathOf(String key, String defFolderName, boolean toCreate) {
 		String path = null;
 		String temp = getUserValueOf(key);
 		if(EmptyUtil.isNullOrEmpty(temp)) {
-			path = getStorageWithSeprator() + defFolderName;
+			path = getStorage() + defFolderName;
 		} else if(FileUtil.startWithDiskName(temp)) {
 			path = temp;
 		} else {
-			path = getStorageWithSeprator() + temp;
+			path = getStorage() + temp;
 		}
-		path = path.replace("/", File.separator);
 		if(toCreate) {
 			FileUtil.makeDirectoriesIfNonExist(path);
 		}

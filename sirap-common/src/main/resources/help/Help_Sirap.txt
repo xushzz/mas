@@ -45,4 +45,7 @@ host name          display target host name and IP address if exists
 mac                display all currently active mac addresses 
 p fire&water       conduct local text search with command 'p' defined by configuration, such as p#D:/SF#.txt
 gbk                set File or HTTP Request charset as GBK, the same goes for UTF8,UTF-8,GB2312
-local text search  local.search.5=id#E:/KDB/statics/life#.txt#+full,+short,+line
+id criteria        local text search. local.search.5=id#E:/KDB/statics/life#.txt#+full,+short,+line
+id #shilu          local text search, short filename contains String shilu
+id ##shilu         local text search, full filename contains String shilu
+id L188            local text search, line with line number 188, check MexTextLine

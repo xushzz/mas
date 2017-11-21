@@ -43,7 +43,7 @@ public class LoginHistoryManager extends MexedTimer {
 		}
 		
 		String fileName = "L.txt";
-    	String location = SimpleKonfig.g().pathWithSeparator("storage.history", Konstants.FOLDER_HISTORY);
+    	String location = SimpleKonfig.g().pathOf("storage.history", Konstants.FOLDER_HISTORY);
     	
 		filePath = location + fileName;
 		List<LoginRecord> allRecords = getAllRecords(true);

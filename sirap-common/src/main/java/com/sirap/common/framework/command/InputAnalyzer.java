@@ -124,13 +124,13 @@ public class InputAnalyzer {
 
 			@Override
 			public String getDefaultExportFolder() {
-				String path = SimpleKonfig.g().pathWithSeparator("storage.export", Konstants.FOLDER_EXPORT);
+				String path = SimpleKonfig.g().pathOf("storage.export", Konstants.FOLDER_EXPORT);
 				return path;
 			}
 			
 			@Override
 			public String parseRealFolderPath(String param) {
-				String path = FileUtil.parseFolderPath(param, SimpleKonfig.g().getStorageWithSeprator());
+				String path = FileUtil.parseFolderPath(param, SimpleKonfig.g().getStorage());
 				if(path == null) {
 					return null;
 				}

@@ -177,7 +177,7 @@ public class CommandBible extends CommandBase {
 	}
 	
 	public String pathBibleStorage() {
-		String where = pathWithSeparator("bible.storage", "misc/bible");
+		String where = pathOf("bible.storage", "misc/bible");
 		
 		return where;
 	}

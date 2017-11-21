@@ -45,7 +45,7 @@ public class CommandHistoryManager {
 		
 		String loginDatetime = DateUtil.timestamp();
     	String fileName = "C_" + loginDatetime + ".txt";
-    	location = SimpleKonfig.g().pathWithSeparator("storage.history", Konstants.FOLDER_HISTORY);
+    	location = SimpleKonfig.g().pathOf("storage.history", Konstants.FOLDER_HISTORY);
     	loadHistoryFiles();
 		filePath = location + fileName;
 	}

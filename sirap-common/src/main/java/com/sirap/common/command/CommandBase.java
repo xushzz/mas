@@ -304,11 +304,11 @@ public abstract class CommandBase {
 	}
 	
 	public String storage() {
-		return g().getStorageWithSeprator();
+		return g().getStorage();
 	}
 	
-	public String pathWithSeparator(String key, String defFolderName) {
-		return g().pathWithSeparator(key, defFolderName);
+	public String pathOf(String key, String defFolderName) {
+		return g().pathOf(key, defFolderName);
 	}
 	
 	public void tryToOpenGeneratedImage(String filePath) {
@@ -331,11 +331,11 @@ public abstract class CommandBase {
 	}
 	
 	public String miscPath() {
-		return pathWithSeparator("storage.misc", Konstants.FOLDER_MISC);
+		return pathOf("storage.misc", Konstants.FOLDER_MISC);
 	}
 	
 	protected String screenShotPath() {
-		return pathWithSeparator("storage.screenshot", Konstants.FOLDER_SCREENSHOT);
+		return pathOf("storage.screenshot", Konstants.FOLDER_SCREENSHOT);
 	}
 	
 	protected String equiHttpProtoclIfNeeded(String url) {
@@ -388,8 +388,8 @@ public abstract class CommandBase {
 			jack = RandomUtil.letters(7);
 		}
 		String fileName = unique + jack;
-		String storage = pathWithSeparator("storage.misc", Konstants.FOLDER_MISC);
-		String filePath = storage + fileName;
+		String storage = pathOf("storage.misc", Konstants.FOLDER_MISC);
+		String filePath = StrUtil.useSeparator(storage, fileName);
 		if(FileUtil.exists(filePath)) {
 			C.pl("Existed => " + filePath);
 		} else {
@@ -488,7 +488,7 @@ public abstract class CommandBase {
 	}
 	
 	protected String getExportLocation() {
-		String dir = pathWithSeparator("storage.export", Konstants.FOLDER_EXPORT);
+		String dir = pathOf("storage.export", Konstants.FOLDER_EXPORT);
 		dir = getTargetLocation(dir);
 		
 		return dir;

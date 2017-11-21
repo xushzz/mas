@@ -5,16 +5,16 @@ import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 
 @SuppressWarnings("serial")
-public class MexTextSearchRecord extends MexObject {
+public class MexTextLine extends MexObject {
 	
 	private String fullFilename;
 	private int lineNumber;
 	
-	public MexTextSearchRecord() {
+	public MexTextLine() {
 		
 	}
 	
-	public MexTextSearchRecord(Object obj) {
+	public MexTextLine(Object obj) {
 		this.obj = obj;
 	}
 
@@ -41,14 +41,44 @@ public class MexTextSearchRecord extends MexObject {
 
 	@Override
 	public boolean isMatched(String keyWord, boolean caseSensitive) {
-		String source = String.valueOf(obj);
+		String line = String.valueOf(obj);
 		
-		if(isRegexMatched(source, keyWord)) {
+		if(isRegexMatched(line, keyWord)) {
 			return true;
 		}
 		
-		if(StrUtil.contains(source, keyWord, caseSensitive)) {
+		if(StrUtil.contains(line, keyWord, caseSensitive)) {
 			return true;
+		}
+		
+		String param = StrUtil.parseParam("L(\\d{1,9})", keyWord);
+		if(param != null) {
+			if(StrUtil.equals(lineNumber + "", param)) {
+				return true;
+			}
+		}
+		
+		String[] params = StrUtil.parseParams("(#{1,2})(.+?)", keyWord);
+		if(params != null) {
+			String newKeyword = params[1];
+			if(params[0].length() == 1) {
+				String shorty = getShortFileNameWithoutExtension();
+				if(isRegexMatched(shorty, newKeyword)) {
+					return true;
+				}
+				
+				if(StrUtil.contains(shorty, newKeyword, caseSensitive)) {
+					return true;
+				}
+			} else if (params[0].length() == 2) {
+				if(isRegexMatched(fullFilename, newKeyword)) {
+					return true;
+				}
+				
+				if(StrUtil.contains(fullFilename, newKeyword, caseSensitive)) {
+					return true;
+				}
+			}
 		}
 		
 		return false; 

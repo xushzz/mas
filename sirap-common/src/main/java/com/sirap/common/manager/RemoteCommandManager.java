@@ -75,7 +75,7 @@ public class RemoteCommandManager extends MexedTimer {
 	private List<EmailCommandRecord> getAllRecords() {
 		if(allRecords == null) {
 			if(location == null) {
-				location = SimpleKonfig.g().pathWithSeparator("storage.remote", Konstants.FOLDER_REMOTE);
+				location = SimpleKonfig.g().pathOf("storage.remote", Konstants.FOLDER_REMOTE);
 		    	FileUtil.makeDirectoriesIfNonExist(location);
 			}
 			String filePath = location + getFilename();
