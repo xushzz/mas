@@ -607,7 +607,7 @@ public class CommandFile extends CommandBase {
 						List<String> sheets = MsExcelHelper.readSheetNames(filePath);
 						String msg = StrUtil.occupy("sheets({0}): {1}", sheets.size(), StrUtil.connect(sheets, ", "));
 						items.add(msg);
-					} else if(FileUtil.isAnyTypeOf(filePath, FileUtil.SUFFIXES_WORD)) {
+					} else if(FileUtil.isAnyTypeOf(filePath, "docx")) {
 						int lines = MsWordHelper.pagesOf(filePath);
 						items.add("pages: " + lines);
 					} else if(FileOpener.isTextFile(filePath)) {
