@@ -301,7 +301,7 @@ public class ArisUtil {
 			if(shortPath.endsWith(".class")) {
 				if(!checker.contains(folder)) {
 					checker.add(folder);
-					String packageName = folder.replace(root, "").replace(File.separatorChar, '.').replaceAll("^\\.", "");
+					String packageName = folder.replace(root, "").replaceAll("[/\\\\]", ".").replaceAll("^\\.", "");
 	    			String item = "import " + packageName + ".*;";
 	    			items.add(item);
 				}

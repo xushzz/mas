@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public abstract class WorkerItemsOritented<PARAM extends Object, RETURN extends Object> extends WorkerBase<PARAM> {
+public abstract class WorkerItemsOriented<PARAM extends Object, RETURN extends Object> extends WorkerBase<PARAM> {
 
 	protected Map<PARAM, List<RETURN>> results;
 	

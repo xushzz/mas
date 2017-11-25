@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.thread.MasterItemsOriented;
-import com.sirap.basic.thread.WorkerItemsOritented;
+import com.sirap.basic.thread.WorkerItemsOriented;
 import com.sirap.basic.util.HtmlUtil;
 import com.sirap.common.extractor.Extractor;
 
@@ -17,7 +17,7 @@ public class ExtractorChinaAreaCodeZou114 {
 	public static List<MexObject> getAllAreaCodes() {
 		
 		List<MexObject> areaLinks = getAllAreaLinks();
-		MasterItemsOriented<MexObject, MexObject> master = new MasterItemsOriented<MexObject, MexObject>(areaLinks, new WorkerItemsOritented<MexObject, MexObject>() {
+		MasterItemsOriented<MexObject, MexObject> master = new MasterItemsOriented<MexObject, MexObject>(areaLinks, new WorkerItemsOriented<MexObject, MexObject>() {
 
 			@Override
 			public List<MexObject> process(MexObject areaLink) {

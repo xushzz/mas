@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.thread.MasterItemsOriented;
-import com.sirap.basic.thread.WorkerItemsOritented;
+import com.sirap.basic.thread.WorkerItemsOriented;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.extractor.Extractor;
 import com.sirap.extractor.domain.MeituLassItem;
@@ -52,7 +52,7 @@ public class MeituManager {
 	
 	public List<MeituLassItem> getAllLassItems() {
 		List<MeituOrgItem> items = getAllOrgItems(true);
-		MasterItemsOriented<MeituOrgItem, MeituLassItem> master = new MasterItemsOriented<MeituOrgItem, MeituLassItem>(items, new WorkerItemsOritented<MeituOrgItem, MeituLassItem>() {
+		MasterItemsOriented<MeituOrgItem, MeituLassItem> master = new MasterItemsOriented<MeituOrgItem, MeituLassItem>(items, new WorkerItemsOriented<MeituOrgItem, MeituLassItem>() {
 
 			@Override
 			public List<MeituLassItem> process(MeituOrgItem orgItem) {
@@ -73,7 +73,7 @@ public class MeituManager {
 	}
 	
 	public List<MexObject> getImageLinks(List<MexObject> morePages) {
-		MasterItemsOriented<MexObject, MexObject> master = new MasterItemsOriented<MexObject, MexObject>(morePages, new WorkerItemsOritented<MexObject, MexObject>() {
+		MasterItemsOriented<MexObject, MexObject> master = new MasterItemsOriented<MexObject, MexObject>(morePages, new WorkerItemsOriented<MexObject, MexObject>() {
 
 			@Override
 			public List<MexObject> process(MexObject orgItem) {
@@ -94,7 +94,7 @@ public class MeituManager {
 	}
 	
 	public List<MeituLassItem> getAllLassIntros(List<MexObject> morePages) {
-		MasterItemsOriented<MexObject, MeituLassItem> master = new MasterItemsOriented<MexObject, MeituLassItem>(morePages, new WorkerItemsOritented<MexObject, MeituLassItem>() {
+		MasterItemsOriented<MexObject, MeituLassItem> master = new MasterItemsOriented<MexObject, MeituLassItem>(morePages, new WorkerItemsOriented<MexObject, MeituLassItem>() {
 
 			@Override
 			public List<MeituLassItem> process(MexObject obj) {

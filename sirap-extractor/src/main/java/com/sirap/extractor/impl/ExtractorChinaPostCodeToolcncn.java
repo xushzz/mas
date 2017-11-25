@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.thread.MasterItemsOriented;
-import com.sirap.basic.thread.WorkerItemsOritented;
+import com.sirap.basic.thread.WorkerItemsOriented;
 import com.sirap.common.extractor.Extractor;
 
 public class ExtractorChinaPostCodeToolcncn {
@@ -19,7 +19,7 @@ public class ExtractorChinaPostCodeToolcncn {
 		List<MexObject> cityNamePostCodes = new ArrayList<>();
 		List<MexObject> countyLinks = getAllCountyLinks(cityNamePostCodes);
 		
-		MasterItemsOriented<MexObject, MexObject> master = new MasterItemsOriented<MexObject, MexObject>(countyLinks, new WorkerItemsOritented<MexObject, MexObject>() {
+		MasterItemsOriented<MexObject, MexObject> master = new MasterItemsOriented<MexObject, MexObject>(countyLinks, new WorkerItemsOriented<MexObject, MexObject>() {
 
 			/***
 			 * /youbian/hechi-jinchengjiang
@@ -85,7 +85,7 @@ public class ExtractorChinaPostCodeToolcncn {
 		
 		List<MexObject> cityLinks = getAllCityLinks();
 		
-		MasterItemsOriented<MexObject, MexObject> master = new MasterItemsOriented<MexObject, MexObject>(cityLinks, new WorkerItemsOritented<MexObject, MexObject>() {
+		MasterItemsOriented<MexObject, MexObject> master = new MasterItemsOriented<MexObject, MexObject>(cityLinks, new WorkerItemsOriented<MexObject, MexObject>() {
 
 			/***
 			 * /zibo-youbian

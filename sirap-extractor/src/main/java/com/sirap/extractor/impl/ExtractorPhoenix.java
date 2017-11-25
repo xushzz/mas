@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.thread.MasterItemsOriented;
-import com.sirap.basic.thread.WorkerItemsOritented;
+import com.sirap.basic.thread.WorkerItemsOriented;
 import com.sirap.common.domain.Link;
 import com.sirap.common.extractor.Extractor;
 import com.sirap.extractor.ExtractorUtil;
@@ -24,7 +24,7 @@ public class ExtractorPhoenix {
 	}
 	
 	private static List<String> getAllLinksInEvents(List<Link> events) {
-		MasterItemsOriented<Link, Link> master = new MasterItemsOriented<Link, Link>(events, new WorkerItemsOritented<Link, Link>() {
+		MasterItemsOriented<Link, Link> master = new MasterItemsOriented<Link, Link>(events, new WorkerItemsOriented<Link, Link>() {
 
 			@Override
 			public List<Link> process(Link link) {

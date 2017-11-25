@@ -8,7 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.sirap.basic.thread.MasterItemsOriented;
-import com.sirap.basic.thread.WorkerItemsOritented;
+import com.sirap.basic.thread.WorkerItemsOriented;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.domain.Link;
 import com.sirap.common.extractor.Extractor;
@@ -115,7 +115,7 @@ public class ExtractorNetease {
 	
 	private static List<String> getAllLinksInEvents(List<Link> events) {
 		
-		MasterItemsOriented<Link, Link> master = new MasterItemsOriented<Link, Link>(events, new WorkerItemsOritented<Link, Link>() {
+		MasterItemsOriented<Link, Link> master = new MasterItemsOriented<Link, Link>(events, new WorkerItemsOriented<Link, Link>() {
 
 			@Override
 			public List<Link> process(Link link) {
@@ -165,7 +165,7 @@ public class ExtractorNetease {
 			links.add(new Link(url));
 		}
 
-		MasterItemsOriented<Link, Link> master = new MasterItemsOriented<Link, Link>(links, new WorkerItemsOritented<Link, Link>() {
+		MasterItemsOriented<Link, Link> master = new MasterItemsOriented<Link, Link>(links, new WorkerItemsOriented<Link, Link>() {
 
 			@Override
 			public List<Link> process(Link link) {

@@ -9,7 +9,7 @@ import com.google.common.collect.Lists;
 import com.sirap.basic.domain.KeyValuesItem;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.thread.MasterItemsOriented;
-import com.sirap.basic.thread.WorkerItemsOritented;
+import com.sirap.basic.thread.WorkerItemsOriented;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.MathUtil;
@@ -110,7 +110,7 @@ public class CommandEstate extends CommandBase {
 	}
 	
 	public static List<KeyValuesItem> getAllFuzzyPlates(List<String> keyWords) {
-		MasterItemsOriented<String, KeyValuesItem> master = new MasterItemsOriented<String, KeyValuesItem>(keyWords, new WorkerItemsOritented<String, KeyValuesItem>() {
+		MasterItemsOriented<String, KeyValuesItem> master = new MasterItemsOriented<String, KeyValuesItem>(keyWords, new WorkerItemsOriented<String, KeyValuesItem>() {
 			@Override
 			public List<KeyValuesItem> process(String keyword) {
 				int count = countOfTasks - queue.size();

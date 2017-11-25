@@ -1,0 +1,3 @@
+gkai               Fetch publised companies in site of Minister of Environment Protection
+xkai               Fetch staged companies in site of Minister of Environment Protection
+ver=11/25/2017, VI  EXTRACTOR-Avron1.0.1

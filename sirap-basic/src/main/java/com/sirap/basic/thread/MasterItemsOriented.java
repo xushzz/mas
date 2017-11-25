@@ -9,13 +9,13 @@ public class MasterItemsOriented<PARAM extends Object, RETURN extends Object> ex
 
 	private Map<PARAM, List<RETURN>> result = new ConcurrentHashMap<PARAM, List<RETURN>>();
 	
-	public MasterItemsOriented(List<PARAM> tasks, WorkerItemsOritented<PARAM, RETURN> w) {
+	public MasterItemsOriented(List<PARAM> tasks, WorkerItemsOriented<PARAM, RETURN> w) {
 		setTasks(tasks);
 		init(w);
 		startWorking();
 	}
 	
-	protected void init(WorkerItemsOritented<PARAM, RETURN> w) {
+	protected void init(WorkerItemsOriented<PARAM, RETURN> w) {
 		super.init(w);
 		w.setResult(result);
 	}
