@@ -150,15 +150,15 @@ public class CommandBible extends CommandBase {
 		} else {
 			String version = g().getUserValueOf("bible.versionXXXXXX", "niv");
 			String versionCode = BibleManager.g().getVersion(version).getCode();
-			String versionStorage = pathBibleStorage() + versionCode + File.separator;
+			String versionStorage = StrUtil.useSeparator(pathBibleStorage(), versionCode);
 			
 			String niceBookName = sense.getBook().getNameWithNiceOrder();
 			String chapterName = sense.getChapterNameWithNiceOrder();
 			String fileType = Konstants.SUFFIX_TXT;
-			String chapterLocation = versionStorage + niceBookName + File.separator + chapterName + fileType;
+			String chapterLocation = StrUtil.useSeparator(versionStorage, niceBookName, chapterName + fileType);
 			
 			if(FileUtil.getIfNormalFile(chapterLocation) != null) {
-				C.pl("Reading.. " + chapterLocation);
+				C.pl("Reading... " + chapterLocation);
 				items = IOUtil.readFileIntoList(chapterLocation);
 			}
 			

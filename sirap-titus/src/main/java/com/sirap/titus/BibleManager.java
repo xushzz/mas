@@ -77,7 +77,7 @@ public class BibleManager {
 	
 	public String randomSubFolderName(String folderName, final boolean checkFolder, final boolean checkFile) {
 		File where = FileUtil.getIfNormalFolder(folderName);
-		XXXUtil.nullCheck(where, ":" + folderName + " is not a valid folder.");
+		XXXUtil.nullCheck(where, ":" + folderName + " doesn't exist.");
 		String[] arr = where.list(new FilenameFilter() {
 			
 			@Override

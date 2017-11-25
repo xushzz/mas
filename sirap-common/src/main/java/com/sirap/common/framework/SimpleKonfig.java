@@ -179,7 +179,7 @@ public class SimpleKonfig extends Konfig {
 	}
 
 	public String getStorage() {
-		return storage + File.separator;
+		return storage + "/";
 	}
 
 	public String getUserConfigFileName() {
@@ -360,7 +360,7 @@ public class SimpleKonfig extends Konfig {
 			FileUtil.makeDirectoriesIfNonExist(path);
 		}
 
-		return path + File.separator;
+		return StrUtil.unixSeparator(path) + "/";
 	}
 
 	public boolean isHistoryEnabled() {

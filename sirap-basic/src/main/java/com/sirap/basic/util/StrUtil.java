@@ -1030,6 +1030,10 @@ public class StrUtil {
 		return useDelimiter(delimiter, items);
 	}
 	
+	public static String unixSeparator(String source) {
+		return source.replace('\\', '/');
+	}
+	
 	public static StringBuffer sb() {
 		return new StringBuffer();
 	}
