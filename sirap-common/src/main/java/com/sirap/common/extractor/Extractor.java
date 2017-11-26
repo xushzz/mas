@@ -128,7 +128,7 @@ public abstract class Extractor<T extends Object> {
 		return isAllBeingWell;
 	}
 	
-	public String getPrettyText(String source) {
+	public static String getPrettyText(String source) {
 		String temp = source;
 		temp = HtmlUtil.removeComment(temp);
 		temp = HtmlUtil.removeHttpTag(temp);

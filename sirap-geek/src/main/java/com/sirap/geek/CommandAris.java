@@ -61,11 +61,12 @@ public class CommandAris extends CommandBase {
 		params = parseParams(regex);
 		if(params != null) {
 			String name = params[1].replace('/', '.').replace('\\', '.').replaceAll("\\.class$", "");
-			boolean toGetSourceCode = OptionUtil.readBooleanPRI(options, "code", false);
-			if(toGetSourceCode) {
-				String temp = "https://gitee.com/thewire/jdk8/raw/master/src/{0}.java";
-				String url = StrUtil.occupy(temp, name.replace('.', '/'));
+			String temp = "https://gitee.com/thewire/jdk8/raw/master/src/{0}.java";
+			String url = StrUtil.occupy(temp, name.replace('.', '/'));
+			if(OptionUtil.readBooleanPRI(options, "load", false)) {
 				Janitor.g().process(url);
+			} else if(OptionUtil.readBooleanPRI(options, "code", false)) {
+				export(IOUtil.readURLIntoList(url, g().getCharsetInUse(), true));
 			} else {
 				boolean showSameClassesInSamePackage = !EmptyUtil.isNullOrEmpty(params[2]);
 				String mexCriteria = params[3];
@@ -79,7 +80,7 @@ public class CommandAris extends CommandBase {
 				} else {
 					String method = OptionUtil.readString(options, "m");
 					if(!EmptyUtil.isNullOrEmpty(method)) {
-						String temp = XCodeUtil.urlDecodeUTF8(method);
+						temp = XCodeUtil.urlDecodeUTF8(method);
 						items = GeekExtractors.fetchJDK7Api(name.replace('.', '/'), temp);
 						export(items);
 					} else {

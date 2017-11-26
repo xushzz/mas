@@ -9,7 +9,8 @@ class com.a.Fury   display class detail of class Fury if exists
 cl com.a.Fury      display class detail of class Fury if exists
 cl java.util.List $m=hashCode, get the API detail of given method in given class, currently available:
 cl java.util.List $m=hashCode, :1) jdk_7u4. method will be url-decoded with UTF8
-cl java.util.List $+code, fetch source code from the wire
+cl java.util.List $+code, fetch source code from the wire and print it out
+cl java.util.List $+load, download source code java file
 cl java.util.List $m=..., get the API detail of all methods in given class, jdk7 only, in English
 cl java.util.List $m=..., API detail, courtesy of http://tool.oschina.net/apidocs/apidoc?api=jdk_7u4
 cl java.util.List* display other classes in the same package of given class List
@@ -17,4 +18,4 @@ cl com/a/Fury      display class detail of class Fury if exists
 cl com/Fury.class  display class detail of class Fury if exists
 cl com\a\Fury      display class detail of class Fury if exists, options: $+debug
 cl com\a\Fury criteria     display class detail of class wherever matching criteria
-ver=11/19/2017, VII  GEEK-ARIS1.0.8-DEMBELE
+ver=11/2/2017, VII  GEEK-ARIS1.0.9-DEMBELE
