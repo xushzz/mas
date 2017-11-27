@@ -3,12 +3,73 @@ package com.sirap.extractor.avron;
 import java.util.List;
 import java.util.regex.Matcher;
 
+import com.google.common.collect.Lists;
+import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.util.EmptyUtil;
+import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.extractor.Extractor;
 
 public class AvronExtractors {
+	
+	public static List<ValuesItem> fetch51JobResumes(String folderName) {
+		List<MexFile> files = FileUtil.scanSingleFolder(folderName, 9);
+		List<ValuesItem> items = Lists.newArrayList();
+		for(MexFile file : files) {
+			String path = file.getPath();
+			if(StrUtil.isRegexFound("\\.(html|htm|txt)$", path)) {
+				items.add(fetch51JobSummary(path));
+			}
+		}
+		
+		return items;
+	}
+	
+	public static ValuesItem fetch51JobSummary(String fileOrWebUrl) {
+		Extractor<ValuesItem> neymar = new Extractor<ValuesItem>() {
+			
+			@Override
+			public String getUrl() {
+				useGBK();
+				return fileOrWebUrl;
+			}
+			
+			@Override
+			protected void parseContent() {
+				ValuesItem vi = new ValuesItem();
+				String regex = "<td width=\"400\" style=\"padding-bottom:18px\">(.+?)</td>";
+				String info = StrUtil.findFirstMatchedItem(regex, source);
+				if(info == null) {
+					return;
+				}
+				info = info.replace("|", "");
+				vi.add(getPrettyText(info));
+				
+				regex = "<td valign=\"bottom\" style=\"line-height:20px;color:#333333;word-break:break-all\">";
+				regex += "(.+?)</td>";
+				vi.add(getPrettyText(StrUtil.findFirstMatchedItem(regex, source)));
+				
+				regex = "<td valign=\"top\" width=\"246\" style=\"line-height:20px;color:#333333;word-break:break-all\">";
+				regex += "([^<>]+)</td>";
+				
+				Matcher ma = createMatcher(regex);
+				int count = 0, max= 11;
+				while(ma.find()) {
+					if(count > max) {
+						continue;
+					}
+					count++;
+					vi.add(getPrettyText(ma.group(1)));
+				}
+
+				item = vi;
+			}
+		};
+		
+		return neymar.process().getItem();
+	}
+	
 	//许可申请前信息公开
 	//http://permit.mep.gov.cn/permitExt/syssb/xxgk/xxgk!sqqlist.action
 	public static String fetchMaxPageOfStagedCompanies() {

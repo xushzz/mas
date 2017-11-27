@@ -65,4 +65,9 @@ public class ValuesItem extends MexItem {
 
 		return result;
 	}
+	
+	@Override
+	public String toString() {
+		return toPrint();
+	}
 }

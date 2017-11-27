@@ -7,10 +7,13 @@ import java.util.regex.Matcher;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.tool.C;
+import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.HtmlUtil;
+import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.WebReader;
 import com.sirap.basic.util.XCodeUtil;
+import com.sirap.basic.util.XXXUtil;
 
 public abstract class Extractor<T extends Object> {
 
@@ -62,6 +65,21 @@ public abstract class Extractor<T extends Object> {
 	
 	protected void readSource() {
 		String target = getUrl();
+		
+		XXXUtil.nullCheck(target, "url");
+		if(!StrUtil.startsWith(target, "http")) {
+			if(printFetching) {
+				C.pl("Reading... " + target);
+			}
+			if(readIntoSourceList) {
+				sourceList = IOUtil.readFileIntoList(target, charset);
+			} else {
+				source = IOUtil.readFileWithLineSeparator(target, "", charset);
+			}
+			
+			return;
+		}
+		
 		if(printFetching) {
 			String temp = "";
 			if(isMethodPost) {
@@ -129,6 +147,10 @@ public abstract class Extractor<T extends Object> {
 	}
 	
 	public static String getPrettyText(String source) {
+		if(EmptyUtil.isNullOrEmpty(source)) {
+			return source;
+		}
+		
 		String temp = source;
 		temp = HtmlUtil.removeComment(temp);
 		temp = HtmlUtil.removeHttpTag(temp);
