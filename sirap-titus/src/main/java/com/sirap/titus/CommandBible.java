@@ -114,7 +114,7 @@ public class CommandBible extends CommandBase {
 		params = parseParams(KEY_BIBLE_SHORT + "\\.([a-z]+)\\.load" + "(\\s(pdf|txt)|)");
 		if(params != null) {
 			String versionCode = BibleManager.g().getVersion(params[0]).getCode();
-			String fileType = Konstants.SUFFIX_TXT;
+			String fileType = Konstants.DOT_TXT;
 			if(!params[1].isEmpty()) {
 				fileType = "." + params[1];
 			}
@@ -154,7 +154,7 @@ public class CommandBible extends CommandBase {
 			
 			String niceBookName = sense.getBook().getNameWithNiceOrder();
 			String chapterName = sense.getChapterNameWithNiceOrder();
-			String fileType = Konstants.SUFFIX_TXT;
+			String fileType = Konstants.DOT_TXT;
 			String chapterLocation = StrUtil.useSeparator(versionStorage, niceBookName, chapterName + fileType);
 			
 			if(FileUtil.getIfNormalFile(chapterLocation) != null) {

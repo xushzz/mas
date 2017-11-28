@@ -16,7 +16,7 @@ import com.sirap.titus.extractor.BibleChapterExtractor;
 
 public class BookChapterFetcher extends Worker<ChapterSense> {
 	private String storage;
-	private String fileType = Konstants.SUFFIX_TXT;
+	private String fileType = Konstants.DOT_TXT;
 	
 	public BookChapterFetcher(String bibleFolder) {
 		this.storage = bibleFolder;
@@ -44,9 +44,9 @@ public class BookChapterFetcher extends Worker<ChapterSense> {
 		Extractor<MexObject> nick = new BibleChapterExtractor(sense.getChapterHref());
 		nick.process();
 		List<MexObject> items = nick.getItems();
-		if(StrUtil.equals(Konstants.SUFFIX_TXT, fileType)) {
+		if(StrUtil.equals(Konstants.DOT_TXT, fileType)) {
 			IOUtil.saveAsTxt(items, fullFileName);
-		} else if(StrUtil.equals(Konstants.SUFFIX_PDF, fileType)) {
+		} else if(StrUtil.equals(Konstants.DOT_PDF, fileType)) {
 			IOUtil.saveAsPDF(items, fullFileName, new PDFParams());
 		}
 

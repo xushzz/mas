@@ -78,7 +78,7 @@ public abstract class TargetAnalyzer {
 			String destInfo = params[1];
 			TargetTxtFile txtFile = createTargetTxtFile(destInfo, command);
 			if(isSirap) {
-				String fileName = txtFile.getFileName().replaceAll(Konstants.SUFFIX_TXT + "$", Konstants.SUFFIX_SIRAP);
+				String fileName = txtFile.getFileName().replaceAll(Konstants.DOT_TXT + "$", Konstants.DOT_SIRAP);
 				txtFile.setFileName(fileName);
 			}
 			
@@ -111,7 +111,7 @@ public abstract class TargetAnalyzer {
 	}
 	
 	private TargetTxtFile createTargetTxtFile(String destInfo, String command) {
-		String commandConvertedFileName = FileUtil.generateLegalFileName(command) + Konstants.SUFFIX_TXT;
+		String commandConvertedFileName = FileUtil.generateLegalFileName(command) + Konstants.DOT_TXT;
 		if(destInfo.isEmpty() || destInfo.equalsIgnoreCase(KEY_TO_EXPORT_FOLDER)) {
 			return new TargetTxtFile(getDefaultExportFolder(), commandConvertedFileName);			
 		}
@@ -126,8 +126,8 @@ public abstract class TargetAnalyzer {
 			folderPath = parseRealFolderPath(folderAndFile[0]);
 			if(folderPath != null) {
 				String newFileName = generateFileOrFolderName(folderAndFile[1]);
-				if(!newFileName.endsWith(Konstants.SUFFIX_TXT)) {
-					newFileName += Konstants.SUFFIX_TXT;
+				if(!newFileName.endsWith(Konstants.DOT_TXT)) {
+					newFileName += Konstants.DOT_TXT;
 				}
 				
 				return new TargetTxtFile(folderPath, newFileName);
@@ -135,16 +135,16 @@ public abstract class TargetAnalyzer {
 		}
 
 		String newFileName = FileUtil.generateLegalFileName(destInfo);
-		if(!newFileName.endsWith(Konstants.SUFFIX_TXT)) {
-			newFileName += Konstants.SUFFIX_TXT;
+		if(!newFileName.endsWith(Konstants.DOT_TXT)) {
+			newFileName += Konstants.DOT_TXT;
 		}
 		
 		return new TargetTxtFile(getDefaultExportFolder(), newFileName);
 	}
 	
 	private TargetPDF createTargetPDF(String destInfo, String command) {
-		String commandConvertedFileName = FileUtil.generateLegalFileName(command) + Konstants.SUFFIX_PDF;
-		if(destInfo.equalsIgnoreCase(Konstants.SUFFIX_PDF)) {
+		String commandConvertedFileName = FileUtil.generateLegalFileName(command) + Konstants.DOT_PDF;
+		if(destInfo.equalsIgnoreCase(Konstants.DOT_PDF)) {
 			return new TargetPDF(getDefaultExportFolder(), commandConvertedFileName);			
 		}
 		
@@ -153,7 +153,7 @@ public abstract class TargetAnalyzer {
 			String folderPath = parseRealFolderPath(folderAndFile[0]);
 			if(folderPath != null) {
 				String newFileName = folderAndFile[1];
-				if(newFileName.equalsIgnoreCase(Konstants.SUFFIX_PDF)) {
+				if(newFileName.equalsIgnoreCase(Konstants.DOT_PDF)) {
 					newFileName = commandConvertedFileName;
 				}
 			
@@ -167,8 +167,8 @@ public abstract class TargetAnalyzer {
 	}
 	
 	private TargetHtml createTargetHtml(String destInfo, String command) {
-		String commandConvertedFileName = FileUtil.generateLegalFileName(command) + Konstants.SUFFIX_HTML;
-		if(destInfo.equalsIgnoreCase(Konstants.SUFFIX_HTML)) {
+		String commandConvertedFileName = FileUtil.generateLegalFileName(command) + Konstants.DOT_HTM;
+		if(destInfo.equalsIgnoreCase(Konstants.DOT_HTM)) {
 			return new TargetHtml(getDefaultExportFolder(), commandConvertedFileName);			
 		}
 		
@@ -177,7 +177,7 @@ public abstract class TargetAnalyzer {
 			String folderPath = parseRealFolderPath(folderAndFile[0]);
 			if(folderPath != null) {
 				String newFileName = folderAndFile[1];
-				if(newFileName.equalsIgnoreCase(Konstants.SUFFIX_HTML)) {
+				if(newFileName.equalsIgnoreCase(Konstants.DOT_HTM)) {
 					newFileName = commandConvertedFileName;
 				}
 			
@@ -191,8 +191,8 @@ public abstract class TargetAnalyzer {
 	}
 	
 	private TargetExcel createTargetExcel(String destInfo, String command) {
-		String commandConvertedFileName = FileUtil.generateLegalFileName(command) + Konstants.SUFFIX_EXCEL;
-		if(destInfo.equalsIgnoreCase(Konstants.SUFFIX_EXCEL)) {
+		String commandConvertedFileName = FileUtil.generateLegalFileName(command) + Konstants.DOT_EXCEL;
+		if(destInfo.equalsIgnoreCase(Konstants.DOT_EXCEL)) {
 			return new TargetExcel(getDefaultExportFolder(), commandConvertedFileName);			
 		}
 		
@@ -201,7 +201,7 @@ public abstract class TargetAnalyzer {
 			String folderPath = parseRealFolderPath(folderAndFile[0]);
 			if(folderPath != null) {
 				String newFileName = folderAndFile[1];
-				if(newFileName.equalsIgnoreCase(Konstants.SUFFIX_EXCEL)) {
+				if(newFileName.equalsIgnoreCase(Konstants.DOT_EXCEL)) {
 					newFileName = commandConvertedFileName;
 				}
 			

@@ -101,7 +101,7 @@ public class FileUtil {
 	}
 
 	public static String generateFileName(String prefix, String name) {
-		return generateFileName(prefix, name, Konstants.SUFFIX_TXT);
+		return generateFileName(prefix, name, Konstants.DOT_TXT);
 	}
 
 	public static String generateFileName(String prefix, String name, String fileType) {
@@ -149,11 +149,11 @@ public class FileUtil {
 	}
 	
 	public static boolean isMexFile(String fileName) {
-		return isAnyTypeOf(fileName, Konstants.SUFFIX_MEX);
+		return isAnyTypeOf(fileName, Konstants.DOT_MEX);
 	}
 	
 	public static boolean isSirapFile(String fileName) {
-		return isAnyTypeOf(fileName, Konstants.SUFFIX_SIRAP);
+		return isAnyTypeOf(fileName, Konstants.DOT_SIRAP);
 	}
 
 	public static List<MexFile> scanSingleFolder(String directory, int depth) {
@@ -378,20 +378,20 @@ public class FileUtil {
 		
 		if(PanaceaBox.isWindows() && startWithDiskName(param)) {
 			possibleFileNames.add(param);
-			possibleFileNames.add(param + Konstants.SUFFIX_TXT);
+			possibleFileNames.add(param + Konstants.DOT_TXT);
 		}
 		
 		if (PanaceaBox.isMacOrLinuxOrUnix()){
 			possibleFileNames.add(param);
-			possibleFileNames.add(param + Konstants.SUFFIX_TXT);
+			possibleFileNames.add(param + Konstants.DOT_TXT);
 		}
 		
 		if(param.startsWith("\\\\")) {
 			possibleFileNames.add(param);
-			possibleFileNames.add(param + Konstants.SUFFIX_TXT);
+			possibleFileNames.add(param + Konstants.DOT_TXT);
 		} else {
 			possibleFileNames.add(StrUtil.useSeparator(defaultFolder, param));
-			possibleFileNames.add(StrUtil.useSeparator(defaultFolder, param + Konstants.SUFFIX_TXT));
+			possibleFileNames.add(StrUtil.useSeparator(defaultFolder, param + Konstants.DOT_TXT));
 		}
 		
 		return parseNormalFile(possibleFileNames);

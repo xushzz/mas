@@ -24,16 +24,16 @@ public class Konstants {
 	public static final String FOLDER_SCREENSHOT = "shot";
 	public static final String FOLDER_HISTORY = "log";
 	public static final String FOLDER_REMOTE = "remote";
-	public static final String SUFFIX_BAT = ".bat";
-	public static final String SUFFIX_TXT = ".txt";
-	public static final String SUFFIX_PDF = ".pdf";
-	public static final String SUFFIX_HTML = ".htm";
-	public static final String SUFFIX_EXCEL = ".xls";
-	public static final String SUFFIX_MEX = ".mex";
-	public static final String SUFFIX_SIRAP = ".sirap";
-	public static final String SUFFIX_JPG = ".jpg";
-	public static final String SUFFIX_CLASS = ".class";
-	public static final String SUFFIX_JAVA = ".java";
+	public static final String DOT_BAT = ".bat";
+	public static final String DOT_TXT = ".txt";
+	public static final String DOT_PDF = ".pdf";
+	public static final String DOT_HTM = ".htm";
+	public static final String DOT_EXCEL = ".xls";
+	public static final String DOT_MEX = ".mex";
+	public static final String DOT_SIRAP = ".sirap";
+	public static final String DOT_JPG = ".jpg";
+	public static final String DOT_CLASS = ".class";
+	public static final String DOT_JAVA = ".java";
 
 	public static final String SHITED_FACE = "^=^";
 	public static final String HYPHEN = "-";

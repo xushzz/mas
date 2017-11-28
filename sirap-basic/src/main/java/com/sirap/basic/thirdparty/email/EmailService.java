@@ -17,6 +17,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.mail.internet.MimeUtility;
 
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.email.Email;
@@ -122,10 +123,10 @@ public class EmailService {
         	MimeBodyPart mbp=new MimeBodyPart(); 
         	mbp.setDataHandler(new DataHandler(fds));
         	String fileName = fds.getName();
-        	if(fileName.endsWith(Konstants.SUFFIX_BAT)) {
-        		fileName = fileName + Konstants.SUFFIX_TXT;
+        	if(fileName.endsWith(Konstants.DOT_BAT)) {
+        		fileName = fileName + Konstants.DOT_TXT;
         	}
-            mbp.setFileName(fileName);  
+            mbp.setFileName(MimeUtility.encodeText(fileName));  
             mp.addBodyPart(mbp);
         } catch (Exception ex) {
         	 ex.printStackTrace();        	 

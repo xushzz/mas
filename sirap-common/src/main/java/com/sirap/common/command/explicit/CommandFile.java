@@ -165,7 +165,7 @@ public class CommandFile extends CommandBase {
 				return true;
 			}
 			
-			if(!target.isFileRelated() && StrUtil.endsWith(filePath, Konstants.SUFFIX_CLASS)) {
+			if(!target.isFileRelated() && StrUtil.endsWith(filePath, Konstants.DOT_CLASS)) {
 				Class glass = IOUtil.loadClassFile(filePath);
 				export(ArisUtil.getClassDetail(glass, filePath, isDebug()));
 				return true;
@@ -669,9 +669,9 @@ public class CommandFile extends CommandBase {
 				nameSuffix = shortFilename + "_" + pageInfo.replace(',', '_');
 				
 				String dir = getExportLocation();
-				String newPdfFilepath = dir + nameSuffix + Konstants.SUFFIX_PDF;
+				String newPdfFilepath = dir + nameSuffix + Konstants.DOT_PDF;
 				if(SimpleKonfig.g().isExportWithTimestampEnabled(options)) {
-					newPdfFilepath = dir + DateUtil.timestamp() + "_" + nameSuffix + Konstants.SUFFIX_PDF;
+					newPdfFilepath = dir + DateUtil.timestamp() + "_" + nameSuffix + Konstants.DOT_PDF;
 				}
 
 				PdfHelper.selectPages(pageInfo, pdfFilepath, newPdfFilepath);
@@ -690,7 +690,7 @@ public class CommandFile extends CommandBase {
 			List<String> pdfFiles = new ArrayList<String>();
 			String nameSuffix = "merge";
 			for(String item : items) {
-				if(!StrUtil.endsWith(item, Konstants.SUFFIX_PDF)) {
+				if(!StrUtil.endsWith(item, Konstants.DOT_PDF)) {
 					continue;
 				}
 				
@@ -705,9 +705,9 @@ public class CommandFile extends CommandBase {
 			
 			if(pdfFiles.size() > 1) {
 				String dir = getExportLocation();
-				String newPdfFilepath = dir + nameSuffix + Konstants.SUFFIX_PDF;
+				String newPdfFilepath = dir + nameSuffix + Konstants.DOT_PDF;
 				if(SimpleKonfig.g().isExportWithTimestampEnabled(options)) {
-					newPdfFilepath = dir + DateUtil.timestamp() + "_" + nameSuffix + Konstants.SUFFIX_PDF;
+					newPdfFilepath = dir + DateUtil.timestamp() + "_" + nameSuffix + Konstants.DOT_PDF;
 				}
 				
 				PdfHelper.merge(pdfFiles, newPdfFilepath);

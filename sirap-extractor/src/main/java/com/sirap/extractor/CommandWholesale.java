@@ -105,7 +105,7 @@ public class CommandWholesale extends CommandBase {
 	public boolean batchDownload(List<String> links, String whereToSave) {
 		long start = System.currentTimeMillis();
 		
-		List<String> pathList = downloadFiles(whereToSave, links, Konstants.SUFFIX_JPG);
+		List<String> pathList = downloadFiles(whereToSave, links, Konstants.DOT_JPG);
 		
 		if(!pathList.isEmpty()) {
 			String lastFile = pathList.get(pathList.size() - 1);

@@ -74,13 +74,19 @@ public class ArisExecutor {
 		String regex = "([a-zA-Z\\d_\\.\\$]+\\.|)([a-zA-Z_$][\\da-zA-Z_$]*)(\\.{3,}|\\.class)";
 		String[] params = StrUtil.parseParams(regex, remain);
 		if(params != null) {
-			String glass = params[0] + params[1] + Konstants.SUFFIX_CLASS;
+			String glass = params[0] + params[1] + Konstants.DOT_CLASS;
 			items.add(StrUtil.occupy("C.list(ArisUtil.getClassDetail({0}, false));", glass));
 		} else {
-			String expression = StrUtil.findFirstMatchedItem("^=(.+)", remain);
-			if(expression != null) {
-				expression = expression.replaceAll("[,\\.;]+$", "");
-				items.add(StrUtil.occupy("System.out.println({0});", expression));
+			String[] arr = StrUtil.parseParams("^(={1,2})(.+)", remain);
+			if(arr != null) {
+				String template;
+				if(StrUtil.equals("==", arr[0])) {
+					template = "C.list({0});";
+				} else {
+					template = "System.out.println({0});";
+				}
+				String expression = arr[1].replaceAll("[,\\.;]+$", "");
+				items.add(StrUtil.occupy(template, expression));
 			} else {
 				items.add(remain + (remain.endsWith(";") ? "" : ";"));
 			}
@@ -238,13 +244,14 @@ public class ArisExecutor {
 			consoleOutput.addAll(result);
 		}
 		
-		String classFilepath = finalJavaFileFullPath.replaceAll("\\.java$", Konstants.SUFFIX_CLASS);
+		String classFilepath = finalJavaFileFullPath.replaceAll("\\.java$", Konstants.DOT_CLASS);
 		if(!FileUtil.exists(classFilepath)) {
 			return consoleOutput;
 		}
 		
 		String javaCommand = "java -cp \"{0}\" {1}";
 		String classpath = StrUtil.useDelimiter(File.pathSeparator, whereToGenerate, configClasspath);
+		
 		javaCommand = StrUtil.occupy(javaCommand, classpath, publicClassName);
 		if(toPrintCommand) {
 			consoleOutput.add("command for java: \n" + javaCommand);
@@ -257,7 +264,7 @@ public class ArisExecutor {
 	
 	private String saveSourceCode(List<String> sourceCode) {
 		String folderName = DateUtil.timestamp() + "_" + RandomUtil.letters(1, true) + RandomUtil.digits(2);
-		whereToGenerate = StrUtil.useSeparator(arisPlace, "aris", folderName);
+		whereToGenerate = StrUtil.useSeparator(StrUtil.unixSeparator(arisPlace), "aris", folderName);
 		File target = new File(whereToGenerate);
 		target.mkdirs();
 		String finalJavaFileFullPath = StrUtil.useSeparator(whereToGenerate, publicClassName + ".java");

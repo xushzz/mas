@@ -23,7 +23,7 @@ public class HistoryEventsFetcher extends Worker<MexObject> {
 		FileUtil.makeDirectoriesIfNonExist(location);
 		
 		String urlParam = mo.getString();
-		String shortName = urlParam.replace("-", "") + Konstants.SUFFIX_TXT;
+		String shortName = urlParam.replace("-", "") + Konstants.DOT_TXT;
 		String fullFileName = StrUtil.useSeparator(location, shortName);
 		if(FileUtil.exists(fullFileName)) {
 			C.pl("Already exists " + fullFileName);

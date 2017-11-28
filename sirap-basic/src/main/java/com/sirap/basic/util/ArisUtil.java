@@ -233,7 +233,7 @@ public class ArisUtil {
 		        return items;
 		    }
 		    
-		    if(StrUtil.endsWith(entryName, Konstants.SUFFIX_CLASS)) {
+		    if(StrUtil.endsWith(entryName, Konstants.DOT_CLASS)) {
 		    	return ArisUtil.getClassDetail(IOUtil.loadClassFromJarFile(url, entryName));
 		    } else {
 			    return IOUtil.readStreamIntoList(file.getInputStream(entry));
