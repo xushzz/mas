@@ -89,6 +89,11 @@ public class GeekManager {
 		return encodeStringByCharset(source, charsets);
 	}
 	
+	public List<String> decodeStringByUnicodeUTF8GBK(String source) {
+		List<String> charsets = StrUtil.split("Unicode,UTF-8,GBK");
+		return decodeStringByCharset(source, charsets);
+	}
+	
 	public List<String> encodeStringByCharset(String source, List<String> charsets) throws MexException {
 		List<String> items = new ArrayList<>();
 		int maxLen = StrUtil.maxLengthOf(charsets);
@@ -104,6 +109,21 @@ public class GeekManager {
 					sb.append(value);
 				}
 			}
+			items.add(sb.toString());
+		}
+		
+		return items;
+	}
+	
+	public List<String> decodeStringByCharset(String source, List<String> charsets) throws MexException {
+		List<String> items = new ArrayList<>();
+		int maxLen = StrUtil.maxLengthOf(charsets);
+		for(String code : charsets) {
+			StringBuffer sb = new StringBuffer();
+			String prefix = StrUtil.padRight(code, maxLen);
+			sb.append(prefix).append("    ");
+			String value = XCodeUtil.replaceHexChars(source, code);
+			sb.append(value);
 			items.add(sb.toString());
 		}
 		

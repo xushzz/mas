@@ -41,6 +41,7 @@ public class CommandXCode extends CommandBase {
 	private static final String KEY_URL_ENCODE = "url";
 	private static final String KEY_URL_DECODE = "urx";
 	private static final String KEY_ENCODE = "cde";
+	private static final String KEY_DECODE = "cdx";
 	private static final String KEY_SWAP = "swap";
 	private static final String KEY_ISO = "iso";
 	private static final String KEY_CURRENCY = "ccy";
@@ -254,6 +255,13 @@ public class CommandXCode extends CommandBase {
 			List<String> items = GeekManager.g().encodeStringByCharset(content, charsets);
 			export(items);
 			
+			return true;
+		}
+		
+		solo = parseSoloParam(KEY_DECODE + "\\s(.+?)");
+		if(solo != null) {
+			List<String> items = GeekManager.g().decodeStringByUnicodeUTF8GBK(solo);
+			export(items);
 			return true;
 		}
 		

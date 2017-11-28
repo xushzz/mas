@@ -11,6 +11,7 @@ cde ABC            encode regular chars to four or hex chars via UTF8, Unicode, 
 cde-UTF8           search charsets matching given criteria
 cde-BIG5 ABC       encode regular chars to Big5 hex chars, also for UTF8, Unicode,
 cde..              display all available charsets, like UTF8,ISO,Unicode,GBK and so on
+cdx \uBBBB\uCBA7   decode from four or hex chars via UTF8, Unicode, GBK
 GBK \uBBBB\uCBA7   decode GBK chars to regular chars, also for UTF8, Unicode and so on
 UTF-8 \uE5B885     decode UTF8 chars to regular chars, also for UTF8, Unicode and so on
 UTF8 \uE593A5      decode UTF8 chars to regular chars, also for UTF8, Unicode and so on
@@ -29,4 +30,4 @@ ccy Chinese        display currency info containing Chinese: zh_HK, HKG, Chinese
 ccy..              display all currency info provided by the JRE
 dfs zh_TW          display date format symbols info for local zh_TW
 dfs..              display all date format symbols info provided by the JRE
-ver=8/3/2017, IV  GEEK-XCODE1.0.3-IVANKA
+ver=11/28/2017, II  GEEK-XCODE1.0.4-IVANKA
