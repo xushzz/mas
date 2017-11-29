@@ -24,4 +24,6 @@ up.QwErTy21        convert given string to upper case
 E:\abc.jar a&b     list out what is inside a jar with criteria, $+full,+size,+case
 E:\abc.jar!/a.txt  list out the content of given entry in given zip file, entry better be ascii file
 sw F:\a\b\c/de     replace / with \, replace \ with /, then print these two records if any different
-ver=9/15/2017, V  GEEK-DEV1.0.29-HENGDA
+https              list all http status codes
+https 404          get detail explain of given http response code
+ver=11/29/2017, III  GEEK-DEV1.0.30-HENGDA

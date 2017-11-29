@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.Map;
 
+import com.sirap.basic.data.HttpData;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.exception.NullArgumentException;
 import com.sirap.basic.tool.C;
@@ -155,5 +156,19 @@ public class XXXUtil {
 	public static void printStackTrace(String msg) {
 		Exception ex = new Exception(msg);
 		ex.printStackTrace();
+	}
+	
+	public static String explainResponseException(String message) {
+		String regex = "Server returned HTTP response code: (\\d+) for URL";
+		String code = StrUtil.findFirstMatchedItem(regex, message);
+		if(code == null) {
+			return null;
+		}
+		String explanation = HttpData.EGGS.get(code);
+		if(explanation == null) {
+			return null;
+		}
+		
+		return code + " " + explanation;
 	}
 }

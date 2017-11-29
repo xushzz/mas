@@ -65,7 +65,13 @@ public class WebReader {
 			sb.setLength(0);
 			br.close();
 		} catch (Exception ex) {
-			String msg = ex + "\nURL=>" + url + "\nLocation=>" + getClass().getName();
+			String explain = XXXUtil.explainResponseException(ex.getMessage());
+			String template = "{0}\n\turl => {1}\n\tlocation => {2}.readIntoString";
+			if(explain != null) {
+				template += "\n\tstatus code => {3}";
+			}
+			
+			String msg = StrUtil.occupy(template, ex, url, getClass().getName(), explain);
 			throw new MexException(msg);
 		}
 
@@ -87,7 +93,13 @@ public class WebReader {
 
 			br.close();
 		} catch (Exception ex) {
-			String msg = ex + "\nURL=>" + url + "\nLocation=>" + getClass().getName();
+			String explain = XXXUtil.explainResponseException(ex.getMessage());
+			String template = "{0}\n\turl => {1}\n\tlocation => {2}.readIntoList";
+			if(explain != null) {
+				template += "\n\tstatus code => {3}";
+			}
+			
+			String msg = StrUtil.occupy(template, ex, url, getClass().getName(), explain);
 			throw new MexException(msg);
 		}
 
@@ -138,12 +150,13 @@ public class WebReader {
 		return charset;
 	}
 	
-	private void equip(URLConnection urlConn) throws Exception {
-		urlConn.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1WOW64rv:25.0) Gecko/20100101 Firefox/25.0");
+	private void equip(URLConnection conn) throws Exception {
+		conn.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
+//		urlConn.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1WOW64rv:25.0) Gecko/20100101 Firefox/25.0");
 		if(isMethodPost) {
-			urlConn.setDoOutput(true);
-			urlConn.setDoInput(true);
-			PrintWriter out = new PrintWriter(urlConn.getOutputStream());
+			conn.setDoOutput(true);
+			conn.setDoInput(true);
+			PrintWriter out = new PrintWriter(conn.getOutputStream());
 	        out.print(requestParams);
 	        out.flush();
 		}

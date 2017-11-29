@@ -9,8 +9,10 @@ import java.util.List;
 import java.util.UUID;
 
 import com.google.common.collect.Lists;
+import com.sirap.basic.data.HttpData;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexZipEntry;
+import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.search.MexFilter;
@@ -36,6 +38,7 @@ import com.sirap.geek.jenkins.JenkinsBuildRecord;
 import com.sirap.geek.jenkins.JenkinsManager;
 import com.sirap.geek.manager.GithubIssuesExtractor;
 import com.sirap.geek.manager.MavenManager;
+import com.sirap.geek.util.GeekExtractors;
 
 public class CommandDev extends CommandBase {
 
@@ -55,6 +58,7 @@ public class CommandDev extends CommandBase {
 	private static final String KEY_UUID = "uuid";
 	private static final String KEY_CHANGE_FILESEPARATOR = "sw";
 	private static final String KEY_SIZE = "size";
+	private static final String KEY_HTTP_STATUS_CODES = "https";
 	
 	public boolean handle() {
 		solo = parseSoloParam(KEY_PATH + "\\s(.*?)");
@@ -347,6 +351,22 @@ public class CommandDev extends CommandBase {
 			RenderedImage image = (new ScreenCaptor()).captureCurrentWindow();
 			items.add("acti: " + (int)image.getWidth() + " x " + (int)image.getHeight());
 			export(items);
+		}
+		
+		solo = parseSoloParam(KEY_HTTP_STATUS_CODES + "\\s(.+?)");
+		if(solo != null) {
+			List<ValuesItem> items = CollUtil.filter(GeekExtractors.fetchHttpResponseCodes(), solo);
+			String concise = HttpData.EGGS.get(solo);
+			if(concise != null) {
+				items.add(new ValuesItem(concise));
+			}
+			export(items);
+			return true;
+		}
+		
+		if(is(KEY_HTTP_STATUS_CODES)) {
+			export(GeekExtractors.fetchHttpResponseCodes());
+			return true;
 		}
 		
 		return false;

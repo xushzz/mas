@@ -42,6 +42,10 @@ public class ValuesItem extends MexItem {
 			if(StrUtil.contains(item + "", keyWord)) {
 				return true;
 			}
+			
+			if(isRegexMatched(item + "", keyWord)) {
+				return true;
+			}
 		}
 		
 		return false;

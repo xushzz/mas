@@ -374,7 +374,12 @@ public class IOUtil {
 			}
 			flag = true;
 		} catch (Exception ex) {
-			C.pl(ex + "\n\turl=>" + address + "\n\tLocation=>" + IOUtil.class.getName() + ".downloadNormalFile");
+			String explain = XXXUtil.explainResponseException(ex.getMessage());
+			String template = "{0}\n\turl => {1}\n\tlocation => {2}.downloadNormalFile";
+			if(explain != null) {
+				template += "\n\tstatus code => {3}";
+			}
+			C.pl(StrUtil.occupy(template, ex, address, IOUtil.class.getName(), explain));
 			File invalidFile = new File(filePath);
 			if(invalidFile.exists()) {
 				invalidFile.delete();

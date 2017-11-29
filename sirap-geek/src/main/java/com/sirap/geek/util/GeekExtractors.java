@@ -3,6 +3,8 @@ package com.sirap.geek.util;
 import java.util.List;
 import java.util.regex.Matcher;
 
+import com.google.common.collect.Lists;
+import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.HtmlUtil;
 import com.sirap.basic.util.StrUtil;
@@ -10,6 +12,66 @@ import com.sirap.common.extractor.Extractor;
 
 public class GeekExtractors {
 
+	public static List<String> fetchConciseHttpResponseCodes() {
+		Extractor<String> neymar = new Extractor<String>() {
+			
+			@Override
+			public String getUrl() {
+				String location = "http://www.restapitutorial.com/httpstatuscodes.html";
+				location = "E:/Mas/exp/codes.txt";
+				return location;
+			}
+
+			@Override
+			protected void parseContent() {
+				List<String> TYPES = Lists.newArrayList();
+				TYPES.add("Informational");
+				TYPES.add("Success");
+				TYPES.add("Redirection");
+				TYPES.add("Client Error");
+				TYPES.add("Server Error");
+				
+				String regex = "<a data-toggle=\"collapse\" data-target=[^<>]+>(\\d{3})([^<>]+)</a>";
+				Matcher ma = createMatcher(regex);
+				while(ma.find()) {
+					String temp = "EGGS.put(\"{0}\", \"{1}, {2}\");";
+					int index = Integer.parseInt(ma.group(1)) / 100;
+//					D.pl(ma.group(1), index);
+					String prefix = TYPES.get(index - 1);
+					mexItems.add(StrUtil.occupy(temp, ma.group(1), prefix, ma.group(2).trim()));
+				}
+			}
+		};
+		
+		return neymar.process().getItems();		
+	}
+
+	public static List<ValuesItem> fetchHttpResponseCodes() {
+		Extractor<ValuesItem> neymar = new Extractor<ValuesItem>() {
+			
+			@Override
+			public String getUrl() {
+				String location = "http://tool.oschina.net/commons?type=5";
+				return location;
+			}
+
+			@Override
+			protected void parseContent() {
+				String regex = "<tr>\\s*<td>\\s*(\\d+)\\s*</td>\\s*<td>([^<>]+)</td>\\s*</tr>";
+				Matcher ma = createMatcher(regex);
+				while(ma.find()) {
+					ValuesItem vi = new ValuesItem();
+					vi.add(ma.group(1));
+					vi.add(ma.group(2));
+					mexItems.add(vi);
+				}
+			}
+
+		};
+		
+		return neymar.process().getItems();		
+	}
+		
 	public static List<String> fetchJDK7Api(String apiPath, String methodName) {
 		String dent = StrUtil.repeat(' ', 4);
 		Extractor<String> neymar = new Extractor<String>() {
