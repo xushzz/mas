@@ -81,12 +81,20 @@ public abstract class Extractor<T extends Object> {
 		}
 		
 		if(printFetching) {
-			String temp = "";
-			if(isMethodPost) {
-				temp = ", POST: " + (requestParams != null ? requestParams : "zero param."); 
+			String temp = target;
+			if(requestParams != null) {
+				if(StrUtil.contains(temp, "?")) {
+					temp += "&" + requestParams;
+				} else {
+					temp += "?" + requestParams;
+				}
 			}
 			
-			C.pl("Fetching... " + target + temp);
+			if(isMethodPost) {
+				temp += " $+post"; 
+			}
+			
+			C.pl("Fetching... " + temp);
 		}
 		
 		WebReader xiu = new WebReader(target, charset);
