@@ -1,8 +1,8 @@
 package com.sirap.titus.extractor;
 
+import com.sirap.basic.component.Extractor;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.util.StrUtil;
-import com.sirap.common.extractor.Extractor;
 
 public class BibleChapterFromSirapExtractor extends Extractor<MexObject> {
 

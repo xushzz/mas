@@ -3,10 +3,10 @@ package com.sirap.geek.manager;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.sirap.basic.component.Extractor;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.util.StrUtil;
-import com.sirap.common.extractor.Extractor;
 
 public class GithubIssuesExtractor extends Extractor<MexItem> {
 

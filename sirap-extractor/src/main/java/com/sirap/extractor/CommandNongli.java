@@ -3,6 +3,7 @@ package com.sirap.extractor;
 
 import java.util.List;
 
+import com.sirap.basic.component.Extractor;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.DateUtil;
@@ -10,7 +11,6 @@ import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
-import com.sirap.common.extractor.Extractor;
 import com.sirap.extractor.impl.China24JieqiExtractor;
 import com.sirap.extractor.impl.ChinaCalendarExtractor;
 import com.sirap.extractor.impl.ChinaJieriExtractor;

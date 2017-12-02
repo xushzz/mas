@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 
+import com.sirap.basic.component.Extractor;
 import com.sirap.basic.util.StrUtil;
-import com.sirap.common.extractor.Extractor;
 import com.sirap.extractor.domain.MeituOrgItem;
 import com.sirap.extractor.konstants.MeituKonstants;
 

@@ -8,10 +8,10 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.sirap.basic.component.Extractor;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.StrUtil;
-import com.sirap.common.extractor.Extractor;
 
 public class China24JieqiExtractor extends Extractor<MexObject> {
 	

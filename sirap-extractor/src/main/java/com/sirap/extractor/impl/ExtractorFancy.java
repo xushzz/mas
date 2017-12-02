@@ -7,11 +7,11 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.sirap.basic.component.Extractor;
 import com.sirap.basic.thread.MasterItemsOriented;
 import com.sirap.basic.thread.WorkerItemsOriented;
 import com.sirap.basic.util.TrumpUtil;
 import com.sirap.common.domain.Link;
-import com.sirap.common.extractor.Extractor;
 import com.sirap.extractor.ExtractorUtil;
 
 public class ExtractorFancy {

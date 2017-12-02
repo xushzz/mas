@@ -12,6 +12,7 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.sirap.basic.component.Extractor;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.component.MatrixCalendar;
 import com.sirap.basic.component.RioCalendar;
@@ -40,7 +41,6 @@ import com.sirap.common.component.FileOpener;
 import com.sirap.common.domain.SiteSearchEngine;
 import com.sirap.common.domain.TZRecord;
 import com.sirap.common.domain.TextSearchEngine;
-import com.sirap.common.extractor.Extractor;
 import com.sirap.common.framework.App;
 import com.sirap.common.framework.Janitor;
 import com.sirap.common.framework.SimpleKonfig;

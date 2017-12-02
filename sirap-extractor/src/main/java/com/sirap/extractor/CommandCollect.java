@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import com.google.common.collect.Lists;
+import com.sirap.basic.component.Extractor;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexObject;
@@ -25,7 +26,6 @@ import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.domain.WeatherRecord;
-import com.sirap.common.extractor.Extractor;
 import com.sirap.common.framework.command.target.TargetPDF;
 import com.sirap.extractor.domain.ZhihuRecord;
 import com.sirap.extractor.impl.EnglishDictionaryExtractor;

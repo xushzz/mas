@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 
 import com.google.common.collect.Maps;
+import com.sirap.basic.component.Extractor;
 import com.sirap.basic.domain.KeyValuesItem;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexObject;
@@ -17,7 +18,6 @@ import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.domain.Link;
-import com.sirap.common.extractor.Extractor;
 import com.sirap.extractor.domain.SportsMatchItem;
 
 public class Extractors {

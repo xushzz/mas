@@ -2,10 +2,10 @@ package com.sirap.extractor.impl;
 
 import java.util.Map;
 
+import com.sirap.basic.component.Extractor;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.util.StrUtil;
-import com.sirap.common.extractor.Extractor;
 
 @SuppressWarnings("rawtypes")
 public class TulingExtractor extends Extractor<MexObject> {

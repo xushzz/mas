@@ -2,7 +2,7 @@ package com.sirap.extractor.manager;
 
 import java.util.List;
 
-import com.sirap.common.extractor.Extractor;
+import com.sirap.basic.component.Extractor;
 import com.sirap.extractor.domain.MMKChannelItem;
 import com.sirap.extractor.impl.MMKChannelsExtractor;
 

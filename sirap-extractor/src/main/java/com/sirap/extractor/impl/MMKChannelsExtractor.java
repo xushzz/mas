@@ -3,7 +3,7 @@ package com.sirap.extractor.impl;
 import java.util.Collections;
 import java.util.regex.Matcher;
 
-import com.sirap.common.extractor.Extractor;
+import com.sirap.basic.component.Extractor;
 import com.sirap.extractor.domain.MMKChannelItem;
 
 public class MMKChannelsExtractor extends Extractor<MMKChannelItem> {

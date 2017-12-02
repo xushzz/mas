@@ -3,11 +3,11 @@ package com.sirap.extractor.manager;
 import java.util.List;
 
 import com.google.common.collect.Lists;
+import com.sirap.basic.component.Extractor;
 import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.StrUtil;
-import com.sirap.common.extractor.Extractor;
 import com.sirap.extractor.impl.IcibaTranslationExtractor;
 
 public class IcibaManager {

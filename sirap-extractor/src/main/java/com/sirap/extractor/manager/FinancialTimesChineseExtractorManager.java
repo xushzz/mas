@@ -3,11 +3,11 @@ package com.sirap.extractor.manager;
 import java.util.List;
 import java.util.regex.Matcher;
 
+import com.sirap.basic.component.Extractor;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.util.HtmlUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
-import com.sirap.common.extractor.Extractor;
 
 public class FinancialTimesChineseExtractorManager extends RssExtractorManager {
 	private static FinancialTimesChineseExtractorManager instance;

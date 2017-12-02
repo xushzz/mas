@@ -2,9 +2,9 @@ package com.sirap.extractor.impl;
 
 import java.util.regex.Matcher;
 
+import com.sirap.basic.component.Extractor;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.util.StrUtil;
-import com.sirap.common.extractor.Extractor;
 
 public class MMKProgramExtractor extends Extractor<MexObject> {
 	

@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 
+import com.sirap.basic.component.Extractor;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.HtmlUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
-import com.sirap.common.extractor.Extractor;
 
 public class BaiduExtractorManager extends RssExtractorManager {
 	

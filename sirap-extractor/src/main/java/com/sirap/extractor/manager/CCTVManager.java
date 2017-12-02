@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.sirap.basic.component.Extractor;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.util.DateUtil;
-import com.sirap.common.extractor.Extractor;
 import com.sirap.extractor.impl.CCTVProgramExtractor;
 
 public class CCTVManager {

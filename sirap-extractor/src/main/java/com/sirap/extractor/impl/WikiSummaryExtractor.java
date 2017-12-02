@@ -2,10 +2,10 @@ package com.sirap.extractor.impl;
 
 import java.util.List;
 
+import com.sirap.basic.component.Extractor;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
-import com.sirap.common.extractor.Extractor;
 
 public class WikiSummaryExtractor extends Extractor<MexObject> {
 	

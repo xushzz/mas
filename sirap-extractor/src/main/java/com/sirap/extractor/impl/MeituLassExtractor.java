@@ -2,10 +2,10 @@ package com.sirap.extractor.impl;
 
 import java.util.regex.Matcher;
 
+import com.sirap.basic.component.Extractor;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XCodeUtil;
 import com.sirap.basic.util.XXXUtil;
-import com.sirap.common.extractor.Extractor;
 import com.sirap.extractor.domain.MeituLassItem;
 import com.sirap.extractor.domain.MeituOrgItem;
 import com.sirap.extractor.konstants.MeituKonstants;

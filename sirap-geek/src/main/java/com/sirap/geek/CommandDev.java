@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.google.common.collect.Lists;
+import com.sirap.basic.component.Extractor;
 import com.sirap.basic.data.HttpData;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexZipEntry;
@@ -30,7 +31,6 @@ import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
-import com.sirap.common.extractor.Extractor;
 import com.sirap.common.framework.SimpleKonfig;
 import com.sirap.common.framework.command.FileSizeInputAnalyzer;
 import com.sirap.common.framework.command.InputAnalyzer;

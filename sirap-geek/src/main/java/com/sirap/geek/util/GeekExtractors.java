@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 
 import com.google.common.collect.Lists;
+import com.sirap.basic.component.Extractor;
 import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.HtmlUtil;
 import com.sirap.basic.util.StrUtil;
-import com.sirap.common.extractor.Extractor;
 
 public class GeekExtractors {
 

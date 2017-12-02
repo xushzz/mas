@@ -1,12 +1,12 @@
 package com.sirap.extractor;
 
 
+import com.sirap.basic.component.Extractor;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
-import com.sirap.common.extractor.Extractor;
 import com.sirap.extractor.impl.CCTVProgramExtractor;
 import com.sirap.extractor.impl.MMKProgramExtractor;
 import com.sirap.extractor.manager.CCTVManager;

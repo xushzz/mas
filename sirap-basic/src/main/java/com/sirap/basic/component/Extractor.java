@@ -1,10 +1,9 @@
-package com.sirap.common.extractor;
+package com.sirap.basic.component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 
-import com.sirap.basic.component.Konstants;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;

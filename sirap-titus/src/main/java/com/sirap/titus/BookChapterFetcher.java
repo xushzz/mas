@@ -3,6 +3,7 @@ package com.sirap.titus;
 import java.io.File;
 import java.util.List;
 
+import com.sirap.basic.component.Extractor;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.output.PDFParams;
@@ -11,7 +12,6 @@ import com.sirap.basic.tool.C;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.StrUtil;
-import com.sirap.common.extractor.Extractor;
 import com.sirap.titus.extractor.BibleChapterExtractor;
 
 public class BookChapterFetcher extends Worker<ChapterSense> {

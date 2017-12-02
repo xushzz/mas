@@ -5,6 +5,7 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sirap.basic.component.Extractor;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.thread.Master;
@@ -16,7 +17,6 @@ import com.sirap.basic.util.RandomUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.domain.Link;
-import com.sirap.common.extractor.Extractor;
 import com.sirap.titus.extractor.BibleBooksExtractor;
 import com.sirap.titus.extractor.BibleChapterFromSirapExtractor;
 

@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.sirap.basic.component.Extractor;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.thread.MasterItemsOriented;
 import com.sirap.basic.thread.WorkerItemsOriented;
 import com.sirap.basic.util.HtmlUtil;
-import com.sirap.common.extractor.Extractor;
 
 public class ExtractorChinaAreaCodeZou114 {
 	

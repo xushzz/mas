@@ -5,8 +5,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.sirap.basic.component.Extractor;
 import com.sirap.common.domain.WeatherRecord;
-import com.sirap.common.extractor.Extractor;
 
 public class NationalWeatherExtractor extends Extractor<WeatherRecord> {
 	
