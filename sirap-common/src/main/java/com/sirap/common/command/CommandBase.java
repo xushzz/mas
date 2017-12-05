@@ -558,12 +558,16 @@ public abstract class CommandBase {
 		if(EmptyUtil.isNullOrEmpty(result)) {
 			export("Command [" + conciseCommand + "] executed.");
 		} else {
-			if(printAlong) {
-				if(result.size() > 5) {
-					C.total(result.size());
+			if(target instanceof TargetConsole) {
+				if(printAlong) {
+					if(result.size() > 5) {
+						C.total(result.size());
+					}
+					
+					C.pl();
+				} else {
+					export(result);
 				}
-				
-				C.pl();
 			} else {
 				export(result);
 			}

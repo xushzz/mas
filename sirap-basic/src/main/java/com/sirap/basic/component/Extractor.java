@@ -62,11 +62,15 @@ public abstract class Extractor<T extends Object> {
 		return this;
 	}
 	
+	public static boolean isHttpRequest(String location) {
+		return StrUtil.startsWith(location, "http");
+	}
+	
 	protected void readSource() {
 		String target = getUrl();
 		
 		XXXUtil.nullCheck(target, "url");
-		if(!StrUtil.startsWith(target, "http")) {
+		if(!isHttpRequest(target)) {
 			if(printFetching) {
 				C.pl("Reading... " + target);
 			}

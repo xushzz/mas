@@ -6,12 +6,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.exception.MexException;
 
@@ -598,5 +600,22 @@ public class DateUtil {
 		}
 		
 		throw new MexException("Invalid month '{0}'", monthJanuaryToDecember);
+	}
+	
+	public static boolean isLeapYear(int year) {
+		return new GregorianCalendar().isLeapYear(year);
+	}
+	
+	public static List<String> getAllDaysByYear(int year) {
+		List<String> items = Lists.newArrayList();
+		
+		int max = isLeapYear(year) ? 366 : 365;
+		Date jan1st = DateUtil.construct(year, 1, 0);
+		for(int k = 1 ; k <= max; k++) {
+			Date date = add(jan1st, Calendar.DAY_OF_YEAR, k);
+			items.add(displayDate(date, DATE_TIGHT));
+		}
+		
+		return items;
 	}
 }

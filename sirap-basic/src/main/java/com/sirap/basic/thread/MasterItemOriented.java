@@ -33,7 +33,7 @@ public class MasterItemOriented<PARAM extends Object> extends MasterBase<PARAM> 
 		
 		List<Object> allItems = new ArrayList<Object>(results.values());
 		List<String> list = new ArrayList<String>(); 
-		for(Object item:allItems) {
+		for(Object item : allItems) {
 			if(item == null || item.equals(Konstants.SHITED_FACE)) {
 				continue;
 			}

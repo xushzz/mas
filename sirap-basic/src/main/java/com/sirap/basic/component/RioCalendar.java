@@ -5,9 +5,9 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import com.sirap.basic.tool.C;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.XXXUtil;
 
 public class RioCalendar {
 
@@ -44,32 +44,17 @@ public class RioCalendar {
 		return locale == null ? Locale.US : locale;
 	}
 
-	public boolean generate() {
-		if(!verify()) {
-			return false;
+	public RioCalendar generate() {
+		XXXUtil.checkMonthRange(monthIndex + 1);
+		if(year != 0) {
+			XXXUtil.checkRange(year, YEAR_MIN, YEAR_MAX);
 		}
-		
+
 		printTitle();
 		printHeader();
 		printBody();
-		return true;
-	}
-	
-	private boolean verify() {
-		String template = "Invalid {0}[{1}], out of range[{2},{3}]";
-		boolean isLegal = monthIndex >= 0 && monthIndex <= 11;
-		if(!isLegal) {
-			C.pl(StrUtil.occupy(template, "Month", (monthIndex + 1), 1, 12));
-			return false;
-		}
 		
-		isLegal = year == 0 || year >= YEAR_MIN && year <= YEAR_MAX;
-		if(!isLegal) {
-			C.pl(StrUtil.occupy(template, "Year", year, YEAR_MIN, YEAR_MAX));
-			return false;
-		}
-		
-		return true;
+		return this;
 	}
 	
 	private void printTitle() {

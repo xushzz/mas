@@ -36,6 +36,7 @@ import com.sirap.basic.util.NetworkUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.domain.SiteSearchEngine;
@@ -581,20 +582,11 @@ public class CommandSirap extends CommandBase {
 		return file.getAbsolutePath();
 	}
 	
-	@SuppressWarnings("unchecked")
 	private List<String> displayMonthCalendar(int year, int month) {
-		if(month < 1 || month > 12) {
-			return Collections.EMPTY_LIST;
-		}
-		
+		XXXUtil.checkMonthRange(month);
 		RioCalendar rioCal = new RioCalendar(year, month);
 		rioCal.setLocale(g().getLocale());
-		boolean isGood = rioCal.generate();
-		if(isGood) {
-			return rioCal.getRecords();
-		}
-		
-		return Collections.EMPTY_LIST;
+		return rioCal.generate().getRecords();
 	}
 	
 	private List<String> displayMonthCalendar(int month) {
@@ -606,13 +598,8 @@ public class CommandSirap extends CommandBase {
 		List<List<String>> grandList = new ArrayList<List<String>>();
 		for(int m = 1; m <= 12; m++) {
 			RioCalendar rioCal = new RioCalendar(year, m);
-			boolean isGood = rioCal.generate();
-			if(isGood) {
-				List<String> records = rioCal.getRecords();
-				grandList.add(records);
-			} else {
-				break;
-			}
+			List<String> records = rioCal.generate().getRecords();
+			grandList.add(records);
 		}
 
 		MatrixCalendar jamie = new MatrixCalendar(grandList, MatrixCalendar.MatrixMode.THREE);

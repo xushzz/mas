@@ -2,34 +2,52 @@ package com.sirap.extractor.impl;
 
 import java.util.List;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.sirap.basic.component.Extractor;
-import com.sirap.basic.domain.MexObject;
+import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.exception.MexException;
+import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.HtmlUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.XXXUtil;
 
-public class ChinaCalendarExtractor extends Extractor<MexObject> {
-	
-	private String calendarInfo;
+public class ChinaCalendarExtractor extends Extractor<ValuesItem> {
 	
 	public static final String URL_TEMPLATE = "https://gonglinongli.51240.com";
 
+	private String params;
 	public ChinaCalendarExtractor(String params) {
 		printFetching = true;
+		this.params = params;
 		setUrl(URL_TEMPLATE);
 		setRequestParams(construct(params));
 		setMethodPost(true);
 	}
 	
+	/***
+	 * g20190103
+	 * g201803
+	 * g2012
+	 * n20190302 三月初二
+	 * n20190302R 闰三月初二
+	 * n201903 三月
+	 * n201903 闰三月
+	 * n201901 正月
+	 * n201911 冬月
+	 * n202912 腊月
+	 * (g|n)\\d{4,8}\\R?)
+	 */
 	private String construct(String params) {
-		String regex = "(g|n)(\\d{4})(\\d{2})(\\d{2})";
-		Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(params);
+		String regex = "(g|n)(\\d{4})(\\d{2})(\\d{2})(R?)";
+		Matcher m = createMatcher(regex, params);
 		if(m.matches()) {
 			String flag = m.group(1);
 			String year = m.group(2);
+			XXXUtil.checkRange(Integer.parseInt(year), 1899, 2100);
 			String month = m.group(3);
+			if(!m.group(5).isEmpty()) {
+				month = "-" + month;
+			}
 			String day = m.group(4);
 			
 			String templ = "{0}ongli_nian={1}&{0}ongli_yue={2}&{0}ongli_ri={3}";
@@ -45,17 +63,21 @@ public class ChinaCalendarExtractor extends Extractor<MexObject> {
 	protected void parseContent() {
 		String regex = "<td[^<>]+bgcolor=\"#FFFFFF\"[^<>]+?>(.+?)</td>";
 		List<String> items = StrUtil.findAllMatchedItems(regex, source);
-		StringBuffer su = new StringBuffer();
-		for(String item : items) {
-			String temp = HtmlUtil.removeHttpTag(item).trim();
-			temp = StrUtil.reduceMultipleSpacesToOne(temp);
-			su.append(temp).append(", ");
+		if(EmptyUtil.isNullOrEmpty(items)) {
+			XXXUtil.alert("Not found result with param: " + params);
 		}
-
-		calendarInfo = su.toString().replaceAll(",[^,]+$", "");
-	}
-	
-	public String getCalendarInfo() {
-		return calendarInfo;
+		String day = HtmlUtil.removeHttpTag(items.get(0)).replaceAll("\\s+", "");
+		String nongli = HtmlUtil.removeHttpTag(items.get(1));
+		String animal = HtmlUtil.removeHttpTag(items.get(2));
+		String constellation = HtmlUtil.removeHttpTag(items.get(3));
+		ValuesItem vi = new ValuesItem();
+		List<String> ymd = StrUtil.findAllMatchedItems("\\d+", day);
+		vi.add(StrUtil.connect(ymd));
+		vi.add(day);
+		vi.add(nongli);
+		vi.add(animal);
+		vi.add(constellation);
+		
+		item = vi;
 	}
 }

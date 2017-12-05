@@ -16,7 +16,7 @@ public class XXXUtil {
 	
 	public static void checkMonthRange(int month) {
 		if(month < 1 || month > 12) {
-			throw new MexException("Bad month '{month}', should be between 1 and 12.");
+			throw new MexException("Bad month '{0}', should be between 1 and 12.", month);
 		}
 	}
 	
