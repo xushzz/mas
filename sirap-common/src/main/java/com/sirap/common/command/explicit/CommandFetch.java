@@ -141,19 +141,17 @@ public class CommandFetch extends CommandBase {
 		solo = parseSoloParam(KEY_DATETIME_TIMEZONE);
 		if(solo != null) {
 			List<TZRecord> records = TimeZoneManager.g().getTimeZones(solo, g().getLocale());
-			if(!EmptyUtil.isNullOrEmpty(records)) {
-				if(target instanceof TargetPDF) {
-					int[] cellsWidth = {5, 1, 5};
-					int[] cellsAlign = {0, 1, 2};
-					PDFParams pdfParams = new PDFParams(cellsWidth, cellsAlign);
-					target.setParams(pdfParams);
-					export(CollUtil.items2PDFRecords(records));
-				} else {
-					export(CollUtil.items2PrintRecords(records));					
-				}
-
-	    		return true;
+			if(target instanceof TargetPDF) {
+				int[] cellsWidth = {5, 1, 5};
+				int[] cellsAlign = {0, 1, 2};
+				PDFParams pdfParams = new PDFParams(cellsWidth, cellsAlign);
+				target.setParams(pdfParams);
+				export(CollUtil.items2PDFRecords(records));
+			} else {
+				export(CollUtil.items2PrintRecords(records));					
 			}
+
+    		return true;
 		}
 		
 		return false;

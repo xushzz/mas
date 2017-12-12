@@ -535,10 +535,6 @@ public class CommandFile extends CommandBase {
 		//list regex matched items in local text file
 		params = parseParams("(.+)@(.+)");
 		if(params != null) {
-			String cat = IOUtil.charsetOfTextFile(file.getAbsolutePath());
-			if(OptionUtil.readBooleanPRI(options, "x", false)) {
-				cat = switchChartset(cat);
-			}
 			String regex = params[0].trim();
 			String value = params[1].trim();
 			File tempFile = parseFile(value);
@@ -549,6 +545,11 @@ public class CommandFile extends CommandBase {
 					String groupConnector = OptionUtil.readString(options, "gcon", "; ").replace("\\s", " ");
 					String itemConnector = OptionUtil.readString(options, "icon", ", ").replace("\\s", " ");
 					List<String> items = new ArrayList<String>();
+					String cat = IOUtil.charsetOfTextFile(filePath);
+					if(OptionUtil.readBooleanPRI(options, "x", false)) {
+						cat = switchChartset(cat);
+					}
+
 					List<String> txtContent = FileOpener.readTextContent(filePath, true, cat);
 					int line = 0;
 					int maxLen = (txtContent.size() + "").length();

@@ -4,7 +4,7 @@ so fire            search online qihu360 photos by keyword fire, and download to
 so fire            search qihu360 photos, number is fixed as 60, courtesy of ${qihu360.url}
 163[seriea, china, social, bundes, laliga, premier, uefa], courtesy of ${163.netease.url}
 163social          display 163 social photo URLs, courtesy of ${163.netease.url}
-phonex             display phonex social photo URLs, courtesy of ${phoenix.url}
+phoenix            display phoenix social photo URLs, courtesy of ${phoenix.url}
 postcode,youbian   display all post code info, courtesy of ${youbian.postcode.url}
-areacode,quhao     display all area code info, courtesy of ${quhao.areacode.url}  
+areacode,quhao     display all area code info, courtesy of ${quhao.areacode.url}
 ver=7/1/2017, VI  EXTRACTOR-WHOLESALE1.0.3-PATTEN

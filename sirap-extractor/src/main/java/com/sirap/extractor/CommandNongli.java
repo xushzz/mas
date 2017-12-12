@@ -156,7 +156,6 @@ public class CommandNongli extends CommandBase {
 				int count = queue.size() + 1;
 				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "async dealing...", yyyyMMdd);
 				ChinaCalendarExtractor mike = new ChinaCalendarExtractor("g" + yyyyMMdd);
-				mike.process();
 				String value = mike.process().getItem().toString();
 				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "async done", yyyyMMdd);
 				return value;

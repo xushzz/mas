@@ -2,7 +2,8 @@ hired E:\A1.txt    parse hire records and display order by start-date ascending
 hired- E:\A1.txt   parse hire records and display order by start-date descending
 hdays E:\A1.txt    parse hire records and display order by hired-days ascending
 hdays- E:\A1.txt   parse hire records and display order by hired-days descending
+sfz 452723         search sfz items containing given criteria, mex criteria actually
 sfz 4325...9832    validate and display check code for China ID card
 b7                 make the beep sound seven times, in CMD only
 bmw                make the beep sound K times, K is the current hour value, like 6, 17, or 24 if 0.
-ver=5/25/2017, IV  GEEK-PIRATE1.0.0-MIJO
+ver=12/5/2017, II  GEEK-PIRATE1.0.1-DAUGHTER

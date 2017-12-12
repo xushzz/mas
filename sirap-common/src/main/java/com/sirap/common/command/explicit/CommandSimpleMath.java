@@ -234,6 +234,14 @@ public class CommandSimpleMath extends CommandBase {
 			return true;
 		}
 		
+		params = parseParams(Konstants.REGEX_FLOAT + "\\s*([KMGTPE]?B)");
+		if(params != null) {
+			Double value = Double.parseDouble(params[0]);
+			export(MathUtil.fileSize(value, params[1]));
+			
+			return true;
+		}
+		
 		solo = parseSoloParam(LENGTH_OF + "(.+?)");
 		if(solo != null) {
 			int len = solo.length();

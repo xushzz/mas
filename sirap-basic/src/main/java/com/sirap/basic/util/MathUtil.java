@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Lists;
+import com.sirap.basic.component.Konstants;
 import com.sirap.basic.math.PermutationGenerator;
 import com.sirap.basic.tool.C;
 
@@ -331,6 +332,39 @@ public class MathUtil {
 			String currentKey = keys.get(i);
 			Double currentFactor = map.get(currentKey);
 			Double king = currentFactor * value / paramFactor;
+			String va = setDoubleScale(king, 6);
+			values.add(StrUtil.removePointZeroes(va) + " " + currentKey);
+		}
+		
+		return values;
+	}
+
+	public static List<String> fileSize(double value, String unit) {
+		Map<String, Double> map = new LinkedHashMap<>();
+		Double base = 1.0;
+		String units = Konstants.FILE_SIZE_UNIT;
+		for(int k = 0; k < units.length(); k++) {
+			String key = k == 0 ? "B" : (units.charAt(k) + "B");
+			double fixedValue = base * Math.pow(Konstants.FILE_SIZE_STEP, units.length() - 1 - k);
+			map.put(key, fixedValue);
+		}
+		
+		List<String> keys = Lists.newArrayList(map.keySet());
+
+		String paramKey = unit.toUpperCase();
+		Double paramFactor = map.get(paramKey);
+		if(paramFactor == null) {
+			XXXUtil.alert("Illegal unit {0}, should be one of {1}.", unit, keys);
+		}
+
+		List<String> values = Lists.newArrayList();
+		for(int i = 0; i < keys.size(); i++) {
+			String currentKey = keys.get(i);
+			Double currentFactor = map.get(currentKey);
+			Double king = currentFactor * value / paramFactor;
+			if(king < 0.0001) {
+				continue;
+			}
 			String va = setDoubleScale(king, 6);
 			values.add(StrUtil.removePointZeroes(va) + " " + currentKey);
 		}

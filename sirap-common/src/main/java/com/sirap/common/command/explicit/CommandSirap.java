@@ -229,20 +229,18 @@ public class CommandSirap extends CommandBase {
 		solo = parseSoloParam(KEY_TIMEZONE_DISPLAY);
 		if(solo != null) {
 			List<TZRecord> records = TimeZoneManager.g().getTimeZones(solo, g().getLocale(), false);
-			if(!EmptyUtil.isNullOrEmpty(records)) {
-				if(target instanceof TargetPDF) {
-					int[] cellsWidth = {1, 1};
-					int[] cellsAlign = {0, 0};
-					PDFParams pdfParams = new PDFParams(cellsWidth, cellsAlign);
-					target.setParams(pdfParams);
-					List<List<String>> items = CollUtil.items2PDFRecords(records);
-					export(items);
-				} else {
-					export(CollUtil.items2PrintRecords(records));	
-				}
-				
-	    		return true;
+			if(target instanceof TargetPDF) {
+				int[] cellsWidth = {1, 1};
+				int[] cellsAlign = {0, 0};
+				PDFParams pdfParams = new PDFParams(cellsWidth, cellsAlign);
+				target.setParams(pdfParams);
+				List<List<String>> items = CollUtil.items2PDFRecords(records);
+				export(items);
+			} else {
+				export(records);	
 			}
+			
+    		return true;
 		}
 		
 		params = parseParams("(s|c)(|\\d{1,2})(|\\s.*?)");

@@ -11,6 +11,7 @@ import com.sirap.basic.component.Konstants;
 import com.sirap.basic.component.MexedMap;
 import com.sirap.basic.search.MexFilter;
 import com.sirap.basic.tool.C;
+import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.common.domain.TZRecord;
@@ -64,12 +65,11 @@ public class TimeZoneManager {
 		if(Konstants.KEY_DOT_AS_CRITERIA.equals(criteria)) {
 			items = ALL_RECORDS;
 		} else {
-			MexFilter<TZRecord> filter = new MexFilter<TZRecord>(criteria, ALL_RECORDS);
-			items = filter.process();
+			items = CollUtil.filter(ALL_RECORDS, criteria);
 		}
 		
 		if(items.isEmpty()) {
-			return null;
+			return items;
 		}
 
 		Date worldTime = null;
