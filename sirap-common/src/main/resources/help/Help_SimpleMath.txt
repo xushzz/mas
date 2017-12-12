@@ -1,8 +1,8 @@
-70kg               convert weight units between KG,LB,OZ, 1kg=2.2lb=35.237oz
-50Fa               convert temperature units between Fahrenheit and Celsius
-10cm               convert short distance units between cm, yard, chi, feet, cun, inch
-10km               convert long distance units between km, mile, naut, nmi, aka nautical mile
-10gb               convert file size units between b,kb,mb,gb,tb,pb,eb
+70kg               convert weight units between KG,LB,OZ, 1kg=2.2lb=35.237oz, options:$s=3, scale
+50Fa               convert temperature units between Fahrenheit and Celsius, options:$s=3, scale
+10cm               convert short distance units between cm, yard, chi, feet, cun, inch, options:$s=3, scale
+10km               convert long distance units between km, mile, naut, nmi, aka nautical mile, options:$s=3, scale
+10gb               convert file size units between b,kb,mb,gb,tb,pb,eb, options:$s=3, scale
 td.14412345678     parse the string to long as milliseconds, then convert it to date
 tl.20160915        convert the date to long, the date could be from yyyyMMdd to yyyyMMddhhmmssSSS
 tl                 not team leader, but convert current date to long in milliseconds

@@ -205,7 +205,7 @@ public class CommandSimpleMath extends CommandBase {
 		params = parseParams(Konstants.REGEX_FLOAT + "\\s*(kg|lb|oz)");
 		if(params != null) {
 			Double value = Double.parseDouble(params[0]);
-			export(MathUtil.weight(value, params[1]));
+			export(MathUtil.weight(value, params[1], OptionUtil.readIntegerPRI(options, "s", 2)));
 			
 			return true;
 		}
@@ -213,7 +213,7 @@ public class CommandSimpleMath extends CommandBase {
 		params = parseParams(Konstants.REGEX_SIGN_FLOAT + "\\s*(Fa|Ce)");
 		if(params != null) {
 			Double value = Double.parseDouble(params[0]);
-			export(MathUtil.temperature(value, params[1]));
+			export(MathUtil.temperature(value, params[1], OptionUtil.readIntegerPRI(options, "s", 2)));
 			
 			return true;
 		}
@@ -221,7 +221,7 @@ public class CommandSimpleMath extends CommandBase {
 		params = parseParams(Konstants.REGEX_FLOAT + "\\s*(Yard|Chi|Feet|Cun|Inch|Cm)");
 		if(params != null) {
 			Double value = Double.parseDouble(params[0]);
-			export(MathUtil.distance(value, params[1]));
+			export(MathUtil.distance(value, params[1], OptionUtil.readIntegerPRI(options, "s", 6)));
 			
 			return true;
 		}
@@ -229,7 +229,7 @@ public class CommandSimpleMath extends CommandBase {
 		params = parseParams(Konstants.REGEX_FLOAT + "\\s*(Mile|Km|nmi)");
 		if(params != null) {
 			Double value = Double.parseDouble(params[0]);
-			export(MathUtil.longDistance(value, params[1]));
+			export(MathUtil.longDistance(value, params[1], OptionUtil.readIntegerPRI(options, "s", 6)));
 			
 			return true;
 		}
@@ -237,7 +237,7 @@ public class CommandSimpleMath extends CommandBase {
 		params = parseParams(Konstants.REGEX_FLOAT + "\\s*([KMGTPE]?B)");
 		if(params != null) {
 			Double value = Double.parseDouble(params[0]);
-			export(MathUtil.fileSize(value, params[1]));
+			export(MathUtil.fileSize(value, params[1], OptionUtil.readIntegerPRI(options, "s", 6)));
 			
 			return true;
 		}

@@ -237,7 +237,8 @@ public class MathUtil {
 		return avg;
 	}
 	
-	public static String temperature(double value, String unit) {
+	public static String temperature(double value, String unit, int scale) {
+		XXXUtil.checkRange(scale, 0, 99);
 		String degreeFahrenheit = "Fa";
 		String degreeCelsius = "Ce";
 		double targetValue = 0;
@@ -252,13 +253,14 @@ public class MathUtil {
 			XXXUtil.alert("Illegal unit {0}, should be one of {1}, {2}.", unit, "Fa, Ce");
 		}
 		
-		String va = setDoubleScale(targetValue, 2);
+		String va = setDoubleScale(targetValue, scale);
 		String king = StrUtil.removePointZeroes(va) + " " + targetUnit;
 		
 		return king;
 	}
 	
-	public static List<String> weight(double value, String unit) {
+	public static List<String> weight(double value, String unit, int scale) {
+		XXXUtil.checkRange(scale, 0, 99);
 		Map<String, Double> map = new LinkedHashMap<>();
 		map.put("kg", 1.0);
 		map.put("lb", 2.2046226);
@@ -277,14 +279,15 @@ public class MathUtil {
 			String currentKey = keys.get(i);
 			Double currentFactor = map.get(currentKey);
 			Double king = currentFactor * value / paramFactor;
-			String va = setDoubleScale(king, 2);
+			String va = setDoubleScale(king, scale);
 			values.add(StrUtil.removePointZeroes(va) + " " + currentKey);
 		}
 		
 		return values;
 	}
 	
-	public static List<String> distance(double value, String unit) {
+	public static List<String> distance(double value, String unit, int scale) {
+		XXXUtil.checkRange(scale, 0, 99);
 		Map<String, Double> map = new LinkedHashMap<>();
 		map.put("yard", 1.0);
 		map.put("chi", 2.7432);
@@ -306,14 +309,15 @@ public class MathUtil {
 			String currentKey = keys.get(i);
 			Double currentFactor = map.get(currentKey);
 			Double king = currentFactor * value / paramFactor;
-			String va = setDoubleScale(king, 6);
+			String va = setDoubleScale(king, scale);
 			values.add(StrUtil.removePointZeroes(va) + " " + currentKey);
 		}
 		
 		return values;
 	}
 
-	public static List<String> longDistance(double value, String unit) {
+	public static List<String> longDistance(double value, String unit, int scale) {
+		XXXUtil.checkRange(scale, 0, 99);
 		Map<String, Double> map = new LinkedHashMap<>();
 		map.put("nmi", 0.8689762);
 		map.put("mile", 1.0);
@@ -332,14 +336,15 @@ public class MathUtil {
 			String currentKey = keys.get(i);
 			Double currentFactor = map.get(currentKey);
 			Double king = currentFactor * value / paramFactor;
-			String va = setDoubleScale(king, 6);
+			String va = setDoubleScale(king, scale);
 			values.add(StrUtil.removePointZeroes(va) + " " + currentKey);
 		}
 		
 		return values;
 	}
 
-	public static List<String> fileSize(double value, String unit) {
+	public static List<String> fileSize(double value, String unit, int scale) {
+		XXXUtil.checkRange(scale, 0, 99);
 		Map<String, Double> map = new LinkedHashMap<>();
 		Double base = 1.0;
 		String units = Konstants.FILE_SIZE_UNIT;
@@ -365,7 +370,7 @@ public class MathUtil {
 			if(king < 0.0001) {
 				continue;
 			}
-			String va = setDoubleScale(king, 6);
+			String va = setDoubleScale(king, scale);
 			values.add(StrUtil.removePointZeroes(va) + " " + currentKey);
 		}
 		
