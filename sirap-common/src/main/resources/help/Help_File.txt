@@ -39,8 +39,8 @@ vr                 refresh 'v folders' cache, the changes in folders will be ref
 v homeland&tower   conduct search in v folders by multiple conditions, & for 'and', | for 'or'
 v 5.3              the number-format criteria would be additionally read as season 05 episode 03
 (wi\d+)@http://a.cn  filter out those records matching the specified java regex. $+order,+case
-(wi\d+)@E:\a.txt   filter out those records matching the specified java regex. $+line,+case,icon=\s
-(wi\d+)@E:\a.txt   $icon=\s, item connector, default is [, ], $gcon=#, group connector, default is [; ]
+(wi\d+)@E:\a.txt   filter out those records matching the specified java regex. $+line,+case,icon=\s,+one
+(wi\d+)@E:\a.txt   $icon=\s, item connector, default is [, ], $gcon=#, group connector, default is [; ],+one
 pdf1,4-7 E:\A.pdf  select specified pages from give PDF and export to a new PDF file
 pdf A.pdf,B.pdf    merge all PDF files and export to a new PDF file
 dc                 day check, display memory entries that would happen within 30 days

@@ -59,7 +59,7 @@ public class Konstants {
 	public static final String DRIVER_MYSQL = "com.mysql.jdbc.Driver";
 	public static final String DRIVER_ORACLE = "oracle.jdbc.OracleDriver";
 	public static final String DRIVER_DB2 = "com.ibm.db2.jcc.DB2Driver";
-	public static final String DRIVER_SQLSERVER = "com.microsoft.JDBC.sqlserver.SQLServerDriver";
+	public static final String DRIVER_SQLSERVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 	public static final String DRIVER_POSTGRE = "org.postgresql.Driver";
 	public static final String DRIVER_SYBASE = "com.sybase.JDBC.SybDriver";
 	public static final String DRIVER_INFORMIX = "com.informix.JDBC.ifxDriver";

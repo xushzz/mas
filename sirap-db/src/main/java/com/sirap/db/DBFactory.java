@@ -4,10 +4,12 @@ import com.sirap.basic.component.Konstants;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.db.adjustor.QueryAdjustorMySql;
 import com.sirap.db.adjustor.QueryAdjustorOracle;
+import com.sirap.db.adjustor.QueryAdjustorSqlServer;
 import com.sirap.db.adjustor.QuerySqlAdjustor;
 import com.sirap.db.parser.SchemaNameParser;
 import com.sirap.db.parser.SchemaParserMySql;
 import com.sirap.db.parser.SchemaParserOracle;
+import com.sirap.db.parser.SchemaParserSqlServer;
 
 public class DBFactory {
 
@@ -20,6 +22,10 @@ public class DBFactory {
 			return new QueryAdjustorOracle();
 		}
 		
+		if(StrUtil.equals(Konstants.DB_TYPE_SQLSERVER, dbType)) {
+			return new QueryAdjustorSqlServer();
+		}
+		
 		return null;
 	}
 	
@@ -30,6 +36,10 @@ public class DBFactory {
 		
 		if(StrUtil.equals(Konstants.DB_TYPE_ORACLE, dbType)) {
 			return new SchemaParserOracle();
+		}
+		
+		if(StrUtil.equals(Konstants.DB_TYPE_SQLSERVER, dbType)) {
+			return new SchemaParserSqlServer();
 		}
 		
 		return null;

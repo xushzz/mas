@@ -1,3 +1,4 @@
-gkai               Fetch publised companies in site of Minister of Environment Protection
+zee                digest with sm3, uppercase the result and digest with md5
+gkai               Fetch published companies in site of Minister of Environment Protection
 xkai               Fetch staged companies in site of Minister of Environment Protection
-ver=11/25/2017, VI  EXTRACTOR-Avron1.0.1
+ver=12/12/2017, II  EXTRACTOR-Avron1.0.2

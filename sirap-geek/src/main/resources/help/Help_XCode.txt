@@ -17,7 +17,7 @@ UTF-8 \uE5B885     decode UTF8 chars to regular chars, also for UTF8, Unicode an
 UTF8 \uE593A5      decode UTF8 chars to regular chars, also for UTF8, Unicode and so on
 t64 gavinbelson    convert given string to BASE64-based string.
 f64 YmluZ28=       convert a BASE64-based string to regular string.
-digest abc         encrypt string with digest algorithm, such as SHA,SHA1,SHA224,SHA256,SHA512,MD2,MD5
+digest abc         encrypt string with digest algorithm, such as SM3,SHA,SHA1,SHA224,SHA256,SHA512,MD2,MD5
 digest F:\abc.txt  encrypt given file with digest algo, such as SHA,SHA1,SHA224,SHA256,SHA512,MD2,MD5
 url mixedCHNEng    encode given string in URL manner, application/x-www-form-urlencoded MIME  
 urx %E5%B8%88      decode given string from URL manner
@@ -30,4 +30,4 @@ ccy Chinese        display currency info containing Chinese: zh_HK, HKG, Chinese
 ccy..              display all currency info provided by the JRE
 dfs zh_TW          display date format symbols info for local zh_TW
 dfs..              display all date format symbols info provided by the JRE
-ver=11/28/2017, II  GEEK-XCODE1.0.4-IVANKA
+ver=12/12/2017, II  GEEK-XCODE1.0.5-IVANKA

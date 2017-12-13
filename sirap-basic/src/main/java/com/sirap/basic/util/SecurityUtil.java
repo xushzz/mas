@@ -3,11 +3,16 @@ package com.sirap.basic.util;
 import java.io.FileInputStream;
 import java.security.MessageDigest;
 
+import com.sirap.basic.algo.SM3Digest;
 import com.sirap.basic.component.Konstants;
 
 public class SecurityUtil {
 
 	public static String digest(String source, String algo) {
+		if(StrUtil.equals(algo, "sm3")) {
+			return sm3(source);
+		}
+		
 		try {
 			byte[] btInput = source.getBytes(Konstants.CODE_UTF8);
 			MessageDigest roy = MessageDigest.getInstance(algo);
@@ -25,6 +30,17 @@ public class SecurityUtil {
 	
 	public static String md5(String source) {
 		return digest(source, "MD5");
+	}
+	
+	public static String sm3(String source) {
+		byte[] bytes = new byte[32];  
+        byte[] msg1 = source.getBytes();  
+        SM3Digest sm3 = new SM3Digest();  
+        sm3.update(msg1, 0, msg1.length);  
+        sm3.doFinal(bytes, 0);
+        String result = StrUtil.bytesToHexString(bytes);
+        
+		return result;
 	}
 	
 	@SuppressWarnings("resource")

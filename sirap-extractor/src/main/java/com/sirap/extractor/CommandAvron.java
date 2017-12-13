@@ -1,17 +1,39 @@
 package com.sirap.extractor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.thread.MasterItemsOriented;
 import com.sirap.basic.thread.WorkerItemsOriented;
+import com.sirap.basic.util.FileUtil;
+import com.sirap.basic.util.SecurityUtil;
+import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.extractor.avron.AvronExtractors;
 
 public class CommandAvron extends CommandBase {
 	@Override
 	public boolean handle() throws Exception {
+		params = parseParams("(zee)\\s(.+?)");
+		if(params != null) {
+			String temp = params[0];
+			String what = params[1];
+			String algo = temp;
+			
+			String sm3 = SecurityUtil.digest(what, "sm3");
+			String result = SecurityUtil.md5(sm3.toUpperCase());
+			String prefix = "";
+			
+			List<String> items = new ArrayList<>();
+			items.add(result);
+			items.add(prefix + algo.toUpperCase() + " generates " + result.length() + " chars.");
+			
+			export(items);
+			return true;
+		}
+		
 		if(is("xkai")) {
 			String maxPage = AvronExtractors.fetchMaxPageOfStagedCompanies();
 			List<Integer> pages = Lists.newArrayList();

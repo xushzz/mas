@@ -9,6 +9,7 @@ import com.sirap.basic.db.SirapDAO;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.XXXUtil;
 import com.sirap.db.adjustor.QuerySqlAdjustor;
 
 public class DBManager extends SirapDAO {
@@ -67,7 +68,7 @@ public class DBManager extends SirapDAO {
 					tempSql = zhihui.adjust(tempSql, schema);
 				} else {
 					String msg = "Not yet supported database type: " + dbType;
-					C.pl(msg);
+					XXXUtil.alert(msg);
 				}
 			}
 			
