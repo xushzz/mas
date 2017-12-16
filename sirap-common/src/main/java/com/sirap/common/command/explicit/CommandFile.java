@@ -37,6 +37,7 @@ import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.domain.MemoryRecord;
@@ -45,6 +46,8 @@ import com.sirap.common.framework.command.FileSizeInputAnalyzer;
 import com.sirap.common.framework.command.InputAnalyzer;
 import com.sirap.common.framework.command.target.TargetAnalyzer;
 import com.sirap.common.framework.command.target.TargetConsole;
+import com.sirap.common.framework.command.target.TargetEmail;
+import com.sirap.common.framework.command.target.TargetFolder;
 import com.sirap.common.manager.MemorableDayManager;
 import com.sirap.common.manager.VFileManager;
 
@@ -62,6 +65,7 @@ public class CommandFile extends CommandBase {
 	private static final String KEY_PDF = "pdf";
 	private static final String KEY_DAY_CHECK = "dc";
 	private static final String KEY_MEMORABLE = "mm";
+	private static final String KEY_FIX_IMAGE = "fix";
 	
 	public static final String DEFAULT_TEXT_MAX_SIZE = "2M";
 
@@ -766,7 +770,71 @@ public class CommandFile extends CommandBase {
 			}
 		}
 		
+		solo = parseSoloParam(KEY_FIX_IMAGE + "\\s+(.+)");
+		if(solo != null) {
+			String whereToSave = "";
+			String fileSizeWithUnit = OptionUtil.readString(options, "size");
+			XXXUtil.nullCheck(fileSizeWithUnit, ":You must specify the file size you want to compress to.");
+			if(FileOpener.isImageFile(solo)) {
+				fixSingleImage(solo, fileSizeWithUnit);
+				return true;
+			}
+			
+			File folder = parseFolder(solo);
+			if(folder != null) {
+				//handle all those image files in this folder
+				folder.listFiles(new FilenameFilter() {
+					
+					@Override
+					public boolean accept(File dir, String name) {
+						String filePath = StrUtil.useSeparator(dir.getAbsolutePath(), name);
+						if(FileOpener.isImageFile(filePath)) {
+							fixSingleImage(filePath, fileSizeWithUnit);
+						}
+						return false;
+					}
+				});
+				
+				return true;
+			}
+		}
+		
 		return false;
+	}
+	
+	private void fixSingleImage(String filePath, String fileSizeWithUnit) {
+		String whereToSave = null;
+		boolean toSameFolder = OptionUtil.readBooleanPRI(options, "same", false);
+		if(!toSameFolder) {
+			if(target instanceof TargetFolder) {
+				whereToSave = ((TargetFolder)target).getPath();
+			} else {
+				whereToSave = getExportLocation();
+			}
+		}
+		boolean withTimestamp = g().isExportWithTimestampEnabled(options);
+		String finalFilename = null;
+		//handle single image file.
+		if(toSameFolder) {
+			finalFilename = ImageUtil.compressImageToSameFolder(filePath, fileSizeWithUnit, withTimestamp);
+		} else {
+			finalFilename = ImageUtil.compressImageToTargetFolder(filePath, whereToSave, fileSizeWithUnit, withTimestamp);
+		}
+		
+		if(finalFilename != null) {
+			String info = "";
+			if(OptionUtil.readBooleanPRI(options, "d", true)) {
+				info += " " + FileUtil.formatFileSize(finalFilename);
+				info += " " + ImageUtil.readImageWidthHeight(finalFilename, "*");
+			}
+
+			C.pl("Saved => " + finalFilename + info);
+			tryToOpenGeneratedImage(finalFilename);
+			
+			if(target instanceof TargetEmail) {
+				export(FileUtil.getIfNormalFile(finalFilename));
+			}
+		}
 	}
 	
 	public static List<MexObject> readFileIntoList(String fileName) {

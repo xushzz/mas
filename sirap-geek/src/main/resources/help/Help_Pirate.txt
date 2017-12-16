@@ -6,4 +6,6 @@ sfz 452723         search sfz items containing given criteria, mex criteria actu
 sfz 4325...9832    validate and display check code for China ID card
 b7                 make the beep sound seven times, in CMD only
 bmw                make the beep sound K times, K is the current hour value, like 6, 17, or 24 if 0.
-ver=12/5/2017, II  GEEK-PIRATE1.0.1-DAUGHTER
+caro D:\caroline   generate markup text for daughter, starts from 2017/12/4, $base=20101213, base date
+caro D:\caroline   options: $+new, newest comes first, $wiki=caro, designate given wiki folder name
+ver=12/15/2017, V  GEEK-PIRATE1.0.2-DAUGHTER

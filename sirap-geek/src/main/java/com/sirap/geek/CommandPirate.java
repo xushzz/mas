@@ -1,11 +1,15 @@
 package com.sirap.geek;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.Person;
 import com.sirap.basic.exception.MexException;
@@ -15,11 +19,13 @@ import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.IDCardUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.MathUtil;
+import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.ThreadUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
+import com.sirap.geek.domain.CaroItem;
 import com.sirap.geek.manager.HiredDaysCalculator;
 
 public class CommandPirate extends CommandBase {
@@ -28,6 +34,7 @@ public class CommandPirate extends CommandBase {
 	private static final String KEY_ID_SFZ = "sfz";
 	private static final String KEY_BEEP_K = "b(\\d{1,2})";
 	private static final String KEY_BEEP_HOUR = "bmw";
+	private static final String KEY_CARO = "caro";
 
 	public boolean handle() {
 		
@@ -111,7 +118,81 @@ public class CommandPirate extends CommandBase {
 			return true;
 		}
 		
+		solo = parseSoloParam(KEY_CARO + "\\s+(.+)");
+		if(solo != null) {
+			File folder = parseFolder(solo);
+			String wikiFolder = OptionUtil.readString(options, "wiki");
+			if(wikiFolder == null) {
+				String regex = "[/\\\\]([^/\\\\]+)[/\\\\]?$";
+				wikiFolder = StrUtil.findFirstMatchedItem(regex, solo);
+			}
+			List<String> lines = Lists.newArrayList();
+			XXXUtil.nullCheck(folder, ":Not a valid folder: " + solo);
+			String baseDay = OptionUtil.readString(options, "base");
+			Date baseDate = DateUtil.parse("yyyyMMdd", baseDay, false);
+			boolean forCaro = false;
+			if(baseDate == null) {
+				forCaro = true;
+				baseDate = DateUtil.construct(2017, 12, 4);
+				lines.add("* 我是小鱼儿，这是我爸爸给我做的成长全记录。");
+				lines.add("* 我生日：2017/12/4");
+				lines.add("* 嗯，冬天，晚上，大南宁，广西省妇幼医院");
+			}
+			
+			List<CaroItem> caros = Lists.newArrayList();
+			folder.listFiles(new FilenameFilter() {
+				
+				@Override
+				public boolean accept(File dir, String fileName) {
+					CaroItem item = new CaroItem();
+					if(item.parse(fileName)) {
+						caros.add(item);
+					}
+					return true;
+				}
+			});
+			
+			//order by date, ascending
+			Collections.sort(caros);
+			
+			//order by date, descending
+			
+			if(OptionUtil.readBooleanPRI(options, "new", false)) {
+				Collections.reverse(caros);
+				if(forCaro) {
+					lines.add("### [按时间顺序](https://github.com/acesfullmike/mas/wiki/caroline)");
+				}
+			} else {
+				if(forCaro) {
+					lines.add("### [按时间倒序](https://github.com/acesfullmike/mas/wiki/caroline2)");
+				}
+			}
+			for(CaroItem item : caros) {
+				lines.addAll(carolines(item, baseDate, wikiFolder));
+			}
+			
+			export(lines);
+			
+			return true;
+		}
+		
 		return false;
+	}
+	
+	private List<String> carolines(CaroItem item, Date birthday, String folderName) {
+		Date date = DateUtil.parse(DateUtil.DATETIME_SPACE_TIGHT, item.getDateStr());
+		int dayDiff = DateUtil.dayDiff(date, birthday) + 1;
+		String weekday = DateUtil.displayDate(date, DateUtil.WEEK_DATE, Locale.CHINA);
+		String lineA = "# 第 " + dayDiff + " 天, " + weekday;
+		String temp = "![{0}]({1}/{0})";
+		String lineB = StrUtil.occupy(temp, item.getFileName(), folderName);
+		
+		List<String> lines = Lists.newArrayList();
+		lines.add(lineA);
+		lines.add(lineB);
+		lines.add("");
+
+		return lines;
 	}
 	
 	private void beepKTimes(int count) {

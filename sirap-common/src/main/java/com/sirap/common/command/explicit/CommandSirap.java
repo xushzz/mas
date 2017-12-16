@@ -269,7 +269,7 @@ public class CommandSirap extends CommandBase {
 			String filePath = ImageUtil.takePhoto(filename, getCaptureSound(), format, delay, KEY_CAPTURE_SCREEN.equals(type));
 			if(filePath != null) {
 				String info = "";
-				if(OptionUtil.readBooleanPRI(options, "d", false)) {
+				if(OptionUtil.readBooleanPRI(options, "d", true)) {
 					info += " " + FileUtil.formatFileSize(filePath);
 					info += " " + ImageUtil.readImageWidthHeight(filePath, "*");
 				}

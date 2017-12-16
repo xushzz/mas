@@ -146,9 +146,7 @@ public class ImageUtil {
 		String newName = temp.replace(".", "_" + fileSizeWithUnit + ".");
 		String targetPath = folder + newName;
 		long targetSize = FileUtil.parseFileSize(fileSizeWithUnit);
-		compressImage(sourcePath, targetPath, targetSize);
-		
-		return targetPath;
+		return compressImage(sourcePath, targetPath, targetSize);
 	}
 	
 	public static String compressImageToTargetFolder(String sourcePath, String targetFolder, String fileSizeWithUnit, boolean withTimestamp) {
@@ -165,12 +163,17 @@ public class ImageUtil {
 		String newName = temp.replace(".", "_" + fileSizeWithUnit + ".");
 		String targetPath = StrUtil.useSeparator(targetFolder, newName);
 		long targetSize = FileUtil.parseFileSize(fileSizeWithUnit);
-		compressImage(sourcePath, targetPath, targetSize);
-		
-		return targetPath;
+		return compressImage(sourcePath, targetPath, targetSize);
 	}
 	
 	public static String compressImage(String source, String target, long targetSize) {
+		File nick = new File(source);  
+        if (nick.length() <= targetSize) {
+        	String msg = "Target size {0} is larger than file size {1}, ignored {2}";
+        	XXXUtil.info(msg, targetSize, nick.length(), source);
+            return null;
+        }
+        
 		ImageFixer jack = new ImageFixer();
 		jack.commpress(source, target, targetSize);
 		return target;
