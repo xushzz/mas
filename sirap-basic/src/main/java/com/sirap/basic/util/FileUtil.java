@@ -427,23 +427,27 @@ public class FileUtil {
 			return path;
 		}
 		
-		if (PanaceaBox.isMacOrLinuxOrUnix()){
-			File file = FileUtil.getIfNormalFolder(param);
-			if(file != null) {
-				return file.getAbsolutePath();
+		try {
+			if (PanaceaBox.isMacOrLinuxOrUnix()) {
+				File file = FileUtil.getIfNormalFolder(param);
+				if(file != null) {
+					return file.getCanonicalPath();
+				}
 			}
-		}
-		
-		File file = FileUtil.getIfNormalFolder(defaultFolder + param);
-		if(file != null) {
-			return file.getAbsolutePath();
-		}
-		
-		if(param.startsWith("\\\\")) {
-			file = FileUtil.getIfNormalFolder(param);
+			
+			File file = FileUtil.getIfNormalFolder(defaultFolder + param);
 			if(file != null) {
-				return file.getAbsolutePath();
+				return file.getCanonicalPath();
 			}
+			
+			if(param.startsWith("\\\\")) {
+				file = FileUtil.getIfNormalFolder(param);
+				if(file != null) {
+					return file.getCanonicalPath();
+				}
+			}
+		} catch (Exception ex) {
+			throw new MexException(ex);
 		}
 		
 		return null;
@@ -754,4 +758,16 @@ public class FileUtil {
 			items.add(file.getAbsolutePath());
 		}
 	}
+	
+	public static String canonicalPathOf(String origin) {
+		File filo = new File(origin);
+		
+		try {
+			return filo.getCanonicalPath();
+		} catch (Exception ex) {
+			return origin;
+		}
+	}
+	
+
 }

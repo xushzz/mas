@@ -61,7 +61,7 @@ public class Exporter {
 			} else {
 				IOUtil.saveAsTxtWithCharset(records, filePath, charset);
 			}
-			C.pl2("Exported => " + filePath);
+			C.pl2("Exported => " + FileUtil.canonicalPathOf(filePath));
 			if(SimpleKonfig.g().isGeneratedFileAutoOpen()) {
 				FileOpener.open(filePath);
 			}
@@ -84,7 +84,7 @@ public class Exporter {
 			params.setTopInfo(topInfo);
 			
 			IOUtil.saveAsPDF(records, filePath, params);
-			C.pl2("Exported => " + filePath);
+			C.pl2("Exported => " + FileUtil.canonicalPathOf(filePath));
 			if(SimpleKonfig.g().isGeneratedFileAutoOpen()) {
 				FileOpener.open(filePath);
 			}
@@ -105,7 +105,7 @@ public class Exporter {
 			params.setTopInfo(topInfo);
 			
 			IOUtil.saveAsExcel(records, filePath, params);
-			C.pl2("Exported => " + filePath);
+			C.pl2("Exported => " + FileUtil.canonicalPathOf(filePath));
 			if(SimpleKonfig.g().isGeneratedFileAutoOpen()) {
 				FileOpener.open(filePath);
 			}
@@ -128,7 +128,7 @@ public class Exporter {
 			List<String> htmlContent = HtmlExporter.generateHtmlContent(htmlTemplate, records, params);
 			
 			IOUtil.saveAsTxt(htmlContent, filePath);
-			C.pl2("Exported => " + filePath);
+			C.pl2("Exported => " + FileUtil.canonicalPathOf(filePath));
 			if(SimpleKonfig.g().isGeneratedFileAutoOpen()) {
 				FileOpener.open(filePath);
 			}

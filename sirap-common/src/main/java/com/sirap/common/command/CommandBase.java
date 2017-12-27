@@ -246,7 +246,12 @@ public abstract class CommandBase {
 		List<Object> list = new ArrayList<Object>();
 		list.add(content);
 		
-		export(list);
+		try {
+			export(list);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			C.pl();
+		}
 	}
 
 	public boolean isIn(String keys) {

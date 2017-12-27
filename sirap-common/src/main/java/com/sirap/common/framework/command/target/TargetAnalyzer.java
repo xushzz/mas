@@ -126,7 +126,7 @@ public abstract class TargetAnalyzer {
 			folderPath = parseRealFolderPath(folderAndFile[0]);
 			if(folderPath != null) {
 				String newFileName = generateFileOrFolderName(folderAndFile[1]);
-				if(!newFileName.endsWith(Konstants.DOT_TXT)) {
+				if(needToAddExtensionTxt(newFileName)) {
 					newFileName += Konstants.DOT_TXT;
 				}
 				
@@ -135,11 +135,22 @@ public abstract class TargetAnalyzer {
 		}
 
 		String newFileName = FileUtil.generateLegalFileName(destInfo);
-		if(!newFileName.endsWith(Konstants.DOT_TXT)) {
+		if(needToAddExtensionTxt(newFileName)) {
 			newFileName += Konstants.DOT_TXT;
 		}
 		
 		return new TargetTxtFile(getDefaultExportFolder(), newFileName);
+	}
+	
+	private boolean needToAddExtensionTxt(String origin) {
+		String solidExtensions = "txt,java,md";
+		for(String item : StrUtil.split(solidExtensions)) {
+			if(StrUtil.endsWith(origin, "." + item)) {
+				return false;
+			}
+		}
+		
+		return true;
 	}
 	
 	private TargetPDF createTargetPDF(String destInfo, String command) {

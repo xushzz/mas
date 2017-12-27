@@ -253,15 +253,14 @@ public class CommandFile extends CommandBase {
 				} else {
 					targetPath = parseFolderPath(path);
 				}
-				
-				if(targetPath != null) {
-					String temp = targetPath.replaceFirst("\\\\$", "");
+				String goodPath = FileUtil.canonicalPathOf(targetPath);
+				if(goodPath != null) {
 					if(PanaceaBox.isMac()) {
-						PanaceaBox.openFile(temp);
-						C.pl2("Open Mac Finder at [" + temp + "].");
+						PanaceaBox.openFile(goodPath);
+						C.pl2("Open Mac Finder at [" + goodPath + "].");
 					} else {
-						PanaceaBox.execute("explorer " + temp);
-						C.pl2("Open Windows resource manager at [" + temp + "].");
+						PanaceaBox.execute("explorer " + goodPath);
+						C.pl2("Open Windows resource manager at [" + goodPath + "].");
 					}
 					
 					return true;
