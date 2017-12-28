@@ -24,6 +24,7 @@ public class MexFilter<T extends MexItem> {
 	private boolean caseSensitive;
 	private String criteria;
 	private List<T> source;
+	private boolean stayCriteria = true;
 	
 	public void setCriteria(String criteria) {
 		this.criteria = criteria;
@@ -31,6 +32,10 @@ public class MexFilter<T extends MexItem> {
 
 	public void setSource(List<T> source) {
 		this.source = source;
+	}
+
+	public void setStayCriteria(boolean stay) {
+		this.stayCriteria = stay;
 	}
 
 	public MexFilter() {
@@ -54,7 +59,7 @@ public class MexFilter<T extends MexItem> {
 		
 		List<T> matchedList = new ArrayList<T>();
 		
-		MexCriteria mex = parseCriteria();
+		MexCriteria mex = createMexCriteria();
 		if(mex == null) {
 			throw new MexException("'{0}' is not a valid criteria.", criteria);
 		}
@@ -109,8 +114,12 @@ public class MexFilter<T extends MexItem> {
 		return matchedList;
 	}
 	
-	public MexCriteria parseCriteria() {
-		List<String> list = new ArrayList<String>(); 
+	public MexCriteria createMexCriteria() {
+		List<String> list = new ArrayList<String>();
+		if(stayCriteria || StrUtil.isRegexMatched("[" + SYMBOL_AND + SYMBOL_OR + "]+", criteria)) {
+			list.add(criteria);
+			return new MexCriteria(list);
+		}
 		
 		if(criteria.indexOf(SYMBOL_AND) != -1) {
 			List<String> whats = snort(criteria, SYMBOL_AND, ESCAPE);

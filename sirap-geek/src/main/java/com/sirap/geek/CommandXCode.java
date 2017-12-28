@@ -111,7 +111,6 @@ public class CommandXCode extends CommandBase {
 			}
 			
 			items.add(header);
-
 			
 			export(items);
 			
@@ -131,7 +130,7 @@ public class CommandXCode extends CommandBase {
 		
 		solo = parseSoloParam(KEY_ASCII_SHORT + "\\s(.+?)");
 		if(solo != null) {
-			List<MexItem> items = CollUtil.filter(GeekManager.g().asciiAll(), solo, isCaseSensitive());
+			List<MexItem> items = CollUtil.filter(GeekManager.g().asciiAll(), solo, isCaseSensitive(), isStayCriteria());
 			
 			if(!EmptyUtil.isNullOrEmpty(items)) {
 				items.add(0, new MexObject((AsciiRecord.getHeader())));

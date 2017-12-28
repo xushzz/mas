@@ -356,7 +356,7 @@ public class CommandFile extends CommandBase {
 			
 			if(FileOpener.isTextFile(filePath)) {
 				List<MexObject> all = readFileIntoList(filePath);
-				List<MexObject> items = CollUtil.filter(all, criteria, isCaseSensitive());
+				List<MexObject> items = CollUtil.filter(all, criteria, isCaseSensitive(), isStayCriteria());
 				export(CollUtil.items2PrintRecords(items, options));
 			} else if(FileUtil.isAnyTypeOf(filePath, FileUtil.SUFFIXES_EXCEL)) {
 				Integer index = MathUtil.toInteger(criteria);
@@ -419,7 +419,7 @@ public class CommandFile extends CommandBase {
 				if(EmptyUtil.isNullOrEmpty(nameCriteria)) {
 					allMexedFiles.addAll(allFiles);
 				} else {
-					List<MexFile> items = CollUtil.filter(allFiles, nameCriteria, isCaseSensitive());
+					List<MexFile> items = CollUtil.filter(allFiles, nameCriteria, isCaseSensitive(), isStayCriteria());
 					allMexedFiles.addAll(items);
 				}
 			}

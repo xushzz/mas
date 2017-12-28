@@ -689,7 +689,7 @@ public class CommandSirap extends CommandBase {
 				}
 			}
 		} else {
-			List<MexObject> filePaths = CollUtil.filter(new ArrayList<MexObject>(mapLastModified.values()), criteria);
+			List<MexObject> filePaths = CollUtil.filter(new ArrayList<MexObject>(mapLastModified.values()), criteria, isCaseSensitive(), isStayCriteria());
 			
 			int size = filePaths.size();
 			if(size == 1) {

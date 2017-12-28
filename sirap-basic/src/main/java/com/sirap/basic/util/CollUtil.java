@@ -218,7 +218,12 @@ public class CollUtil {
 	}
 	
 	public static <T extends MexItem> List<T> filter(List<T> mexItems, String mexCriteria, boolean isCaseSensitive) {
+		return filter(mexItems, mexCriteria, isCaseSensitive, false);
+	}
+	
+	public static <T extends MexItem> List<T> filter(List<T> mexItems, String mexCriteria, boolean isCaseSensitive, boolean keepAlive) {
 		MexFilter<T> filter = new MexFilter<T>(mexCriteria, mexItems, isCaseSensitive);
+		filter.setStayCriteria(keepAlive);
 		List<T> result = filter.process();
 		
 		return result;

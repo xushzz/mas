@@ -2,12 +2,19 @@ package com.sirap.basic.search;
 
 import java.util.List;
 
+import com.google.common.collect.Lists;
+
 public class MexCriteria {
 	private String logic = MexFilter.LOGIC_AND;
 	private List<String> criterias;
 	
 	public MexCriteria(List<String> list) {
 		this.criterias = list;
+	}
+	
+	public MexCriteria(String criteria) {
+		criterias = Lists.newArrayList();
+		criterias.add(criteria);
 	}
 	
 	public MexCriteria(String logic, List<String> list) {

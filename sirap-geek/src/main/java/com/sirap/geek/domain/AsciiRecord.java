@@ -82,6 +82,10 @@ public class AsciiRecord extends MexItem {
 			return true;
 		}
 		
+		if(StrUtil.contains((char)base + "", keyWord)) {
+			return true;
+		}
+		
 		return false;
 	}
 	

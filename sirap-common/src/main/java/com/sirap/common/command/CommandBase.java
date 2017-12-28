@@ -130,6 +130,10 @@ public abstract class CommandBase {
 		return OptionUtil.readBooleanPRI(options, "case", false);
 	}
 	
+	public boolean isStayCriteria() {
+		return OptionUtil.readBooleanPRI(options, "stay", false);
+	}
+	
 	public boolean isCaseSensitive(String tempOptions) {
 		return OptionUtil.readBooleanPRI(tempOptions, "case", false);
 	}
@@ -152,7 +156,7 @@ public abstract class CommandBase {
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private List applyMexCriteriaOnMexItems(List rawItems, String mexCriteria, boolean isCaseSensitive) {
+	private List applyMexCriteriaOnMexItems(List rawItems, String mexCriteria, boolean isCaseSensitive, boolean stay) {
 		List<MexItem> mexItems = Lists.newArrayList();
 		List nonItems = Lists.newArrayList();
 		for(Object obj : rawItems) {
@@ -165,7 +169,7 @@ public abstract class CommandBase {
 			}
 		}
 
-		List<MexItem> after = CollUtil.filter(mexItems, mexCriteria, isCaseSensitive);
+		List<MexItem> after = CollUtil.filter(mexItems, mexCriteria, isCaseSensitive, stay);
 		
 		nonItems.addAll(after);
 		
@@ -195,7 +199,8 @@ public abstract class CommandBase {
 		String mexCriteria = OptionUtil.readString(finalOptions, "z");
 		Target where = whereToShot();
 		if(!EmptyUtil.isNullOrEmpty(mexCriteria)) {
-			newList = applyMexCriteriaOnMexItems(list, mexCriteria, isCaseSensitive(finalOptions));
+			boolean flagOfStay = OptionUtil.readBooleanPRI(finalOptions, "stay", false);
+			newList = applyMexCriteriaOnMexItems(list, mexCriteria, isCaseSensitive(finalOptions), flagOfStay);
 		}
 		newList = toPrintIfMex(newList, finalOptions);
 		if(EmptyUtil.isNullOrEmpty(newList)) {
