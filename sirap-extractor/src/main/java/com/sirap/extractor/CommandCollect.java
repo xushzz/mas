@@ -82,7 +82,7 @@ public class CommandCollect extends CommandBase {
 		solo = parseSoloParam(KEY_CAR + "\\s+(.+)");
 		if(solo != null) {
 			List<MexItem> items = Extractors.fetchCarList();
-			export(CollUtil.filter(items, solo));
+			export(CollUtil.filter(items, solo, isCaseSensitive(), isStayCriteria()));
 			
 			return true;
 		}
@@ -97,7 +97,7 @@ public class CommandCollect extends CommandBase {
 		solo = parseSoloParam(KEY_CARNO + "\\s(.+)");
 		if(solo != null) {
 			List<MexObject> items = Extractors.fetchCarNoList();
-			export(CollUtil.filter(items, solo));
+			export(CollUtil.filter(items, solo, isCaseSensitive(), isStayCriteria()));
 			
 			return true;
 		}

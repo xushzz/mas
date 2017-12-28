@@ -57,6 +57,19 @@ public class CommandAvron extends CommandBase {
 			
 			return true;
 		}
+		
+		if(is("cncodes")) {
+			export(AvronExtractors.areacodesOfChina());
+			
+			return true;
+		}
+		
+		if(is("gxcodes")) {
+			export(AvronExtractors.areacodesOfGX());
+			
+			return true;
+		}
+		
 		return false;
 	}
 	

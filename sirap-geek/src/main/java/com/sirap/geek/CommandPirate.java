@@ -124,7 +124,7 @@ public class CommandPirate extends CommandBase {
 			String wikiFolder = OptionUtil.readString(options, "wiki");
 			if(wikiFolder == null) {
 				String regex = "[/\\\\]([^/\\\\]+)[/\\\\]?$";
-				wikiFolder = StrUtil.findFirstMatchedItem(regex, solo);
+				wikiFolder = StrUtil.findFirstMatchedItem(regex, folder.getAbsolutePath());
 			}
 			List<String> lines = Lists.newArrayList();
 			XXXUtil.nullCheck(folder, ":Not a valid folder: " + solo);
@@ -134,7 +134,7 @@ public class CommandPirate extends CommandBase {
 			if(baseDate == null) {
 				forCaro = true;
 				baseDate = DateUtil.construct(2017, 12, 4);
-				lines.add("* 我是小鱼儿，这是我爸爸给我做的成长全记录。");
+				lines.add("* 我是小鱼儿，女生，这是我爸爸给我做的成长全记录。");
 				lines.add("* 我生日：2017/12/4");
 				lines.add("* 嗯，冬天，晚上，大南宁，广西省妇幼医院");
 			}
