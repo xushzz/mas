@@ -94,7 +94,7 @@ public abstract class TargetAnalyzer {
 		boolean toCreateFolder = !params[1].isEmpty();
 		String newFolderName = "";
 		if(toCreateFolder) {
-			newFolderName = generateFileOrFolderName(command) + File.separator;
+			newFolderName = FileUtil.generateLegalFileName(command) + File.separator;
 		}
 		
 		if(dest.isEmpty()) {
@@ -105,7 +105,7 @@ public abstract class TargetAnalyzer {
 		if(folderPath != null) {
 			return new TargetFolder(folderPath + newFolderName);	
 		} else {
-			newFolderName = generateFileOrFolderName(dest) + File.separator;
+			newFolderName = FileUtil.generateLegalFileName(dest) + File.separator;
 			return new TargetFolder(getDefaultExportFolder() + newFolderName);
 		}
 	}
@@ -125,7 +125,7 @@ public abstract class TargetAnalyzer {
 		if(!EmptyUtil.isNullOrEmptyOrBlank(folderAndFile[0])) {
 			folderPath = parseRealFolderPath(folderAndFile[0]);
 			if(folderPath != null) {
-				String newFileName = generateFileOrFolderName(folderAndFile[1]);
+				String newFileName = FileUtil.generateLegalFileName(folderAndFile[1]);
 				if(needToAddExtensionTxt(newFileName)) {
 					newFileName += Konstants.DOT_TXT;
 				}
@@ -143,7 +143,7 @@ public abstract class TargetAnalyzer {
 	}
 	
 	private boolean needToAddExtensionTxt(String origin) {
-		String solidExtensions = "txt,java,md";
+		String solidExtensions = "txt,md";
 		for(String item : StrUtil.split(solidExtensions)) {
 			if(StrUtil.endsWith(origin, "." + item)) {
 				return false;
@@ -245,14 +245,6 @@ public abstract class TargetAnalyzer {
 		}
 		
 		return null;
-	}
-	
-	public static String generateFileOrFolderName(String source) {
-		if(FileUtil.isMaliciousPath(source)) {
-			return "SHIT";
-		}
-		
-		return FileUtil.generateLegalFileName(source);
 	}
 	
 	public abstract String getDefaultExportFolder();

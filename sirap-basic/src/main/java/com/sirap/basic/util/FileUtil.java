@@ -19,10 +19,10 @@ import java.util.regex.Pattern;
 
 import javax.swing.filechooser.FileSystemView;
 
-import com.sirap.basic.component.CleverFolder;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.exception.MexException;
+import com.sirap.basic.tool.D;
 import com.sirap.basic.tool.FileSizeCalculator;
 import com.sirap.basic.tool.FileWalker;
 
@@ -62,19 +62,60 @@ public class FileUtil {
 			return null;
 		}
 	}
-
+	
 	public static File getIfNormalFolder(String folderName) {
+		return getIfNormalFolder(folderName, false, true);
+	}
+	
+	public static File getIfNormalFolder(String folderName, boolean debug, boolean niceOnly) {
 		if(EmptyUtil.isNullOrEmpty(folderName)) {
 			return null;
 		}
 		
-		File file = new File(folderName);
-
-		if (file.isDirectory()) {
-			return file;
-		} else {
+		String temp = folderName;
+		if(PanaceaBox.isWindows() && niceOnly) {
+			String[] params = StrUtil.parseParams("([A-Z]:)(.*)", folderName);
+			if(params == null) {
+				return null;
+			}
+			if(params != null) {
+				String disk = params[0];
+				if(StrUtil.isRegexMatched("[\\/\\.]*", params[1])) {
+					temp = disk + File.separator;
+				}
+			}
+		}
+		
+		File file = new File(temp);
+		if(!file.exists()) {
 			return null;
 		}
+
+		if(debug) {
+			D.ts("filepath: " + temp);
+			D.ts("file.getPath(): " + file.getPath());
+			D.ts("file.getAbsolutePath(): " + file.getAbsolutePath());
+		}
+		try {
+			if(file.exists()) {
+				String canon = file.getCanonicalPath();
+				if(debug) {
+					D.ts("file.getCanonicalPath(): " + canon);
+				}
+			} else {
+				if(debug) {
+					D.ts("file.getCanonicalPath(): Non exists");
+				}
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		
+		if (file.isDirectory()) {
+			return file;
+		}
+		
+		return null;
 	}
 
 	public static boolean exists(String filePath) {
@@ -164,11 +205,6 @@ public class FileUtil {
 		XXXUtil.nullOrEmptyCheck(directory, "directory");
 		
 		String temp = directory.trim();
-		if(FileUtil.isMaliciousPath(temp)) {
-			String msg = StrUtil.occupy("'{0}' is not a specific directory.", directory);
-			XXXUtil.printStackTrace(msg);
-			return Collections.EMPTY_LIST;
-		}
 		
 		File file = FileUtil.getIfNormalFolder(temp);
 		if(file == null) {
@@ -204,9 +240,6 @@ public class FileUtil {
 				target = params[0];
 				depth = MathUtil.toInteger(params[1], depth);
 			}
-			if(!target.endsWith("/") && !target.endsWith("\\")) {
-				target += File.separator;
-			}
 			allFiles.addAll(scanSingleFolder(target, depth, includeFolder));
 		}
 		
@@ -240,7 +273,7 @@ public class FileUtil {
 		
 		String fileName = sb.toString(); 
 		fileName = fileName.replace("\t", " ");
-		
+
 		return fileName;
 	}
 	
@@ -260,17 +293,6 @@ public class FileUtil {
 
 		Matcher m = Pattern.compile("^[A-Z]:", Pattern.CASE_INSENSITIVE).matcher(path);
 		boolean flag = m.lookingAt();
-		
-		return flag;
-	}
-
-	public static boolean isMaliciousPath(String path) {
-		if(EmptyUtil.isNullOrEmpty(path)) {
-			return true;
-		}
-		
-		Matcher m = Pattern.compile("(\\.|/|\\\\)+", Pattern.CASE_INSENSITIVE).matcher(path);
-		boolean flag = m.matches();
 		
 		return flag;
 	}
@@ -363,12 +385,6 @@ public class FileUtil {
 		return filePath;
 	}
 	
-	public static String getCleverPath(String folderName) {
-		CleverFolder mf = new CleverFolder(folderName);
-		
-		return mf.getCleverFolderPath();
-	}
-	
 	public static File parseFile(String param, String defaultFolder) {
 		if(EmptyUtil.isNullOrEmpty(param)) {
 			return null;
@@ -398,53 +414,25 @@ public class FileUtil {
 	}
 	
 	public static File parseFolder(String param, String defaultFolder) {
-		
-		String path = getCleverPath(param);
-		if(path != null) {
-			return new File(path);
+		File folder = FileUtil.getIfNormalFolder(param);
+		if(folder != null) {
+			return folder;
 		}
 		
-		if(param.startsWith("\\\\")) {
-			File file = FileUtil.getIfNormalFolder(param);
-			if(file != null) {
-				return file;
-			}
+		folder = FileUtil.getIfNormalFolder(defaultFolder + param);
+		if(folder != null) {
+			return folder;
 		}
 		
-		if (PanaceaBox.isMacOrLinuxOrUnix()){
-			File file = FileUtil.getIfNormalFolder(param);
-			if(file != null) {
-				return file;
-			}
-		}
-		
-		return FileUtil.getIfNormalFolder(defaultFolder + param);
+		return null;
 	}
 	
 	public static String parseFolderPath(String param, String defaultFolder) {
-		String path = getCleverPath(param);
-		if(path != null) {
-			return path;
-		}
+		File folder = parseFolder(param, defaultFolder);
 		
 		try {
-			if (PanaceaBox.isMacOrLinuxOrUnix()) {
-				File file = FileUtil.getIfNormalFolder(param);
-				if(file != null) {
-					return file.getCanonicalPath();
-				}
-			}
-			
-			File file = FileUtil.getIfNormalFolder(defaultFolder + param);
-			if(file != null) {
-				return file.getCanonicalPath();
-			}
-			
-			if(param.startsWith("\\\\")) {
-				file = FileUtil.getIfNormalFolder(param);
-				if(file != null) {
-					return file.getCanonicalPath();
-				}
+			if(folder != null) {
+				return folder.getCanonicalPath();
 			}
 		} catch (Exception ex) {
 			throw new MexException(ex);
@@ -760,12 +748,21 @@ public class FileUtil {
 	}
 	
 	public static String canonicalPathOf(String origin) {
+		return canonicalPathOf(origin, false);
+	}
+	
+	public static String canonicalPathOf(String origin, boolean printException) {
+		XXXUtil.nullCheck(origin, "origin");
+
 		File filo = new File(origin);
 		
 		try {
 			return filo.getCanonicalPath();
 		} catch (Exception ex) {
-			return origin;
+			if(printException) {
+				ex.printStackTrace();
+			}
+			return null;
 		}
 	}
 	

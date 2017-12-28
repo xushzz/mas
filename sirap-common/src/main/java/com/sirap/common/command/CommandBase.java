@@ -292,25 +292,26 @@ public abstract class CommandBase {
 		if(StrUtil.containsNoneOfAplhanumeric(param)) {
 			return null;
 		}
-		return FileUtil.parseFile(param, storage());
+		return FileUtil.parseFile(param, storageWithSeparator());
 	}
 	
 	public File parseFolder(String param) {
 		if(StrUtil.containsNoneOfAplhanumeric(param)) {
 			return null;
 		}
-		return FileUtil.parseFolder(param, storage());
+		return FileUtil.parseFolder(param, storageWithSeparator());
 	}
 	
 	public String parseFolderPath(String param) {
-		if(PanaceaBox.isWindows() && StrUtil.containsNoneOfAplhanumeric(param)) {
-			return null;
-		}
-		return FileUtil.parseFolderPath(param, storage());
+		return FileUtil.parseFolderPath(param, storageWithSeparator());
 	}
 	
 	public boolean isEmailEnabled() {
 		return g().isEmailEnabled();
+	}
+	
+	public String storageWithSeparator() {
+		return g().getStorageWithSeparator();
 	}
 	
 	public String storage() {

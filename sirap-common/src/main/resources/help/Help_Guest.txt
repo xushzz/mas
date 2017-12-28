@@ -30,6 +30,7 @@ ABC>.htm           the yielded content will be exported to html file export\ABC.
 ABC>E:\\.htm       the yielded content will be exported to html file E:\ABC.htm
 ABC>E:\\max.htm    the yielded content will be exported to html file E:\max.htm
 ABC>max.htm        the yielded content will be exported to html file export\max.htm
+ABC>max.md        the yielded content will be exported to html file export\max.md
 ABC>.xls           the yielded content will be exported to html file export\ABC.xls
 ABC>E:\\.xls       the yielded content will be exported to html file E:\ABC.xls
 ABC>E:\\max.xls    the yielded content will be exported to html file E:\max.xls

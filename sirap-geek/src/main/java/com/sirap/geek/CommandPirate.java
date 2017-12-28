@@ -167,8 +167,8 @@ public class CommandPirate extends CommandBase {
 					lines.add("### [按时间倒序](https://github.com/acesfullmike/mas/wiki/caroline2)");
 				}
 			}
-			for(CaroItem item : caros) {
-				lines.addAll(carolines(item, baseDate, wikiFolder));
+			for(int i = 0; i < caros.size(); i++) {
+				lines.addAll(carolines(i + 1, caros.size(), caros.get(i), baseDate, wikiFolder));
 			}
 			
 			export(lines);
@@ -179,13 +179,15 @@ public class CommandPirate extends CommandBase {
 		return false;
 	}
 	
-	private List<String> carolines(CaroItem item, Date birthday, String folderName) {
-		Date date = DateUtil.parse(DateUtil.DATETIME_SPACE_TIGHT, item.getDateStr());
+	private List<String> carolines(int index, int size, CaroItem item, Date birthday, String folderName) {
+//		Date date = DateUtil.parse(DateUtil.DATETIME_SPACE_TIGHT, item.getDateStr());
+		Date date = item.getDateInfo();
 		int dayDiff = DateUtil.dayDiff(date, birthday) + 1;
 		String weekday = DateUtil.displayDate(date, DateUtil.WEEK_DATE, Locale.CHINA);
-		String lineA = "# 第 " + dayDiff + " 天, " + weekday;
-		String temp = "![{0}]({1}/{0})";
-		String lineB = StrUtil.occupy(temp, item.getFileName(), folderName);
+		String tempA = "# 第 {0} 天, {1}    第{2}张, 共{3}张";
+		String lineA = StrUtil.occupy(tempA, dayDiff, weekday, index, size);
+		String tempB = "![{0}]({1}/{0})";
+		String lineB = StrUtil.occupy(tempB, item.getFileName(), folderName);
 		
 		List<String> lines = Lists.newArrayList();
 		lines.add(lineA);

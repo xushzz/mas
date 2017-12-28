@@ -178,8 +178,12 @@ public class SimpleKonfig extends Konfig {
 		return timeoutMinutes;
 	}
 
-	public String getStorage() {
+	public String getStorageWithSeparator() {
 		return storage + "/";
+	}
+
+	public String getStorage() {
+		return storage;
 	}
 
 	public String getUserConfigFileName() {
@@ -350,11 +354,11 @@ public class SimpleKonfig extends Konfig {
 		String path = null;
 		String temp = getUserValueOf(key);
 		if(EmptyUtil.isNullOrEmpty(temp)) {
-			path = getStorage() + defFolderName;
+			path = getStorageWithSeparator() + defFolderName;
 		} else if(FileUtil.startWithDiskName(temp)) {
 			path = temp;
 		} else {
-			path = getStorage() + temp;
+			path = getStorageWithSeparator() + temp;
 		}
 		if(toCreate) {
 			FileUtil.makeDirectoriesIfNonExist(path);

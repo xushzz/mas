@@ -355,7 +355,7 @@ public class CommandSirap extends CommandBase {
 		}
 		
 		if(is(KEY_LIST_STORAGE)) {
-			File file = FileUtil.getIfNormalFolder(storage());
+			File file = FileUtil.getIfNormalFolder(storageWithSeparator());
 			if(file != null) {
 				String path = file.getAbsolutePath();
 				if(path != null) {

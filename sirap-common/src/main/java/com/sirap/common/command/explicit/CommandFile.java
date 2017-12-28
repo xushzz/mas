@@ -247,23 +247,24 @@ public class CommandFile extends CommandBase {
 			String path = params[1];
 			String type = params[2];
 			if(KEY_OPEN_EXPLORER.equals(type)) {
-				String targetPath = null;
+				String targetFolder = null;
 				if(EmptyUtil.isNullOrEmpty(path)) {
-					targetPath = storage();
+					targetFolder = storage();
 				} else {
-					targetPath = parseFolderPath(path);
+					targetFolder = parseFolderPath(path);
 				}
-				String goodPath = FileUtil.canonicalPathOf(targetPath);
-				if(goodPath != null) {
+				if(targetFolder != null) {
 					if(PanaceaBox.isMac()) {
-						PanaceaBox.openFile(goodPath);
-						C.pl2("Open Mac Finder at [" + goodPath + "].");
+						PanaceaBox.openFile(targetFolder);
+						C.pl2("Open Mac Finder at [" + targetFolder + "].");
 					} else {
-						PanaceaBox.execute("explorer " + goodPath);
-						C.pl2("Open Windows resource manager at [" + goodPath + "].");
+						PanaceaBox.execute("explorer " + targetFolder);
+						C.pl2("Open Windows resource manager at [" + targetFolder + "].");
 					}
 					
 					return true;
+				} else {
+					return false;
 				}
 			}
 			

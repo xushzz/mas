@@ -130,7 +130,7 @@ public class InputAnalyzer {
 			
 			@Override
 			public String parseRealFolderPath(String param) {
-				String path = FileUtil.parseFolderPath(param, SimpleKonfig.g().getStorage());
+				String path = FileUtil.parseFolderPath(param, SimpleKonfig.g().getStorageWithSeparator());
 				if(path == null) {
 					return null;
 				}

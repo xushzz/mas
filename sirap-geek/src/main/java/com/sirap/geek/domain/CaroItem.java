@@ -1,13 +1,16 @@
 package com.sirap.geek.domain;
 
+import java.util.Date;
+
 import com.sirap.basic.domain.MexItem;
+import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.StrUtil;
 
 @SuppressWarnings("serial")
 public class CaroItem extends MexItem implements Comparable<CaroItem> {
 	
 	private String fileName;
-	private String dateStr;
+	private Date dateInfo;
 	
 	public String getFileName() {
 		return fileName;
@@ -16,36 +19,55 @@ public class CaroItem extends MexItem implements Comparable<CaroItem> {
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
 	}
-
-	public String getDateStr() {
-		return dateStr;
+	
+	public Date getDateInfo() {
+		return dateInfo;
 	}
 
-	public void setDateStr(String dateStr) {
-		this.dateStr = dateStr;
+	public void setDateInfo(Date dateInfo) {
+		this.dateInfo = dateInfo;
 	}
 
 	@Override
 	public boolean parse(String record) {
-		String regex = "(\\d{8}_\\d{6})";
-		String temp = StrUtil.findFirstMatchedItem(regex, record);
-		if(temp == null) {
-			return false;
+		fileName = record;
+		String temp = StrUtil.findFirstMatchedItem("([12][09]\\d{6}_\\d{6})", record);
+		if(temp != null) {
+			dateInfo = DateUtil.parse("yyyyMMdd_HHmmss", temp);
+			return true;
 		}
 		
-		fileName = record;
-		dateStr = temp;
+		temp = StrUtil.findFirstMatchedItem("(\\d+)", record);
+		if(temp != null) {
+			String ts = null;
+			if(temp.length() == 13) {
+				ts = temp;
+			} else if (temp.length() == 10) {
+				ts = temp + "000";
+			}
+			if(ts != null) {
+				Long milliSecondsSince1970 = Long.parseLong(ts);
+				dateInfo = new Date(milliSecondsSince1970);
+				return true;
+			}
+		}
 		
-		return true;
+		temp = StrUtil.findFirstMatchedItem("(20\\d{6})", record);
+		if(temp != null) {
+			dateInfo = DateUtil.parse("yyyyMMdd", temp);
+			return true;
+		}
+		
+		return false;
 	}
 	
 	@Override
 	public String toString() {
-		return fileName + " " + dateStr;
+		return fileName + " " + DateUtil.displayDate(dateInfo, "yyyyMMdd_HHmmss");
 	}
 
 	@Override
 	public int compareTo(CaroItem caro) {
-		return dateStr.compareTo(caro.dateStr);
+		return dateInfo.compareTo(caro.dateInfo);
 	}
 }

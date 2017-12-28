@@ -311,7 +311,7 @@ public class CommandCollect extends CommandBase {
 				}
 			}
 			
-			String location = getTargetLocation(storage());
+			String location = getTargetLocation(storageWithSeparator());
 
 			HistoryEventsFetcher dinesh = new HistoryEventsFetcher(location, "thisdays");
 			Master<MexObject> master = new Master<MexObject>(urlParams, dinesh);
