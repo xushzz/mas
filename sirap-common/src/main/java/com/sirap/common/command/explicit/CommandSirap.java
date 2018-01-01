@@ -129,7 +129,7 @@ public class CommandSirap extends CommandBase {
 		
 		if(is(KEY_CALENDAR)) {
 			int currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1;
-			List<String> records = displayMonthCalendar(currentMonth, OptionUtil.readIntegerPRI(options, "m", 0));
+			List<String> records = displayMonthCalendar(currentMonth, OptionUtil.readIntegerPRI(options, "d", 0));
 			
 			setIsPrintTotal(false);
 			export(records);
@@ -139,7 +139,7 @@ public class CommandSirap extends CommandBase {
 		
 		if(is(KEY_CALENDAR + KEY_2DOTS)) {
 			int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-			List<String> records = displayCalendarsOfYear(currentYear, OptionUtil.readIntegerPRI(options, "m", 0));
+			List<String> records = displayCalendarsOfYear(currentYear, OptionUtil.readIntegerPRI(options, "d", 0));
 			
 			if(records.size() > 0) {
 				records.remove(records.size() - 1);
@@ -163,7 +163,7 @@ public class CommandSirap extends CommandBase {
 						continue;
 					}
 					
-					List<String> temp = displayMonthCalendar(month, OptionUtil.readIntegerPRI(options, "m", 0));
+					List<String> temp = displayMonthCalendar(month, OptionUtil.readIntegerPRI(options, "d", 0));
 					if(!EmptyUtil.isNullOrEmpty(temp)) {
 						totalRecords.addAll(temp);
 						totalRecords.add("");
@@ -176,7 +176,7 @@ public class CommandSirap extends CommandBase {
 				String singleYear = StrUtil.parseParam("(\\d{4})", info);
 				if(singleYear != null) {
 					Integer year = MathUtil.toInteger(singleYear);
-					List<String> temp = displayCalendarsOfYear(year, OptionUtil.readIntegerPRI(options, "m", 0));
+					List<String> temp = displayCalendarsOfYear(year, OptionUtil.readIntegerPRI(options, "d", 0));
 					if(!EmptyUtil.isNullOrEmpty(temp)) {
 						totalRecords.addAll(temp);
 					}
@@ -190,7 +190,7 @@ public class CommandSirap extends CommandBase {
 					Integer year = MathUtil.toInteger(yearMonth[0]);
 					Integer month = MathUtil.toInteger(yearMonth[1]);
 					
-					List<String> temp = displayMonthCalendar(year, month, OptionUtil.readIntegerPRI(options, "m", 0));
+					List<String> temp = displayMonthCalendar(year, month, OptionUtil.readIntegerPRI(options, "d", 0));
 					if(!EmptyUtil.isNullOrEmpty(temp)) {
 						totalRecords.addAll(temp);
 						totalRecords.add("");
@@ -206,7 +206,7 @@ public class CommandSirap extends CommandBase {
 					
 					Integer day = MathUtil.toInteger(yearMonthDay[2]);
 					if(day == null) {
-						day = OptionUtil.readIntegerPRI(options, "m", 0);
+						day = OptionUtil.readIntegerPRI(options, "d", 0);
 					}
 					
 					List<String> temp = displayMonthCalendar(year, month, day);
