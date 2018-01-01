@@ -24,6 +24,7 @@ import com.sirap.basic.email.EmailCenter;
 import com.sirap.basic.output.PDFParams;
 import com.sirap.basic.search.TextSearcher;
 import com.sirap.basic.tool.C;
+import com.sirap.basic.tool.D;
 import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
@@ -128,7 +129,7 @@ public class CommandSirap extends CommandBase {
 		
 		if(is(KEY_CALENDAR)) {
 			int currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1;
-			List<String> records = displayMonthCalendar(currentMonth);
+			List<String> records = displayMonthCalendar(currentMonth, OptionUtil.readIntegerPRI(options, "m", 0));
 			
 			setIsPrintTotal(false);
 			export(records);
@@ -138,7 +139,7 @@ public class CommandSirap extends CommandBase {
 		
 		if(is(KEY_CALENDAR + KEY_2DOTS)) {
 			int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-			List<String> records = displayCalendarsOfYear(currentYear);
+			List<String> records = displayCalendarsOfYear(currentYear, OptionUtil.readIntegerPRI(options, "m", 0));
 			
 			if(records.size() > 0) {
 				records.remove(records.size() - 1);
@@ -154,6 +155,7 @@ public class CommandSirap extends CommandBase {
 			List<String> totalRecords = new ArrayList<String>();
 			List<String> yearMonthList = StrUtil.split(solo, '&');
 			for(String info:yearMonthList) {
+				//current year, given month
 				String singleMonth = StrUtil.parseParam("(\\d{1,2})", info);
 				if(singleMonth != null) {
 					int month = Integer.parseInt(singleMonth);
@@ -161,7 +163,7 @@ public class CommandSirap extends CommandBase {
 						continue;
 					}
 					
-					List<String> temp = displayMonthCalendar(month);
+					List<String> temp = displayMonthCalendar(month, OptionUtil.readIntegerPRI(options, "m", 0));
 					if(!EmptyUtil.isNullOrEmpty(temp)) {
 						totalRecords.addAll(temp);
 						totalRecords.add("");
@@ -170,36 +172,48 @@ public class CommandSirap extends CommandBase {
 					continue;
 				}
 				
-				String[] monthOfYear = StrUtil.parseParams("(\\d{4})(\\d{1,2})", info);
-				if(monthOfYear != null) {
-					Integer year = MathUtil.toInteger(monthOfYear[0]);
-					if(year == null) {
-						continue;
-					}
-					
-					Integer month = MathUtil.toInteger(monthOfYear[1]);
-					if(month == null) {
-						continue;
-					}
-					
-					List<String> temp = displayMonthCalendar(year, month);
-					if(!EmptyUtil.isNullOrEmpty(temp)) {
-						totalRecords.addAll(temp);
-						totalRecords.add("");
-					}
-					continue;
-				}
-				
+				//given year
 				String singleYear = StrUtil.parseParam("(\\d{4})", info);
 				if(singleYear != null) {
 					Integer year = MathUtil.toInteger(singleYear);
-					if(year != null) {
-						List<String> temp = displayCalendarsOfYear(year);
-						if(!EmptyUtil.isNullOrEmpty(temp)) {
-							totalRecords.addAll(temp);
-						}
+					List<String> temp = displayCalendarsOfYear(year, OptionUtil.readIntegerPRI(options, "m", 0));
+					if(!EmptyUtil.isNullOrEmpty(temp)) {
+						totalRecords.addAll(temp);
 					}
 					
+					continue;
+				}
+				
+				//given year, given month
+				String[] yearMonth = StrUtil.parseParams("(\\d{4})(\\d{1,2})", info);
+				if(yearMonth != null) {
+					Integer year = MathUtil.toInteger(yearMonth[0]);
+					Integer month = MathUtil.toInteger(yearMonth[1]);
+					
+					List<String> temp = displayMonthCalendar(year, month, OptionUtil.readIntegerPRI(options, "m", 0));
+					if(!EmptyUtil.isNullOrEmpty(temp)) {
+						totalRecords.addAll(temp);
+						totalRecords.add("");
+					}
+					continue;
+				}
+				
+				//given year, given month, given day
+				String[] yearMonthDay = StrUtil.parseParams("(\\d{4})(\\d{2})(\\d{1,2})", info);
+				if(yearMonthDay != null) {
+					Integer year = MathUtil.toInteger(yearMonthDay[0]);
+					Integer month = MathUtil.toInteger(yearMonthDay[1]);
+					
+					Integer day = MathUtil.toInteger(yearMonthDay[2]);
+					if(day == null) {
+						day = OptionUtil.readIntegerPRI(options, "m", 0);
+					}
+					
+					List<String> temp = displayMonthCalendar(year, month, day);
+					if(!EmptyUtil.isNullOrEmpty(temp)) {
+						totalRecords.addAll(temp);
+						totalRecords.add("");
+					}
 					continue;
 				}
 			}
@@ -580,22 +594,22 @@ public class CommandSirap extends CommandBase {
 		return file.getAbsolutePath();
 	}
 	
-	private List<String> displayMonthCalendar(int year, int month) {
+	private List<String> displayMonthCalendar(int year, int month, int dayToMark) {
 		XXXUtil.checkMonthRange(month);
-		RioCalendar rioCal = new RioCalendar(year, month);
+		RioCalendar rioCal = new RioCalendar(year, month, dayToMark);
 		rioCal.setLocale(g().getLocale());
 		return rioCal.generate().getRecords();
 	}
 	
-	private List<String> displayMonthCalendar(int month) {
+	private List<String> displayMonthCalendar(int month, int dayToMark) {
 		int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-		return displayMonthCalendar(currentYear, month);
+		return displayMonthCalendar(currentYear, month, dayToMark);
 	}
 	
-	private List<String> displayCalendarsOfYear(int year) {
+	private List<String> displayCalendarsOfYear(int year, int dayToMark) {
 		List<List<String>> grandList = new ArrayList<List<String>>();
 		for(int m = 1; m <= 12; m++) {
-			RioCalendar rioCal = new RioCalendar(year, m);
+			RioCalendar rioCal = new RioCalendar(year, m, dayToMark);
 			List<String> records = rioCal.generate().getRecords();
 			grandList.add(records);
 		}

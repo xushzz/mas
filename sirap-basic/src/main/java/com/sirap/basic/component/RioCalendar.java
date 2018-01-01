@@ -18,6 +18,7 @@ public class RioCalendar {
 	private int lenOfWeekDay = 4;
 
 	private Locale locale;
+	private int dayToMark;
 	private int monthIndex;
 	private int year;
 	
@@ -29,7 +30,13 @@ public class RioCalendar {
 
 	public RioCalendar(int yearParam, int monthParam) {
 		this.year = yearParam;
-		this.monthIndex = monthParam - 1; 
+		this.monthIndex = monthParam - 1;
+	}
+
+	public RioCalendar(int yearParam, int monthParam, int dayToMark) {
+		this.year = yearParam;
+		this.monthIndex = monthParam - 1;
+		this.dayToMark = dayToMark;
 	}
 	
 	public List<String> getRecords() {
@@ -49,7 +56,6 @@ public class RioCalendar {
 		if(year != 0) {
 			XXXUtil.checkRange(year, YEAR_MIN, YEAR_MAX);
 		}
-
 		printTitle();
 		printHeader();
 		printBody();
@@ -116,14 +122,12 @@ public class RioCalendar {
 
 		int dayOfMonth = 1;
 		while(dayOfMonth <= maxDays) {
-			String tempStr;
+			boolean isDayToMark = dayOfMonth == dayToMark;
+			String markA = isDayToMark ? "*" : " ";
 			
-			if(currentMonthIndex == monthIndex && currentDay == dayOfMonth && yearParam == currentYear) {
-				tempStr = "*" + dayOfMonth + " ";
-			} else {
-				tempStr = " " + dayOfMonth + " ";
-			}
-			String decoratedDayOfMonth = StrUtil.padLeft(tempStr + "", 4);
+			boolean isToday = currentMonthIndex == monthIndex && currentDay == dayOfMonth && yearParam == currentYear;
+			String markB = isToday ? "#" : " ";
+			String decoratedDayOfMonth = StrUtil.padLeft(markB + dayOfMonth, 3, " ") + markA;
 			sb.append(decoratedDayOfMonth);
 			
 			count++;
