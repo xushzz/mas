@@ -121,6 +121,7 @@ public class CommandPirate extends CommandBase {
 		solo = parseSoloParam(KEY_CARO + "\\s+(.+)");
 		if(solo != null) {
 			File folder = parseFolder(solo);
+			XXXUtil.nullCheck(folder, ":Not a valid folder: " + solo);
 			String wikiFolder = OptionUtil.readString(options, "wiki");
 			if(wikiFolder == null) {
 				String regex = "[/\\\\]([^/\\\\]+)[/\\\\]?$";

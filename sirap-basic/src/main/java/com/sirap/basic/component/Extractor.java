@@ -135,6 +135,10 @@ public abstract class Extractor<T extends Object> {
 		this.charset = Konstants.CODE_UTF8;
 	}
 	
+	public void useList() {
+		this.readIntoSourceList = true;
+	}
+	
 	public void useGBK() {
 		this.charset = Konstants.CODE_GBK;
 	}
