@@ -9,6 +9,7 @@ import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.HtmlUtil;
 import com.sirap.basic.util.IOUtil;
+import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.WebReader;
 import com.sirap.basic.util.XCodeUtil;
@@ -19,17 +20,17 @@ public abstract class Extractor<T extends Object> {
 	private String url;
 	private String charset = Konstants.CODE_UTF8;
 	
-	protected boolean printFetching = false;
-	protected boolean printExceptionIfNeeded = true;
-	protected boolean isAllBeingWell = true;
-	protected boolean readIntoSourceList = false;
+	protected boolean printFetching;
+	private boolean printExceptionIfNeeded = true;
+	private boolean allBeingWell = true;
+	private boolean intoList;
+	private boolean methodPost;
+	private String requestParams;
 
 	protected String source;
 	protected List<String> sourceList;
 	protected T item;
 	protected List<T> mexItems = new ArrayList<>();
-	private boolean isMethodPost;
-	private String requestParams;
 	
 	public static String encodeURLParam(String param) {
 		return XCodeUtil.urlEncodeUTF8(param);
@@ -48,34 +49,35 @@ public abstract class Extractor<T extends Object> {
 	}
 	
 	public Extractor<T> process() {
-		readSource();
+		fetch();
 		
 		if(source != null || sourceList != null) {
-			parseContent();
-			if(!isAllBeingWell) {
+			parse();
+			if(!allBeingWell) {
 				C.pl2("Not cool, wrong web content");
 			}
 		} else {
-			isAllBeingWell = false;
+			allBeingWell = false;
 		}
 		
 		return this;
 	}
 	
-	public static boolean isHttpRequest(String location) {
-		return StrUtil.startsWith(location, "http");
-	}
-	
-	protected void readSource() {
+	protected void fetch() {
 		String target = getUrl();
 		
 		XXXUtil.nullCheck(target, "url");
-		if(!isHttpRequest(target)) {
+		if(!StrUtil.isHttp(target)) {
 			if(printFetching) {
 				C.pl("Reading... " + target);
 			}
-			if(readIntoSourceList) {
-				sourceList = IOUtil.readFileIntoList(target, charset);
+			boolean asResourceStream = PanaceaBox.isWindows() && target.startsWith("/");
+			if(intoList) {
+				if(asResourceStream) {
+					sourceList = IOUtil.readResourceIntoList(target);
+				} else {
+					sourceList = IOUtil.readFileIntoList(target, charset);
+				}
 			} else {
 				source = IOUtil.readFileWithLineSeparator(target, "", charset);
 			}
@@ -93,7 +95,7 @@ public abstract class Extractor<T extends Object> {
 				}
 			}
 			
-			if(isMethodPost) {
+			if(methodPost) {
 				temp += " $+post"; 
 			}
 			
@@ -101,11 +103,11 @@ public abstract class Extractor<T extends Object> {
 		}
 		
 		WebReader xiu = new WebReader(target, charset);
-		xiu.setMethodPost(isMethodPost);
+		xiu.setMethodPost(methodPost);
 		xiu.setRequestParams(requestParams);
 
 		try {
-			if(readIntoSourceList) {
+			if(intoList) {
 				sourceList = xiu.readIntoList();
 			} else {
 				source = xiu.readIntoString();
@@ -119,32 +121,33 @@ public abstract class Extractor<T extends Object> {
 		}
 	}
 	
-	public void setUrl(String url) {
+	public Extractor<T> setUrl(String url) {
 		this.url = url;
+		return this;
 	}
 	
 	public String getUrl() {
 		return url;
 	}
 	
-	public void useCharset(String charset) {
+	public Extractor<T> setCharset(String charset) {
 		this.charset = charset;
+		return this;
 	}
 	
-	public void useUTF8() {
+	public Extractor<T> useUTF8() {
 		this.charset = Konstants.CODE_UTF8;
+		return this;
 	}
 	
-	public void useList() {
-		this.readIntoSourceList = true;
+	public Extractor<T> useList() {
+		this.intoList = true;
+		return this;
 	}
 	
-	public void useGBK() {
+	public Extractor<T> useGBK() {
 		this.charset = Konstants.CODE_GBK;
-	}
-
-	public boolean isReady() {
-		return getUrl() != null && getUrl().length() > 10;
+		return this;
 	}
 
 	public List<T> getItems() {
@@ -155,10 +158,10 @@ public abstract class Extractor<T extends Object> {
 		return item;
 	}
 
-	protected abstract void parseContent();
+	protected abstract void parse();
 		
 	public boolean isAllBeingWell() {
-		return isAllBeingWell;
+		return allBeingWell;
 	}
 	
 	public static String getPrettyText(String source) {
@@ -178,18 +181,30 @@ public abstract class Extractor<T extends Object> {
 	}
 
 	public boolean isMethodPost() {
-		return isMethodPost;
+		return methodPost;
 	}
 
-	public void setMethodPost(boolean isMethodPost) {
-		this.isMethodPost = isMethodPost;
+	public Extractor<T> usePost() {
+		this.methodPost = true;
+		return this;
 	}
 
 	public String getRequestParams() {
 		return requestParams;
 	}
 
-	public void setRequestParams(String requestParams) {
+	public Extractor<T> setRequestParams(String requestParams) {
 		this.requestParams = requestParams;
+		return this;
+	}
+
+	public Extractor<T> setPrintExceptionIfNeeded(boolean flag) {
+		this.printExceptionIfNeeded = flag;
+		return this;
+	}
+
+	public Extractor<T> setAllBeingWell(boolean flag) {
+		this.allBeingWell = flag;
+		return this;
 	}
 }

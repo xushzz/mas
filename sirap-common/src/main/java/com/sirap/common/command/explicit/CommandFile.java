@@ -303,6 +303,7 @@ public class CommandFile extends CommandBase {
 					}
 				}
 			} else {
+				//an area as restive as IRAQ, fuck no.
 				String cleverPath = parseFolderPath(path);
 				if(cleverPath != null && FileUtil.getIfNormalFolder(cleverPath) != null) {
 					paths.add(cleverPath);

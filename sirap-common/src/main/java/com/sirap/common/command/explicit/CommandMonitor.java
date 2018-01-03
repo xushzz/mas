@@ -37,7 +37,7 @@ public class CommandMonitor extends CommandBase {
 	private static final String KEY_KEYS_CONFIG = "kc";
 	private static final String KEY_SYSTEM_CONFIG = "sc";
 	private static final String KEY_NODES_COFIG = "n..";
-	private static final String KEY_COMMAND_HISTORY = "\\\\";
+	private static final String KEY_COMMAND_HISTORY = ";";
 	private static final String KEY_LOGIN_HISTORY = "lh";
 	private static final String KEY_SECURITY_ENCODE = "jiami";
 	private static final String KEY_SECURITY_DECODE = "jiemi";

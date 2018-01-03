@@ -23,7 +23,7 @@ public class MeituLassIntroExtractor extends Extractor<MeituLassItem> {
 	}
 	
 	@Override
-	protected void parseContent() {
+	protected void parse() {
 		String regex = "</div>\\s*<h1>([^<>]+)</h1>(.*?)</p>\\s*</div>";
 		Matcher m = createMatcher(regex);
 		

@@ -127,14 +127,15 @@ public class D {
 	}
 	
 	public static void list(List list) {
-		D.pl("D.list start");
 		if(EmptyUtil.isNullOrEmpty(list)) {
 			D.sink("empty list");
+		} else {
+			D.pl("D.list start");
+			for(Object obj : list) {
+				D.pl(obj);
+			}
+			D.pl("D.list end, total: " + list.size());
 		}
 		
-		for(Object obj : list) {
-			D.pl(obj);
-		}
-		D.pl("D.list end");
 	}
 }

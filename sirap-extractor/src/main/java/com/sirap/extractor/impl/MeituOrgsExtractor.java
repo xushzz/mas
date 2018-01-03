@@ -30,7 +30,7 @@ public class MeituOrgsExtractor extends Extractor<MeituOrgItem> {
 	}
 
 	@Override
-	protected void parseContent() {
+	protected void parse() {
 		String temp = "<li><a href=\"{0}/([^/]+/[^/]+)/\" target=\"_blank\">([^<>]+)</a><br/><span>(\\d+)[^<>]+</span>\\s*</li>";
 		String regex = StrUtil.occupy(temp, MeituKonstants.HOME_PAGE);
 		Matcher m = createMatcher(regex, source);

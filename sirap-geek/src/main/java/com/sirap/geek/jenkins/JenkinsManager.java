@@ -171,7 +171,7 @@ public class JenkinsManager {
 			}
 			
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				String regex = "Uploaded:([^]]*?\\.(war|ear))";
 				Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
 				while(m.find()) {

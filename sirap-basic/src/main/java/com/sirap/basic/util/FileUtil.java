@@ -22,6 +22,7 @@ import javax.swing.filechooser.FileSystemView;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.exception.MexException;
+import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
 import com.sirap.basic.tool.FileSizeCalculator;
 import com.sirap.basic.tool.FileWalker;
@@ -72,43 +73,43 @@ public class FileUtil {
 			return null;
 		}
 		
-		String temp = folderName;
+		//network file style:
+		//\\\\LITVINOV\\work
+		
 		if(PanaceaBox.isWindows() && niceOnly) {
 			String[] params = StrUtil.parseParams("([A-Z]:)(.*)", folderName);
-			if(params == null) {
-				return null;
-			}
 			if(params != null) {
 				String disk = params[0];
 				if(StrUtil.isRegexMatched("[\\/\\.]*", params[1])) {
-					temp = disk + File.separator;
+					File fileA = new File(disk + File.separator);
+					if(fileA.isDirectory()) {
+						return fileA;
+					}
 				}
 			}
 		}
 		
-		File file = new File(temp);
-		if(!file.exists()) {
-			return null;
-		}
+		File file = new File(folderName);
 
 		if(debug) {
-			D.ts("filepath: " + temp);
+			D.ts("filepath: " + folderName);
 			D.ts("file.getPath(): " + file.getPath());
 			D.ts("file.getAbsolutePath(): " + file.getAbsolutePath());
-		}
-		try {
-			if(file.exists()) {
-				String canon = file.getCanonicalPath();
-				if(debug) {
-					D.ts("file.getCanonicalPath(): " + canon);
+			
+			try {
+				if(file.exists()) {
+					String canon = file.getCanonicalPath();
+					if(debug) {
+						D.ts("file.getCanonicalPath(): " + canon);
+					}
+				} else {
+					if(debug) {
+						D.ts("file.getCanonicalPath(): Non exists");
+					}
 				}
-			} else {
-				if(debug) {
-					D.ts("file.getCanonicalPath(): Non exists");
-				}
+			} catch (Exception ex) {
+				ex.printStackTrace();
 			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
 		}
 		
 		if (file.isDirectory()) {
@@ -414,12 +415,18 @@ public class FileUtil {
 	}
 	
 	public static File parseFolder(String param, String defaultFolder) {
+		boolean isBad = StrUtil.isRegexMatched("[\\\\/\\.]{1,}", param);
+		if(isBad) {
+			C.pl2("Not nice, I personally hate this style, pls do away with " + param);
+			return null;
+		}
+		
 		File folder = FileUtil.getIfNormalFolder(param);
 		if(folder != null) {
 			return folder;
 		}
 		
-		folder = FileUtil.getIfNormalFolder(defaultFolder + param);
+		folder = FileUtil.getIfNormalFolder(StrUtil.useSeparator(defaultFolder, param));
 		if(folder != null) {
 			return folder;
 		}

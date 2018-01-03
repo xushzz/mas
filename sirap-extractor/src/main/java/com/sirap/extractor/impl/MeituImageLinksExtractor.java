@@ -35,7 +35,7 @@ public class MeituImageLinksExtractor extends Extractor<MexObject> {
 	}
 	
 	@Override
-	protected void parseContent() {
+	protected void parse() {
 		String regexCount = "<div class=\"shoulushuliang\">[^<>]+<span>(\\d+)</span>[^<>]+</div>";
 		Matcher ma = createMatcher(regexCount);
 		if(ma.find()) {

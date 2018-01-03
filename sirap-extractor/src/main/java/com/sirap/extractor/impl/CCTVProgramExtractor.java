@@ -24,7 +24,7 @@ public class CCTVProgramExtractor extends Extractor<MexObject> {
 	}
 	
 	@Override
-	protected void parseContent() {
+	protected void parse() {
 		String aliveStart = StrUtil.findFirstMatchedItem("\"liveSt\":(\\d+)", source);
 		String tempChannel = StrUtil.findFirstMatchedItem("\"channelName\":\"([^\"]+)\"", source);
 		String channelName = XCodeUtil.replaceHexChars(tempChannel, Konstants.CODE_UNICODE).replace("\\", "");

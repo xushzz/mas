@@ -21,7 +21,7 @@ public class MobilePhoneLocationExtractor extends Extractor<MexObject> {
 	}
 	
 	@Override
-	protected void parseContent() {
+	protected void parse() {
 		String regex = "<font color=\"?red\"?>(.*?)</font>";
 		Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
 		StringBuffer sb = new StringBuffer();

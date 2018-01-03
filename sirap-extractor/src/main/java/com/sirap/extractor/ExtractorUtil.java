@@ -29,7 +29,7 @@ public class ExtractorUtil {
 			}
 			
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				String regex = "\"pic_url\":\"(.*?)\"";
 				Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
 				while(m.find()) {
@@ -57,7 +57,7 @@ public class ExtractorUtil {
 			}
 			
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				String regex = "\"img\":\"(.*?)\"";
 				Matcher m = createMatcher(regex);
 				while(m.find()) {
@@ -107,7 +107,7 @@ public class ExtractorUtil {
 			}
 			
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				String regex = imageUrlExp;
 				Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
 				int count = m.groupCount();

@@ -33,7 +33,7 @@ public class Extractors {
 			}
 			
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				String regex = "</p><p>(.+?)</p></div>";
 				String names = StrUtil.findFirstMatchedItem(regex, source);
 				List<String> list = StrUtil.splitByRegex(names, "<br\\s*/>");
@@ -59,7 +59,7 @@ public class Extractors {
 			}
 			
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				String fields = "floorName,area,spaceNo";
 				List<String> keys = StrUtil.split(fields);
 				String connector = ", ";
@@ -95,7 +95,7 @@ public class Extractors {
 			}
 			
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				String regex = "\\{(.+?)\\}";
 				Matcher ma = createMatcher(regex, source);
 				while(ma.find()) {
@@ -126,7 +126,7 @@ public class Extractors {
 			}
 			
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				String regex = "\\{(.+?)\\}";
 				Matcher ma = createMatcher(regex, source);
 				List<String> keys = StrUtil.split("Name,ADDRESS,PHONE1,PHONE2,Lon,Lat");
@@ -160,7 +160,7 @@ public class Extractors {
 			}
 			
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				String regexDiv = "<label class=\"label_letter\">[a-z]</label>\\s*<div class=\"city_list\">(.+?)</div>";
 				List<String> divs = StrUtil.findAllMatchedItems(regexDiv, source);
 
@@ -192,7 +192,7 @@ public class Extractors {
 			}
 			
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				String regex = "<div _soj=\"xqlb\"[^<>]+>\\s*";
 				regex += "<a.+?/a>\\s*";
 				regex = "<div class=\"li-info\">(.*?)</div>\\s*";
@@ -240,7 +240,7 @@ public class Extractors {
 			}
 
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				int[] lens = {4, 12, 4, 2, 2, 2, 4, 4, 6, 4};
 				String template = "";
 				{
@@ -323,7 +323,7 @@ public class Extractors {
 			}
 
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				String template = "{0}  {1}  {2}   {3}   {4}   {5}   {6}   {7}   {8}   {9}";
 				String temp = StrUtil.occupy(template, columnNames());
 				mexItems.add(new MexObject(temp));
@@ -382,7 +382,7 @@ public class Extractors {
 			}
 
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				String regex = "<tr align=\"center\">\\s*";
 				regex += "<td>([^<>]+)</td>\\s*";
 				regex += "<td>([^<>]+)</td>\\s*";
@@ -468,7 +468,7 @@ public class Extractors {
 			}
 
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				if(leagueId == 128) {
 					conciseScorers();
 					return;
@@ -514,7 +514,7 @@ public class Extractors {
 			}
 
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				String regex = "<tr[^<>]*>\\s*";
 				regex += "<td class=\"hui\" title=\"([^\"]+)\">[^<>]+\\s([^<>]+)</td>\\s*";
 				regex += "<td[^<>]*>(.+?)</td>\\s*";
@@ -540,8 +540,7 @@ public class Extractors {
 			}
 		};
 		
-		neymar.setMethodPost(true);
-		neymar.setRequestParams("league_id=" + leagueId);
+		neymar.usePost().setRequestParams("league_id=" + leagueId);
 		
 		return neymar.process().getItems();
 	}
@@ -575,7 +574,7 @@ public class Extractors {
 			}
 
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				String space2 = "  ";
 				List<String> list = Arrays.asList(columnNames());
 				mexItems.add(new MexObject(StrUtil.connect(list, space2)));
@@ -620,7 +619,7 @@ public class Extractors {
 			}
 			
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				String fixed = source.replace("<div class=\"by_year_clear\"></div>", "");
 				String regex = "<div class=\"by_year(.+?)</div>";
 				Matcher ma = createMatcher(regex, fixed);
@@ -644,7 +643,7 @@ public class Extractors {
 		Extractor<MexObject> nikita = new Extractor<MexObject>() {
 
 			@Override
-			protected void readSource() {
+			protected void fetch() {
 				String temp = "";
 				temp += IOUtil.readURL("http://www.w3school.com.cn/tags/html_ref_entities.html");
 				temp += IOUtil.readURL("http://www.w3school.com.cn/tags/html_ref_symbols.html");
@@ -653,7 +652,7 @@ public class Extractors {
 			}
 			
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				String regex = "<td>([^<>]+)</td>\\s*<td>&amp;([a-z]{1,99});</td>\\s*<td>&amp;#(\\d{1,7});</td>";
 
 				Matcher ma = createMatcher(regex);
@@ -684,7 +683,7 @@ public class Extractors {
 			}
 			
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				String regex = "<li>\\[<a[^<>]+>[^<>]+</a>[^<>]+<a href=\"http://jintian.cidianwang.com/([^/]+)/[^<>]+>([^<>]+)</a></li>";
 				Matcher ma = createMatcher(regex);
 				while(ma.find()) {
@@ -712,7 +711,7 @@ public class Extractors {
 			}
 			
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				String regex = "</h2><ul>(.+?)</ul>";
 				Matcher ma = createMatcher(regex);
 				while(ma.find()) {
@@ -757,7 +756,7 @@ public class Extractors {
 			}
 			
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				String regex = "<tr>\\s*<td align=\"left\" valign=\"top\">([^\"]+)</td>";
 				regex += "\\s*<td>[^<>]*</td>";
 				regex += "\\s*<td align=\"left\" valign=\"top\">(.+?)</td>\\s*</tr>";
@@ -782,7 +781,7 @@ public class Extractors {
 			}
 			
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				Map<String, String> sea = shortAndFullProvinceName();
 				String regex = "<td>(.)([A-Z])\\s*</td><td>([^<>]+)</td>";
 				Matcher ma = createMatcher(regex);
@@ -818,7 +817,7 @@ public class Extractors {
 			}
 			
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				String regex = "\"/selectcar/([^\"]+)\">([^<>]+)</a></dd";
 				Matcher ma = createMatcher(regex);
 				while(ma.find()) {
@@ -844,7 +843,7 @@ public class Extractors {
 			}
 			
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				ValuesItem vi = new ValuesItem();
 				
 				String name = StrUtil.findFirstMatchedItem(">([^<>]+)</a></h3>", source);

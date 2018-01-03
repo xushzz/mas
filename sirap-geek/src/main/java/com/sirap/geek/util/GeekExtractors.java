@@ -23,7 +23,7 @@ public class GeekExtractors {
 			}
 
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				List<String> TYPES = Lists.newArrayList();
 				TYPES.add("Informational");
 				TYPES.add("Success");
@@ -56,7 +56,7 @@ public class GeekExtractors {
 			}
 
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				String regex = "<tr>\\s*<td>\\s*(\\d+)\\s*</td>\\s*<td>([^<>]+)</td>\\s*</tr>";
 				Matcher ma = createMatcher(regex);
 				while(ma.find()) {
@@ -84,7 +84,7 @@ public class GeekExtractors {
 			}
 			
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				source = HtmlUtil.removeComment(source);
 				String temp = methodName;
 				if(StrUtil.equals("...", methodName)) {

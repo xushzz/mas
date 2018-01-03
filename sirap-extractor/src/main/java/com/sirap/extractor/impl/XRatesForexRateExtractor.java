@@ -30,7 +30,7 @@ public class XRatesForexRateExtractor extends Extractor<ForexRateRecord> {
 	}
 
 	@Override
-	protected void parseContent() {
+	protected void parse() {
 		String regex = "<table class=\"tablesorter ratesTable\".*?</table>";
 		Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
 		String ratesTable = null;
@@ -39,7 +39,7 @@ public class XRatesForexRateExtractor extends Extractor<ForexRateRecord> {
 			retrieveBaseCurrency(ratesTable);
 			retrievePrices(ratesTable);		
 		} else {
-			isAllBeingWell = false;
+			setAllBeingWell(false);
 		}
 	}
 	

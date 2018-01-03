@@ -17,7 +17,7 @@ public class ChinaJieriExtractor extends Extractor<MexObject> {
 	}
 
 	@Override
-	protected void parseContent() {
+	protected void parse() {
 		String regex = "<li><a class=.+?target=\"_blank\">([^<>]+)</a>\\[([^<>]+)\\]</li>";
 		Matcher ma = createMatcher(regex);
 		String now = DateUtil.displayNow("MM/dd");

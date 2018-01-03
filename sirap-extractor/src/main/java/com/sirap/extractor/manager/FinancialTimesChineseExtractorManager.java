@@ -30,7 +30,7 @@ public class FinancialTimesChineseExtractorManager extends RssExtractorManager {
 			}
 			
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				StringBuilder sb = new StringBuilder();
 				sb.append("<dt>(.+?)</dt>\\s*");
 				sb.append("<dd>[^<>]*<span>\\s*");
@@ -64,7 +64,7 @@ public class FinancialTimesChineseExtractorManager extends RssExtractorManager {
 			}
 			
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				StringBuilder sb = new StringBuilder();
 				sb.append("<item>\\s*");
 				sb.append(".*?");

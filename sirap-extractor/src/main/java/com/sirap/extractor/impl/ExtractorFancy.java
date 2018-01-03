@@ -50,7 +50,7 @@ public class ExtractorFancy {
 					}
 					
 					@Override
-					protected void parseContent() {
+					protected void parse() {
 						String regex = "href=\"(/forum/images/.*?)\"";
 						Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
 						while(m.find()) {
@@ -96,7 +96,7 @@ public class ExtractorFancy {
 					}
 					
 					@Override
-					protected void parseContent() {
+					protected void parse() {
 						String regex = "<a href=\"(http://" + SITE_IGA + "/nude/.*?)\"";
 						Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
 						while(m.find()) {
@@ -145,7 +145,7 @@ public class ExtractorFancy {
 					}
 					
 					@Override
-					protected void parseContent() {
+					protected void parse() {
 						String regex = "<a href='(http://" + SITE_CARVER + "/viewimage/.*?)'>";
 						Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
 						while(m.find()) {
@@ -182,7 +182,7 @@ public class ExtractorFancy {
 					}
 					
 					@Override
-					protected void parseContent() {
+					protected void parse() {
 						String regex = "<center>.*?<img src='(.*?)'.*?</center>";
 						Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
 						while(m.find()) {

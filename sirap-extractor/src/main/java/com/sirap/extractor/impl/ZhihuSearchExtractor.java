@@ -19,7 +19,7 @@ public class ZhihuSearchExtractor extends Extractor<ZhihuRecord> {
 	}
 		
 	@Override
-	protected void parseContent() {
+	protected void parse() {
 		String regex = "<li class=\"item clearfix.+?</div></div></li>";
 		Matcher m = createMatcher(regex);
 		String regexLink = "<a target=\"_blank\" href=\"([^\"]+)\" class=\"js-title-link\">";

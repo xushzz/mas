@@ -19,7 +19,7 @@ public class NationalWeatherExtractor extends Extractor<WeatherRecord> {
 	}
 	
 	@Override
-	protected void parseContent() {
+	protected void parse() {
 		StringBuffer regex = new StringBuffer();
 		regex.append("<div class=\"cname\">");
 		regex.append("\\s+<a target=\"_blank\" href=\"/publish/forecast/[A-Z]{1,5}/([A-Z\\-]{1,50}).html\">([^<]+)</a>");

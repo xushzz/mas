@@ -21,7 +21,7 @@ public class EnglishDictionaryExtractor extends Extractor<MexObject> {
 	}
 	
 	@Override
-	protected void parseContent() {
+	protected void parse() {
 		String regexMain = "<div class=\"source-data\">(.+?)Dictionary.com Unabridged";
 		String main = StrUtil.findFirstMatchedItem(regexMain, source);
 		

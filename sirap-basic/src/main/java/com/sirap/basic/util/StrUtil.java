@@ -646,6 +646,11 @@ public class StrUtil {
 		return null;
 	}
 	
+	public static boolean isHttp(String source) {
+		String regex = "https?://[\\S]{3,}";
+		return isRegexMatched(regex, source);
+	}
+	
 	public static boolean isEmail(String source) {
 		if(EmptyUtil.isNullOrEmpty(source)) {
 			return false;

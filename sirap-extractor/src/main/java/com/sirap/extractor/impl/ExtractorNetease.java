@@ -49,7 +49,7 @@ public class ExtractorNetease {
 				}
 				
 				@Override
-				protected void parseContent() {
+				protected void parse() {
 					String regex = "\"seturl\":\"(http://.*?)\"";
 					Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
 					while(m.find()) {
@@ -130,7 +130,7 @@ public class ExtractorNetease {
 					}
 					
 					@Override
-					protected void parseContent() {
+					protected void parse() {
 						String regex = "\"oimg\":\\s+\"(.*?)\"";
 						Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
 						while(m.find()) {
@@ -179,7 +179,7 @@ public class ExtractorNetease {
 					}
 					
 					@Override
-					protected void parseContent() {
+					protected void parse() {
 						String regex = "<li><a\\shref=\"(http://sports.163.com/photoview.*?html)\">";
 						Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
 						while(m.find()) {

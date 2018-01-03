@@ -20,7 +20,7 @@ public class FindJarExtractor extends Extractor<MexObject> {
 	}
 
 	@Override
-	protected void parseContent() {
+	protected void parse() {
 		String regex = "<span class=\"type\">\\[(\\w+)\\]</span>\\s+";
 		regex += "<a href=\"([^\"]+)\">(.+?)</a>";
 		Matcher ma = createMatcher(regex, source);

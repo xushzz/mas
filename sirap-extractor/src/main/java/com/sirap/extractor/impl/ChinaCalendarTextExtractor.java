@@ -40,9 +40,8 @@ public class ChinaCalendarTextExtractor extends Extractor<MexItem> {
 		this.day = day;
 		this.isLeap = isLeapMonth;
 
-		useGBK();
+		useGBK().useList();
 		printFetching = true;
-		readIntoSourceList = true;
 	}
 	
 	private String createMexCriteria() {
@@ -77,7 +76,7 @@ public class ChinaCalendarTextExtractor extends Extractor<MexItem> {
 	}
 	
 	@Override
-	protected void parseContent() {
+	protected void parse() {
 		List<MexItem> tempItems = Lists.newArrayList();
 		for(String line : sourceList) {
 			if(EmptyUtil.isNullOrEmpty(line)) {

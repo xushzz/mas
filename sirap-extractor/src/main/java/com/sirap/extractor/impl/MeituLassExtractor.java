@@ -32,7 +32,7 @@ public class MeituLassExtractor extends Extractor<MeituLassItem> {
 	}
 	
 	@Override
-	protected void parseContent() {
+	protected void parse() {
 		String keyWord = XCodeUtil.urlDecodeUTF8("%E6%A8%A1%E7%89%B9%EF%BC%9A");
 		String regex = "<p>" + keyWord + "(.+?)</p>";
 		Matcher m = createMatcher(regex);

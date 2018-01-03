@@ -15,13 +15,12 @@ public class BibleChapterFromSirapExtractor extends Extractor<MexObject> {
 	 */
 	public BibleChapterFromSirapExtractor(String urlInfo) {
 		printFetching = true;
-		readIntoSourceList = true;
 		String url = StrUtil.useSlash(HOME, urlInfo.replace(" ", "%20"));
-		setUrl(url);
+		setUrl(url).useList();
 	}
 	
 	@Override
-	protected void parseContent() {
+	protected void parse() {
 		for(String item : sourceList) {
 			mexItems.add(new MexObject(item));
 		}

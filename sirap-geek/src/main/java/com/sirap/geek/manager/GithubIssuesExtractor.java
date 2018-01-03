@@ -19,7 +19,7 @@ public class GithubIssuesExtractor extends Extractor<MexItem> {
 	}
 	
 	@Override
-	protected void parseContent() {
+	protected void parse() {
 		String regex = "/(\\d+)\" class=\"Box-row-link.*?\">(.*?)</a>";
 		Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
 		while(m.find()) {

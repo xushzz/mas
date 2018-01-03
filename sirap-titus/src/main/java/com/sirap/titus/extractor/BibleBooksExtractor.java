@@ -15,7 +15,7 @@ public class BibleBooksExtractor extends Extractor<Link> {
 	}
 	
 	@Override
-	protected void parseContent() {
+	protected void parse() {
 		String regex = "<a[^<>]+href=\"([^\"]+)\">\\s*<h4[^<>]+>([^<>]+)</h4>";
 		Matcher m = createMatcher(regex);
 		while(m.find()) {

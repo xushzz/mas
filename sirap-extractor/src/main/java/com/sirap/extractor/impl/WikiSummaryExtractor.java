@@ -19,7 +19,7 @@ public class WikiSummaryExtractor extends Extractor<MexObject> {
 	}
 
 	@Override
-	protected void parseContent() {
+	protected void parse() {
 		String regexSolid = "</table>\\s*(<p>.+?)<h2>Contents</h2>";
 		String solid = StrUtil.findFirstMatchedItem(regexSolid, source);
 		XXXUtil.nullCheck(solid, ":something must be wrong with " + getUrl());

@@ -16,7 +16,7 @@ public class BibleVersionsExtractor extends Extractor<BibleVersion> {
 	}
 	
 	@Override
-	protected void parseContent() {
+	protected void parse() {
 		String regex = "<a href=\"[^\"]+/([^\"]+)/\">";
 		regex += "\\s*<h4[^<>]+>([^<>]+)";
 		regex += "<span class=\"text-muted\">([^<>]+)</span></h4>";

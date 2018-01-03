@@ -20,7 +20,7 @@ public class TulingExtractor extends Extractor<MexObject> {
 	}
 
 	@Override
-	protected void parseContent() {
+	protected void parse() {
 		Map naive = JsonUtil.toMap(source);
 		Object code = naive.get("code");
 		if(StrUtil.equals(CODE_SUCCESS, code + "")) {

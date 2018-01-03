@@ -40,7 +40,7 @@ public class ExtractorChinaPostCodeToolcncn {
 \					 * <p>古南镇桥坝村,古南镇清水村,古南镇白鹤村,古南镇白庙村<a href="/youbian/401420">[更多]</a></p>
 					 */
 					@Override
-					protected void parseContent() {
+					protected void parse() {
 						String regex = "'location_a', '([^']+)', '([^']+)', '([^']+)'\\);";
 						String townName = null;
 						Matcher mat = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
@@ -108,7 +108,7 @@ public class ExtractorChinaPostCodeToolcncn {
 					 * a href="/youbian/hechi-jinchengjiang"
 					 */
 					@Override
-					protected void parseContent() {
+					protected void parse() {
 						String regex = "'location_a', '([^']+)', '([^']+)', ''\\);";
 						String cityName = null;
 						Matcher mat = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
@@ -164,7 +164,7 @@ public class ExtractorChinaPostCodeToolcncn {
 			 *  <a href="/aba-youbian">阿坝</a>
 			 */
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				String regex = "href=\"(/[^\"]+-youbian)\"";
 				Matcher mat = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
 				while(mat.find()) {

@@ -1,8 +1,8 @@
-\                  display previous N records of commands with backward slash, currently default N=20
-\ $+all            display all history commands, options for \, $+n,+all         
-\fire              display all inputs matching given criteria(s), month info will be translated
-\mar/March         ch means 'command history', inputs generated in March will be displayed
-\13 $+n            display given number of records of inputs, the number is 13 in this example
+;                  display previous N records of commands with backward slash, currently default N=20
+; $+all            display all history commands, options for \, $+n,+all         
+;fire              display all inputs matching given criteria(s), month info will be translated
+;mar/March         ch means 'command history', inputs generated in March will be displayed
+;13 $+n            display given number of records of inputs, the number is 13 in this example
 sc                 sc means 'system configuration', display all of them
 sc fire            display system configuration entries matching given criteria
 lh[8|..]           display default(20), or given number of, or all login records

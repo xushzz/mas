@@ -20,7 +20,7 @@ public class IcibaTranslationExtractor extends Extractor<ValuesItem> {
 	}
 
 	@Override
-	protected void parseContent() {
+	protected void parse() {
 		ValuesItem vi = new ValuesItem();
 		
 		String regexHead = "<h1 class=\"keyword\">([^<>]+)</h1>";

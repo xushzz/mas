@@ -19,7 +19,7 @@ public class LocationsExtractors {
 			}
 			
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				String regex = Konstants.REGEX_FLOAT + "\\s*,\\s*" + Konstants.REGEX_FLOAT + "\\s+(.+)";
 				String temp = "{\"name\": \"{0}\",\"center\": \"{1},{2}\"}";
 				//222	119.929575843,28.4562995521	浙江省-丽水市

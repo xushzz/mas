@@ -40,7 +40,7 @@ public class China24JieqiExtractor extends Extractor<MexObject> {
 	}
 
 	@Override
-	protected void parseContent() {
+	protected void parse() {
 		if(year == null) {
 			parseGeneral();
 		} else {

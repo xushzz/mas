@@ -36,7 +36,7 @@ public class AvronExtractors {
 		return allItems;
 	}
 	
-	public static void areacodesOf(List<ValuesItem> allItems, String topAreacode, int level) {
+	private static void areacodesOf(List<ValuesItem> allItems, String topAreacode, int level) {
 		Extractor<ValuesItem> neymar = new Extractor<ValuesItem>() {
 			@Override
 			public String getUrl() {
@@ -51,7 +51,7 @@ public class AvronExtractors {
 			@Override
 			//<option value='450301000000'>市辖区</option>
 			//<option  value="370000000000">山东省</option>
-			protected void parseContent() {
+			protected void parse() {
 				String regex = "<option\\s+value=['\"](\\d+)['\"]>(.+?)</option>";
 				Matcher ma = createMatcher(regex);
 				while(ma.find()) {
@@ -89,13 +89,12 @@ public class AvronExtractors {
 			
 			@Override
 			public String getUrl() {
-				readIntoSourceList = true;
-				
+				useList();
 				return fileOrWebUrl;
 			}
 			
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				//450600000000, 防城港市, 450000000000, 2
 				String template = "{\"code\": \"{0}\", \"name\":\"{1}\", \"parent\":\"{2}\", \"level\":\"{3}\"}";
 				for(String record : sourceList) {
@@ -120,8 +119,7 @@ public class AvronExtractors {
 			
 			@Override
 			public String getUrl() {
-				readIntoSourceList = true;
-				
+				useList();
 				return fileOrWebUrl;
 			}
 			
@@ -129,7 +127,7 @@ public class AvronExtractors {
 			/****
 			 * {"name": "北京市","center": "116.405285,39.904989"}
 			 */
-			protected void parseContent() {
+			protected void parse() {
 				//广西田东锦鑫化工有限公司, 107.12703, 23.64798
 				String template = "{\"name\": \"{0}\", \"center\":\"{1},{2}\"}";
 				for(String record : sourceList) {
@@ -173,7 +171,7 @@ public class AvronExtractors {
 			}
 			
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				ValuesItem vi = new ValuesItem();
 				String regex = "<td width=\"400\" style=\"padding-bottom:18px\">(.+?)</td>";
 				String info = StrUtil.findFirstMatchedItem(regex, source);
@@ -220,7 +218,7 @@ public class AvronExtractors {
 			}
 			
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				String regexMax = "var\\s+pagesum\\s*=\\s*+(\\d+)\\s*;";
 				item = StrUtil.findFirstMatchedItem(regexMax, source);
 			}
@@ -236,14 +234,13 @@ public class AvronExtractors {
 			public
 			String getUrl() {
 				printFetching = true;
-				setRequestParams("page.pageNo=" + page);
-				setMethodPost(true);
+				setRequestParams("page.pageNo=" + page).usePost();
 				String url = "http://permit.mep.gov.cn/permitExt/syssb/xxgk/xxgk!sqqlist.action";
 				return url;
 			}
 			
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				String regex = "<tr>\\s*";
 				regex += "<td[^<>]*>([^<>]*)</td>\\s*";
 				regex += "<td[^<>]*>([^<>]*)</td>\\s*";
@@ -288,7 +285,7 @@ public class AvronExtractors {
 			}
 			
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				String regexMax = "<div class=\"page\">\\D*(\\d+)\\D*&nbsp;";
 				item = StrUtil.findFirstMatchedItem(regexMax, source);
 			}
@@ -310,7 +307,7 @@ public class AvronExtractors {
 			}
 			
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				String regex = "<tr>\\s*";
 				regex += "<td[^<>]+>([^<>]*)</td>\\s*";
 				regex += "<td[^<>]+>([^<>]*)</td>\\s*";

@@ -19,7 +19,7 @@ public class MMKChannelsExtractor extends Extractor<MMKChannelItem> {
 	}
 	
 	@Override
-	protected void parseContent() {
+	protected void parse() {
 		String regex = "<li><a href=\"[^\"]+/(\\d+)/\"[^<>]+>([^<>]+)</a></li>";
 		Matcher ma = createMatcher(regex);
 		while(ma.find()) {

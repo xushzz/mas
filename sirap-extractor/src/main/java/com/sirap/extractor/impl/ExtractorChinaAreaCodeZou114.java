@@ -35,7 +35,7 @@ public class ExtractorChinaAreaCodeZou114 {
 					 * <font color=green face="Arial">区号&nbsp;0771&nbsp;&nbsp;广西&nbsp;南宁</font> <font color=#000000 size=2>(市辖区、马山县、)</font>
 					 */
 					@Override
-					protected void parseContent() {
+					protected void parse() {
 						String regex = "face=\"Arial\">[^\\d]+([\\d]{1,9}[^\"]+)</font></font><br>";
 						Matcher mat = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
 						while(mat.find()) {
@@ -80,7 +80,7 @@ public class ExtractorChinaAreaCodeZou114 {
 			 *  target="_blank" href="ah.htm"
 			 */
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				String regex = "target=\"_blank\" href=\"([^\"]+.htm)\"";
 				Matcher mat = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
 				while(mat.find()) {

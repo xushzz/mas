@@ -18,7 +18,7 @@ public class MMKProgramExtractor extends Extractor<MexObject> {
 	}
 	
 	@Override
-	protected void parseContent() {
+	protected void parse() {
 		String title = StrUtil.findFirstMatchedItem("<title>([^<>]+)</title>", source);
 		mexItems.add(new MexObject(title));
 		String regex = "<li><em>([^<>]+)</em><span>([^<>]+)</span></li>";

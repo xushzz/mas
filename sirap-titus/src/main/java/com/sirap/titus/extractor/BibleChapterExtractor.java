@@ -36,7 +36,7 @@ public class BibleChapterExtractor extends Extractor<MexObject> {
 	}
 	
 	@Override
-	protected void parseContent() {
+	protected void parse() {
 		readBasicInfo();
 		
 		String regex = "";

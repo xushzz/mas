@@ -17,7 +17,7 @@ public class WeixinSearchExtractor extends Extractor<MexObject> {
 	}
 
 	@Override
-	protected void parseContent() {
+	protected void parse() {
 		String regex = "<h3>(.+?)<div class=\"moe-box\">";
 		regex = "<a target=\"_blank\" href=\"([^\"]+)\"[^<>]+>(.+?)</a>";
 		regex += "\\s*</h3>(.+?)<div class=\"s-p\" t=\"[0-9]+\">";

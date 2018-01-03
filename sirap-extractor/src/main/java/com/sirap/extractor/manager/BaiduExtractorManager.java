@@ -35,7 +35,7 @@ public class BaiduExtractorManager extends RssExtractorManager {
 			}
 			
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				StringBuilder sb = new StringBuilder();
 				sb.append("<span\\s?[^<>]*>([^<>]+)</span>\\s*");
 				sb.append("<input\\s?[^<>]*\\s?value=\"http://news.baidu.com/n\\?cmd=([^\"]+)&class=([^\"]+)&[^\"]+\">");
@@ -81,7 +81,7 @@ public class BaiduExtractorManager extends RssExtractorManager {
 			}
 			
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				StringBuilder sb = new StringBuilder();
 				sb.append("<item>\\s*");
 				sb.append(".*?");
@@ -145,7 +145,7 @@ public class BaiduExtractorManager extends RssExtractorManager {
 			}
 
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				String regexError = "<p class=\"sorryCont\">(.+?)</p>";
 				String error = StrUtil.findFirstMatchedItem(regexError, source);
 				if(error != null) {

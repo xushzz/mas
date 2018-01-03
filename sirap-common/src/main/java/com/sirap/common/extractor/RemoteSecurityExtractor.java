@@ -27,7 +27,7 @@ public class RemoteSecurityExtractor extends Extractor<MexItem> {
 	}
 
 	@Override
-	protected void parseContent() {
+	protected void parse() {
 		String temp = "exp/{0}/(\\d{8})/exp";
 		String regex = StrUtil.occupy(temp, username);
 		Matcher m = Pattern.compile(regex).matcher(source);

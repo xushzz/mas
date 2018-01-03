@@ -8,8 +8,7 @@ import com.sirap.basic.domain.MexItem;
 public abstract class WorldTimeExtractor extends Extractor<MexItem> {
 	
 	public WorldTimeExtractor() {
-		setUrl(getUrl());
-		printExceptionIfNeeded = false;
+		setUrl(getUrl()).setPrintExceptionIfNeeded(false);
 	}
 	
 	protected Date datetime;

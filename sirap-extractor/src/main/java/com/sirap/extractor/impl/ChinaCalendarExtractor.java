@@ -19,9 +19,7 @@ public class ChinaCalendarExtractor extends Extractor<ValuesItem> {
 	public ChinaCalendarExtractor(String params) {
 		printFetching = true;
 		this.params = params;
-		setUrl(URL_TEMPLATE);
-		setRequestParams(construct(params));
-		setMethodPost(true);
+		usePost().setUrl(URL_TEMPLATE).setRequestParams(construct(params));
 	}
 	
 	/***
@@ -60,7 +58,7 @@ public class ChinaCalendarExtractor extends Extractor<ValuesItem> {
 	}
 
 	@Override
-	protected void parseContent() {
+	protected void parse() {
 		String regex = "<td[^<>]+bgcolor=\"#FFFFFF\"[^<>]+?>(.+?)</td>";
 		List<String> items = StrUtil.findAllMatchedItems(regex, source);
 		if(EmptyUtil.isNullOrEmpty(items)) {

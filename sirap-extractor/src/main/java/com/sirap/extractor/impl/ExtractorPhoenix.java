@@ -38,7 +38,7 @@ public class ExtractorPhoenix {
 					}
 					
 					@Override
-					protected void parseContent() {
+					protected void parse() {
 						String regex = "\\stimg: '(.*?)'";
 						Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
 						while(m.find()) {
@@ -80,7 +80,7 @@ public class ExtractorPhoenix {
 				}
 				
 				@Override
-				protected void parseContent() {
+				protected void parse() {
 					String regex = "href=\"(http://news.ifeng.com/a/.*?shtml)\"";
 					Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
 					while(m.find()) {
@@ -108,7 +108,7 @@ public class ExtractorPhoenix {
 			}
 			
 			@Override
-			protected void parseContent() {
+			protected void parse() {
 				String regex = "\\stimg: '(.*?)'";
 				Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
 				while(m.find()) {

@@ -17,7 +17,7 @@ public class WorldTimeBJTimeOrgExtractor extends WorldTimeExtractor {
 	 * August says 8.
 	 */
 	@Override
-	protected void parseContent() {
+	protected void parse() {
 		StringBuffer regex = new StringBuffer();
 		
 		regex.append("nyear=([\\d]{4});nmonth=([\\d]{1,2});nday=([\\d]{1,2});[^;]+;nhrs=([\\d]{1,2});nmin=([\\d]{1,2});nsec=([\\d]{1,2})");
