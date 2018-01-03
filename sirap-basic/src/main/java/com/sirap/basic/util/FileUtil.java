@@ -22,7 +22,6 @@ import javax.swing.filechooser.FileSystemView;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.exception.MexException;
-import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
 import com.sirap.basic.tool.FileSizeCalculator;
 import com.sirap.basic.tool.FileWalker;
@@ -417,7 +416,7 @@ public class FileUtil {
 	public static File parseFolder(String param, String defaultFolder) {
 		boolean isBad = StrUtil.isRegexMatched("[\\\\/\\.]{1,}", param);
 		if(isBad) {
-			C.pl2("Not nice, I personally hate this style, pls do away with " + param);
+//			C.pl2("Not nice, I personally hate this style, pls do away with " + param);
 			return null;
 		}
 		

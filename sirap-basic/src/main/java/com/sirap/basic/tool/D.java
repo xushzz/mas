@@ -113,19 +113,7 @@ public class D {
 		List list = Arrays.asList(objArr);
 		C.list(list);
 	}
-	
-	public static void list2(List list) {
-		D.pl("D.list start");
-		if(EmptyUtil.isNullOrEmpty(list)) {
-			D.sink("empty list");
-		}
-		
-		for(Object obj : list) {
-			D.pl((obj != null ? obj.getClass() + "  " : "") + obj);
-		}
-		D.pl("D.list end");
-	}
-	
+
 	public static void list(List list) {
 		if(EmptyUtil.isNullOrEmpty(list)) {
 			D.sink("empty list");
@@ -133,6 +121,19 @@ public class D {
 			D.pl("D.list start");
 			for(Object obj : list) {
 				D.pl(obj);
+			}
+			D.pl("D.list end, total: " + list.size());
+		}
+		
+	}
+
+	public static void list2(List list) {
+		if(EmptyUtil.isNullOrEmpty(list)) {
+			D.sink("empty list");
+		} else {
+			D.pl("D.list start");
+			for(Object obj : list) {
+				D.pl((obj != null ? obj.getClass() + "  " : "") + obj);
 			}
 			D.pl("D.list end, total: " + list.size());
 		}
