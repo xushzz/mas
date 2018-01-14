@@ -145,7 +145,7 @@ public class ImageUtil {
 		}
 		String newName = temp.replace(".", "_" + fileSizeWithUnit + ".");
 		String targetPath = folder + newName;
-		long targetSize = FileUtil.parseFileSize(fileSizeWithUnit);
+		long targetSize = FileUtil.parseSize(fileSizeWithUnit);
 		return compressImage(sourcePath, targetPath, targetSize);
 	}
 	
@@ -162,7 +162,7 @@ public class ImageUtil {
 		}
 		String newName = temp.replace(".", "_" + fileSizeWithUnit + ".");
 		String targetPath = StrUtil.useSeparator(targetFolder, newName);
-		long targetSize = FileUtil.parseFileSize(fileSizeWithUnit);
+		long targetSize = FileUtil.parseSize(fileSizeWithUnit);
 		return compressImage(sourcePath, targetPath, targetSize);
 	}
 	

@@ -26,7 +26,7 @@ public class MexFile extends MexItem implements Comparable<MexFile> {
 	private long folderSize = -1;
 	public long getFileFize() {
 		if(folderSize == -1) {
-			folderSize = FileUtil.getFileSize(file.getAbsolutePath());
+			folderSize = FileUtil.sizeOf(file.getAbsolutePath());
 		}
 		
 		return folderSize;

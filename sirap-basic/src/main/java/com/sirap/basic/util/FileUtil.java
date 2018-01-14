@@ -485,7 +485,7 @@ public class FileUtil {
 	public static List<String> availableDiskDetails() {
 		List<String> items = new ArrayList<>();
 		String template = "{0} {3}% available {1} out of {2}";
-		FileSystemView fsv = FileSystemView.getFileSystemView();
+		FileSystemView dan = FileSystemView.getFileSystemView();
 		
 		for(char flag = 'A'; flag <= 'Z'; flag++) {
 			String folderName = flag + ":\\";
@@ -494,11 +494,11 @@ public class FileUtil {
 				continue;
 			}
 			
-			String displayName = organizeSystemDisplayName(fsv.getSystemDisplayName(file));
+			String displayName = dan.getSystemDisplayName(file);
 			long free = file.getFreeSpace();
 			long total = file.getTotalSpace();
 			int percentage = (int)(free * 100.0 / total);
-			String record = StrUtil.occupy(template, displayName, formatFileSize(free), formatFileSize(total), percentage);
+			String record = StrUtil.occupy(template, displayName, formatSize(free), formatSize(total), percentage);
 			items.add(record);
 		}
 		
@@ -526,42 +526,24 @@ public class FileUtil {
 		return items;
 	}
 	
-	/***
-	 * CA (C:)
-	 * @return C: (CA)
-	 */
-	public static String organizeSystemDisplayName(String source) {
-		String regex = "(.*)\\(([A-Z]:)\\)";
-		String[] params = StrUtil.parseParams(regex, source);
-		
-		if(params == null) {
-			throw new IllegalArgumentException(source);
-		}
-
-		String template = "{0} ({1})";
-		String record = StrUtil.occupy(template, params[1], params[0]); 
-		
-		return record;
-	}
-	
-	public static long getFileSize(String fileOrFolderPath) {
+	public static long sizeOf(String fileOrFolderPath) {
 		FileSizeCalculator james = new FileSizeCalculator(fileOrFolderPath);
 		return james.getTotalSize();
 	}
 	
-	public static String formatFileSize(String filePath) {
+	public static String formatSize(String filePath) {
 		File file = new File(filePath);
 		if(!file.exists()) {
 			throw new MexException("Non-exist file: {0}", filePath);
 		}
 		
 		long size = file.length();
-		String value = formatFileSize(size);
+		String value = formatSize(size);
 		
 		return value;
 	}
 	
-	public static String formatFileSize(long sizeInByte) {
+	public static String formatSize(long sizeInByte) {
 		NumberFormat pretty = NumberFormat.getNumberInstance();
 		pretty.setMaximumFractionDigits(2);
 		pretty.setRoundingMode(RoundingMode.HALF_UP);
@@ -591,7 +573,7 @@ public class FileUtil {
 	 * @param source 2K
 	 * @return 2048
 	 */
-	public static long parseFileSize(String source) {
+	public static long parseSize(String source) {
 		String units = Konstants.FILE_SIZE_UNIT;
 		
 		String regex = Konstants.REGEX_FLOAT + "([" + units + "])";
@@ -600,10 +582,10 @@ public class FileUtil {
 			throw new MexException("can't parse file size [{0}], try legal examples like 2B, 12M, 38.8G and so on.", source);
 		}
 		
-		return parseFileSize(params[0], params[1].charAt(0));
+		return parseSize(params[0], params[1].charAt(0));
 	}
 	
-	public static long parseFileSize(String numberStr, char unit) {
+	public static long parseSize(String numberStr, char unit) {
 		String units = Konstants.FILE_SIZE_UNIT;
 		
 		Double number = Double.valueOf(numberStr);
@@ -633,7 +615,7 @@ public class FileUtil {
 		try {
 			Object value = Files.getAttribute(path, "basic:" + key);
 			if(StrUtil.equals("size", key) && value instanceof Long) {
-				value = formatFileSize((Long)value);
+				value = formatSize((Long)value);
 			} else if(value instanceof FileTime) {
 				FileTime ft = (FileTime)value;
 				value = DateUtil.displayDate(new Date(ft.toMillis()), DateUtil.DATETIME);

@@ -37,7 +37,7 @@ public class SizeCriteria extends MexItem {
 			operator = params[0];
 			String baseValue = params[1];
 			unit = params[2].toUpperCase().charAt(0);
-			value = FileUtil.parseFileSize(baseValue, unit);
+			value = FileUtil.parseSize(baseValue, unit);
 			
 			return true;
 		}

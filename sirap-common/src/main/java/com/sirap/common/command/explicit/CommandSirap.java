@@ -284,7 +284,7 @@ public class CommandSirap extends CommandBase {
 			if(filePath != null) {
 				String info = "";
 				if(OptionUtil.readBooleanPRI(options, "d", true)) {
-					info += " " + FileUtil.formatFileSize(filePath);
+					info += " " + FileUtil.formatSize(filePath);
 					info += " " + ImageUtil.readImageWidthHeight(filePath, "*");
 				}
 
@@ -339,7 +339,7 @@ public class CommandSirap extends CommandBase {
 				if(filePath != null) {
 					String info = "";
 					if(OptionUtil.readBooleanPRI(options, "d", false)) {
-						info += " " + FileUtil.formatFileSize(filePath);
+						info += " " + FileUtil.formatSize(filePath);
 						info += " " + ImageUtil.readImageWidthHeight(filePath, "x");
 					}
 					C.pl("detail:" + info);

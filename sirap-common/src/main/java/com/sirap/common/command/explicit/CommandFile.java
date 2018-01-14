@@ -825,7 +825,7 @@ public class CommandFile extends CommandBase {
 		if(finalFilename != null) {
 			String info = "";
 			if(OptionUtil.readBooleanPRI(options, "d", true)) {
-				info += " " + FileUtil.formatFileSize(finalFilename);
+				info += " " + FileUtil.formatSize(finalFilename);
 				info += " " + ImageUtil.readImageWidthHeight(finalFilename, "*");
 			}
 

@@ -77,7 +77,7 @@ public class CommandXCode extends CommandBase {
 			if (filePath != null) {
 				String info = "";
 				if(OptionUtil.readBooleanPRI(options, "d", false)) {
-					info += " " + FileUtil.formatFileSize(filePath);
+					info += " " + FileUtil.formatSize(filePath);
 					info += " " + ImageUtil.readImageWidthHeight(filePath, "x");
 				}
 				C.pl(filePath + info);
@@ -290,7 +290,7 @@ public class CommandXCode extends CommandBase {
 			if(filePath != null) {
 				String info = "";
 				if(OptionUtil.readBooleanPRI(options, "d", false)) {
-					info += " " + FileUtil.formatFileSize(filePath);
+					info += " " + FileUtil.formatSize(filePath);
 					info += " " + ImageUtil.readImageWidthHeight(filePath, "x");
 				}
 				C.pl(code + ", " + filePath + info);

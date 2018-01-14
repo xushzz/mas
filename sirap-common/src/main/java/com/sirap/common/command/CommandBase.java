@@ -533,7 +533,7 @@ public abstract class CommandBase {
 	
 	protected void checkTooBigToHandle(File file, String maxSize) {
 		long fileSize = file.length();
-		long limitSizeInByte = FileUtil.parseFileSize(maxSize);
+		long limitSizeInByte = FileUtil.parseSize(maxSize);
 		if(file.length() > limitSizeInByte) {
 			String msgTemp = "File size {0} is larger than maximum {1}, refuse to handle.";
 			String msg = StrUtil.occupy(msgTemp, FileUtil.formatFileSize(fileSize), FileUtil.formatFileSize(limitSizeInByte));
