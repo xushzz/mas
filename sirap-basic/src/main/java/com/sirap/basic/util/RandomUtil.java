@@ -10,11 +10,11 @@ public class RandomUtil {
 		return result;
 	}
 
-	public static Integer digitsStartWithNoZero(int countOfChars) {
+	public static Long digitsStartWithNoZero(int countOfChars) {
 		String start = chars(1, "123456798");
 		String others = chars(countOfChars - 1, StrUtil.DIGITS);
 		
-		return Integer.parseInt(start + others);
+		return Long.parseLong(start + others);
 	}
 
 	public static String letters(int countOfChars) {

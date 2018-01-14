@@ -42,8 +42,8 @@ public class DBHelper {
 		FULL_WORDS = new HashMap<>();
 		FULL_WORDS.put("from", "select * from");
 		FULL_WORDS.put("into", "insert into");
-		FULL_WORDS.put("count", "select count(*) from");
-		FULL_WORDS.put("cnt", "select count(*) from");
+		FULL_WORDS.put("count", "select count(*) as Count from");
+		FULL_WORDS.put("cnt", "select count(*) as Count from");
 		
 		KEYS_DML_LIST = new ArrayList<>(FULL_WORDS.keySet());
 		

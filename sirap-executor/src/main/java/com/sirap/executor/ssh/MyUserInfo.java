@@ -1,53 +1,54 @@
 package com.sirap.executor.ssh;
 
-import com.jcraft.jsch.UserInfo;  
+import com.jcraft.jsch.UserInfo;
+import com.sirap.basic.tool.C;
 
 /** 
  * This class provide interface to feedback information to the user. 
  */  
 public class MyUserInfo implements UserInfo {  
-    private String password;  
-  
-    private String passphrase;  
   
     @Override  
     public String getPassphrase() {  
-        System.out.println("MyUserInfo.getPassphrase()");  
+    	info("MyUserInfo.getPassphrase()");
+    	
         return null;  
     }  
   
     @Override  
     public String getPassword() {  
-        System.out.println("MyUserInfo.getPassword()");  
+    	info("MyUserInfo.getPassword()");
+    	
         return null;  
     }  
   
     @Override  
     public boolean promptPassphrase(final String arg0) {  
-        System.out.println("MyUserInfo.promptPassphrase()");  
-        System.out.println(arg0);  
+    	info("MyUserInfo.promptPassphrase()");  
+    	info(arg0);
+    	
         return false;  
     }  
   
     @Override  
     public boolean promptPassword(final String arg0) {  
-        System.out.println("MyUserInfo.promptPassword()");  
-        System.out.println(arg0);  
+    	info("MyUserInfo.promptPassword()");  
+    	info(arg0);  
+    	
         return false;  
     }
   
     @Override  
     public boolean promptYesNo(final String arg0) {  
-//        System.out.println("MyUserInfo.promptYesNo()");  
-        //System.out.println(arg0);
-        if (arg0.contains("The authenticity of host")) {  
-            return true;  
-        }  
-        return false;  
-    }  
+        return arg0.contains("The authenticity of host");
+    }
   
     @Override  
     public void showMessage(final String arg0) {  
-        System.out.println("MyUserInfo.showMessage()");  
-    }  
+    	info("MyUserInfo.showMessage()");  
+    } 
+    
+    public void info(String value) {
+    	C.pl("ssh: " + value);
+    }
 }

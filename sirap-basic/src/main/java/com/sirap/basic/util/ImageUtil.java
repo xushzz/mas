@@ -171,7 +171,7 @@ public class ImageUtil {
         if (nick.length() <= targetSize) {
         	String msg = "Target size {0} is larger than file size {1}, ignored {2}";
         	XXXUtil.info(msg, targetSize, nick.length(), source);
-            return null;
+            return source;
         }
         
 		ImageFixer jack = new ImageFixer();

@@ -16,9 +16,13 @@ public class QueryAdjustorSqlServer extends QuerySqlAdjustor {
 	@Override
 	public String showTables() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("SELECT a.name 'TABLE_NAME', b.rows 'TABLE_ROWS' FROM sysobjects AS a");
+		sb.append("SELECT a.name 'TABLE_NAME', cast(b.rows as varchar(10)) 'TABLE_ROWS' FROM sysobjects AS a");
 		sb.append(" INNER JOIN sysindexes AS b ON a.id = b.id");
-		sb.append(" WHERE (a.type = 'u') AND (b.indid IN (0, 1)) ORDER BY a.name,b.rows DESC");
+		sb.append(" WHERE (a.type = 'u') AND (b.indid IN (0, 1))");
+		sb.append(" union all");
+		sb.append(" select name, CONVERT(varchar(100), crdate, 121) as whenCreated");
+		sb.append(" from sysobjects where xtype in ('P','V')");
+		
 		return sb.toString();
 	}
 
@@ -34,8 +38,8 @@ public class QueryAdjustorSqlServer extends QuerySqlAdjustor {
 	 */
 	@Override
 	public String showCreation(String sql, String type, String name) {
-		String tempQuery = "select to_char(substr(dbms_metadata.get_ddl( '{0}', '{1}'), 1, 10000)) from dual";
-		String querySql = StrUtil.occupy(tempQuery, type.toUpperCase(), name);
+		String tempQuery = "select text from syscomments s1 join sysobjects s2 on s1.id=s2.id  where name='{0}'";
+		String querySql = StrUtil.occupy(tempQuery, name);
 		
 		return querySql;
 	}
