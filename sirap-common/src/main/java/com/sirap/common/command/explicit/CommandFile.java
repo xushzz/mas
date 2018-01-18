@@ -12,6 +12,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.component.comparator.MexFileComparator;
 import com.sirap.basic.component.media.MediaFileAnalyzer;
@@ -44,6 +45,7 @@ import com.sirap.common.domain.MemoryRecord;
 import com.sirap.common.framework.SimpleKonfig;
 import com.sirap.common.framework.command.FileSizeInputAnalyzer;
 import com.sirap.common.framework.command.InputAnalyzer;
+import com.sirap.common.framework.command.target.Target;
 import com.sirap.common.framework.command.target.TargetAnalyzer;
 import com.sirap.common.framework.command.target.TargetConsole;
 import com.sirap.common.framework.command.target.TargetEmail;
@@ -66,6 +68,7 @@ public class CommandFile extends CommandBase {
 	private static final String KEY_DAY_CHECK = "dc";
 	private static final String KEY_MEMORABLE = "mm";
 	private static final String KEY_FIX_IMAGE = "fix";
+	private static final String KEY_KICK_OFF = "ko";
 	
 	public static final String DEFAULT_TEXT_MAX_SIZE = "2M";
 
@@ -798,6 +801,34 @@ public class CommandFile extends CommandBase {
 				
 				return true;
 			}
+		}
+		
+		solo = parseSoloParam(KEY_KICK_OFF + "(|\\s+.+)");
+		if(solo != null) {
+			List<String> lines = Lists.newArrayList();
+			lines.add("#" + DateUtil.displayNow(DateUtil.HOUR_Min_Sec_AM_WEEK_DATE));
+			if(!EmptyUtil.isNullOrEmpty(solo)) {
+				lines.add(solo);
+			}
+			
+			String location = "KO";
+			String temp = g().getUserValueOf("ko.location");
+			if(!EmptyUtil.isNullOrEmpty(temp)) {
+				File folder = FileUtil.getIfNormalFolder(temp);
+				if(folder != null) {
+					location = StrUtil.useSeparator(folder.getAbsolutePath(), location);
+				} else {
+					XXXUtil.info("Non-existing location: {0}, use default location: {1}", temp, location);
+				}
+			}
+			String fakeInput = "fake $+ts>" + location;
+	    	InputAnalyzer fara = new InputAnalyzer(fakeInput);
+	    	options = fara.getOptions();
+	    	target = fara.getTarget();
+
+			export(lines);
+			
+			return true;
 		}
 		
 		return false;

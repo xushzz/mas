@@ -50,3 +50,5 @@ mm..               display all memory entries
 mm fire            search and display memory entries matching criteria
 fix D:\images $s=500k 	compress images in specific folder to target size
 fix D:\a.jpg $s=500k 	compress specific image to target size
+ko                 kick off, create a new text file in ko location defined in user config ko.location
+ko juicy stuff     kick off, craete a new text file with given text "juicy stuff" in ko location
