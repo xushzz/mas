@@ -70,7 +70,7 @@ public class MexZipEntry extends MexItem {
 	
 	@Override
 	public String toString() {
-		String sizeWithUnit = FileUtil.formatFileSize(entry.getSize());
+		String sizeWithUnit = FileUtil.formatSize(entry.getSize());
 		return getJarName() + ", " + getName() + ", " + sizeWithUnit;
 	}
 
@@ -87,7 +87,7 @@ public class MexZipEntry extends MexItem {
 		}
 		sb.append(getName());
 		if(showSize && isNormalFile()) {
-			sb.append(", ").append(FileUtil.formatFileSize(entry.getSize()));
+			sb.append(", ").append(FileUtil.formatSize(entry.getSize()));
 		}
 		
 		return sb.toString();

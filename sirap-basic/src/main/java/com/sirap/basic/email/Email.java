@@ -140,7 +140,7 @@ public class Email {
 			
 			sb.append((i+1) + " ").append(filePath);
 			if(filePath != null) {
-				String fileSize = FileUtil.formatFileSize(filePath.length());
+				String fileSize = FileUtil.formatSize(filePath.length());
 				sb.append(" ").append(fileSize);
 			}
 			

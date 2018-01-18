@@ -536,7 +536,7 @@ public abstract class CommandBase {
 		long limitSizeInByte = FileUtil.parseSize(maxSize);
 		if(file.length() > limitSizeInByte) {
 			String msgTemp = "File size {0} is larger than maximum {1}, refuse to handle.";
-			String msg = StrUtil.occupy(msgTemp, FileUtil.formatFileSize(fileSize), FileUtil.formatFileSize(limitSizeInByte));
+			String msg = StrUtil.occupy(msgTemp, FileUtil.formatSize(fileSize), FileUtil.formatSize(limitSizeInByte));
 			XXXUtil.alert(msg);
 		}
 	}

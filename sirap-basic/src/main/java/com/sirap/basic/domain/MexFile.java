@@ -151,13 +151,13 @@ public class MexFile extends MexItem implements Comparable<MexFile> {
 		boolean showSize = OptionUtil.readBooleanPRI(optionsStr, "size", false);
 		if(showSize) {
 			sb.append("  ");
-			sb.append(FileUtil.formatFileSize(file.length()));
+			sb.append(FileUtil.formatSize(file.length()));
 		}
 		
 		boolean showSizeWithFolder = OptionUtil.readBooleanPRI(optionsStr, "sizes", false);
 		if(showSizeWithFolder) {
 			sb.append("  ");
-			sb.append(FileUtil.formatFileSize(getFileFize()));
+			sb.append(FileUtil.formatSize(getFileFize()));
 		}
 
 		boolean showDate = OptionUtil.readBooleanPRI(optionsStr, "date", false);
