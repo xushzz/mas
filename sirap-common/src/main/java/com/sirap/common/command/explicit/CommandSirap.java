@@ -24,7 +24,6 @@ import com.sirap.basic.email.EmailCenter;
 import com.sirap.basic.output.PDFParams;
 import com.sirap.basic.search.TextSearcher;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.tool.D;
 import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
@@ -74,7 +73,8 @@ public class CommandSirap extends CommandBase {
 	private static final String KEY_HOST = "host";
 	private static final String KEY_MAC = "mac";
 	private static final String KEY_ASSIGN_CHARSET = "gbk,utf8,utf-8,gb2312,unicode";
-
+	private static final String KEY_FONTS = "fonts";
+	
 	{
 		helpMeanings.put("image.formats", Konstants.IMG_FORMATS);
 		helpMeanings.put("guest.quits", KEY_EXIT);
@@ -474,7 +474,13 @@ public class CommandSirap extends CommandBase {
 			
 			return true;
 		}
-				
+		
+		if(is(KEY_FONTS)) {
+			export(MexUtil.allFonts());
+			
+			return true;
+		}
+		
 		return false;
 	}
 	

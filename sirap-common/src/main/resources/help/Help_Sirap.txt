@@ -51,3 +51,4 @@ id criteria        local text search. local.search.5=id#E:/KDB/statics/life#.txt
 id #shilu          local text search, short filename contains String shilu
 id ##shilu         local text search, full filename contains String shilu
 id L188            local text search, line with line number 188, check MexTextLine
+fonts              list all available font names, it is all about graphics

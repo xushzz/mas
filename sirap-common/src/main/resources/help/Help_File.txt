@@ -11,6 +11,7 @@ F:\fly.txt $+line  print target file in text manner, file size limit is ${text.m
 F:\fire\fly.mp3    for an audio file, the sound will be played by the configured audio player, same goes 
                    for video/photo/doc/docx/xls/xlsx/PDF files with their players/viewers respectively, 
                    when it comes to executable file, the file will run itself.
+                   when it is an image file and with option $+p, open with mspaint
 E:\abc.zip         list out whatever inside the zip file, same goes for .jar, .ear, and other zip files
 F:\fire            for a folder, we just simply list the stuff in this folder
 -F:\fire           for a folder, we just simply list the stuff in this folder, along with size info
@@ -52,3 +53,6 @@ fix D:\images $s=500k 	compress images in specific folder to target size
 fix D:\a.jpg $s=500k 	compress specific image to target size
 ko                 kick off, create a new text file in ko location defined in user config ko.location
 ko juicy stuff     kick off, craete a new text file with given text "juicy stuff" in ko location
+kp                 kick print, create a new image file and open with mspaint
+kp non-Path text   kick print, create a new image file with given text and open with mspaint
+kp D:\a.jpg        kick print, open given image file with mspaint

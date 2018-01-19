@@ -1,5 +1,6 @@
 package com.sirap.basic.util;
 
+import java.awt.GraphicsEnvironment;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -364,7 +365,11 @@ public class MexUtil {
 		} else {
 			return obj + "";
 		}
-		
-		
+	}
+	
+	public static List<String> allFonts() {
+		GraphicsEnvironment e = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		String[] fontNames = e.getAvailableFontFamilyNames();
+		return Arrays.asList(fontNames);
 	}
 }

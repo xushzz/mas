@@ -1,5 +1,8 @@
 package com.sirap.basic.util;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
@@ -80,6 +83,49 @@ public class ImageUtil {
 		} else {
 			return null;
 		}
+	}
+	
+	/***
+	 * 	What feeble means? My feeble attempt on Graphics.
+	 * 	Fetching... http://www.dictionary.com/browse/feeble
+		adjective, feebler, feeblest.
+		1. physically weak, as from age or sickness; frail.
+		2. weak intellectually or morally: a feeble mind.
+		3. lacking in volume, loudness, brightness, distinctness, etc.: a feeble voice; feeble light.
+		4. lacking in force, strength, or effectiveness: feeble resistance; feeble arguments.
+	 * @param filepath
+	 * @param text
+	 * @param width
+	 * @param height
+	 */
+	public static void createImage(String filepath, String text, int width, int height) {
+		XXXUtil.checkRange(width, 80, 1800);
+        int imageWidth = width;
+        int imageHeight = height;
+    
+        BufferedImage image = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_RGB);    
+        Graphics mike = image.getGraphics();    
+        mike.setColor(Color.WHITE);    
+        mike.fillRect(0, 0, imageWidth, imageHeight);    
+        mike.setColor(Color.RED);    
+        mike.setFont(new Font("Times New Roman", Font.BOLD, 40));    
+
+        int xPoint = 50;
+        int yPoint = 50;
+        mike.drawString(text, xPoint, yPoint);
+
+        yPoint += 100;
+        int len = RandomUtil.number(10, 20);
+        text = StrUtil.occupy("RandomUtil.alphanumeric({0})={1}", len, RandomUtil.alphanumeric(len));
+        mike.setColor(Color.GREEN);
+        mike.drawString(text, xPoint, yPoint);
+        
+        yPoint += 100;
+        text = StrUtil.occupy("My feeble attempt on Graphics at {0}", DateUtil.displayNow(DateUtil.HOUR_Min_Sec_AM_DATE));
+        mike.setColor(Color.BLUE);
+        mike.drawString(text, xPoint, yPoint);
+        
+        saveImage(image, filepath);
 	}
 	
 	public static String saveImage(RenderedImage image, String filepath) {

@@ -45,7 +45,6 @@ import com.sirap.common.domain.MemoryRecord;
 import com.sirap.common.framework.SimpleKonfig;
 import com.sirap.common.framework.command.FileSizeInputAnalyzer;
 import com.sirap.common.framework.command.InputAnalyzer;
-import com.sirap.common.framework.command.target.Target;
 import com.sirap.common.framework.command.target.TargetAnalyzer;
 import com.sirap.common.framework.command.target.TargetConsole;
 import com.sirap.common.framework.command.target.TargetEmail;
@@ -69,6 +68,7 @@ public class CommandFile extends CommandBase {
 	private static final String KEY_MEMORABLE = "mm";
 	private static final String KEY_FIX_IMAGE = "fix";
 	private static final String KEY_KICK_OFF = "ko";
+	private static final String KEY_KICK_PRINT = "kp";
 	
 	public static final String DEFAULT_TEXT_MAX_SIZE = "2M";
 
@@ -229,7 +229,15 @@ public class CommandFile extends CommandBase {
 			}
 			
 			if(target instanceof TargetConsole) {
-				FileOpener.open(filePath);
+				if(FileUtil.exists(filePath)) {
+					if(FileOpener.isImageFile(filePath) && OptionUtil.readBooleanPRI(options, "p", false)) {
+						openWithMspaint(filePath);
+					} else {
+						FileOpener.open(filePath);
+					}
+				} else {
+					XXXUtil.info("Non-existing file: {0}", filePath);
+				}
 				return true;
 			}
 			
@@ -831,7 +839,44 @@ public class CommandFile extends CommandBase {
 			return true;
 		}
 		
+		solo = parseSoloParam(KEY_KICK_PRINT + "(|\\s+.+)");
+		if(solo != null) {
+			if(!solo.isEmpty()) {
+				String path = solo;
+				if(FileUtil.exists(path)) {
+					if(FileOpener.isImageFile(path)) {
+						openWithMspaint(path);
+						return true;
+					}
+				}
+			}
+
+			String location = getExportLocation();
+			String temp = g().getUserValueOf("ko.location");
+			if(!EmptyUtil.isNullOrEmpty(temp)) {
+				File folder = FileUtil.getIfNormalFolder(temp);
+				if(folder != null) {
+					location = folder.getAbsolutePath();
+				} else {
+					XXXUtil.info("Non-existing location: {0}, use default location: {1}", temp, location);
+				}
+			}
+			
+			String text = solo.isEmpty() ? "https://en.wikipedia.org/wiki/Live_Free_or_Die" : solo;
+			String filename = DateUtil.timestamp() + "_KP.jpg";
+			String filepath = StrUtil.useSeparator(location, filename);
+			ImageUtil.createImage(filepath, text, 1200, 400);
+			openWithMspaint(filepath);
+			
+			return true;
+		}
+		
 		return false;
+	}
+	
+	private void openWithMspaint(String filepath) {
+		PanaceaBox.openFile("mspaint", filepath.replace('/', '\\'));
+		C.pl2("Open by mspaint: " + filepath);
 	}
 	
 	private void fixSingleImage(String filePath, String fileSizeWithUnit) {
