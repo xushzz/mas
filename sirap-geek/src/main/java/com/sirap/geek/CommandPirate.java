@@ -17,7 +17,6 @@ import com.sirap.basic.domain.Person;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.thirdparty.msoffice.MsExcelHelper;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.tool.D;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
@@ -40,7 +39,7 @@ public class CommandPirate extends CommandBase {
 	private static final String KEY_BEEP_K = "b(\\d{1,2})";
 	private static final String KEY_BEEP_HOUR = "bmw";
 	private static final String KEY_CARO = "caro";
-	private static final String KEY_MATES = "mates";
+	private static final String KEY_MATE_JSON = "mate";
 
 	public boolean handle() {
 		
@@ -183,7 +182,7 @@ public class CommandPirate extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_MATES + "\\s(.+)");
+		solo = parseSoloParam(KEY_MATE_JSON + "\\s(.+)");
 		if(solo != null) {
 			String filePath = solo;
 			if(FileUtil.exists(filePath)) {
@@ -278,7 +277,6 @@ public class CommandPirate extends CommandBase {
 		List<String> newLines = Lists.newArrayList();
 		for(int countX = 1; countX < data.size(); countX++) {
 			List<Object> line = data.get(countX);
-			D.ts(line);
 			String template = "{\"name\": \"{0}\",\"location\": \"{1}\",\"phone\": \"{2}\",\"city\": \"{3}\",\"address\": \"{4}\"}";
 			Object name = line.get(2);
 			String location = line.get(3) + "";
