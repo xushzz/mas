@@ -2,6 +2,7 @@ package com.sirap.basic.thirdparty.msoffice;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,12 +14,13 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.output.ExcelParams;
-import com.sirap.basic.tool.C;
 import com.sirap.basic.util.DateUtil;
+import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.StrUtil;
 
 @SuppressWarnings("all")
@@ -60,7 +62,9 @@ public class MsExcelHelper {
 			if (StrUtil.endsWith(filepath, TYPE_NORMAL)) {
 				wb = new HSSFWorkbook(new FileInputStream(filepath));
 			} else if (StrUtil.endsWith(filepath, TYPE_X)) {
-				wb = new XSSFWorkbook(filepath);
+				InputStream inputStream=new FileInputStream(filepath);
+				wb = WorkbookFactory.create(inputStream);
+				inputStream.close();
 			} else {
 				throw new MexException("Invalid excel file: " + filepath);
 			}
@@ -90,7 +94,7 @@ public class MsExcelHelper {
 									value = "null-date";
 								}
 							} else {
-								String temp = cell.getNumericCellValue() + "";
+								String temp = MathUtil.toBigDecimal(cell.getNumericCellValue()).toPlainString();
 								value = StrUtil.removePointZeroes(temp);
 							}
 						} else if(Cell.CELL_TYPE_BOOLEAN == cellType) {

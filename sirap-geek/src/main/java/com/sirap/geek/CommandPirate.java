@@ -8,14 +8,19 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.Person;
 import com.sirap.basic.exception.MexException;
+import com.sirap.basic.thirdparty.msoffice.MsExcelHelper;
 import com.sirap.basic.tool.C;
+import com.sirap.basic.tool.D;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
+import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IDCardUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.MathUtil;
@@ -35,6 +40,7 @@ public class CommandPirate extends CommandBase {
 	private static final String KEY_BEEP_K = "b(\\d{1,2})";
 	private static final String KEY_BEEP_HOUR = "bmw";
 	private static final String KEY_CARO = "caro";
+	private static final String KEY_MATES = "mates";
 
 	public boolean handle() {
 		
@@ -177,11 +183,21 @@ public class CommandPirate extends CommandBase {
 			return true;
 		}
 		
+		solo = parseSoloParam(KEY_MATES + "\\s(.+)");
+		if(solo != null) {
+			String filePath = solo;
+			if(FileUtil.exists(filePath)) {
+				List<List<Object>> list = MsExcelHelper.readSheetByIndex(filePath, 0);
+				export(jsonDataOfMates(list));
+			}
+			
+			return true;
+		}
+		
 		return false;
 	}
 	
 	private List<String> carolines(int index, int size, CaroItem item, Date birthday, String folderName) {
-//		Date date = DateUtil.parse(DateUtil.DATETIME_SPACE_TIGHT, item.getDateStr());
 		Date date = item.getDateInfo();
 		int dayDiff = DateUtil.dayDiff(date, birthday) + 1;
 		String weekday = DateUtil.displayDate(date, DateUtil.WEEK_DATE, Locale.CHINA);
@@ -249,6 +265,41 @@ public class CommandPirate extends CommandBase {
 		
 		export(items);
 	}
+	
+	public String jsonDataOfMates(List<List<Object>> data) {
+		Map<String, String> nice = Maps.newConcurrentMap();
+		nice.put("广州", "113.254974,23.147856");
+		nice.put("南宁", "108.336523,22.813061");
+		nice.put("河池", "108.084875,24.692698");
+		nice.put("桂林", "110.29185,25.281395");
+		nice.put("柳州", "109.406837,24.297981");
+		nice.put("深圳", "114.057814,22.543375");
+		nice.put("上海", "121.473657,31.230286");
+		List<String> newLines = Lists.newArrayList();
+		for(int countX = 1; countX < data.size(); countX++) {
+			List<Object> line = data.get(countX);
+			D.ts(line);
+			String template = "{\"name\": \"{0}\",\"location\": \"{1}\",\"phone\": \"{2}\",\"city\": \"{3}\",\"address\": \"{4}\"}";
+			Object name = line.get(2);
+			String location = line.get(3) + "";
+			Object phone = line.get(4);
+			String city = line.get(5) + "";
+			Object info = line.get(6);
+			if(EmptyUtil.isNullOrEmptyOrBlankOrLiterallyNull(city)) {
+				city = "南宁";
+			}
+			if(EmptyUtil.isNullOrEmptyOrBlankOrLiterallyNull(location)) {
+				location = nice.get(city);
+			}
+			if(EmptyUtil.isNullOrEmpty(location)) {
+				location = nice.get("南宁");
+			}
+			String value = StrUtil.occupy(template, name, location, phone, city, info);
+			newLines.add(value);
+		}
+		
+		String total = "[" + StrUtil.connect(newLines, ", ") + "]";
+		
+		return total;
+	}
 }
-
-
