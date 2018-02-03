@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.sirap.basic.search.MexFilter;
 import com.sirap.basic.tool.C;
+import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.StrUtil;
 
 @SuppressWarnings("serial")
@@ -29,6 +31,13 @@ public abstract class MexItem implements Serializable {
 
 	public void setPseudoOrder(int pseudoOrder) {
 		this.pseudoOrder = pseudoOrder;
+	}
+	
+	public boolean isMexMatched(String mexCriteria) {
+		MexFilter<MexItem> filter = new MexFilter<MexItem>(mexCriteria, this);
+		filter.setStayCriteria(false);
+		List<MexItem> result = filter.process();
+		return !EmptyUtil.isNullOrEmpty(result);
 	}
 	
 	public boolean isMatched(String keyWord, boolean caseSensitive) {

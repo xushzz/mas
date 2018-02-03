@@ -65,7 +65,6 @@ public class CommandCollect extends CommandBase {
 	private static final String KEY_THIS_DAY_IN_HISTORY_CHINESE = "this";
 	private static final String KEY_THIS_DAY_IN_HISTORY_ENGLISH = "hist";
 	private static final String KEY_NOBEL_PRIZE = "nobel";
-	private static final String KEY_JAPANESE_NAME = "ono";
 
 	{
 		helpMeanings.put("money.forex.url", XRatesForexRateExtractor.URL_X_RATES);
@@ -347,13 +346,6 @@ public class CommandCollect extends CommandBase {
 		if(solo != null) {
 			List<MexObject> items = Extractors.fetchAllNobelPrizes();
 			export2(items, solo);
-			
-			return true;
-		}
-
-		solo = parseSoloParam(KEY_JAPANESE_NAME + "\\s(.+)");
-		if(solo != null) {
-			export2(Extractors.fetchJapaneseNames(), solo);
 			
 			return true;
 		}

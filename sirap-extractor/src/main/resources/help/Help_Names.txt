@@ -1,0 +1,8 @@
+ono suzuki         list japanese names, http://www.for68.com/new/201006/li1871181518601022640.htm
+bbb                list all ranked male names, courtesy of https://names.mongabay.com/male_names_alpha.htm
+ggg                list all ranked female names, courtesy of https://names.mongabay.com/male_names_alpha.htm
+bbb jo             list male names matching given criteria, options: $+r order by rank ascend, -r for descend
+bbb #12            list male name ranked 12, same for ggg
+bbb 12             list male names before and after #12 two names respectively, #12 included, same for ggg
+bbb 12 5           list male names before and after #12 five names respectively, #12 included, same for ggg
+ver=2/3/2018, VI  EXTRACTOR-NAMES1.0.0

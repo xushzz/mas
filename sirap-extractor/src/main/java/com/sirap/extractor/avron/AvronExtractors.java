@@ -233,9 +233,8 @@ public class AvronExtractors {
 			@Override
 			public
 			String getUrl() {
-				printFetching = true;
-				setRequestParams("page.pageNo=" + page).usePost();
-				String url = "http://permit.mep.gov.cn/permitExt/syssb/xxgk/xxgk!sqqlist.action";
+				usePost().showFetching();
+				String url = "http://permit.mep.gov.cn/permitExt/syssb/xxgk/xxgk!sqqlist.action?page.pageNo=" + page;
 				return url;
 			}
 			

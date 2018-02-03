@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
@@ -25,10 +26,9 @@ public abstract class Extractor<T extends Object> {
 	private boolean allBeingWell = true;
 	private boolean intoList;
 	private boolean methodPost;
-	private String requestParams;
 
-	protected String source;
-	protected List<String> sourceList;
+	protected String source = "";
+	protected List<String> sourceList = Lists.newArrayList();
 	protected T item;
 	protected List<T> mexItems = new ArrayList<>();
 	
@@ -50,21 +50,34 @@ public abstract class Extractor<T extends Object> {
 	
 	public Extractor<T> process() {
 		fetch();
+		parse();
 		
-		if(source != null || sourceList != null) {
-			parse();
-			if(!allBeingWell) {
-				C.pl2("Not cool, wrong web content");
-			}
-		} else {
-			allBeingWell = false;
-		}
+//		if(source != null || sourceList != null) {
+//			parse();
+//			if(!allBeingWell) {
+//				C.pl2("Not cool, wrong web content");
+//			}
+//		} else {
+//			allBeingWell = false;
+//		}
 		
 		return this;
 	}
 	
 	protected void fetch() {
-		String target = getUrl();
+		List<String> urls = getUrls();
+		if(EmptyUtil.isNullOrEmpty(urls)) {
+			urls = Lists.newArrayList();
+			urls.add(getUrl());
+		}
+		
+		for(String url: urls) {
+			fetch(url);
+		}
+	}
+	
+	private void fetch(String url) {
+		String target = url;
 		
 		XXXUtil.nullCheck(target, "url");
 		if(!StrUtil.isHttp(target)) {
@@ -74,12 +87,12 @@ public abstract class Extractor<T extends Object> {
 			boolean asResourceStream = PanaceaBox.isWindows() && target.startsWith("/");
 			if(intoList) {
 				if(asResourceStream) {
-					sourceList = IOUtil.readResourceIntoList(target);
+					sourceList.addAll(IOUtil.readResourceIntoList(target));
 				} else {
-					sourceList = IOUtil.readFileIntoList(target, charset);
+					sourceList.addAll(IOUtil.readFileIntoList(target, charset));
 				}
 			} else {
-				source = IOUtil.readFileWithLineSeparator(target, "", charset);
+				source += IOUtil.readFileWithLineSeparator(target, "", charset);
 			}
 			
 			return;
@@ -87,14 +100,6 @@ public abstract class Extractor<T extends Object> {
 		
 		if(printFetching) {
 			String temp = target;
-			if(requestParams != null) {
-				if(StrUtil.contains(temp, "?")) {
-					temp += "&" + requestParams;
-				} else {
-					temp += "?" + requestParams;
-				}
-			}
-			
 			if(methodPost) {
 				temp += " $+post"; 
 			}
@@ -104,13 +109,12 @@ public abstract class Extractor<T extends Object> {
 		
 		WebReader xiu = new WebReader(target, charset);
 		xiu.setMethodPost(methodPost);
-		xiu.setRequestParams(requestParams);
 
 		try {
 			if(intoList) {
-				sourceList = xiu.readIntoList();
+				sourceList.addAll(xiu.readIntoList());
 			} else {
-				source = xiu.readIntoString();
+				source += xiu.readIntoString();
 			}
 		} catch (MexException ex) {
 			if(printExceptionIfNeeded) {
@@ -130,6 +134,10 @@ public abstract class Extractor<T extends Object> {
 		return url;
 	}
 	
+	public List<String> getUrls() {
+		return null;
+	}
+	
 	public Extractor<T> setCharset(String charset) {
 		this.charset = charset;
 		return this;
@@ -142,6 +150,11 @@ public abstract class Extractor<T extends Object> {
 	
 	public Extractor<T> useList() {
 		this.intoList = true;
+		return this;
+	}
+	
+	public Extractor<T> showFetching() {
+		this.printFetching = true;
 		return this;
 	}
 	
@@ -186,15 +199,6 @@ public abstract class Extractor<T extends Object> {
 
 	public Extractor<T> usePost() {
 		this.methodPost = true;
-		return this;
-	}
-
-	public String getRequestParams() {
-		return requestParams;
-	}
-
-	public Extractor<T> setRequestParams(String requestParams) {
-		this.requestParams = requestParams;
 		return this;
 	}
 

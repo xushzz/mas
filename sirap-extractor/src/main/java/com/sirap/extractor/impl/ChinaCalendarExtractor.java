@@ -15,11 +15,9 @@ public class ChinaCalendarExtractor extends Extractor<ValuesItem> {
 	
 	public static final String URL_TEMPLATE = "https://gonglinongli.51240.com";
 
-	private String params;
 	public ChinaCalendarExtractor(String params) {
 		printFetching = true;
-		this.params = params;
-		usePost().setUrl(URL_TEMPLATE).setRequestParams(construct(params));
+		usePost().setUrl(URL_TEMPLATE + "?" + construct(params));
 	}
 	
 	/***
@@ -62,7 +60,7 @@ public class ChinaCalendarExtractor extends Extractor<ValuesItem> {
 		String regex = "<td[^<>]+bgcolor=\"#FFFFFF\"[^<>]+?>(.+?)</td>";
 		List<String> items = StrUtil.findAllMatchedItems(regex, source);
 		if(EmptyUtil.isNullOrEmpty(items)) {
-			XXXUtil.alert("Not found result with param: " + params);
+			XXXUtil.alert("Not found result with param: " + StrUtil.getUrlParams(getUrl()));
 		}
 		String day = HtmlUtil.removeHttpTag(items.get(0)).replaceAll("\\s+", "");
 		String nongli = HtmlUtil.removeHttpTag(items.get(1));

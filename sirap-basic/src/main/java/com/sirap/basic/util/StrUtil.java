@@ -914,6 +914,16 @@ public class StrUtil {
 			return source;
 		}
 	}
+
+	public static String getUrlParams(String wholeUrl) {
+		String regex = "\\?(.+)";
+		String params =  findFirstMatchedItem(regex, wholeUrl);
+		if(params == null) {
+			params = "";
+		}
+		
+		return params;
+	}
 	
 	public static List<String> parseUrlParams(String wholeUrl) {
 		String regex = "([^\\?&=]+)=([^\\?&#]*)";

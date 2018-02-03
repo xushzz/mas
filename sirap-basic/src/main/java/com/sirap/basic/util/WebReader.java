@@ -19,7 +19,6 @@ public class WebReader {
 	private String charset;
 	private String serverCharset;
 	private boolean isMethodPost;
-	private String requestParams;
 
 	public WebReader(String url) {
 		this.url = url;
@@ -28,7 +27,6 @@ public class WebReader {
 	public WebReader(String url, String charset) {
 		this.url = url;
 		this.charset = charset;
-		requestParams = StrUtil.findFirstMatchedItem("\\?(.+)", url);
 	}
 	
 	public boolean isMethodPost() {
@@ -157,12 +155,8 @@ public class WebReader {
 			conn.setDoOutput(true);
 			conn.setDoInput(true);
 			PrintWriter out = new PrintWriter(conn.getOutputStream());
-	        out.print(requestParams);
+	        out.print(StrUtil.getUrlParams(url));
 	        out.flush();
 		}
 	}
-
-	public void setRequestParams(String requestParams) {
-		this.requestParams = requestParams;
-	}	
 }

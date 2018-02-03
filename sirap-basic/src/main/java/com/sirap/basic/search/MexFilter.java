@@ -47,6 +47,12 @@ public class MexFilter<T extends MexItem> {
 		this.source = source;
 	}
 	
+	public MexFilter(String criteria, T item) {
+		this.criteria = criteria;
+		this.source = Lists.newArrayList();
+		this.source.add(item);
+	}
+	
 	public MexFilter(String criteria, List<T> source, boolean caseSensitive) {
 		this.criteria = criteria;
 		this.source = source;

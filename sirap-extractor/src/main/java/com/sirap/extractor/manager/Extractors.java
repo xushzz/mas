@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.sirap.basic.component.Extractor;
 import com.sirap.basic.domain.KeyValuesItem;
@@ -15,12 +16,76 @@ import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.util.EmptyUtil;
-import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.domain.Link;
+import com.sirap.extractor.domain.NameRankItem;
 import com.sirap.extractor.domain.SportsMatchItem;
 
 public class Extractors {
+
+	public static List<NameRankItem> fetchEnglishNames() {
+		return fetchEnglishNames(true, null);
+	}
+	
+	public static List<NameRankItem> fetchEnglishNames(boolean isMale, String criteria) {
+		Extractor<NameRankItem> neymar = new Extractor<NameRankItem>() {
+
+			public String getUrl() {
+				useList().showFetching();
+				String template = "https://gitee.com/thewire/stamina/raw/master/names/{0}males.txt";
+				template = "/data/{0}males.txt";
+				String key = isMale ? "" : "fe";
+				return StrUtil.occupy(template, key);
+			}
+			
+			@Override
+			protected void parse() {
+				for(String line : sourceList) {
+					List<String> items = StrUtil.split(line);
+					if(items != null && items.size() > 1) {
+						NameRankItem item = new NameRankItem();
+						item.setName(items.get(0));
+						item.setRank(items.get(1));
+						if(EmptyUtil.isNullOrEmpty(criteria) || item.isMexMatched(criteria)) {
+							mexItems.add(item);
+						}
+					}
+				}
+			}
+		};
+		
+		return neymar.process().getItems();
+	}
+
+	public static List<NameRankItem> fetchEnglishNamesRaw(boolean isMale, String criteria) {
+		Extractor<NameRankItem> neymar = new Extractor<NameRankItem>() {
+
+			@Override
+			public String getUrl() {
+				printFetching = true;
+				String template = "https://names.mongabay.com/{0}male_names_alpha.htm";
+				String key = isMale ? "" : "fe";
+				return StrUtil.occupy(template, key);
+			}
+			
+			@Override
+			protected void parse() {
+				//<tr><td>AARON</td><td>0.002</td><td> 3,036 </td><td>2701</td></tr>
+				String regex = "<tr><td>([^<>]+)</td><td>[^<>]+</td><td>[^<>]+</td><td>([^<>]+)</td></tr>";
+				Matcher ma = createMatcher(regex, source);
+				while(ma.find()) {
+					NameRankItem item = new NameRankItem();
+					item.setName(ma.group(1));
+					item.setRank(ma.group(2));
+					if(EmptyUtil.isNullOrEmpty(criteria) || item.isMexMatched(criteria)) {
+						mexItems.add(item);
+					}
+				}
+			}
+		};
+		
+		return neymar.process().getItems();
+	}
 
 	public static List<String> fetchJapaneseNames() {
 		Extractor<String> neymar = new Extractor<String>() {
@@ -509,7 +574,7 @@ public class Extractors {
 			@Override
 			public String getUrl() {
 				printFetching = true;
-				String url = "https://soccer.hupu.com/schedule/schedule.server.php";
+				String url = "https://soccer.hupu.com/schedule/schedule.server.php?league_id=" + leagueId;
 				return url;
 			}
 
@@ -540,7 +605,7 @@ public class Extractors {
 			}
 		};
 		
-		neymar.usePost().setRequestParams("league_id=" + leagueId);
+		neymar.usePost();
 		
 		return neymar.process().getItems();
 	}
@@ -643,12 +708,13 @@ public class Extractors {
 		Extractor<MexObject> nikita = new Extractor<MexObject>() {
 
 			@Override
-			protected void fetch() {
-				String temp = "";
-				temp += IOUtil.readURL("http://www.w3school.com.cn/tags/html_ref_entities.html");
-				temp += IOUtil.readURL("http://www.w3school.com.cn/tags/html_ref_symbols.html");
+			public List<String> getUrls() {
+				showFetching();
+				List<String> urls = Lists.newArrayList();
+				urls.add("http://www.w3school.com.cn/tags/html_ref_entities.html");
+				urls.add("http://www.w3school.com.cn/tags/html_ref_symbols.html");
 				
-				source = temp;
+				return urls;
 			}
 			
 			@Override

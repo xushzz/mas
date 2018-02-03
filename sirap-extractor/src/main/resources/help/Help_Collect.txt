@@ -33,5 +33,4 @@ this.load E:\      download all history events to a given location, such as E:/h
 hist               list events in this day in history, courtesy of http://www.historynet.com
 hist5.6            list events in May 6th in history, same as 5/26,5-16, courtesy of http://www.historynet.com
 nobel 2007&james   list nobel prize info, filter by mex criteria
-ono suzuki         list japanese names, http://www.for68.com/new/201006/li1871181518601022640.htm
 ver=11/18/2017, VI  EXTRACTOR-COLLECT1.0.15-CANTONA

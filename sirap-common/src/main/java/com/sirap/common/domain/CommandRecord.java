@@ -47,9 +47,37 @@ public class CommandRecord extends MexItem implements Comparable<CommandRecord> 
 		remark = arr[4];
 		
 		return true;
-		
 	}
-	
+
+	@Override
+	public boolean isMatched(String keyWord) {
+		if(StrUtil.contains(key, keyWord)) {
+			return true;
+		}
+		
+		if(isRegexMatched(key, keyWord)) {
+			return true;
+		}
+		
+		if(StrUtil.contains(className, keyWord)) {
+			return true;
+		}
+		
+		if(isRegexMatched(className, keyWord)) {
+			return true;
+		}
+		
+		if(StrUtil.contains(remark, keyWord)) {
+			return true;
+		}
+		
+		if(isRegexMatched(remark, keyWord)) {
+			return true;
+		}
+		
+		return false;
+	}
+
 	@Override
 	public int compareTo(CommandRecord item) {
 		int order2 = item.getPseudoOrder();
