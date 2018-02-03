@@ -4,6 +4,7 @@ import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.XXXUtil;
 
 public class SizeCriteria extends MexItem {
 	
@@ -27,6 +28,14 @@ public class SizeCriteria extends MexItem {
 
 	public long getValue() {
 		return value;
+	}
+	
+	public SizeCriteria() {}
+	
+	public SizeCriteria(String record) {
+		if(!parse(record)) {
+			XXXUtil.alert("Not able to parse: " + record);
+		}
 	}
 
 	@Override

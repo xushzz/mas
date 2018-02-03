@@ -684,20 +684,48 @@ public class FileUtil {
 		
 		return matchedFiles;
 	}
-	
+
 	public static boolean remove(String filepath) {  
+		return remove(filepath, false);
+	}
+	
+	public static boolean remove(String filepath, boolean printAlong) {  
 		File file = new File(filepath);
 	    if (!file.exists()) {
 	    	throw new MexException("File not found: {0}", filepath);
 	    }
-	    if (file.isFile()) {  
-	        return file.delete();
+	    if (file.isFile()) {
+	    	boolean flag = false;
+	    	String size = formatSize(file.length());
+	    	if(printAlong) {
+		    	XXXUtil.info("Removing " + filepath + ", " + size);
+		    	flag = file.delete();
+		    	String side = flag ? "Removed " : "Unable to remove ";
+		    	XXXUtil.info(side + filepath + ", " + size);
+	    	} else {
+	    		flag = file.delete();
+	    	}
+	        return flag;
 	    }
 	    File[] files = file.listFiles();  
-	    for (int i = 0; i < files.length; i++) {  
-	        remove(files[i].getAbsolutePath());  
+	    if(files == null) {
+	    	return false;
 	    }
-	    return file.delete();  
+	    for (int i = 0; i < files.length; i++) {  
+	        remove(files[i].getAbsolutePath(), printAlong);  
+	    }
+	    
+	    boolean flag = false;
+    	if(printAlong) {
+    		XXXUtil.info("Removing " + filepath);
+	    	flag = file.delete();
+	    	String side = flag ? "Removed " : "Unable to remove ";
+	    	XXXUtil.info(side + filepath);
+    	} else {
+    		flag = file.delete();
+    	}
+    	
+        return flag;
 	}
 	
 	public static List<String> getAllXXXFiles(String rootPath, String suffix) {

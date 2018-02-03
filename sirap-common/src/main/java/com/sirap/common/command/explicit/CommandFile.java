@@ -21,6 +21,7 @@ import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.domain.MexZipEntry;
 import com.sirap.basic.email.EmailCenter;
 import com.sirap.basic.exception.MexException;
+import com.sirap.basic.search.SizeCriteria;
 import com.sirap.basic.thirdparty.msoffice.MsExcelHelper;
 import com.sirap.basic.thirdparty.msoffice.MsWordHelper;
 import com.sirap.basic.thirdparty.pdf.PdfHelper;
@@ -43,6 +44,7 @@ import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.domain.MemoryRecord;
 import com.sirap.common.framework.SimpleKonfig;
+import com.sirap.common.framework.Stash;
 import com.sirap.common.framework.command.FileSizeInputAnalyzer;
 import com.sirap.common.framework.command.InputAnalyzer;
 import com.sirap.common.framework.command.target.TargetAnalyzer;
@@ -69,6 +71,7 @@ public class CommandFile extends CommandBase {
 	private static final String KEY_FIX_IMAGE = "fix";
 	private static final String KEY_KICK_OFF = "ko";
 	private static final String KEY_KICK_PRINT = "kp";
+	private static final String KEY_FILE_REMOVE = "remove";
 	
 	public static final String DEFAULT_TEXT_MAX_SIZE = "2M";
 
@@ -867,6 +870,46 @@ public class CommandFile extends CommandBase {
 			String filepath = StrUtil.useSeparator(location, filename);
 			ImageUtil.createImage(filepath, text, 1200, 400);
 			openWithMspaint(filepath);
+			
+			return true;
+		}
+		
+		solo = parseSoloParam(KEY_FILE_REMOVE + "\\s+(.+)");
+		if(solo != null) {
+			String filepath = null;
+
+			File ball = parseFile(solo);
+			if(ball != null) {
+				filepath = ball.getAbsolutePath();
+			} else {
+				ball = parseFolder(solo);
+				if(ball != null) {
+					filepath = ball.getAbsolutePath();
+				}
+			}
+			
+			if(filepath != null) {
+				String alert = "<5M";
+				long filesize = FileUtil.sizeOf(filepath);
+				SizeCriteria carol = new SizeCriteria(alert);
+				if(carol.isGood(filesize) || OptionUtil.readBooleanPRI(options, "sure", false)) {
+					boolean printLog = OptionUtil.readBooleanPRI(options, "p", true);
+					FileUtil.remove(filepath, printLog);
+
+					Object startObj = Stash.g().readAndRemove(Stash.KEY_START_IN_MILLIS);
+					if(startObj instanceof Long) {
+						long start = (Long)startObj;
+						long end = System.currentTimeMillis();
+						C.time2(start, end);
+					}
+				} else {
+					String temp = "The size {0} of {1} is greater than {2}, please confirm with option $+sure";
+					XXXUtil.info(temp, FileUtil.formatSize(filesize), filepath, alert.replace("<", ""));
+					C.pl();
+				}
+			} else {
+				C.pl2("Neither file nor folder: " + solo);
+			}
 			
 			return true;
 		}
