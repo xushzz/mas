@@ -1,7 +1,11 @@
 package com.sirap.common.framework;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import com.google.common.collect.Lists;
 
 public class Stash {
 	public static final String KEY_USER_INPUT_TARGET = "userInputTarget";
@@ -38,5 +42,11 @@ public class Stash {
 		Object value = map.get(key);
 		
 		return value;
+	}
+	
+	public List<Map.Entry<Object, Object>> print() {
+		Set<Map.Entry<Object, Object>> balls = map.entrySet();
+		
+		return Lists.newArrayList(balls);
 	}
 }

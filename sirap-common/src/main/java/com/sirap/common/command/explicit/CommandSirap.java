@@ -45,6 +45,7 @@ import com.sirap.common.domain.TextSearchEngine;
 import com.sirap.common.framework.App;
 import com.sirap.common.framework.Janitor;
 import com.sirap.common.framework.SimpleKonfig;
+import com.sirap.common.framework.Stash;
 import com.sirap.common.framework.command.InputAnalyzer;
 import com.sirap.common.framework.command.target.TargetEmail;
 import com.sirap.common.framework.command.target.TargetPDF;
@@ -74,6 +75,7 @@ public class CommandSirap extends CommandBase {
 	private static final String KEY_MAC = "mac";
 	private static final String KEY_ASSIGN_CHARSET = "gbk,utf8,utf-8,gb2312,unicode";
 	private static final String KEY_FONTS = "fonts";
+	private static final String KEY_SHOW_STASH = "stash";
 	
 	{
 		helpMeanings.put("image.formats", Konstants.IMG_FORMATS);
@@ -478,6 +480,11 @@ public class CommandSirap extends CommandBase {
 		if(is(KEY_FONTS)) {
 			export(MexUtil.allFonts());
 			
+			return true;
+		}
+		
+		if(is(KEY_SHOW_STASH)) {
+			export(Stash.g().print());
 			return true;
 		}
 		

@@ -452,7 +452,7 @@ public class Extractors {
 				regex += "<td>([^<>]+)</td>\\s*";
 				regex += "<td>([^<>]+)</td>\\s*";
 				regex += "<td>([^<>]+)</td>\\s*";
-				regex += "<td>([^<>]+)</td>\\s*";
+				regex += "<td>([^<>]*)</td>\\s*";
 				regex += "<td><[^<>]+>([^<>]+)</a></td>\\s*";
 				regex += "<td><[^<>]+>([^<>]+)</a></td>\\s*";
 				regex += "<td><[^<>]+>([^<>]+)</a></td>\\s*";
@@ -469,7 +469,11 @@ public class Extractors {
 					item.setOrder(gameNumber);
 					String time = ma.group(3).replaceAll(":\\d+$", "").trim();
 					item.setDatetime(ma.group(2).trim() + " " + time);
-					item.setGroup(ma.group(4).trim());
+					String group = ma.group(4).trim();
+					if(group.isEmpty()) {
+						group = "X";
+					}
+					item.setGroup(group);
 					item.setHomeTeam(getPrettyText(ma.group(5)));
 					item.setStatus(getPrettyText(ma.group(6)).replace(" ", ""));
 					item.setAwayTeam(getPrettyText(ma.group(7)));
