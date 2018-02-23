@@ -5,4 +5,8 @@ cctv 15            list programs in CCTV5 in current year+month+15
 kan..              list all channels provided by manmankan, 1-230
 kan3               list programs in with channel id 3, current day of week
 kan3 4             list programs in with channel id 3, and 4 stands forThursday
-ver=9/15/2017, V  EXTRACTOR-TV1.0.1-NULTY
+meiju              list all TV dramas as is, courtesy of http://www.meijutt.com/alltop_hit.html
+meiju game         list TV dramas matching given name, default options: $maxLen=40,space=2
+meiju game $+r     list TV dramas matching given name, options: $+r, order by rate, ascend; $-r descend
+meis game          conduct search in meiju website
+ver=2/23/2017, V  EXTRACTOR-TV1.0.2-NULTY

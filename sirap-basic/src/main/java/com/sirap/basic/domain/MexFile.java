@@ -108,21 +108,12 @@ public class MexFile extends MexItem implements Comparable<MexFile> {
 			return true;
 		}
 		
-		SizeCriteria quinn = getSizeCriteria(keyWord);
+		SizeCriteria quinn = getFileSizeCriteria(keyWord);
 		if(quinn != null && quinn.isGood(file.length())) {
 			return true;
 		}
 		
 		return false;
-	}
-	
-	private SizeCriteria getSizeCriteria(String source) {
-		SizeCriteria quinn = new SizeCriteria();
-		if(quinn.parse(source)) {
-			return quinn;
-		} else {
-			return null;
-		}
 	}
 	
 	@Override

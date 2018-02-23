@@ -2,7 +2,6 @@ package com.sirap.basic.search;
 
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexItem;
-import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 
@@ -18,15 +17,14 @@ public class SizeCriteria extends MexItem {
 	public static final float DIFF_EQUAL = 0.01f;
 	public static final float DIFF_ABOUT = 0.1f;
 	
-	private String operator;
-	private long value;
-	private char unit;
+	protected String operator;
+	protected double value;
 	
 	public String getOperator() {
 		return operator;
 	}
 
-	public long getValue() {
+	public double getValue() {
 		return value;
 	}
 	
@@ -40,13 +38,11 @@ public class SizeCriteria extends MexItem {
 
 	@Override
 	public boolean parse(String record) {
-		String regex = "([=><~])" + Konstants.REGEX_FLOAT + "([" + Konstants.FILE_SIZE_UNIT + "])";
+		String regex = "([=><~])" + Konstants.REGEX_FLOAT;
 		String[] params = StrUtil.parseParams(regex, record);
 		if(params != null) {
 			operator = params[0];
-			String baseValue = params[1];
-			unit = params[2].toUpperCase().charAt(0);
-			value = FileUtil.parseSize(baseValue, unit);
+			value = Double.parseDouble(params[1]);
 			
 			return true;
 		}
@@ -54,7 +50,7 @@ public class SizeCriteria extends MexItem {
 		return false;
 	}
 	
-	public boolean isGood(long size) {
+	public boolean isGood(double size) {
 		if(operator == null) {
 			return false;
 		}
@@ -66,13 +62,13 @@ public class SizeCriteria extends MexItem {
 			return size < value;
 		}
 		if(ABOUT.equals(operator)) {
-			long[] range = minAndMax(value, DIFF_ABOUT);
+			double[] range = minAndMax(value, DIFF_ABOUT);
 			boolean flag = (size < range[1] && size > range[0]);
 			return flag;
 		}
 		
 		if(EQUAL.equals(operator)) {
-			long[] range = minAndMax(value, DIFF_EQUAL);
+			double[] range = minAndMax(value, DIFF_EQUAL);
 			boolean flag = (size < range[1] && size > range[0]);
 			return flag;
 		}
@@ -80,11 +76,11 @@ public class SizeCriteria extends MexItem {
 		throw new UnsupportedOperationException("No such operator like " + operator);
 	}
 	
-	private long[] minAndMax(long base, float diffPerc) {
-		long max = (long)(value * (1 + diffPerc));
-		long min = (long) (value * (1 - diffPerc));
+	private double[] minAndMax(double base, float diffPerc) {
+		double max = value * (1 + diffPerc);
+		double min = value * (1 - diffPerc);
 		
-		return new long[]{min, max};
+		return new double[]{min, max};
 	}
 
 	@Override

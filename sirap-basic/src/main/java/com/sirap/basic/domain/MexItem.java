@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.sirap.basic.search.FileSizeCriteria;
 import com.sirap.basic.search.MexFilter;
+import com.sirap.basic.search.SizeCriteria;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.StrUtil;
@@ -162,5 +164,23 @@ public abstract class MexItem implements Serializable {
 
 	public static StringBuffer sb() {
 		return new StringBuffer();
+	}
+	
+	public SizeCriteria getSizeCriteria(String source) {
+		SizeCriteria quinn = new SizeCriteria();
+		if(quinn.parse(source)) {
+			return quinn;
+		} else {
+			return null;
+		}
+	}
+	
+	public SizeCriteria getFileSizeCriteria(String source) {
+		SizeCriteria quinn = new FileSizeCriteria();
+		if(quinn.parse(source)) {
+			return quinn;
+		} else {
+			return null;
+		}
 	}
 }

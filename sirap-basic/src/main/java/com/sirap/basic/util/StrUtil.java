@@ -494,6 +494,9 @@ public class StrUtil {
 		}
 	}
 	
+	public static String repeatSpace(int times) {
+		return repeat(" ", times);
+	}
 
 	public static String repeat(char c, int times) {
 		return repeat(c + "", times);

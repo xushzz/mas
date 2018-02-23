@@ -21,6 +21,7 @@ import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.domain.MexZipEntry;
 import com.sirap.basic.email.EmailCenter;
 import com.sirap.basic.exception.MexException;
+import com.sirap.basic.search.FileSizeCriteria;
 import com.sirap.basic.search.SizeCriteria;
 import com.sirap.basic.thirdparty.msoffice.MsExcelHelper;
 import com.sirap.basic.thirdparty.msoffice.MsWordHelper;
@@ -891,7 +892,7 @@ public class CommandFile extends CommandBase {
 			if(filepath != null) {
 				String alert = "<5M";
 				long filesize = FileUtil.sizeOf(filepath);
-				SizeCriteria carol = new SizeCriteria(alert);
+				SizeCriteria carol = new FileSizeCriteria(alert);
 				if(carol.isGood(filesize) || OptionUtil.readBooleanPRI(options, "sure", false)) {
 					boolean printLog = OptionUtil.readBooleanPRI(options, "p", true);
 					FileUtil.remove(filepath, printLog);

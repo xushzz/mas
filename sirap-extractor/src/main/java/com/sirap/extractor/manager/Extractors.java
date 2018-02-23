@@ -18,10 +18,66 @@ import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.domain.Link;
+import com.sirap.extractor.domain.MeijuRateItem;
 import com.sirap.extractor.domain.NameRankItem;
 import com.sirap.extractor.domain.SportsMatchItem;
 
 public class Extractors {
+	
+	public static List<MeijuRateItem> fetchTopMeijus() {
+		Extractor<MeijuRateItem> neymar = new Extractor<MeijuRateItem>() {
+
+			public String getUrl() {
+				showFetching().useGBK();
+				String template = "http://www.meijutt.com/alltop_hit.html";
+				return template;
+			}
+			
+			@Override
+			protected void parse() {
+				String regex = "<h5><a href=\".+?</div></li>";
+				Matcher ma = createMatcher(regex);
+				
+				while(ma.find()) {
+					String raw = ma.group().replace("<strong class=\"average-big\">", "XXXX");
+					String[] arce = raw.split("XXXX");
+					String name = getPrettyText(arce[0]);
+					String rate = getPrettyText(arce[1]);
+					String href = "http://www.meijutt.com" + StrUtil.findFirstMatchedItem("href=\"([^\"]+)\"", arce[0]);
+					MeijuRateItem item = new MeijuRateItem();
+					item.setHref(href);
+					item.setName(name);
+					item.setRate(rate);
+					mexItems.add(item);
+				}
+			}
+		};
+		
+		return neymar.process().getItems();
+	}
+	
+	public static List<String> fetchMeiju(String param) {
+		Extractor<String> neymar = new Extractor<String>() {
+
+			public String getUrl() {
+				showFetching().usePost().useGBK();
+				String template = "http://www.meijutt.com/search.asp?searchword=";
+				return template + param.replace(' ', '+');
+			}
+			
+			@Override
+			protected void parse() {
+				String regex = "<div class=\"bor_img3_right\">(.+?)</font></li></ul></div>";
+				Matcher ma = createMatcher(regex);
+				while(ma.find()) {
+					String raw = ma.group(1).replace("</li><li>", " ");
+					mexItems.add(getPrettyText(raw));
+				}
+			}
+		};
+		
+		return neymar.process().getItems();
+	}
 
 	public static List<NameRankItem> fetchEnglishNames() {
 		return fetchEnglishNames(true, null);
@@ -471,7 +527,7 @@ public class Extractors {
 					item.setDatetime(ma.group(2).trim() + " " + time);
 					String group = ma.group(4).trim();
 					if(group.isEmpty()) {
-						group = "X";
+						group = " ";
 					}
 					item.setGroup(group);
 					item.setHomeTeam(getPrettyText(ma.group(5)));

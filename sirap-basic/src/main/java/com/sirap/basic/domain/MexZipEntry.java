@@ -50,22 +50,13 @@ public class MexZipEntry extends MexItem {
 		}
 		
 		if(isNormalFile()) {
-			SizeCriteria quinn = getSizeCriteria(keyWord);
+			SizeCriteria quinn = getFileSizeCriteria(keyWord);
 			if(quinn != null && quinn.isGood(entry.getSize())) {
 				return true;
 			}
 		}
 		
 		return false;
-	}
-	
-	private SizeCriteria getSizeCriteria(String source) {
-		SizeCriteria quinn = new SizeCriteria();
-		if(quinn.parse(source)) {
-			return quinn;
-		} else {
-			return null;
-		}
 	}
 	
 	@Override

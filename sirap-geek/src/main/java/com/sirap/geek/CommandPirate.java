@@ -251,12 +251,17 @@ public class CommandPirate extends CommandBase {
 		
 		String source = g().getUserValueOf("sfz.source");
 		if(!EmptyUtil.isNullOrEmpty(source)) {
-			boolean isText = FileOpener.isTextFile(source);
-			if(isText) {
-				String path = parseFile(source).getAbsolutePath();
-				List<String> allAreas = IOUtil.readFileIntoList(path);
-				String areaName = IDCardUtil.getAreaInfo(areaCode, allAreas);
-				saul.setAreaName(areaName);
+			File file = parseFile(source);
+			if(file == null) {
+				C.pl2("Not a valid path: " + source);
+			} else {
+				boolean isText = FileOpener.isTextFile(source);
+				if(isText) {
+					String path = file.getAbsolutePath();
+					List<String> allAreas = IOUtil.readFileIntoList(path);
+					String areaName = IDCardUtil.getAreaInfo(areaCode, allAreas);
+					saul.setAreaName(areaName);
+				}
 			}
 		}
 		bf.append(", ").append("from ").append(saul.getAreaName());
