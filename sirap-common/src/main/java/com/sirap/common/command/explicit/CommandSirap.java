@@ -152,7 +152,7 @@ public class CommandSirap extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_CALENDAR + "([\\d&]+)");
+		solo = parseParam(KEY_CALENDAR + "([\\d&]+)");
 		if(solo != null) {
 			List<String> totalRecords = new ArrayList<String>();
 			List<String> yearMonthList = StrUtil.split(solo, '&');
@@ -242,7 +242,7 @@ public class CommandSirap extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_TIMEZONE_DISPLAY);
+		solo = parseParam(KEY_TIMEZONE_DISPLAY);
 		if(solo != null) {
 			List<TZRecord> records = TimeZoneManager.g().getTimeZones(solo, g().getLocale(), false);
 			if(target instanceof TargetPDF) {
@@ -399,7 +399,7 @@ public class CommandSirap extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_USER_TIMEZONE_SET);
+		solo = parseParam(KEY_USER_TIMEZONE_SET);
 		if(solo != null) {
 			resetTimeZone(Integer.parseInt(solo));
 			return true;
@@ -461,7 +461,7 @@ public class CommandSirap extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_HOST + "\\s+(.*?)");
+		solo = parseParam(KEY_HOST + "\\s+(.*?)");
 		if(solo != null) {
 			String result = NetworkUtil.getHostByName(solo);
 			export(result);
@@ -523,7 +523,7 @@ public class CommandSirap extends CommandBase {
 	
 	private boolean conductSiteSearch(SiteSearchEngine engine) {
 		String regex = engine.getPrefix() + " (.+?)";
-		String singleParam = parseSoloParam(regex);
+		String singleParam = parseParam(regex);
 		if(singleParam != null) {
 			String urlTemplate = engine.getUrlTemplate();
 			String url = StrUtil.occupy(urlTemplate, Extractor.encodeURLParam(singleParam));
@@ -544,7 +544,7 @@ public class CommandSirap extends CommandBase {
 	
 	private boolean conductTextSearch(TextSearchEngine engine) {
 		String regex = engine.getPrefix() + "\\s(.+?)";
-		String contentCriteria = parseSoloParam(regex);
+		String contentCriteria = parseParam(regex);
 		if(contentCriteria != null) {
 			String folders = engine.getFolders();
 			String fileCriteria = engine.getFileCriteria();

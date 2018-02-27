@@ -39,7 +39,7 @@ public class CommandWholesale extends CommandBase {
 	
 	public boolean handle() {
 		
-		solo = parseSoloParam(KEY_SOGOU + "\\s(.*?)");
+		solo = parseParam(KEY_SOGOU + "\\s(.*?)");
 		if(isSingleParamNotnull()) {
 			List<String> links = ExtractorUtil.sogouImageLinks(solo);
 			if(!EmptyUtil.isNullOrEmpty(links)) {
@@ -53,7 +53,7 @@ public class CommandWholesale extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_QIHU360 + "\\s(.*?)");
+		solo = parseParam(KEY_QIHU360 + "\\s(.*?)");
 		if(isSingleParamNotnull()) {
 			List<String> links = ExtractorUtil.qihu360ImageLinks(solo);
 			if(!EmptyUtil.isNullOrEmpty(links)) {
@@ -68,7 +68,7 @@ public class CommandWholesale extends CommandBase {
 		}
 		
 		String types = StrUtil.connect(new ArrayList<String>(ExtractorNetease.TYPE_METHOD.keySet()), "|");
-		solo = parseSoloParam("163(" + types+ ")");
+		solo = parseParam("163(" + types+ ")");
 		if(solo != null) {
 			String type = solo.toLowerCase();
 			String method = ExtractorNetease.TYPE_METHOD.get(type);

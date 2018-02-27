@@ -32,7 +32,7 @@ public class CommandSimpleMath extends CommandBase {
 	
 	@Override
 	public boolean handle() {
-		solo = parseSoloParam(REGEX_HEX8);
+		solo = parseParam(REGEX_HEX8);
 		if(solo != null) {
 			export(Long.parseLong(solo, 16));
 			
@@ -105,7 +105,7 @@ public class CommandSimpleMath extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam("#([a-f|\\d|,|\\s]+)");
+		solo = parseParam("#([a-f|\\d|,|\\s]+)");
 		if(solo != null) {
 			MexColorConverter salim = new MexColorConverter(solo);
 			List<String> results = salim.getResult();
@@ -174,7 +174,7 @@ public class CommandSimpleMath extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_TO_DATE + "\\.(-?\\d{0,14})");
+		solo = parseParam(KEY_TO_DATE + "\\.(-?\\d{0,14})");
 		if(solo != null) {
 			Long milliSecondsSince1970 = Long.parseLong(solo);
 			
@@ -194,7 +194,7 @@ public class CommandSimpleMath extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_TO_LONG + "\\.(\\d{8,17})");
+		solo = parseParam(KEY_TO_LONG + "\\.(\\d{8,17})");
 		if(solo != null) {
 			long value = DateUtil.convertDateStrToLong(solo);
 			export(value);
@@ -242,7 +242,7 @@ public class CommandSimpleMath extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(LENGTH_OF + "(.+?)");
+		solo = parseParam(LENGTH_OF + "(.+?)");
 		if(solo != null) {
 			int len = solo.length();
 			String value = "len = " + len;

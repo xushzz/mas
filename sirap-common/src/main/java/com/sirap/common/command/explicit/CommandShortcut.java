@@ -21,7 +21,7 @@ public class CommandShortcut extends CommandBase {
 	@Override
 	public boolean handle() {
 		
-		solo = parseSoloParam(KEY_TERMINAL_COMMAND + "(.{3,}?)");
+		solo = parseParam(KEY_TERMINAL_COMMAND + "(.{3,}?)");
 		if(solo != null) {
 			executeInternalCmd(solo);
 			return true;

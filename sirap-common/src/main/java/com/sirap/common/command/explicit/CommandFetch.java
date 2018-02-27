@@ -37,7 +37,7 @@ public class CommandFetch extends CommandBase {
 	@Override
 	public boolean handle() {
 		
-		solo = parseSoloParam(KEY_FETCH + "\\s(.+?)"); 
+		solo = parseParam(KEY_FETCH + "\\s(.+?)"); 
 		if(solo != null) {
 			if(handleHttpRequest(solo)) {
 				return true;
@@ -138,7 +138,7 @@ public class CommandFetch extends CommandBase {
     		return true;
 		}
 		
-		solo = parseSoloParam(KEY_DATETIME_TIMEZONE);
+		solo = parseParam(KEY_DATETIME_TIMEZONE);
 		if(solo != null) {
 			List<TZRecord> records = TimeZoneManager.g().getTimeZones(solo, g().getLocale());
 			if(target instanceof TargetPDF) {

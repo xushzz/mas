@@ -19,7 +19,7 @@ public class CommandNames extends CommandBase {
 	@Override
 	public boolean handle() throws Exception {
 
-		solo = parseSoloParam(KEY_JAPANESE_NAME + "\\s(.+)");
+		solo = parseParam(KEY_JAPANESE_NAME + "\\s(.+)");
 		if(solo != null) {
 			export2(Extractors.fetchJapaneseNames(), solo);
 			

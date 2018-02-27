@@ -87,7 +87,7 @@ public class CommandXCode extends CommandBase {
 			return true;
 		}
 
-		String param = parseSoloParam(KEY_QRCODE_DECODE + "\\s+(.+?)");
+		String param = parseParam(KEY_QRCODE_DECODE + "\\s+(.+?)");
 		if(param != null) {
 			File file = parseFile(param);
 			if(file != null) {
@@ -128,7 +128,7 @@ public class CommandXCode extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_ASCII_SHORT + "\\s(.+?)");
+		solo = parseParam(KEY_ASCII_SHORT + "\\s(.+?)");
 		if(solo != null) {
 			List<MexItem> items = CollUtil.filter(GeekManager.g().asciiAll(), solo, isCaseSensitive(), isStayCriteria());
 			
@@ -141,7 +141,7 @@ public class CommandXCode extends CommandBase {
 			return true;
 		}
 
-		solo = parseSoloParam(KEY_TO_BASE64 + "\\s(.+?)");
+		solo = parseParam(KEY_TO_BASE64 + "\\s(.+?)");
 		if(solo != null) {
 			String result = XCodeUtil.toBase64(solo);
 			export(result);
@@ -149,7 +149,7 @@ public class CommandXCode extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_FROM_BASE64 + "\\s(.+?)");
+		solo = parseParam(KEY_FROM_BASE64 + "\\s(.+?)");
 		if(solo != null) {
 			String result = XCodeUtil.fromBase64(solo);
 			export(result);
@@ -190,7 +190,7 @@ public class CommandXCode extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_URL_ENCODE + "\\s(.+?)");
+		solo = parseParam(KEY_URL_ENCODE + "\\s(.+?)");
 		if(solo != null) {
 			String charset = g().getCharsetInUse();
 			String value = XCodeUtil.urlEncode(solo, charset);
@@ -200,7 +200,7 @@ public class CommandXCode extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_URL_DECODE + "\\s(.+?)");
+		solo = parseParam(KEY_URL_DECODE + "\\s(.+?)");
 		if(solo != null) {
 			String charset = g().getCharsetInUse();
 			String value = XCodeUtil.urlDecode(solo, charset);
@@ -217,7 +217,7 @@ public class CommandXCode extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_ENCODE + "-([\\S]+)");
+		solo = parseParam(KEY_ENCODE + "-([\\S]+)");
 		if(solo != null) {
 			String criteria = solo;
 			List<CharsetCode> codes = GeekManager.g().searchCharsetNames(criteria);
@@ -233,7 +233,7 @@ public class CommandXCode extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_ENCODE + "\\s(.+?)");
+		solo = parseParam(KEY_ENCODE + "\\s(.+?)");
 		if(solo != null) {
 			List<String> items = GeekManager.g().encodeStringByUnicodeUTF8GBK(solo);
 			export(items);
@@ -257,7 +257,7 @@ public class CommandXCode extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_DECODE + "\\s(.+?)");
+		solo = parseParam(KEY_DECODE + "\\s(.+?)");
 		if(solo != null) {
 			List<String> items = GeekManager.g().decodeStringByUnicodeUTF8GBK(solo);
 			export(items);
@@ -315,7 +315,7 @@ public class CommandXCode extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_CURRENCY + "\\s(.+?)");
+		solo = parseParam(KEY_CURRENCY + "\\s(.+?)");
 		if(isSingleParamNotnull()) { 
 			String extraLocales = g().getUserValueOf("iso.locales");
 			List<MexObject> records = LocaleUtil.getAllCurrencies(extraLocales);
@@ -335,7 +335,7 @@ public class CommandXCode extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_DATE_FORMAT_SYMBOL + "\\s(.+?)");
+		solo = parseParam(KEY_DATE_FORMAT_SYMBOL + "\\s(.+?)");
 		if(isSingleParamNotnull()) { 
 			List<String> records = LocaleUtil.getAllMonthWeekdays();
 			export2(records, solo);
@@ -354,7 +354,7 @@ public class CommandXCode extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_ISO + "\\s(.+?)");
+		solo = parseParam(KEY_ISO + "\\s(.+?)");
 		if(isSingleParamNotnull()) { 
 			String extraLocales = g().getUserValueOf("iso.locales");
 			MexFilter<MexLocale> filter = new MexFilter<MexLocale>(solo, LocaleUtil.AAM_LOCALES);
@@ -370,7 +370,7 @@ public class CommandXCode extends CommandBase {
 			return true;
 		}
 	
-		solo = parseSoloParam(KEY_ISO + "=\\s*([^|&]*?)");
+		solo = parseParam(KEY_ISO + "=\\s*([^|&]*?)");
 		if(solo != null) {
 			Locale locale = null;
 			List<MexLocale> items = null;

@@ -61,7 +61,7 @@ public class CommandDev extends CommandBase {
 	private static final String KEY_HTTP_STATUS_CODES = "https";
 	
 	public boolean handle() {
-		solo = parseSoloParam(KEY_PATH + "\\s(.*?)");
+		solo = parseParam(KEY_PATH + "\\s(.*?)");
 		if(solo != null) {
 			List<String> items = IOUtil.echoPath();
 			
@@ -107,7 +107,7 @@ public class CommandDev extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_ISSUE + " ([A-Za-z0-9\\-_]+/[A-Za-z0-9\\-_]+)");
+		solo = parseParam(KEY_ISSUE + " ([A-Za-z0-9\\-_]+/[A-Za-z0-9\\-_]+)");
 		if(solo != null) {
 			Extractor<MexItem> frank = new GithubIssuesExtractor(solo);
 			frank.process();
@@ -126,7 +126,7 @@ public class CommandDev extends CommandBase {
 			export(url);
 		}
 		
-		solo = parseSoloParam(KEY_JENKINS + " ([A-Za-z0-9\\-_]+)");
+		solo = parseParam(KEY_JENKINS + " ([A-Za-z0-9\\-_]+)");
 		if(solo != null) {
 			JenkinsBuildRecord record = JenkinsManager.g().getLatestBuildRecord(solo);
 			export(record);
@@ -155,7 +155,7 @@ public class CommandDev extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_JSON + " " + KEY_HTTP_WWW);
+		solo = parseParam(KEY_JSON + " " + KEY_HTTP_WWW);
 		if(solo != null) {
 			String source = IOUtil.readURL(solo);
 			String text = JsonUtil.getPrettyText(source);
@@ -174,7 +174,7 @@ public class CommandDev extends CommandBase {
 			}
 		}
 		
-		solo = parseSoloParam(KEY_JSON + " (.+?)");
+		solo = parseParam(KEY_JSON + " (.+?)");
 		if(solo != null) {
 			File file = parseFile(solo);
 			if(file != null) {
@@ -196,7 +196,7 @@ public class CommandDev extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_RAW_JSON + " " + KEY_HTTP_WWW);
+		solo = parseParam(KEY_RAW_JSON + " " + KEY_HTTP_WWW);
 		if(solo != null) {
 			String source = IOUtil.readURL(solo);
 			String text = JsonUtil.getRawText(source);
@@ -205,7 +205,7 @@ public class CommandDev extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_RAW_JSON + " (.+?)");
+		solo = parseParam(KEY_RAW_JSON + " (.+?)");
 		if(solo != null) {
 			File file = parseFile(solo);
 			if(file != null) {
@@ -227,7 +227,7 @@ public class CommandDev extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_PAIR_KEY_VALUE + "\\s(.+)");
+		solo = parseParam(KEY_PAIR_KEY_VALUE + "\\s(.+)");
 		if(solo != null) {
 			List<String> pairs = StrUtil.parseUrlParams(solo);
 			export(pairs);
@@ -235,7 +235,7 @@ public class CommandDev extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_TO_LOWERCASE + "\\.(.+)");
+		solo = parseParam(KEY_TO_LOWERCASE + "\\.(.+)");
 		if(solo != null) {
 			C.pl("To lower case, " + solo.length() + " chars.");
 			String result = solo.toLowerCase();
@@ -244,7 +244,7 @@ public class CommandDev extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_TO_UPPERCASE + "\\.(.+)");
+		solo = parseParam(KEY_TO_UPPERCASE + "\\.(.+)");
 		if(solo != null) {
 			C.pl("To upper case, " + solo.length() + " chars.");
 			String result = solo.toUpperCase();
@@ -309,7 +309,7 @@ public class CommandDev extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_UUID + "(\\d{1,3})");
+		solo = parseParam(KEY_UUID + "(\\d{1,3})");
 		if(solo != null) {
 			List<String> items = new ArrayList<>();
 			int count = Integer.parseInt(solo);
@@ -321,7 +321,7 @@ public class CommandDev extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_CHANGE_FILESEPARATOR + "\\s+(.+)");
+		solo = parseParam(KEY_CHANGE_FILESEPARATOR + "\\s+(.+)");
 		if(solo != null) {
 			char windows = '\\';
 			char unix = '/';
@@ -339,7 +339,7 @@ public class CommandDev extends CommandBase {
 			export(items);
 		}
 		
-		solo = parseSoloParam(KEY_SIZE + "([1-9]|)");
+		solo = parseParam(KEY_SIZE + "([1-9]|)");
 		if(solo != null) {
 			Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 			List<String> items = Lists.newArrayList();
@@ -353,7 +353,7 @@ public class CommandDev extends CommandBase {
 			export(items);
 		}
 		
-		solo = parseSoloParam(KEY_HTTP_STATUS_CODES + "\\s(.+?)");
+		solo = parseParam(KEY_HTTP_STATUS_CODES + "\\s(.+?)");
 		if(solo != null) {
 			List<ValuesItem> items = CollUtil.filter(GeekExtractors.fetchHttpResponseCodes(), solo);
 			String concise = HttpData.EGGS.get(solo);

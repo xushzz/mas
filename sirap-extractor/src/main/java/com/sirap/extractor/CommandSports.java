@@ -165,7 +165,7 @@ public class CommandSports extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_CHINA + KEY_SPORTS_TABLE + "(|\\s\\S+)");
+		solo = parseParam(KEY_CHINA + KEY_SPORTS_TABLE + "(|\\s\\S+)");
 		if(solo != null) {
 			List<MexObject> items = Extractors.fetchHupuFootballChinaTable();
 			if(EmptyUtil.isNullOrEmpty(solo)) {
@@ -177,7 +177,7 @@ public class CommandSports extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_UEFA + KEY_SPORTS_TABLE + "(|\\s\\S+)");
+		solo = parseParam(KEY_UEFA + KEY_SPORTS_TABLE + "(|\\s\\S+)");
 		if(solo != null) {
 			List<MexObject> items = Extractors.fetchUefaChampionsTable();
 			if(EmptyUtil.isNullOrEmpty(solo)) {
@@ -189,7 +189,7 @@ public class CommandSports extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_UEFA + KEY_SPORTS_SCHEDULE + "(|\\s+\\S+|\\.\\.)");
+		solo = parseParam(KEY_UEFA + KEY_SPORTS_SCHEDULE + "(|\\s+\\S+|\\.\\.)");
 		if(solo != null) {
 			String criteria = solo;
 			List<SportsMatchItem> items = Extractors.fetchUefaChampionsSchedule();

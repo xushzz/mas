@@ -24,7 +24,7 @@ public class CommandAris extends CommandBase {
 	@SuppressWarnings("rawtypes")
 	public boolean handle() {
 		
-		solo = parseSoloParam(KEY_EXECUTE_JAVACODE + "\\s+(.+)");
+		solo = parseParam(KEY_EXECUTE_JAVACODE + "\\s+(.+)");
 		if(solo != null) {
 			boolean keepGeneratedFiles = OptionUtil.readBooleanPRI(options, "k", g().isYes("aris.keep"));
 			List<String> classPaths = g().getUserValuesByKeyword("aris.path.");

@@ -73,7 +73,7 @@ public class CommandDatabase extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_TABLE + "\\s(.+)");
+		solo = parseParam(KEY_TABLE + "\\s(.+)");
 		if(solo != null) {
 			String sql = DBKonstants.SHOW_TABLES;
 			QueryWatcher ming = query(sql);
@@ -103,7 +103,7 @@ public class CommandDatabase extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_DATABASE + "\\.(.+)");
+		solo = parseParam(KEY_DATABASE + "\\.(.+)");
 		if(solo != null) {
 			String dbName = solo.toLowerCase();
 			if(DBHelper.takeAsColumnOrTableName(dbName)) {
@@ -133,7 +133,7 @@ public class CommandDatabase extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_DATABASE + "=(.+)");
+		solo = parseParam(KEY_DATABASE + "=(.+)");
 		if(solo != null) {
 			String dbName = solo;
 			DBConfigItem db = DBHelper.getDatabaseByName(dbName);
@@ -164,7 +164,7 @@ public class CommandDatabase extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_SCHEMA + "=(.+)");
+		solo = parseParam(KEY_SCHEMA + "=(.+)");
 		if(solo != null) {
 			String sql = DBKonstants.SHOW_DATABASES;
 			String actualSchema = null;

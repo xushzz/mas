@@ -27,7 +27,7 @@ public class CommandHelp extends CommandBase {
 	@Override
 	public boolean handle() {
 		
-		solo = parseSoloParam("[?|'](.*?)");
+		solo = parseParam("[?|'](.*?)");
 		if(solo != null) {
 			List<String> allKeys = new ArrayList<>();
 			allKeys.add(KEY_GUEST);

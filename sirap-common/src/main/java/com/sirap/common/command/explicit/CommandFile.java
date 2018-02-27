@@ -83,7 +83,7 @@ public class CommandFile extends CommandBase {
 	@SuppressWarnings("all")
 	@Override
 	public boolean handle() {
-		solo = parseSoloParam(KEY_MIX + "\\s(.*?)");
+		solo = parseParam(KEY_MIX + "\\s(.*?)");
 		if(solo != null) {
 			if(target instanceof TargetConsole) {
 				if(isEmailEnabled()) {
@@ -705,7 +705,7 @@ public class CommandFile extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_PDF + "\\s+(.+?\\.pdf)");
+		solo = parseParam(KEY_PDF + "\\s+(.+?\\.pdf)");
 		if(solo != null) {
 			List<String> items = StrUtil.split(solo);
 			List<String> pdfFiles = new ArrayList<String>();
@@ -786,7 +786,7 @@ public class CommandFile extends CommandBase {
 			}
 		}
 		
-		solo = parseSoloParam(KEY_FIX_IMAGE + "\\s+(.+)");
+		solo = parseParam(KEY_FIX_IMAGE + "\\s+(.+)");
 		if(solo != null) {
 			String whereToSave = "";
 			String fileSizeWithUnit = OptionUtil.readString(options, "size");
@@ -815,7 +815,7 @@ public class CommandFile extends CommandBase {
 			}
 		}
 		
-		solo = parseSoloParam(KEY_KICK_OFF + "(|\\s+.+)");
+		solo = parseParam(KEY_KICK_OFF + "(|\\s+.+)");
 		if(solo != null) {
 			List<String> lines = Lists.newArrayList();
 			lines.add("#" + DateUtil.displayNow(DateUtil.HOUR_Min_Sec_AM_WEEK_DATE));
@@ -843,7 +843,7 @@ public class CommandFile extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_KICK_PRINT + "(|\\s+.+)");
+		solo = parseParam(KEY_KICK_PRINT + "(|\\s+.+)");
 		if(solo != null) {
 			if(!solo.isEmpty()) {
 				String path = solo;
@@ -875,7 +875,7 @@ public class CommandFile extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_FILE_REMOVE + "\\s+(.+)");
+		solo = parseParam(KEY_FILE_REMOVE + "\\s+(.+)");
 		if(solo != null) {
 			String filepath = null;
 

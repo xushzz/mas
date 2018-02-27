@@ -50,7 +50,7 @@ public class CommandBible extends CommandBase {
 		}
 
 		//display all book links with given, fetch
-		solo = parseSoloParam(KEY_BIBLE_SHORT + "\\.([a-z]+)");
+		solo = parseParam(KEY_BIBLE_SHORT + "\\.([a-z]+)");
 		if(solo != null) {
 			String versionCode = BibleManager.g().getVersion(solo).getCode();
 			export(BibleManager.g().fetchBooksByVersionCode(versionCode));
@@ -58,14 +58,14 @@ public class CommandBible extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_BIBLE_SHORT + "\\s(.*?)");
+		solo = parseParam(KEY_BIBLE_SHORT + "\\s(.*?)");
 		if(solo != null) {
 			export(CollUtil.filter(BibleData.BOOKS, solo, isCaseSensitive()));
 			
 			return true;
 		}
 
-		solo = parseSoloParam(KEY_ALL_VERSIONS + "\\s(.*?)");
+		solo = parseParam(KEY_ALL_VERSIONS + "\\s(.*?)");
 		if(solo != null) {
 			export(CollUtil.filter(BibleData.VERSIONS, solo, isCaseSensitive()));
 			

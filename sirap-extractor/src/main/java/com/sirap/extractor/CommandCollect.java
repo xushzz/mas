@@ -78,7 +78,7 @@ public class CommandCollect extends CommandBase {
 	
 	public boolean handle() {
 
-		solo = parseSoloParam(KEY_CAR + "\\s+(.+)");
+		solo = parseParam(KEY_CAR + "\\s+(.+)");
 		if(solo != null) {
 			List<MexItem> items = Extractors.fetchCarList();
 			export(CollUtil.filter(items, solo, isCaseSensitive(), isStayCriteria()));
@@ -86,14 +86,14 @@ public class CommandCollect extends CommandBase {
 			return true;
 		}
 
-		solo = parseSoloParam(KEY_CAR + "-([^\\.]+)");
+		solo = parseParam(KEY_CAR + "-([^\\.]+)");
 		if(solo != null) {
 			export(Extractors.fetchCarDetail(solo));
 			
 			return true;
 		}
 
-		solo = parseSoloParam(KEY_CARNO + "\\s(.+)");
+		solo = parseParam(KEY_CARNO + "\\s(.+)");
 		if(solo != null) {
 			List<MexObject> items = Extractors.fetchCarNoList();
 			export(CollUtil.filter(items, solo, isCaseSensitive(), isStayCriteria()));
@@ -101,7 +101,7 @@ public class CommandCollect extends CommandBase {
 			return true;
 		}
 
-		solo = parseSoloParam(KEY_WEATHER + "\\s(.+)");
+		solo = parseParam(KEY_WEATHER + "\\s(.+)");
 		if(solo != null) {
 			List<WeatherRecord> items = WeatherManager.g().search(solo);
 			export(items);
@@ -109,7 +109,7 @@ public class CommandCollect extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_PHONE_MOBILE + "(.+)");
+		solo = parseParam(KEY_PHONE_MOBILE + "(.+)");
 		if(solo != null) {
 			String number = StrUtil.takeDigitsOnly(solo);
 
@@ -125,7 +125,7 @@ public class CommandCollect extends CommandBase {
 			return true;
 		}
 				
-		solo = parseSoloParam(KEY_TRANSLATE + "\\s+(.+?)");
+		solo = parseParam(KEY_TRANSLATE + "\\s+(.+?)");
 		if(solo != null) {
 			String key = "iciba.source";
 			String filePath = g().getUserValueOf(key);
@@ -157,7 +157,7 @@ public class CommandCollect extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_DICTONARY + "\\s+(.+)");
+		solo = parseParam(KEY_DICTONARY + "\\s+(.+)");
 		if(solo != null) {
 			List<MexObject> items = lookupDictionary(solo);
 			export(items);
@@ -187,7 +187,7 @@ public class CommandCollect extends CommandBase {
 			}
 		}
 		
-		solo = parseSoloParam(KEY_TULING_ASK + "(.+)");
+		solo = parseParam(KEY_TULING_ASK + "(.+)");
 		if(solo != null) {
 			String key = g().getUserValueOf("tuling.key", "e8c190a005adc401867efd1ad2602f70");
 			Extractor<MexObject> mike = new TulingExtractor(key, solo);
@@ -198,7 +198,7 @@ public class CommandCollect extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_ZHIHU_ASK + "(.+)");
+		solo = parseParam(KEY_ZHIHU_ASK + "(.+)");
 		if(solo != null) {
 			Extractor<ZhihuRecord> mike = new ZhihuSearchExtractor(solo);
 			mike.process();
@@ -217,7 +217,7 @@ public class CommandCollect extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_WIKI_SUMMARY + "\\s(.+)");
+		solo = parseParam(KEY_WIKI_SUMMARY + "\\s(.+)");
 		if(solo != null) {
 			Extractor<MexObject> mike = new WikiSummaryExtractor(solo);
 			mike.process();
@@ -234,7 +234,7 @@ public class CommandCollect extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_RSS + "\\s(.+)");
+		solo = parseParam(KEY_RSS + "\\s(.+)");
 		if(solo != null) {
 			Object result = ObjectUtil.execute(sourceOfRss(), "readAllRss", new Class[0], new Object[0]);
 			List<MexObject> items = (List<MexObject>)result;
@@ -244,7 +244,7 @@ public class CommandCollect extends CommandBase {
 		}
 		
 		regex = KEY_RSS + "\\.(.+)";
-		solo = parseSoloParam(regex);
+		solo = parseParam(regex);
 		if(solo != null) {
 			Object result = ObjectUtil.execute(sourceOfRss(), "fetchRssByType", new Class[]{String.class}, new Object[]{solo});
 			export(CollUtil.reverse((List<MexObject>)result));
@@ -252,7 +252,7 @@ public class CommandCollect extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_JAR + "\\s+(.+)");
+		solo = parseParam(KEY_JAR + "\\s+(.+)");
 		if(solo != null) {
 			Extractor<MexObject> mike = new FindJarExtractor(solo);
 			mike.process();
@@ -261,7 +261,7 @@ public class CommandCollect extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_WEIXIN_SEARCH + "\\s+(.+)");
+		solo = parseParam(KEY_WEIXIN_SEARCH + "\\s+(.+)");
 		if(solo != null) {
 			Extractor<MexObject> mike = new WeixinSearchExtractor(solo);
 			mike.process();
@@ -270,7 +270,7 @@ public class CommandCollect extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_THIS_DAY_IN_HISTORY_CHINESE + "(bc\\d{1,4}|\\d{1,4})");
+		solo = parseParam(KEY_THIS_DAY_IN_HISTORY_CHINESE + "(bc\\d{1,4}|\\d{1,4})");
 		if(solo != null) {
 			if(!StrUtil.startsWith(solo, "bc")) {
 				int currentYear = Integer.parseInt(DateUtil.displayNow("yyyy"));
@@ -342,7 +342,7 @@ public class CommandCollect extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_NOBEL_PRIZE + "\\s(.+)");
+		solo = parseParam(KEY_NOBEL_PRIZE + "\\s(.+)");
 		if(solo != null) {
 			List<MexObject> items = Extractors.fetchAllNobelPrizes();
 			export2(items, solo);

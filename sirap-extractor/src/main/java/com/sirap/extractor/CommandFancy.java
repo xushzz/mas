@@ -25,7 +25,7 @@ public class CommandFancy extends CommandBase {
 
 	public boolean handle() {
 		String types = StrUtil.connect(new ArrayList<String>(ExtractorFancy.TYPE_METHOD.keySet()), "|");
-		solo = parseSoloParam("lady(" + types+ ")");
+		solo = parseParam("lady(" + types+ ")");
 		if(solo != null) {
 			String type = solo.toLowerCase();
 			String method = ExtractorFancy.TYPE_METHOD.get(type);
@@ -36,7 +36,7 @@ public class CommandFancy extends CommandBase {
 		}
 		
 		//fetch lass image links from library path that indicates one or more albums
-		solo = parseSoloParam(KEY_MEITU + " (.+)");
+		solo = parseParam(KEY_MEITU + " (.+)");
 		if(solo != null && StrUtil.isRegexMatched("[a-z\\d/]+", solo)) {
 			List<MexObject> items = new ArrayList<>();
 			MeituImageLinksExtractor justin = new MeituImageLinksExtractor(solo);
@@ -73,7 +73,7 @@ public class CommandFancy extends CommandBase {
 		}
 		
 		//fetch lass intros from lass path which locates in txt file
-		solo = parseSoloParam(KEY_MEITU + ".intro (.+?)");
+		solo = parseParam(KEY_MEITU + ".intro (.+?)");
 		if(solo != null) {
 			File file = parseFile(solo);
 			if(file != null) {

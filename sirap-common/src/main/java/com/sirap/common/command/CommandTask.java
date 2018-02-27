@@ -71,7 +71,7 @@ public class CommandTask extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_ALARM_CANCEL);
+		solo = parseParam(KEY_ALARM_CANCEL);
 		if(solo != null) {
 			List<String> orderIds = solo.isEmpty() ? null : StrUtil.split(solo);			
 			int count = AlarmManager.g().cancelAlarms(true, orderIds);

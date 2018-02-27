@@ -73,7 +73,7 @@ public class CommandEstate extends CommandBase {
 		}
 		
 		regex = KEY_HANGYANG + "-([A-Z][a-z0-9]{5})";
-		solo = parseSoloParam(regex);
+		solo = parseParam(regex);
 		if(solo != null) {
 			Link mo = Extractors.fetchHangyangLocation(solo);
 			export(mo);
@@ -86,7 +86,7 @@ public class CommandEstate extends CommandBase {
 		}
 		
 		regex = KEY_HANGYANG + "\\s+([a-z0-9]{1,5})";
-		solo = parseSoloParam(regex);
+		solo = parseParam(regex);
 		if(solo != null) {
 			List<KeyValuesItem> items = Extractors.fetchHangyangPlates(solo);
 			export(items);

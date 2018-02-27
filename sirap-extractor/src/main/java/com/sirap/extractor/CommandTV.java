@@ -106,7 +106,7 @@ public class CommandTV extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam("meis\\s(.+)");
+		solo = parseParam("meis\\s(.+)");
 		if(solo != null) {
 			String param = solo;
 			List<String> list = Extractors.fetchMeiju(param);

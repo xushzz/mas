@@ -272,7 +272,7 @@ public abstract class CommandBase {
 		return key.equalsIgnoreCase(command);
 	}
 
-	public String parseSoloParam(String regex) {
+	public String parseParam(String regex) {
 		return StrUtil.parseParam(regex, command);
 	}
 
@@ -427,7 +427,7 @@ public abstract class CommandBase {
 		}
 	}
 	
-	private void viewPage(String url) {
+	protected void viewPage(String url) {
 		FileOpener.playThing(url, "page.viewer", true);
 		C.pl2("View Page.");
 	}

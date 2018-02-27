@@ -73,7 +73,7 @@ public class CommandPirate extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_ID_SFZ + "\\s(\\d{1,6}|[\\D]{1,100})");
+		solo = parseParam(KEY_ID_SFZ + "\\s(\\d{1,6}|[\\D]{1,100})");
 		if(solo != null) {
 			String source = g().getUserValueOf("sfz.source");
 			if(!EmptyUtil.isNullOrEmpty(source)) {
@@ -90,7 +90,7 @@ public class CommandPirate extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_ID_SFZ + "\\s((\\d{17})(|\\d|X))");
+		solo = parseParam(KEY_ID_SFZ + "\\s((\\d{17})(|\\d|X))");
 		if(solo != null) {
 			sfz(solo);
 			return true;
@@ -103,7 +103,7 @@ public class CommandPirate extends CommandBase {
 			
 		}
 		
-		solo = parseSoloParam(KEY_BEEP_K);
+		solo = parseParam(KEY_BEEP_K);
 		if(solo != null) {
 			Integer count = MathUtil.toInteger(solo);
 			beepKTimes(count);
@@ -123,7 +123,7 @@ public class CommandPirate extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_CARO + "\\s+(.+)");
+		solo = parseParam(KEY_CARO + "\\s+(.+)");
 		if(solo != null) {
 			File folder = parseFolder(solo);
 			XXXUtil.nullCheck(folder, ":Not a valid folder: " + solo);
@@ -182,7 +182,7 @@ public class CommandPirate extends CommandBase {
 			return true;
 		}
 		
-		solo = parseSoloParam(KEY_MATE_JSON + "\\s(.+)");
+		solo = parseParam(KEY_MATE_JSON + "\\s(.+)");
 		if(solo != null) {
 			String filePath = solo;
 			if(FileUtil.exists(filePath)) {

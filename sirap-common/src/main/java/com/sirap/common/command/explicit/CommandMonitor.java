@@ -55,7 +55,7 @@ public class CommandMonitor extends CommandBase {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public boolean handle() {
-		solo = parseSoloParam(KEY_ECHO + "\\s(.+?)");
+		solo = parseParam(KEY_ECHO + "\\s(.+?)");
 		if(solo != null) {
 			List<String> sysProps = new ArrayList(System.getProperties().entrySet());
 			List<String> sysEnvis = new ArrayList(System.getenv().entrySet());
@@ -156,7 +156,7 @@ public class CommandMonitor extends CommandBase {
 		}
 
 		if(g().isHistoryEnabled()) {
-			solo = parseSoloParam(KEY_LOGIN_HISTORY + "\\s(.+?)");
+			solo = parseParam(KEY_LOGIN_HISTORY + "\\s(.+?)");
 			if(solo != null) {
 				List<LoginRecord> records = LoginHistoryManager.g().search(solo);
 				if(target instanceof TargetPDF) {
@@ -197,7 +197,7 @@ public class CommandMonitor extends CommandBase {
 				return true;
 			}
 			
-			solo = parseSoloParam(KEY_COMMAND_HISTORY + "(.*)");
+			solo = parseParam(KEY_COMMAND_HISTORY + "(.*)");
 			if(solo != null) {
 				noCollect();
 				List<InputRecord> records = CommandHistoryManager.g().getAllRecords();
@@ -235,7 +235,7 @@ public class CommandMonitor extends CommandBase {
 				return true;
 			}
 
-			solo = parseSoloParam(KEY_LOGIN_HISTORY_DISTRIBUTION + "\\s(.+?)");
+			solo = parseParam(KEY_LOGIN_HISTORY_DISTRIBUTION + "\\s(.+?)");
 			if(solo != null) {
 				List<LoginRecord> records = LoginHistoryManager.g().search(solo);
 				List<String> list = LoginHistoryManager.g().displayDistribution(records);
@@ -283,7 +283,7 @@ public class CommandMonitor extends CommandBase {
 			return true;
 		}
 
-		solo = parseSoloParam(KEY_KEYS_READER + "\\s(.+?)");
+		solo = parseParam(KEY_KEYS_READER + "\\s(.+?)");
 		if(solo != null) {
 			List<String> folders = StrUtil.splitByRegex(solo);
 			String methods = g().getValueOf("keys.reader.methods");
