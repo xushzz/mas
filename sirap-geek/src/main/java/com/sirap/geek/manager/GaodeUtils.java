@@ -6,9 +6,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 
 import com.sirap.basic.component.Extractor;
+import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.XXXUtil;
 import com.sirap.geek.domain.DistrictItem;
 
 public class GaodeUtils {
@@ -19,6 +21,7 @@ public class GaodeUtils {
 	public static final String TEMPLATE_DISTRICT = "http://restapi.amap.com/v3/config/district?extensions=base&subdistrict={0}&keywords={1}&key={2}";
 	public static final String TEMPLATE_GEOCODE = "http://restapi.amap.com/v3/geocode/geo?address={0}&city={1}&key={2}";
 	public static final String TEMPLATE_REGEOCODE = "http://restapi.amap.com/v3/geocode/regeo?location={0}&radius={1}&key={2}";
+	public static final String TEMPLATE_INPUTTIPS = "http://restapi.amap.com/v3/assistant/inputtips?&key={0}&keywords={1}";
 
 	public static List<DistrictItem> provincesOfChina() {
 		Extractor<DistrictItem> neymar = new Extractor<DistrictItem>() {
@@ -178,6 +181,30 @@ public class GaodeUtils {
 		
 		return neymar.process().getItem();
 	}
+
+	/***
+	 * http://lbs.amap.com/api/javascript-api/example/poi-search/input-prompt
+	 * @param location
+	 * @param radius
+	 * @return
+	 */
+	public static List<ValuesItem> tipsOf(String input) {
+		Extractor<ValuesItem> neymar = new Extractor<ValuesItem>() {
+
+			public String getUrl() {
+				showFetching().useUTF8();
+				String url = StrUtil.occupy(TEMPLATE_INPUTTIPS, API_KEY, encodeURLParam(input));
+				return url;
+			}
+			
+			@Override
+			protected void parse() {
+				mexItems = parseInputTips(source);
+			}
+		};
+		
+		return neymar.process().getItems();
+	}
 	
 	public static List<DistrictItem> parseDistrictItems(String json) {
 		StringBuffer sb = StrUtil.sb();
@@ -203,5 +230,46 @@ public class GaodeUtils {
 		Collections.sort(mexItems);
 		
 		return mexItems;
+	}
+	
+	public static List<ValuesItem> parseInputTips(String json) {
+		StringBuffer sb = StrUtil.sb();
+		String temp = "\"{0}\":\"([^\"]+)\",\\s*";
+		sb.append(StrUtil.occupy(temp, "name"));
+		sb.append(StrUtil.occupy(temp, "district"));
+		sb.append(StrUtil.occupy(temp, "adcode"));
+		sb.append(StrUtil.occupy(temp, "location"));
+		sb.append(StrUtil.occupy(temp, "address"));
+		String regex = sb.toString();
+		
+		List<ValuesItem> mexItems = new ArrayList<>();
+		Matcher ma = StrUtil.createMatcher(regex, json);
+		while(ma.find()) {
+			ValuesItem item = new ValuesItem();
+			item.add(ma.group(3));
+			item.add(ma.group(1));
+			item.add(ma.group(2));
+			item.add(ma.group(4));
+			item.add(ma.group(5));
+			
+			mexItems.add(item);
+		}
+		
+		return mexItems;
+	}
+	
+	public static boolean isCoordination(String longAndLat) {
+		String regex = Konstants.REGEX_SIGN_FLOAT + "," + Konstants.REGEX_SIGN_FLOAT;
+		return StrUtil.isRegexMatched(regex, longAndLat);
+	}
+	
+	public static String reverseLongAndLat(String longAndLat) {
+		String regex = Konstants.REGEX_SIGN_FLOAT + "," + Konstants.REGEX_SIGN_FLOAT;
+		String[] params = StrUtil.parseParams(regex, longAndLat);
+		if(params == null) {
+			XXXUtil.alert("Invalid coordination: " + longAndLat);
+		}
+		
+		return params[1] + "," + params[0]; 
 	}
 }
