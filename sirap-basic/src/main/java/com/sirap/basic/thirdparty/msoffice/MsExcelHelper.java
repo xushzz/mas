@@ -100,7 +100,8 @@ public class MsExcelHelper {
 						} else if(Cell.CELL_TYPE_BOOLEAN == cellType) {
 							value = cell.getBooleanCellValue() + "";
 						} else {
-							value = "Ninja" + cell.getCellType();
+							value = "--";
+							//value = "Ninja" + cell.getCellType();
 						}
 					}
 					rowItems.add(value);

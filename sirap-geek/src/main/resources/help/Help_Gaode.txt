@@ -8,6 +8,6 @@ gas abc123         calling Amap webservice, courtesy of http://restapi.amap.com/
 gas abc123 K       calling Amap webservice, courtesy of http://restapi.amap.com/v3/config/district?extensions=base&subdistrict=K
 geo address        convert given formatted address to specific location, as in longitude and latitude pair, search for the whole nation
 geo address city   convert given formatted address in given city to specific location, as in longitude and latitude pair
-geo X,Y            convert given longitude and latitude to given formatted address, default radius is 1000 meters,$+sw to switch long and lat
+geo X,Y            convert given longitude and latitude to given formatted address, default radius is 1000 meters, $+r reverse/switch long and lat
 geo X,Y radius     convert given longitude and latitude to given formatted address within given range defined by radius, measured by meter
 ver=2/28/2018, II  GEEK-GAODE1.0.1-JordanPeterson

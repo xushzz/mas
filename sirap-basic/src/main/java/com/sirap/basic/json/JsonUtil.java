@@ -93,6 +93,10 @@ public class JsonUtil {
 		
 		return (Map)sea;
 	}
+	public static List<String> getPrettyTextInLines(String json) {
+		String prettyAce = getPrettyText(json);
+		return StrUtil.split(prettyAce, "\n");
+	}
 	
 	public static String getPrettyText(String json) {
 		if(EmptyUtil.isNullOrEmpty(json)) {

@@ -19,9 +19,11 @@ import java.util.regex.Pattern;
 
 import javax.swing.filechooser.FileSystemView;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.exception.MexException;
+import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.tool.D;
 import com.sirap.basic.tool.FileSizeCalculator;
 import com.sirap.basic.tool.FileWalker;
@@ -782,5 +784,27 @@ public class FileUtil {
 		}
 	}
 	
-
+	public static List<String> muse(String folderPath) {
+		//var musics = ["brotherbudd","hometownhill","musicbox","plainsimpleroad","runawaywithme","obama2009","sittingontop"];
+		File folder = new File(folderPath);
+		List<String> names = Lists.newArrayList();
+		folder.list(new FilenameFilter() {
+			
+			@Override
+			public boolean accept(File dir, String name) {
+				if(StrUtil.endsWith(name, ".mp3")) {
+					names.add("\"" + name + "\"");
+				}
+				return false;
+			}
+		});
+		
+		String json = "[" + StrUtil.connect(names, ", ") + "]";
+		List<String> lines = Lists.newArrayList();
+		lines.add("var musics = ");
+		lines.addAll(JsonUtil.getPrettyTextInLines(json));
+		lines.add(";");
+		
+		return lines;
+	}
 }

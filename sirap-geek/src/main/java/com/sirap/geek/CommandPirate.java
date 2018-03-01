@@ -8,13 +8,12 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.Person;
 import com.sirap.basic.exception.MexException;
+import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.thirdparty.msoffice.MsExcelHelper;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.DateUtil;
@@ -184,10 +183,17 @@ public class CommandPirate extends CommandBase {
 		
 		solo = parseParam(KEY_MATE_JSON + "\\s(.+)");
 		if(solo != null) {
-			String filePath = solo;
-			if(FileUtil.exists(filePath)) {
-				List<List<Object>> list = MsExcelHelper.readSheetByIndex(filePath, 0);
-				export(jsonDataOfMates(list));
+			File folder = FileUtil.getIfNormalFolder(solo);
+			if(folder != null) {
+				List<String> lines = FileUtil.muse(folder.getAbsolutePath());
+				export(lines);
+				return true;
+			}
+			File file = FileUtil.getIfNormalFile(solo);
+			if(file != null) {
+				List<List<Object>> list = MsExcelHelper.readSheetByIndex(file.getAbsolutePath(), 0);
+				boolean askForDonation = OptionUtil.readBooleanPRI(options, "ask", true);
+				export(jsonDataOfMates(list, askForDonation));
 			}
 			
 			return true;
@@ -270,39 +276,44 @@ public class CommandPirate extends CommandBase {
 		export(items);
 	}
 	
-	public String jsonDataOfMates(List<List<Object>> data) {
-		Map<String, String> nice = Maps.newConcurrentMap();
-		nice.put("广州", "113.254974,23.147856");
-		nice.put("南宁", "108.336523,22.813061");
-		nice.put("河池", "108.084875,24.692698");
-		nice.put("桂林", "110.29185,25.281395");
-		nice.put("柳州", "109.406837,24.297981");
-		nice.put("深圳", "114.057814,22.543375");
-		nice.put("上海", "121.473657,31.230286");
+	public List<String> jsonDataOfMates(List<List<Object>> data, boolean askForDonation) {
+		String digao = "108.037172,24.686088";
+		String sftech = "113.940025,22.524648";
 		List<String> newLines = Lists.newArrayList();
-		for(int countX = 1; countX < data.size(); countX++) {
+		String template = "{\"name\": \"{0}\",\"location\": \"{1}\",\"phone\": \"{2}\",\"city\": \"{3}\",\"address\": \"{4}\"}";
+		for(int countX = 2; countX < data.size(); countX++) {
 			List<Object> line = data.get(countX);
-			String template = "{\"name\": \"{0}\",\"location\": \"{1}\",\"phone\": \"{2}\",\"city\": \"{3}\",\"address\": \"{4}\"}";
-			Object name = line.get(2);
-			String location = line.get(3) + "";
-			Object phone = line.get(4);
-			String city = line.get(5) + "";
-			Object info = line.get(6);
-			if(EmptyUtil.isNullOrEmptyOrBlankOrLiterallyNull(city)) {
-				city = "南宁";
+			String name = line.get(1) + "";
+			if(StrUtil.contains(name + "", "-")) {
+				continue;
 			}
-			if(EmptyUtil.isNullOrEmptyOrBlankOrLiterallyNull(location)) {
-				location = nice.get(city);
+			String phone = line.get(2) + "";
+			if(StrUtil.contains(phone, "-")) {
+				phone = "电话";
 			}
-			if(EmptyUtil.isNullOrEmpty(location)) {
-				location = nice.get("南宁");
+			String city = line.get(4) + "";
+			String location = line.get(5) + "";
+			if(StrUtil.contains(location, "-")) {
+				location = digao;
 			}
+			if(StrUtil.contains(city, "-")) {
+				city = "城市";
+			}
+			String info = line.get(3) + "";
+			info = info.replaceAll("-", "") + " [" + location + "]";
 			String value = StrUtil.occupy(template, name, location, phone, city, info);
 			newLines.add(value);
 		}
-		
-		String total = "[" + StrUtil.connect(newLines, ", ") + "]";
-		
-		return total;
+		if(askForDonation) {
+			String value = StrUtil.occupy(template, "Carospop", sftech, "donation", "打赏", "精准打赏九点九，系统建设到久久");
+			newLines.add(value);
+		}
+		String json = "[" + StrUtil.connect(newLines, ", ") + "]";
+		List<String> lines = Lists.newArrayList();
+		lines.add("var matesData = ");
+		lines.addAll(JsonUtil.getPrettyTextInLines(json));
+		lines.add(";");
+
+		return lines;
 	}
 }
