@@ -124,12 +124,11 @@ public class CommandGaode extends CommandBase {
 			if(!showJson) {
 				lines = prettyFormatOf(lines);
 			}
-			if(OptionUtil.readBooleanPRI(options, "v", false)) {
+			export(lines);
+			if(OptionUtil.readBooleanPRI(options, "w", false)) {
 				String variables = generateVariables(lines);
 				generatePicker(variables);
-			} else {
-				export(lines);
-			}
+			} 
 			
 			return true;
 		}
@@ -139,11 +138,16 @@ public class CommandGaode extends CommandBase {
 	
 	private String generateVariables(List<String> lines) {
 		String regexTemp = "\"{0}\"\\s*:\\s*\"([^\"]+)\"";
-		String regexA = StrUtil.occupy(regexTemp, "formatted_address");
-		String regexB = StrUtil.occupy(regexTemp, "location");
+		String[] keys = {"formatted_address", "location"};
+		String regexA = StrUtil.occupy(regexTemp, keys[0]);
+		String regexB = StrUtil.occupy(regexTemp, keys[1]);
 		String oneline = StrUtil.connect(lines);
 		String address = StrUtil.findFirstMatchedItem(regexA, oneline);
 		String location = StrUtil.findFirstMatchedItem(regexB, oneline);
+		if(EmptyUtil.isNullOrEmpty(address) || EmptyUtil.isNullOrEmpty(location)) {
+			XXXUtil.alert("Result contains no valid {0} and {1}", keys[0], keys[1]);
+		}
+		
 		String temp = "location = \"{0}\"; address = \"{1}\";";
 		
 		return StrUtil.occupy(temp, location, address);

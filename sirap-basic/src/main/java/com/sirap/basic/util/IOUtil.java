@@ -46,7 +46,6 @@ import com.sirap.basic.thread.MasterItemOriented;
 import com.sirap.basic.thread.Worker;
 import com.sirap.basic.thread.business.InternetFileFetcher;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.tool.D;
 import com.sirap.basic.tool.MexedAudioPlayer;
 
 @SuppressWarnings({"rawtypes","unchecked"})
