@@ -21,6 +21,7 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLConnection;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -45,6 +46,7 @@ import com.sirap.basic.thread.MasterItemOriented;
 import com.sirap.basic.thread.Worker;
 import com.sirap.basic.thread.business.InternetFileFetcher;
 import com.sirap.basic.tool.C;
+import com.sirap.basic.tool.D;
 import com.sirap.basic.tool.MexedAudioPlayer;
 
 @SuppressWarnings({"rawtypes","unchecked"})
@@ -69,12 +71,20 @@ public class IOUtil {
 	}
 	
 	public static List<String> readResourceIntoList(String filePath) {
+		return readResourceIntoList(filePath, Charset.defaultCharset().name());
+	}
+	
+	public static List<String> readResourceIntoList(String filePath, String charset) {
+		XXXUtil.nullCheck(filePath, "filePath");
+		if(!filePath.startsWith("/")) {
+			filePath = "/" + filePath;
+		}
 		InputStream inputStream = InputStream.class.getResourceAsStream(filePath);
 		if(inputStream == null) {
 			return null;
 		}
 		
-		return readStreamIntoList(inputStream);
+		return readStreamIntoList(inputStream, false, "", charset);
 	}
 	
 	public static boolean isSourceExist(String filePath) {
@@ -95,10 +105,14 @@ public class IOUtil {
 	}
 
 	public static List<String> readStreamIntoList(InputStream inputStream, boolean printAlong, String prefix) {
+		return readStreamIntoList(inputStream, printAlong, prefix, Charset.defaultCharset().name());
+	}
+	
+	public static List<String> readStreamIntoList(InputStream inputStream, boolean printAlong, String prefix, String charset) {
 		List<String> list = new ArrayList<String>();
 		
 		try {
-			InputStreamReader isr = new InputStreamReader(inputStream);
+			InputStreamReader isr = new InputStreamReader(inputStream, charset);
 			BufferedReader br = new BufferedReader(isr);
 			String record;
 			while ((record = br.readLine()) != null) {
@@ -521,7 +535,6 @@ public class IOUtil {
 	
 	public static boolean saveAsTxtWithCharset(List objList, String fullFileName, String charset) {
 		XXXUtil.nullCheck(objList, "List objList");
-		
 		try(OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(fullFileName), charset)) {
 			for(Object member: objList) {
 				out.write(MexUtil.print(member));

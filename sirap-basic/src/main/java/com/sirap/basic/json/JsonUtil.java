@@ -95,7 +95,7 @@ public class JsonUtil {
 	}
 	public static List<String> getPrettyTextInLines(String json) {
 		String prettyAce = getPrettyText(json);
-		return StrUtil.split(prettyAce, "\n");
+		return StrUtil.split(prettyAce, "\n", false);
 	}
 	
 	public static String getPrettyText(String json) {

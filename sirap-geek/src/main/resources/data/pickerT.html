@@ -1,0 +1,58 @@
+﻿<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>鼠标拾取地图坐标</title>
+    <link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css"/>
+    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    
+    <script src="https://gitee.com/thewire/todos/raw/master/high/picker.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://webapi.amap.com/maps?v=1.4.4&key=02a37b38c4b33a671f1cd1584b54adc8&plugin=AMap.Autocomplete"></script>
+    <script src="http://cache.amap.com/lbs/static/addToolbar.js"></script>
+
+		<script type="text/javascript">
+				$(document).ready(function(){
+						pick();
+						
+						var location = "108.388768,22.830138"; 
+						var address = "广西自治区环保厅";
+						//PLACEHOLDER, DON't modify this line at any time
+						locateByLngCommaLat(location);
+            			$("#lnglat").val(location);  
+            			$("#tipinput").val(address);
+            			map.setZoom(15);
+				});
+    </script>
+</head>
+<body>
+<div id="container"></div>
+<div id="myPageTop">
+
+    <table>
+        <tr>
+            <td>
+                <label>从提示中获取经纬度：</label>
+            </td>
+            <td>
+                <label>点击屏幕获取经纬度：</label>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>
+                <input type="text" class="form-control" placeholder="输入关键字，自动提示" id="tipinput">
+            </td>
+            <td width="180">
+                <input style="width:100%" type="text" class="form-control" id="lnglat">
+            </td>
+            <td>
+                <button id="pick" onclick="copyPosition()" class="btn btn-default">复制</button>	
+            </td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

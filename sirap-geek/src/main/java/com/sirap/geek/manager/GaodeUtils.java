@@ -140,7 +140,7 @@ public class GaodeUtils {
 	 * @param city
 	 * @return
 	 */
-	public static String geocodeOf(String address, String city) {
+	public static List<String> geocodeOf(String address, String city) {
 		Extractor<String> neymar = new Extractor<String>() {
 
 			public String getUrl() {
@@ -151,11 +151,11 @@ public class GaodeUtils {
 			
 			@Override
 			protected void parse() {
-				item = JsonUtil.getPrettyText(source);
+				mexItems = JsonUtil.getPrettyTextInLines(source);
 			}
 		};
 		
-		return neymar.process().getItem();
+		return neymar.process().getItems();
 	}
 	
 	/***
@@ -164,7 +164,7 @@ public class GaodeUtils {
 	 * @param radius
 	 * @return
 	 */
-	public static String regeocodeOf(String location, String radius) {
+	public static List<String> regeocodeOf(String location, String radius) {
 		Extractor<String> neymar = new Extractor<String>() {
 
 			public String getUrl() {
@@ -175,11 +175,11 @@ public class GaodeUtils {
 			
 			@Override
 			protected void parse() {
-				item = JsonUtil.getPrettyText(source);
+				mexItems = JsonUtil.getPrettyTextInLines(source);
 			}
 		};
 		
-		return neymar.process().getItem();
+		return neymar.process().getItems();
 	}
 
 	/***
@@ -247,9 +247,9 @@ public class GaodeUtils {
 		while(ma.find()) {
 			ValuesItem item = new ValuesItem();
 			item.add(ma.group(3));
+			item.add(ma.group(4));
 			item.add(ma.group(1));
 			item.add(ma.group(2));
-			item.add(ma.group(4));
 			item.add(ma.group(5));
 			
 			mexItems.add(item);
@@ -259,12 +259,12 @@ public class GaodeUtils {
 	}
 	
 	public static boolean isCoordination(String longAndLat) {
-		String regex = Konstants.REGEX_SIGN_FLOAT + "," + Konstants.REGEX_SIGN_FLOAT;
+		String regex = Konstants.REGEX_SIGN_FLOAT + "\\s*,\\s*" + Konstants.REGEX_SIGN_FLOAT;
 		return StrUtil.isRegexMatched(regex, longAndLat);
 	}
 	
 	public static String reverseLongAndLat(String longAndLat) {
-		String regex = Konstants.REGEX_SIGN_FLOAT + "," + Konstants.REGEX_SIGN_FLOAT;
+		String regex = Konstants.REGEX_SIGN_FLOAT + "\\s*,\\s*" + Konstants.REGEX_SIGN_FLOAT;
 		String[] params = StrUtil.parseParams(regex, longAndLat);
 		if(params == null) {
 			XXXUtil.alert("Invalid coordination: " + longAndLat);
