@@ -3,14 +3,19 @@ package com.sirap.geek.manager;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.component.Extractor;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.json.JsonUtil;
+import com.sirap.basic.util.EmptyUtil;
+import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
+import com.sirap.basic.util.XmlUtil;
 import com.sirap.geek.domain.DistrictItem;
 
 public class GaodeUtils {
@@ -21,7 +26,9 @@ public class GaodeUtils {
 	public static final String TEMPLATE_DISTRICT = "http://restapi.amap.com/v3/config/district?extensions=base&subdistrict={0}&keywords={1}&key={2}";
 	public static final String TEMPLATE_GEOCODE = "http://restapi.amap.com/v3/geocode/geo?address={0}&city={1}&key={2}";
 	public static final String TEMPLATE_REGEOCODE = "http://restapi.amap.com/v3/geocode/regeo?location={0}&radius={1}&key={2}";
-	public static final String TEMPLATE_INPUTTIPS = "http://restapi.amap.com/v3/assistant/inputtips?&key={0}&keywords={1}";
+	public static final String TEMPLATE_INPUTTIPS = "http://restapi.amap.com/v3/assistant/inputtips?key={0}&keywords={1}";
+	public static final String TEMPLATE_PLACE_TEXT = "http://restapi.amap.com/v3/place/text?output=xml&offset=1000&key={0}&keywords={1}&types={2}&city={3}";
+	public static final String TEMPLATE_PLACE_AROUND = "http://restapi.amap.com/v3/place/around?output=xml&offset=1000&key={0}&keywords={1}&types={2}&location={3}&radius={4}";
 
 	public static List<DistrictItem> provincesOfChina() {
 		Extractor<DistrictItem> neymar = new Extractor<DistrictItem>() {
@@ -98,6 +105,89 @@ public class GaodeUtils {
 		};
 		
 		return neymar.process().getItem();
+	}
+
+	/***
+	 * http://lbs.amap.com/api/webservice/guide/api/search
+	 * http://restapi.amap.com/v3/place/text
+	 * @param keyword
+	 * @param level
+	 * @return
+	 */
+	public static List<String> searchPlaceText(String keywords, String types, String city) {
+		Extractor<String> neymar = new Extractor<String>() {
+
+			public String getUrl() {
+				showFetching().useUTF8();
+				String url = StrUtil.occupy(TEMPLATE_PLACE_TEXT, API_KEY, encodeURLParam(keywords), encodeURLParam(types), encodeURLParam(city));
+				return url;
+			}
+			
+			@Override
+			protected void parse() {
+				String regex = "<poi>(.+?)</poi>";
+				List<String> keys = StrUtil.split("pname,cityname,adname,name,type,address,tel,location");
+				Matcher ma = createMatcher(regex);
+				while(ma.find()) {
+					String xmlText = ma.group(1);
+					List<String> items = Lists.newArrayList();
+					for(String key : keys) {
+						String value = XmlUtil.readValue(xmlText, key);
+						if(EmptyUtil.isNullOrEmpty(value)) {
+							continue;
+						}
+						items.add(value);
+					}
+					mexItems.add(StrUtil.connect(items, " "));
+				}
+				Collections.sort(mexItems);
+			}
+		};
+		
+		return neymar.process().getItems();
+	}
+
+	/***
+	 * http://lbs.amap.com/api/webservice/guide/api/search
+	 * http://restapi.amap.com/v3/place/text
+	 * @param keyword
+	 * @param level
+	 * @return
+	 */
+	public static List<String> searchPlaceAround(String location, String keywords, String types, String radius) {
+		Extractor<String> neymar = new Extractor<String>() {
+
+			public String getUrl() {
+				showFetching().useUTF8();
+				String url = StrUtil.occupy(TEMPLATE_PLACE_AROUND, API_KEY, encodeURLParam(keywords), encodeURLParam(types), location.replace(" ", "0"), encodeURLParam(radius));
+				return url;
+			}
+			
+			@Override
+			protected void parse() {
+				TreeMap<Integer, String> ken = new TreeMap<>();
+				String regex = "<poi>(.+?)</poi>";
+				List<String> keys = StrUtil.split("distance,pname,cityname,adname,name,type,address,tel,location");
+				Matcher ma = createMatcher(regex);
+				while(ma.find()) {
+					String xmlText = ma.group(1);
+					List<String> items = Lists.newArrayList();
+					for(String key : keys) {
+						String value = XmlUtil.readValue(xmlText, key);
+						if(EmptyUtil.isNullOrEmpty(value)) {
+							continue;
+						}
+						items.add(value);
+					}
+					String distance = XmlUtil.readValue(xmlText, "distance");
+					int ace = MathUtil.toInteger(distance, 0);
+					ken.put(ace, StrUtil.connect(items, " "));
+				}
+				mexItems.addAll(ken.values());
+			}
+		};
+		
+		return neymar.process().getItems();
 	}
 
 	public static List<ValuesItem> allDistricts() {

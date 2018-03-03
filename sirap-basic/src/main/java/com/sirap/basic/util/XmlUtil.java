@@ -9,10 +9,14 @@ public class XmlUtil {
 	 * @param key localRepository
 	 * @return C:\M2REPO
 	 */
-	public static String readValue(String filePath, String key) {
+	public static String readValueFromFile(String filePath, String elementName) {
 		String xmlText = IOUtil.readFileWithoutLineSeparator(filePath);
+		return readValue(xmlText, elementName);
+	}
+
+	public static String readValue(String xmlText, String elementName) {
 		XmlBox box = new XmlBox(xmlText);
 		
-		return box.readValue(key);
+		return box.readValue(elementName);
 	}
 }

@@ -1,8 +1,10 @@
 package com.sirap.geek;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexObject;
@@ -27,6 +29,13 @@ public class CommandGaode extends CommandBase {
 	private static final String KEY_GAODE_POI = "gap";
 	private static final String KEY_GAODE_SEARCH = "gas";
 	private static final String KEY_GAODE_GEO = "geo";
+	
+	private static Map<String, String> LAKES = Maps.newConcurrentMap();
+	static {
+		LAKES.put("deli", "108.392544,22.828986");
+		LAKES.put("tam", "116.397573,39.908743");
+		LAKES.put("jia", "108.904706,24.777411");
+	}
 
 	public boolean handle() {
 		
@@ -86,22 +95,42 @@ public class CommandGaode extends CommandBase {
 			return true;
 		}
 		
-		params = parseParams(KEY_GAODE_SEARCH + "\\s+(\\S+)(|\\s+[0-3]?)");
-		if(params != null) {
-			String keyword = params[0];
-			String level = "0";
-			if(!params[1].isEmpty()) {
-				level = params[1];
+		solo = parseParam(KEY_GAODE_SEARCH + "\\s+(.+?)");
+		if(solo != null) {
+			String loc = LAKES.get(solo);
+			String ack = loc != null ? loc : solo;
+			List<String> lines = Lists.newArrayList();
+			if(GaodeUtils.isCoordination(ack)) {
+				String location = ack;
+				String keywords = OptionUtil.readString(options, "k", "");
+				String types = OptionUtil.readString(options, "t", "");
+				String radius = OptionUtil.readString(options, "r", "");
+				lines = GaodeUtils.searchPlaceAround(location, keywords, types, radius);
+			} else {
+				String keywords = ack, types = "";
+				String kParam = OptionUtil.readString(options, "k", "");
+				if(!kParam.isEmpty()) {
+					keywords = kParam;
+					types = ack;
+				}
+				String tParam = OptionUtil.readString(options, "t", "");
+				if(!tParam.isEmpty()) {
+					types = tParam;
+				}
+				String city = OptionUtil.readString(options, "c", "");
+				lines = GaodeUtils.searchPlaceText(keywords, types, city);
 			}
+
+			export(lines);
 			
-			String result = GaodeUtils.districtsOf(keyword, level);
-			export(result);
 			return true;
 		}
 		
-		params = parseParams(KEY_GAODE_GEO + "\\s+(.+?)");
-		if(params != null) {
-			String ack = params[0];
+		solo = parseParam(KEY_GAODE_GEO + "\\s+(.+?)");
+		if(solo != null) {
+			String loc = LAKES.get(solo);
+			String ack = loc != null ? loc : solo;
+
 			String bye = OptionUtil.readString(ack, "g", "");
 			boolean showJson = OptionUtil.readBooleanPRI(options, "j", false);
 			List<String> lines = Lists.newArrayList();
