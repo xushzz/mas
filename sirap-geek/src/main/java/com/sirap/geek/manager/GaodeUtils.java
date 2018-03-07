@@ -11,6 +11,7 @@ import com.sirap.basic.component.Extractor;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.json.JsonUtil;
+import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.StrUtil;
@@ -29,6 +30,7 @@ public class GaodeUtils {
 	public static final String TEMPLATE_INPUTTIPS = "http://restapi.amap.com/v3/assistant/inputtips?key={0}&keywords={1}";
 	public static final String TEMPLATE_PLACE_TEXT = "http://restapi.amap.com/v3/place/text?output=xml&offset=1000&key={0}&keywords={1}&types={2}&city={3}";
 	public static final String TEMPLATE_PLACE_AROUND = "http://restapi.amap.com/v3/place/around?output=xml&offset=1000&key={0}&keywords={1}&types={2}&location={3}&radius={4}";
+	public static final String TEMPLATE_DISTANCE = "http://restapi.amap.com/v3/distance?origins={0}&destination={1}&output=xml&key={2}";
 
 	public static List<DistrictItem> provincesOfChina() {
 		Extractor<DistrictItem> neymar = new Extractor<DistrictItem>() {
@@ -94,13 +96,13 @@ public class GaodeUtils {
 			public String getUrl() {
 				showFetching().useUTF8();
 				String url = StrUtil.occupy(TEMPLATE_DISTRICT, level, encodeURLParam(keyword), API_KEY);
+				C.pl(lax() + StrUtil.occupy(TEMPLATE_DISTRICT, level, keyword, API_KEY));
 				return url;
 			}
 			
 			@Override
 			protected void parse() {
 				item = JsonUtil.getPrettyText(source);
-//				item = source;
 			}
 		};
 		
@@ -120,6 +122,7 @@ public class GaodeUtils {
 			public String getUrl() {
 				showFetching().useUTF8();
 				String url = StrUtil.occupy(TEMPLATE_PLACE_TEXT, API_KEY, encodeURLParam(keywords), encodeURLParam(types), encodeURLParam(city));
+				C.pl(lax() + StrUtil.occupy(TEMPLATE_PLACE_TEXT, API_KEY, keywords, types, city));
 				return url;
 			}
 			
@@ -160,6 +163,7 @@ public class GaodeUtils {
 			public String getUrl() {
 				showFetching().useUTF8();
 				String url = StrUtil.occupy(TEMPLATE_PLACE_AROUND, API_KEY, encodeURLParam(keywords), encodeURLParam(types), location.replace(" ", "0"), encodeURLParam(radius));
+				C.pl(lax() + StrUtil.occupy(TEMPLATE_PLACE_AROUND, API_KEY, keywords, types, location, radius));
 				return url;
 			}
 			
@@ -188,6 +192,25 @@ public class GaodeUtils {
 		};
 		
 		return neymar.process().getItems();
+	}
+	
+	public static String distance(String originLocation, String destLocation) {
+		Extractor<String> neymar = new Extractor<String>() {
+
+			public String getUrl() {
+				showFetching().useUTF8();
+				String url = StrUtil.occupy(TEMPLATE_DISTANCE, originLocation, destLocation, API_KEY);
+				return url;
+			}
+			
+			@Override
+			protected void parse() {
+				String distance = XmlUtil.readValue(source, "distance");
+				item = distance + " M";
+			}
+		};
+		
+		return neymar.process().getItem();
 	}
 
 	public static List<ValuesItem> allDistricts() {
@@ -236,6 +259,7 @@ public class GaodeUtils {
 			public String getUrl() {
 				showFetching().useUTF8();
 				String url = StrUtil.occupy(TEMPLATE_GEOCODE, encodeURLParam(address), encodeURLParam(city), API_KEY);
+				C.pl(lax() + StrUtil.occupy(TEMPLATE_GEOCODE, address, city, API_KEY));
 				return url;
 			}
 			
@@ -284,6 +308,7 @@ public class GaodeUtils {
 			public String getUrl() {
 				showFetching().useUTF8();
 				String url = StrUtil.occupy(TEMPLATE_INPUTTIPS, API_KEY, encodeURLParam(input));
+				C.pl(lax() + StrUtil.occupy(TEMPLATE_INPUTTIPS, API_KEY, input));
 				return url;
 			}
 			
@@ -361,5 +386,12 @@ public class GaodeUtils {
 		}
 		
 		return params[1] + "," + params[0]; 
+	}
+	
+	private static String lax() {
+		String head = "###";
+		String temp = StrUtil.padRight(head, "fetching...".length() + 1);
+
+		return temp;
 	}
 }

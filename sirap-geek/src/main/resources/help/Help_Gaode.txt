@@ -3,14 +3,16 @@ gao.. $+r          the text file either from local configured as gaode.districts
 gao.. $+amap       originally from Amap server, courtesy of http://restapi.amap.com/v3/config/district,$-dent, no dent for all levels
 gao abc&123        search those items matching given criteria, options $+u,+n,n=K, the result could be further filtered by $z=criteria
 gao abc&123        search, +u means all upper levels, +n means next immediate level, n=K means next K level, K will be 1 if K is not positive
-gap location       display input tips for given location info, poi, amap, gaode, courtesy of http://restapi.amap.com/v3/assistant/inputtips
+gin location       display input tips for given location info, poi, amap, gaode, courtesy of http://restapi.amap.com/v3/assistant/inputtips
 gas abc123         calling Amap webservice, amap/../place/text, $k=A,t=B,c=C for keywords, types and city respectively
 gas X,Y            calling Amap webservice, amap/../place/around, $k=A,t=B,r=C for keywords, types and radius respectively
-gas jia            calling Amap webservice, amap/../place/around, jia, deli, tam are shortcuts for hometown, where i live and that square
+gas deli           calling amap/../place/around, jia, deli, tam are some predefined locations in CommandGaode, such as 108.392544,22.828986
 geo address        convert given formatted address to specific location, as in longitude and latitude pair, search for the whole nation
-geo address $g=A   convert given formatted address in given city A to specific location, as in longitude and latitude pair
+geo address $c=A   convert given formatted address in given city A to specific location, as in longitude and latitude pair
 geo X,Y            convert given longitude and latitude to given formatted address, default radius is 1000 meters, $+r reverse/switch long and lat
-geo X,Y $g=100     convert given longitude and latitude to given formatted address, option: g=range, means radius, measured by meter
+geo 130,-39        for those locations outside China, call Tencent API service to convert location, such Maralinga Tjarutja in Australia
+geo X,Y $d=X2,Y2   calculate distance between two given locations, d means distance
+geo X,Y $r=100     convert given longitude and latitude to given formatted address, option: r=range, means radius, measured by meter
 geo ABC $+j        convert address to location or vice versa, display in json format, other wise list format
 geo ABC $+w        convert address to location or vice versa, generate a picker.html, open it with given address and coordination, as in location
-ver=3/3/2018, VI  GEEK-GAODE1.0.2-JordanPeterson
+ver=3/7/2018, III  GEEK-GAODE1.0.3-JordanPeterson

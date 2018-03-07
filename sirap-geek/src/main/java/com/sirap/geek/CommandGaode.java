@@ -23,10 +23,11 @@ import com.sirap.common.framework.SimpleKonfig;
 import com.sirap.geek.domain.DistrictItem;
 import com.sirap.geek.manager.GaodeManager;
 import com.sirap.geek.manager.GaodeUtils;
+import com.sirap.geek.manager.TencentUtils;
 
 public class CommandGaode extends CommandBase {
 	private static final String KEY_GAODE = "gao";
-	private static final String KEY_GAODE_POI = "gap";
+	private static final String KEY_GAODE_INPUTTIPS = "gin";
 	private static final String KEY_GAODE_SEARCH = "gas";
 	private static final String KEY_GAODE_GEO = "geo";
 	
@@ -87,7 +88,7 @@ public class CommandGaode extends CommandBase {
 			return true;
 		}
 
-		solo = parseParam(KEY_GAODE_POI + "\\s+(.+?)");
+		solo = parseParam(KEY_GAODE_INPUTTIPS + "\\s+(.+?)");
 		if(solo != null) {
 			List<ValuesItem> items = GaodeUtils.tipsOf(solo);
 			export(items);
@@ -130,29 +131,49 @@ public class CommandGaode extends CommandBase {
 		if(solo != null) {
 			String loc = LAKES.get(solo);
 			String ack = loc != null ? loc : solo;
-
-			String bye = OptionUtil.readString(ack, "g", "");
+			
 			boolean showJson = OptionUtil.readBooleanPRI(options, "j", false);
 			List<String> lines = Lists.newArrayList();
 			if(GaodeUtils.isCoordination(ack)) {
+				String location = ack;
 				if(OptionUtil.readBooleanPRI(options, "r", false)) {
-					export(KEY_GAODE_GEO + " " + GaodeUtils.reverseLongAndLat(ack));
+					export(KEY_GAODE_GEO + " " + GaodeUtils.reverseLongAndLat(location));
 					
 					return true;
 				}
-				String radius = "1000";
-				if(!EmptyUtil.isNullOrEmpty(bye)) {
-					radius = bye;
+				String dest = OptionUtil.readString(options, "d");
+				if(dest != null) {
+					String mike = LAKES.get(dest);
+					String destLocation = mike != null ? mike : dest;
+					destLocation = destLocation.replace("+", ",");
+					if(GaodeUtils.isCoordination(destLocation)) {
+						String distance = GaodeUtils.distance(location, destLocation);
+						export(distance);
+					} else {
+						export("Not a valid location: " + dest);
+					}
+					
+					return true;
 				}
-				
+				String radius = OptionUtil.readString(options, "r", "1000");
 				lines = GaodeUtils.regeocodeOf(ack, radius);
+				String regex = StrUtil.occupy("\"{0}\"\\s*:\\s*\"([^\"]+)\"", "formatted_address");
+				String formattedAddress = StrUtil.findFirstMatchedItem(regex, StrUtil.connect(lines));
+				if(formattedAddress == null) {
+					lines.addAll(TencentUtils.regeocodeOf(GaodeUtils.reverseLongAndLat(location)));
+				} else {
+					lines.add(StrUtil.occupy("\"location\":\"{0}\"", location));
+				}
 			} else {
-				lines = GaodeUtils.geocodeOf(ack, bye);
+				String address = ack;
+				String city = OptionUtil.readString(options, "c", "");
+				lines = GaodeUtils.geocodeOf(address, city);
 			}
 
 			if(!showJson) {
 				lines = prettyFormatOf(lines);
 			}
+			
 			export(lines);
 			if(OptionUtil.readBooleanPRI(options, "w", false)) {
 				String variables = generateVariables(lines);
