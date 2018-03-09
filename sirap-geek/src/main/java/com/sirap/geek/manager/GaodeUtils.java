@@ -171,7 +171,7 @@ public class GaodeUtils {
 			protected void parse() {
 				TreeMap<Integer, String> ken = new TreeMap<>();
 				String regex = "<poi>(.+?)</poi>";
-				List<String> keys = StrUtil.split("distance,pname,cityname,adname,name,type,address,tel,location");
+				List<String> keys = StrUtil.split("pname,cityname,adname,name,type,address,tel,location");
 				Matcher ma = createMatcher(regex);
 				while(ma.find()) {
 					String xmlText = ma.group(1);
@@ -185,6 +185,7 @@ public class GaodeUtils {
 					}
 					String distance = XmlUtil.readValue(xmlText, "distance");
 					int ace = MathUtil.toInteger(distance, 0);
+					items.add(0, StrUtil.insertComma(distance) + "m");
 					ken.put(ace, StrUtil.connect(items, " "));
 				}
 				mexItems.addAll(ken.values());
@@ -206,7 +207,7 @@ public class GaodeUtils {
 			@Override
 			protected void parse() {
 				String distance = XmlUtil.readValue(source, "distance");
-				item = distance + " M";
+				item = StrUtil.insertComma(distance) + "m";
 			}
 		};
 		

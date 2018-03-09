@@ -1055,4 +1055,20 @@ public class StrUtil {
 	public static StringBuffer sb() {
 		return new StringBuffer();
 	}
+	
+	public static StringBuffer sb(String value) {
+		return new StringBuffer(value);
+	}
+	
+	public static String insertComma(String value) {
+		StringBuffer sb = sb(value);
+		int len = value.length();
+		int index = len - 3;
+		while(index > 0) {
+			sb.insert(index, ",");
+			index = index - 3;
+		}
+		
+		return sb.toString();
+	}
 }

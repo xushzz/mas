@@ -50,7 +50,6 @@ public class CommandDev extends CommandBase {
 	private static final String KEY_JENKINS = "jk";
 	private static final String KEY_JSON = "js";
 	private static final int KEY_JSON_MIN_LEN = 9;
-	private static final String KEY_RAW_JSON = "rjs";
 	private static final String KEY_PAIR_KEY_VALUE = "pa";
 	private static final String KEY_TO_UPPERCASE = "up";
 	private static final String KEY_TO_LOWERCASE= "lo";
@@ -158,16 +157,22 @@ public class CommandDev extends CommandBase {
 		solo = parseParam(KEY_JSON + " " + KEY_HTTP_WWW);
 		if(solo != null) {
 			String source = IOUtil.readURL(solo);
-			String text = JsonUtil.getPrettyText(source);
-			export(text);
+			if(OptionUtil.readBooleanPRI(options, "r", false)) {
+				export(JsonUtil.getRawText(source));
+			} else {
+				export(JsonUtil.getPrettyTextInLines(source));
+			}
 			
 			return true;
 		}
 		
 		if(command.length() >= KEY_JSON_MIN_LEN) {
 			try {
-				String tempJson = JsonUtil.getPrettyText(command);
-				export(tempJson);
+				if(OptionUtil.readBooleanPRI(options, "r", false)) {
+					export(JsonUtil.getRawText(command));
+				} else {
+					export(JsonUtil.getPrettyTextInLines(command));
+				}
 				return true;
 			} catch (MexException ex) {
 				//
@@ -181,47 +186,22 @@ public class CommandDev extends CommandBase {
 				String filePath = file.getAbsolutePath();
 				if(FileOpener.isTextFile(filePath)) {
 					String source = IOUtil.readFileWithoutLineSeparator(filePath);
-					String text = JsonUtil.getPrettyText(source);
-					export(text);
+					if(OptionUtil.readBooleanPRI(options, "r", false)) {
+						export(JsonUtil.getRawText(source));
+					} else {
+						export(JsonUtil.getPrettyTextInLines(source));
+					}
 				} else {
 					XXXUtil.alert("Not a text file: " + filePath);
 				}
 				
 				return true;
 			} else {
-				String text = JsonUtil.getPrettyText(solo);
-				export(text);
-			}
-			
-			return true;
-		}
-		
-		solo = parseParam(KEY_RAW_JSON + " " + KEY_HTTP_WWW);
-		if(solo != null) {
-			String source = IOUtil.readURL(solo);
-			String text = JsonUtil.getRawText(source);
-			export(text);
-			
-			return true;
-		}
-		
-		solo = parseParam(KEY_RAW_JSON + " (.+?)");
-		if(solo != null) {
-			File file = parseFile(solo);
-			if(file != null) {
-				String filePath = file.getAbsolutePath();
-				if(FileOpener.isTextFile(filePath)) {
-					String source = IOUtil.readFileWithoutLineSeparator(filePath);
-					String text = JsonUtil.getRawText(source);
-					export(text);
+				if(OptionUtil.readBooleanPRI(options, "r", false)) {
+					export(JsonUtil.getRawText(solo));
 				} else {
-					XXXUtil.alert("Not a text file: " + filePath);
+					export(JsonUtil.getPrettyTextInLines(solo));
 				}
-				
-				return true;
-			} else {
-				String text = JsonUtil.getRawText(solo);
-				export(text);
 			}
 			
 			return true;

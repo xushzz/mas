@@ -15,9 +15,7 @@ jk Elastos#8       display build No.8 info for Jenkins job Elasto
 js E:\A1.txt       parse local TXT file into json and display pretty format
 js http://X/json   parse URL-specified content into json and display pretty format
 js {"a":1, "b":2}  parse string into json and display pretty format
-rjs E:\A1.txt      parse TXT file into json and display raw format
-rjs {"a":1, "b":2} parse TXT file into json and display raw format
-rjs http://X/json  parse URL-specified content into json and display raw format
+js E:\A1.txt $+r   parse local TXT file into json and display in compressed manner, $r, means raw, compressed
 pa http://X/json?name=jack&id=19 parse key value pairs in URL with ask and &
 lo.QwErTy21        convert given string to lower case
 up.QwErTy21        convert given string to upper case
@@ -26,4 +24,4 @@ E:\abc.jar!/a.txt  list out the content of given entry in given zip file, entry 
 sw F:\a\b\c/de     replace / with \, replace \ with /, then print these two records if any different
 https              list all http status codes
 https 404          get detail explain of given http response code
-ver=11/29/2017, III  GEEK-DEV1.0.30-HENGDA
+ver=3/7/2018, III  GEEK-DEV1.0.31-DaniAlves

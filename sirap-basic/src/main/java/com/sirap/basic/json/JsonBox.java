@@ -306,6 +306,9 @@ public class JsonBox {
 		List<String> items = StrUtil.split(source);
 		for(String item : items) {
 			 String entry = item.trim();
+			 if(item.isEmpty()) {
+				 return map;
+			 }
 			 String[] keyValue = entry.split(":");
 			 if(keyValue.length != 2) {
 				 throw new MexException("This [" + entry + "] is not a legal entry.");
