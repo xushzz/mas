@@ -59,10 +59,14 @@ public class OptionUtil {
 		while(ma.find()) {
 			count++;
 			OptionUtil.checkDuplicativeKeys(key, count);
-			value = ma.group(2);
+			value = recoverSpace(ma.group(2));
 		}
 		
 		return value;
+	}
+	
+	private static String recoverSpace(String source) {
+		return source.replace("\\s", " ");
 	}
 	
 	public static boolean readBooleanPRI(String options, String key, boolean def) {

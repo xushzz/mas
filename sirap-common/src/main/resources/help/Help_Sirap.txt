@@ -24,7 +24,7 @@ s                  capture screen and save it to the screenshot folder as yyyyMM
 s                  provided configured image format is bmp, then open it with configured image
 s                  viewer if the viewer is configured and does exist
 s .jpg             capture screen and save as JPG file, other formats are ${image.formats}
-s3                 capture screen with three-second delay, options:$+d, show detail like size and width*height
+s3                 capture screen with three-second delay, options:$+d, show detail like size and width*height, default +d
 s3 fire            capture screen and save it with a special suffix, such as 20191003_234224_fire.jpg
 s+9                capture screen in consecutive mode, repeat nine times with one second interval 
 s>D:\fire          capture screen and save in folder D:\fire

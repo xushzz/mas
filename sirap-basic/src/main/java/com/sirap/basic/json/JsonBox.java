@@ -84,7 +84,8 @@ public class JsonBox {
 	}
 	
 	private void init() {
-		String noQuote = replaceLiteralDoubleQuote(jsonText);
+		String noDollar = jsonText.replace("$", "\\$");
+		String noQuote = replaceLiteralDoubleQuote(noDollar);
 		String noSpecial = replaceSpecialCharsInsideDoubleQuotes(noQuote);
 		
 		fixedText = noSpecial;
@@ -192,9 +193,8 @@ public class JsonBox {
 		StringBuffer sb = new StringBuffer();
 		Matcher m = Pattern.compile(regex).matcher(source);
 		while(m.find()) {
-			String stuff = m.group(0);
-			stuff = occupySpecialChars(stuff);
-			
+			String origin = m.group(0);
+			String stuff = occupySpecialChars(origin);
 			m.appendReplacement(sb, stuff);
 		}
 		

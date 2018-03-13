@@ -792,20 +792,20 @@ public class FileUtil {
 			
 			@Override
 			public boolean accept(File dir, String name) {
-				MexObject mo = new MexObject(name);
-				if(EmptyUtil.isNullOrEmpty(mexCriteria) || mo.isMexMatched(mexCriteria)) {
-					names.add("\"" + name + "\"");
+				File item = new File(dir, name);
+				if(item.isFile()) {
+					MexObject mo = new MexObject(name);
+					if(EmptyUtil.isNullOrEmpty(mexCriteria) || mo.isMexMatched(mexCriteria)) {
+						names.add("\"" + name + "\"");
+					}
 				}
 				return false;
 			}
 		});
 		
 		String json = "[" + StrUtil.connect(names, ", ") + "]";
-		List<String> lines = Lists.newArrayList();
-		lines.add("var items = ");
-		lines.addAll(JsonUtil.getPrettyTextInLines(json));
-		lines.add(";");
+		List<String> jsonItems = JsonUtil.getPrettyTextInLines(json);
 		
-		return lines;
+		return jsonItems;
 	}
 }

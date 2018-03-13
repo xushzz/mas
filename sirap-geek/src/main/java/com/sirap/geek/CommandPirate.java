@@ -186,7 +186,11 @@ public class CommandPirate extends CommandBase {
 			File folder = FileUtil.getIfNormalFolder(solo);
 			if(folder != null) {
 				String mexCriteria = OptionUtil.readString(options, "k");
+				String name = OptionUtil.readString(options, "n", "items");
 				List<String> lines = FileUtil.muse(folder.getAbsolutePath(), mexCriteria);
+				lines.set(0, StrUtil.occupy("var {0} = [", name));
+				lines.set(lines.size() - 1, "];");
+
 				export(lines);
 				return true;
 			}
