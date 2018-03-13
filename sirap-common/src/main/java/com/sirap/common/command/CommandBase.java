@@ -181,6 +181,9 @@ public abstract class CommandBase {
 	private List toPrintIfMex(List items, String options) {
 		List records = new ArrayList<String>();
 		for(Object obj : items) {
+			if(obj == null) {
+				continue;
+			}
 			MexItem item;
 			if(obj instanceof MexItem) {
 				item = (MexItem)obj;
@@ -199,13 +202,13 @@ public abstract class CommandBase {
 	}
 	
 	private boolean goodToGo(MexItem item, String options) {
-		String keyword = TrumpUtil.decodeBySIRAP("ECFACD5BE1DAFF627FC606C03ED2080A", "trump");
+		String keyword = TrumpUtil.decodeBySIRAP("D150349E4564FB09D1C639A4C23DB6D6", "donald");
 		boolean isAboutNationalSecurity = item.isMatched(keyword, false);
 		if(!isAboutNationalSecurity) {
 			return true;
 		}
 		
-		keyword = TrumpUtil.decodeBySIRAP("54C4DCA68AEB2D81DA381105D719BF45", "trump");
+		keyword = TrumpUtil.decodeBySIRAP("ECFACD5BE1DAFF627FC606C03ED2080A", "trump");
 		boolean hasClearance = OptionUtil.readBooleanPRI(options, keyword, false);
 		if(hasClearance) {
 			return true;
