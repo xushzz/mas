@@ -25,6 +25,7 @@ import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.RandomUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.TrumpUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.framework.SimpleKonfig;
@@ -179,17 +180,38 @@ public abstract class CommandBase {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private List toPrintIfMex(List items, String options) {
 		List records = new ArrayList<String>();
-		
-		for(Object item : items) {
-			if(item instanceof MexItem) {
-				MexItem mi = (MexItem)item;
-				records.add(mi.toPrint(options));
+		for(Object obj : items) {
+			MexItem item;
+			if(obj instanceof MexItem) {
+				item = (MexItem)obj;
+				if(goodToGo(item, options)) {
+					records.add(item.toPrint(options));
+				}
 			} else {
-				records.add(item);
+				item = new MexObject(obj.toString());
+				if(goodToGo(item, options)) {
+					records.add(item);
+				}
 			}
 		}
 		
 		return records;
+	}
+	
+	private boolean goodToGo(MexItem item, String options) {
+		String keyword = TrumpUtil.decodeBySIRAP("ECFACD5BE1DAFF627FC606C03ED2080A", "trump");
+		boolean isAboutNationalSecurity = item.isMatched(keyword, false);
+		if(!isAboutNationalSecurity) {
+			return true;
+		}
+		
+		keyword = TrumpUtil.decodeBySIRAP("54C4DCA68AEB2D81DA381105D719BF45", "trump");
+		boolean hasClearance = OptionUtil.readBooleanPRI(options, keyword, false);
+		if(hasClearance) {
+			return true;
+		}
+
+		return false;
 	}
 
 	@SuppressWarnings({"rawtypes" })
