@@ -43,8 +43,12 @@ public class OptionUtil {
 		
 		return def;
 	}
-	
+
 	public static String readString(String options, String key) {
+		return readString(options, key, true);
+	}
+	
+	public static String readString(String options, String key, boolean handleSpace) {
 		if(EmptyUtil.isNullOrEmpty(options)) {
 			return null;
 		}
@@ -59,14 +63,13 @@ public class OptionUtil {
 		while(ma.find()) {
 			count++;
 			OptionUtil.checkDuplicativeKeys(key, count);
-			value = recoverSpace(ma.group(2));
+			value = ma.group(2);
+			if(handleSpace) {
+				value = value.replace("\\s", " ");
+			}
 		}
 		
 		return value;
-	}
-	
-	private static String recoverSpace(String source) {
-		return source.replace("\\s", " ");
 	}
 	
 	public static boolean readBooleanPRI(String options, String key, boolean def) {

@@ -9,5 +9,5 @@ bmw                make the beep sound K times, K is the current hour value, lik
 caro D:\caroline   generate markup text for daughter, starts from 2017/12/4, $base=20101213, base date
 caro D:\caroline   options: $+new, newest comes first, $wiki=caro, designate given wiki folder name
 mate D:\a.xlsx     export mates data, excel file only, $-ask, will ask no donation
-mate D:\           export songs data in given folder, mp3 files only
-ver=3/2/2018, V  GEEK-PIRATE1.0.4-SHELINK
+mate D:\           convert file names in given folder to JSON style, var items = ["fileA", "fileB"];, options: $k=A&B,n=variableName
+ver=3/14/2018, III  GEEK-PIRATE1.0.5-CELINE

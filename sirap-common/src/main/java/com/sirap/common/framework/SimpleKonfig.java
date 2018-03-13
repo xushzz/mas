@@ -53,13 +53,13 @@ public class SimpleKonfig extends Konfig {
 	public static void init(String params) {
 		instance = new SimpleKonfig();
 		
-		instance.originalStorage = OptionUtil.readString(params, KEY_STORAGE);
-		String tempPasscode = OptionUtil.readString(params, KEY_PASSCODE);
+		instance.originalStorage = OptionUtil.readString(params, KEY_STORAGE, false);
+		String tempPasscode = OptionUtil.readString(params, KEY_PASSCODE, false);
 		if(!EmptyUtil.isNullOrEmpty(tempPasscode)) {
 			String temp2 = TrumpUtil.decodeMixedTextBySIRAP(tempPasscode, "true", true);
 			instance.securityPasscode = temp2;
 		}
-		instance.userConfigFile = OptionUtil.readString(params, KEY_USERCONFIG);
+		instance.userConfigFile = OptionUtil.readString(params, KEY_USERCONFIG, false);
 		
 		instance.loadAndSetValues();
 	}
