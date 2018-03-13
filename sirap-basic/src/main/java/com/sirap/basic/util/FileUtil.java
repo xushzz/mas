@@ -22,6 +22,7 @@ import javax.swing.filechooser.FileSystemView;
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexFile;
+import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.tool.D;
@@ -784,15 +785,15 @@ public class FileUtil {
 		}
 	}
 	
-	public static List<String> muse(String folderPath) {
-		//var musics = ["brotherbudd","hometownhill","musicbox","plainsimpleroad","runawaywithme","obama2009","sittingontop"];
+	public static List<String> muse(String folderPath, String mexCriteria) {
 		File folder = new File(folderPath);
 		List<String> names = Lists.newArrayList();
 		folder.list(new FilenameFilter() {
 			
 			@Override
 			public boolean accept(File dir, String name) {
-				if(StrUtil.endsWith(name, ".mp3")) {
+				MexObject mo = new MexObject(name);
+				if(EmptyUtil.isNullOrEmpty(mexCriteria) || mo.isMexMatched(mexCriteria)) {
 					names.add("\"" + name + "\"");
 				}
 				return false;
@@ -801,7 +802,7 @@ public class FileUtil {
 		
 		String json = "[" + StrUtil.connect(names, ", ") + "]";
 		List<String> lines = Lists.newArrayList();
-		lines.add("var musics = ");
+		lines.add("var items = ");
 		lines.addAll(JsonUtil.getPrettyTextInLines(json));
 		lines.add(";");
 		

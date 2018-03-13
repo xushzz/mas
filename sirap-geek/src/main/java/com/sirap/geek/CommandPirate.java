@@ -185,7 +185,8 @@ public class CommandPirate extends CommandBase {
 		if(solo != null) {
 			File folder = FileUtil.getIfNormalFolder(solo);
 			if(folder != null) {
-				List<String> lines = FileUtil.muse(folder.getAbsolutePath());
+				String mexCriteria = OptionUtil.readString(options, "k");
+				List<String> lines = FileUtil.muse(folder.getAbsolutePath(), mexCriteria);
 				export(lines);
 				return true;
 			}

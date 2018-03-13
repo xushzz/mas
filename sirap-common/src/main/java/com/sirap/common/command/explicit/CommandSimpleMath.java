@@ -174,7 +174,7 @@ public class CommandSimpleMath extends CommandBase {
 			return true;
 		}
 		
-		solo = parseParam(KEY_TO_DATE + "\\.(-?\\d{0,14})");
+		solo = parseParam(KEY_TO_DATE + "\\.(-?\\d{1,14})");
 		if(solo != null) {
 			Long milliSecondsSince1970 = Long.parseLong(solo);
 			
