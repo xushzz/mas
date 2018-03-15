@@ -65,7 +65,7 @@ public class OptionUtil {
 			OptionUtil.checkDuplicativeKeys(key, count);
 			value = ma.group(2);
 			if(handleSpace) {
-				value = value.replace("\\s", " ");
+				value = value.replace("\\\\s", " ");
 			}
 		}
 		

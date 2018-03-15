@@ -236,8 +236,8 @@ public class Extractors {
 		return neymar.process().getItems();
 	}
 	
-	public static List<String> fetchNanningPolice() {
-		Extractor<String> neymar = new Extractor<String>() {
+	public static List<List<String>> fetchNanningPolice() {
+		Extractor<List<String>> neymar = new Extractor<List<String>>() {
 
 			@Override
 			public String getUrl() {
@@ -250,19 +250,23 @@ public class Extractors {
 			protected void parse() {
 				String regex = "\\{(.+?)\\}";
 				Matcher ma = createMatcher(regex, source);
-				List<String> keys = StrUtil.split("Name,ADDRESS,PHONE1,PHONE2,Lon,Lat");
-				String connector = ", ";
 				while(ma.find()) {
 					String section = ma.group(1);
-					StringBuffer sb = StrUtil.sb();
-					for(String key : keys) {
-						String item = JsonUtil.getFirstStringValueByKey(section, key);
-						if(!EmptyUtil.isNullOrEmptyOrBlank(item)) {
-							sb.append(item.trim()).append(connector);
-						}
-					}
-					String temp = sb.toString().replaceAll(connector + "$", "");
-					mexItems.add(temp);
+					String name = JsonUtil.getFirstStringValueByKey(section, "Name");
+					String address = JsonUtil.getFirstStringValueByKey(section, "ADDRESS");
+					String phone = JsonUtil.getFirstStringValueByKey(section, "PHONE1");
+					phone += " " + JsonUtil.getFirstStringValueByKey(section, "PHONE2");
+					phone = phone.replace("null", "").trim();
+					String location = JsonUtil.getFirstStringValueByKey(section, "Lon");
+					location += "," + JsonUtil.getFirstStringValueByKey(section, "Lat");
+					location = location.replace("null", "").trim();
+					
+					List<String> lines = Lists.newArrayList();
+					lines.add(name);
+					lines.add(phone);
+					lines.add(address);
+					lines.add(location);
+					mexItems.add(lines);
 				}
 			}
 		};

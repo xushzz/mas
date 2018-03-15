@@ -120,7 +120,7 @@ public class D {
 		} else {
 			D.pl("D.list start");
 			for(Object obj : list) {
-				D.pl(obj);
+				D.pl(obj.getClass(), obj);
 			}
 			D.pl("D.list end, total: " + list.size());
 		}

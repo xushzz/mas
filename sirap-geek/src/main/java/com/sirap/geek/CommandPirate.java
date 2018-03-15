@@ -184,23 +184,27 @@ public class CommandPirate extends CommandBase {
 		solo = parseParam(KEY_MATE_JSON + "\\s(.+)");
 		if(solo != null) {
 			File folder = FileUtil.getIfNormalFolder(solo);
+			List<String> lines = null;
 			if(folder != null) {
 				String mexCriteria = OptionUtil.readString(options, "k");
-				String name = OptionUtil.readString(options, "n", "items");
-				List<String> lines = FileUtil.muse(folder.getAbsolutePath(), mexCriteria);
-				lines.set(0, StrUtil.occupy("var {0} = [", name));
-				lines.set(lines.size() - 1, "];");
-
-				export(lines);
-				return true;
+				lines = FileUtil.muse(folder.getAbsolutePath(), mexCriteria);
 			}
 			File file = FileUtil.getIfNormalFile(solo);
 			if(file != null) {
 				List<List<Object>> list = MsExcelHelper.readSheetByIndex(file.getAbsolutePath(), 0);
 				boolean askForDonation = OptionUtil.readBooleanPRI(options, "ask", true);
-				export(jsonDataOfMates(list, askForDonation));
+				lines = jsonDataOfMates(list, askForDonation);
+			}
+
+			if(lines == null) {
+				XXXUtil.alert("Neither a valid folder nor a valid path: {0}", solo);
 			}
 			
+			String name = OptionUtil.readString(options, "n", "items");
+			lines.set(0, StrUtil.occupy("var {0} = [", name));
+			lines.set(lines.size() - 1, "];");
+
+			export(lines);
 			return true;
 		}
 		
@@ -314,11 +318,6 @@ public class CommandPirate extends CommandBase {
 			newLines.add(value);
 		}
 		String json = "[" + StrUtil.connect(newLines, ", ") + "]";
-		List<String> lines = Lists.newArrayList();
-		lines.add("var matesData = ");
-		lines.addAll(JsonUtil.getPrettyTextInLines(json));
-		lines.add(";");
-
-		return lines;
+		return JsonUtil.getPrettyTextInLines(json);
 	}
 }

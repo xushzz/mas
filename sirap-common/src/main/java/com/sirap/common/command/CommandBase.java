@@ -33,6 +33,7 @@ import com.sirap.common.framework.Stash;
 import com.sirap.common.framework.command.Exporter;
 import com.sirap.common.framework.command.target.Target;
 import com.sirap.common.framework.command.target.TargetConsole;
+import com.sirap.common.framework.command.target.TargetExcel;
 import com.sirap.common.framework.command.target.TargetFolder;
 
 public abstract class CommandBase {
@@ -184,6 +185,7 @@ public abstract class CommandBase {
 			if(obj == null) {
 				continue;
 			}
+//			D.list(items);
 			MexItem item;
 			if(obj instanceof MexItem) {
 				item = (MexItem)obj;
@@ -193,7 +195,7 @@ public abstract class CommandBase {
 			} else {
 				item = new MexObject(obj.toString());
 				if(goodToGo(item, options)) {
-					records.add(item);
+					records.add(obj);
 				}
 			}
 		}
@@ -227,7 +229,11 @@ public abstract class CommandBase {
 			boolean flagOfStay = OptionUtil.readBooleanPRI(finalOptions, "stay", false);
 			newList = applyMexCriteriaOnMexItems(list, mexCriteria, isCaseSensitive(finalOptions), flagOfStay);
 		}
-		newList = toPrintIfMex(newList, finalOptions);
+		boolean isExcel = target instanceof TargetExcel;
+		if(!isExcel) {
+			newList = toPrintIfMex(newList, finalOptions);
+		}
+//		D.list(newList);
 		if(EmptyUtil.isNullOrEmpty(newList)) {
 			exportEmptyMsg();
 		} else {

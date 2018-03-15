@@ -8,7 +8,7 @@
 'fire              the single quote behaves exactly the same as question mark, and i prefer '
 search             the aforementioned rules apply for any other searching commands
 search             such as 'ch fire', 'F: water' and so on
-options            not allow space chars, use \s to demonstrate, $name=A\sBC, means name is "A BC"
+options            not allow space chars, use \\s to demonstrate, $name=A\sB\\sC, means name is "A\sB C"
 quit               ${guest.quits}
 ABC $+new          any operation could be performed in a new thread, options: $+new
 ABC>$              the yielded files will be copied to folder export,!> escape export, !$ escape options
