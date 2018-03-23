@@ -1,12 +1,17 @@
 package com.sirap.common.command;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.CollUtil;
+import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
@@ -70,8 +75,9 @@ public class CommandHelp extends CommandBase {
 			if(!EmptyUtil.isNullOrEmpty(results)) {
 				if(!solo.isEmpty()) {
 					results = CollUtil.filterMix(results, solo, isCaseSensitive());
+					sortByVersionDateInfo(results);
+					results.add("");
 				}
-				results.add("");
 				results.add(versionAndCopyright());
 				export(results);
 			}
@@ -128,5 +134,40 @@ public class CommandHelp extends CommandBase {
 		allEntries.putAll((Map<String, Object>)obj);
 		
 		return allEntries;
+	}
+	
+	//sort by modification date, such as ver=10/31/2017
+	private void sortByVersionDateInfo(List<Object> lines) {
+
+		Collections.sort(lines, new Comparator<Object>() {
+			@Override
+			public int compare(Object va, Object vb) {
+				Date d1 = getDateInfo(va + "");
+				Date d2 = getDateInfo(vb + "");
+				if(d1 == null && d2 == null) {
+					return 0;
+				}
+				
+				if(d1 != null && d2 == null) {
+					return 1;
+				}
+				
+				if(d1 == null && d2 != null) {
+					return -1;
+				}
+				
+				return d1.compareTo(d2);
+			}
+			
+			private Date getDateInfo(String line) {
+				Matcher ma = StrUtil.createMatcher("=(\\d{1,2})/(\\d{1,2})/(\\d{4})", line);
+				if(ma.find()) {
+					Date date = DateUtil.construct(ma.group(3), ma.group(1), ma.group(2));
+					return date;
+				}
+				
+				return null;
+			}
+		});
 	}
 }
