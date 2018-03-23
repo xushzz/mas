@@ -237,6 +237,9 @@ public abstract class CommandBase {
 		if(EmptyUtil.isNullOrEmpty(newList)) {
 			exportEmptyMsg();
 		} else {
+			if(OptionUtil.readBooleanPRI(finalOptions, "self", false)) {
+				newList.add(0, "$ " + input);
+			}
 			Exporter.exportList(input, newList, where, finalOptions);
 		}
 	}

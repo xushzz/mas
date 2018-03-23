@@ -88,7 +88,7 @@ public class CommandSirap extends CommandBase {
 		
 		if(is(KEY_EMAIL_CONFIGURATION)) {
 			String value = isEmailEnabled() ? "Enabled" : "Disabled";
-			C.pl2(value + ", " + EmailCenter.g().getEmailInfo());
+			export(value + ", " + EmailCenter.g().getEmailInfo());
 			return true;
 		}
 
@@ -366,7 +366,7 @@ public class CommandSirap extends CommandBase {
 		}
 		
 		if(is(KEY_VERSION)) {
-			C.pl2(versionAndCopyright());
+			export(versionAndCopyright());
 			return true;
 		}
 		
@@ -395,7 +395,7 @@ public class CommandSirap extends CommandBase {
 		}
 
 		if(is(KEY_USER_SETTING)) {
-			C.pl2(getSystemInfo());
+			export(getSystemInfo());
 			return true;
 		}
 		
