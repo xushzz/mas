@@ -9,6 +9,7 @@ import java.util.Map;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexLocale;
 import com.sirap.basic.domain.MexObject;
+import com.sirap.basic.domain.PaymentItem;
 import com.sirap.basic.search.MexFilter;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.CollUtil;
@@ -18,9 +19,12 @@ import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.ImageUtil;
 import com.sirap.basic.util.LocaleUtil;
 import com.sirap.basic.util.OptionUtil;
+import com.sirap.basic.util.PaymentUtil;
+import com.sirap.basic.util.RandomUtil;
 import com.sirap.basic.util.SecurityUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XCodeUtil;
+import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.framework.command.target.TargetConsole;
@@ -46,8 +50,36 @@ public class CommandXCode extends CommandBase {
 	private static final String KEY_ISO = "iso";
 	private static final String KEY_CURRENCY = "ccy";
 	private static final String KEY_DATE_FORMAT_SYMBOL = "dfs";
+	private static final String KEY_DONATION_CHINESE = XCodeUtil.urlDecodeUTF8("%E6%89%93%E8%B5%8F");
+	private static final String KEY_DONATION = "do,don,donation,dashang," + KEY_DONATION_CHINESE;
 
 	public boolean handle() {
+		
+		if(isIn(KEY_DONATION)) {
+			boolean isAlipay = OptionUtil.readBooleanPRI(options, "ali", false);
+			String type = isAlipay ? PaymentItem.TYPE_ALIPAY : PaymentItem.TYPE_WEIXIN;
+			PaymentItem payinfo = PaymentUtil.getActive(type);
+			if(payinfo == null) {
+				C.pl2("No active & valid payment info from " + PaymentUtil.URL_DONATION);
+			} else {
+				String[] filenameAndFormat = generateQRCodeImageFilenameAndFormat(type + payinfo.getRemark(), RandomUtil.letters(3), "png");
+				String filepath = filenameAndFormat[0];
+				String format = filenameAndFormat[1];
+				
+				String filePath = QRCodeUtil.createImage(payinfo.getUrl(), filepath, format, 400, 400);
+				if (filePath != null) {
+					String info = "";
+					if(OptionUtil.readBooleanPRI(options, "d", false)) {
+						info += " " + FileUtil.formatSize(filePath);
+						info += " " + ImageUtil.readImageWidthHeight(filePath, "x");
+					}
+					C.pl(filePath + info);
+					tryToOpenGeneratedImage(filePath);
+				}
+				XXXUtil.info("Please use {0} to scan the qrcode to make donation {1}.", type, payinfo.getRemark());
+				C.pl2("Your donation will make this project greater. !THANK YOU!");
+			}
+		}
 		
 		params = parseParams(KEY_QRCODE_ENCODE + "\\s(.*?)(|///(.*?))");
 		if(params != null) {

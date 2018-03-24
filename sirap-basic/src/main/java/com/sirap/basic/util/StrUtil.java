@@ -785,6 +785,27 @@ public class StrUtil {
 		
 		return temp;
 	}
+	
+	public static String occupyUserConfig(String source, Map<String, String> configs) {
+		XXXUtil.nullCheck(source, "source");
+		
+		String regex = "u\\{([^\\$\\{\\}]+)\\}";
+		
+		String temp = source;
+		Matcher ma = createMatcher(regex, source);
+		while(ma.find()) {
+			String whole = ma.group(0);
+			String key = ma.group(1);
+			String config = configs.get(key);
+			if(EmptyUtil.isNullOrEmpty(config)) {
+				throw new MexException("No such user config: {0}", key);
+			} else {
+				temp = temp.replace(whole, config.replace(File.separatorChar, '/'));
+			}
+		}
+		
+		return temp;
+	}
 
 	public static String pseudoEncrypt(String plainText) {
 		String temp = plainText.replaceAll(".", "*");

@@ -1,6 +1,6 @@
 ?                  list help, in this system, all commands are case-insensitive
 ?fire              display any record containing fire, sort by version date info
-?^fire             display any record starting with fire
+?^fire             display any record starting with fire, $+w, open IE for online help
 ?fire$             display any record ending with water
 ?fire&water        display any record containing both fire and water
 ?fire|water        display any record containing fire or water

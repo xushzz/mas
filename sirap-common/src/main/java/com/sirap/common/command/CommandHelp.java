@@ -16,7 +16,9 @@ import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.ObjectUtil;
+import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.common.component.FileOpener;
 import com.sirap.common.framework.SimpleKonfig;
 
 public class CommandHelp extends CommandBase {
@@ -27,6 +29,7 @@ public class CommandHelp extends CommandBase {
 	private static final String KEY_TASK = "Task";
 	private static final String TEMPLATE_HELP = "/help/Help_{0}.txt";
 	private static final String TEMPLATE_HELP_XX = "/help/Help_{0}_{1}.txt";
+	private static final String HELP_WEB_URL = "https://raw.githubusercontent.com/acesfullmike/masrun/master/help.txt";
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
@@ -34,6 +37,10 @@ public class CommandHelp extends CommandBase {
 		
 		solo = parseParam("[?|'](.*?)");
 		if(solo != null) {
+			if(OptionUtil.readBooleanPRI(options, "w", false)) {
+				FileOpener.playThing(HELP_WEB_URL, "page.viewer", true);
+				return true;
+			}
 			List<String> allKeys = new ArrayList<>();
 			allKeys.add(KEY_GUEST);
 			
@@ -59,7 +66,7 @@ public class CommandHelp extends CommandBase {
 			allKeys.add(KEY_TASK);
 			allKeys.add(KEY_BASIC);
 			
-			List results = new ArrayList<>();
+			List lines = new ArrayList<>();
 			int maxLen = StrUtil.maxLengthOf(allKeys);
 			Map<String, Object> allHelpMeanings = getAllHelpMeanings();
 			for(String key : allKeys) {
@@ -68,19 +75,19 @@ public class CommandHelp extends CommandBase {
 				List<String> items = FileUtil.readResourceFilesIntoList(fileName, prefix);
 				if(!EmptyUtil.isNullOrEmpty(items)) {
 					items = occupyDollarKeys(items, allHelpMeanings);
-					results.addAll(items);
+					lines.addAll(items);
 				}
 			}
 
-			if(!EmptyUtil.isNullOrEmpty(results)) {
-				if(!solo.isEmpty()) {
-					results = CollUtil.filterMix(results, solo, isCaseSensitive());
-					sortByVersionDateInfo(results);
-					results.add("");
-				}
-				results.add(versionAndCopyright());
-				export(results);
+			if(!solo.isEmpty()) {
+				lines = CollUtil.filterMix(lines, solo, isCaseSensitive());
+				sortByVersionDateInfo(lines);
 			}
+			if(!EmptyUtil.isNullOrEmpty(lines)) {
+				lines.add("");
+			}
+			lines.add(versionAndCopyright());
+			export(lines);
 			
 			return true;
 		}

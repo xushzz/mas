@@ -76,10 +76,6 @@ public abstract class Konfig {
 		return userProperties;
 	}
 
-	public void setProps(MexedMap properties) {
-		this.systemProperties = properties;
-	}
-
 	public int getNumberValueOf(String key) {
 		return systemProperties.getNumber(key, -7);
 	}

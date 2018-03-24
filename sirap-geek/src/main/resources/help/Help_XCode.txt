@@ -3,6 +3,9 @@ qrc D:\\ABC.txt    generate QRCode for content of ABC.txt, the image will be sav
 qrc ABC///jack     generate QRCode for text ABC, the image will be saved and suffixed with "jack"
 qrc ABC>D:         generate QRCode for text ABC, the image will be saved in "D:"
 qrx ABC.png        decode QRCode image and print the original string
+do                 donation, you can make donation for this project by Weixin
+do $+ali           donation, make donation by Alipay
+donation/dashang   still, donation, also for dashang in chinese
 asc                display ASCII values for all numbers and letters in bin/oct/dec/hex
 asc..              display ASCII values for characters in bin/oct/dec/hex/NATO phonetics
 ascii              display ASCII values for characters in bin/oct/dec/hex/NATO phonetics
@@ -30,4 +33,4 @@ ccy Chinese        display currency info containing Chinese: zh_HK, HKG, Chinese
 ccy..              display all currency info provided by the JRE
 dfs zh_TW          display date format symbols info for local zh_TW
 dfs..              display all date format symbols info provided by the JRE
-ver=12/12/2017, II  GEEK-XCODE1.0.5-IVANKA
+ver=3/24/2018, VI  GEEK-XCODE1.0.6-IVANKA

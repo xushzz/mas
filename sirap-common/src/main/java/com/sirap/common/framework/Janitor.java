@@ -66,6 +66,12 @@ public class Janitor extends Checker {
 				C.pl(source + " = " + after);
 				source = after;
 			}
+			after = StrUtil.occupyUserConfig(source, konfig.getUserProps().getContainer());
+			if(!StrUtil.equals(source, after)) {
+				C.pl(source + " = " + after);
+				source = after;
+			}
+			
 		} catch (MexException me) {
 			C.pl(me.getMessage());
 		}
