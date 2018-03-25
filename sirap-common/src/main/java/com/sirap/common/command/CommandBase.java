@@ -227,7 +227,7 @@ public abstract class CommandBase {
 		Target where = whereToShot();
 		if(!EmptyUtil.isNullOrEmpty(mexCriteria)) {
 			boolean flagOfStay = OptionUtil.readBooleanPRI(finalOptions, "stay", false);
-			newList = applyMexCriteriaOnMexItems(list, mexCriteria, isCaseSensitive(finalOptions), flagOfStay);
+			newList = applyMexCriteriaOnMexItems(newList, mexCriteria, isCaseSensitive(finalOptions), flagOfStay);
 		}
 		boolean isExcel = target instanceof TargetExcel;
 		if(!isExcel) {

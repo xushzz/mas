@@ -5,6 +5,7 @@ import java.awt.Toolkit;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,6 +14,7 @@ import com.sirap.basic.component.Extractor;
 import com.sirap.basic.data.HttpData;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexZipEntry;
+import com.sirap.basic.domain.TypedKeyValueItem;
 import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.json.JsonUtil;
@@ -28,6 +30,7 @@ import com.sirap.basic.util.ImageUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.SystemUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
@@ -42,8 +45,10 @@ import com.sirap.geek.util.GeekExtractors;
 
 public class CommandDev extends CommandBase {
 
-	private static final String KEY_PATH = "path";
-	private static final String KEY_PRESENT_WORKING_DIRECTORY = "pwd";
+	private static final String KEY_ECHO = "echo";
+	private static final String KEY_SPLIT = "ah";
+	private static final String KEY_PWD_USER_DIR = "pwd";
+	private static final String KEY_TILDE_USER_HOME = "~";
 	private static final String KEY_MAVEN = "maven";
 	private static final String KEY_DEPS = "deps";
 	private static final String KEY_ISSUE = "iss";
@@ -60,24 +65,88 @@ public class CommandDev extends CommandBase {
 	private static final String KEY_HTTP_STATUS_CODES = "https";
 	
 	public boolean handle() {
-		solo = parseParam(KEY_PATH + "\\s(.*?)");
+		//Satoshi Nakamoto
+		solo = parseParam(KEY_ECHO + "(|\\s.*?)");
 		if(solo != null) {
-			List<String> items = IOUtil.echoPath();
+			if(StrUtil.equals(solo, "path")) {
+				//do whole match if and only PATH
+				solo = "^" + solo + "$";
+			}
+			List<TypedKeyValueItem> items = Lists.newArrayList();
+			if(OptionUtil.readBooleanPRI(options, "p", true)) {
+				List<TypedKeyValueItem> sato = SystemUtil.systemProperties();
+				if(!EmptyUtil.isNullOrEmpty(solo)) {
+					sato = CollUtil.filter(sato, solo);
+				}
+				items.addAll(sato);
+			}
+			if(OptionUtil.readBooleanPRI(options, "v", true)) {
+				List<TypedKeyValueItem> sato = SystemUtil.environmentVaribables();
+				if(!EmptyUtil.isNullOrEmpty(solo)) {
+					sato = CollUtil.filter(sato, solo);
+				}
+				items.addAll(sato);
+			}
+			Collections.sort(items);
 			
-			export2(items, solo);
+			Boolean showValueItemInLines = OptionUtil.readBoolean(options, "l");
+			if(showValueItemInLines == null) {
+				showValueItemInLines = items.size() == 1;
+			}
+			if(showValueItemInLines) {
+				List<String> gras = Lists.newArrayList();
+				String sepStr = OptionUtil.readString(options, "s");
+				String sep = File.pathSeparator;
+				if(!EmptyUtil.isNullOrEmpty(sepStr)) {
+					sep = sepStr;
+				}
+				for(TypedKeyValueItem item : items) {
+					List<String> sons = item.valueItemInLines(sep);
+					if(sons.size() > 1) {
+						if(OptionUtil.readBooleanPRI(options, "s", true)) {
+							CollUtil.sortIgnoreCase(sons);
+						}
+						gras.add(item.toPrint(OptionUtil.mergeOptions("-v", options)));
+						gras.addAll(sons);
+					} else {
+						gras.add(item.toPrint(options));
+					}
+				}
+				
+				export(gras);
+			} else {
+				export(items);
+			}
 			
 			return true;
 		}
 
-		if(is(KEY_PATH)) {
-			List<String> items = IOUtil.echoPath();
+		solo = parseParam(KEY_SPLIT + "\\s(.+)");
+		if(solo != null) {
+			String sepStr = OptionUtil.readString(options, "s");
+			String sep = ",";
+			if(!EmptyUtil.isNullOrEmpty(sepStr)) {
+				sep = sepStr;
+			}
+			List<String> items = StrUtil.split(solo, sep);
+			if(OptionUtil.readBooleanPRI(options, "s", false)) {
+				CollUtil.sortIgnoreCase(items);
+			}
+			
 			export(items);
 			
 			return true;
 		}
 
-		if(is(KEY_PRESENT_WORKING_DIRECTORY)) {
+		if(is(KEY_PWD_USER_DIR)) {
 			String value = System.getProperty("user.dir");
+			export(value);
+			
+			return true;
+		}
+		
+		if(is(KEY_TILDE_USER_HOME)) {
+			String value = System.getProperty("user.home");
 			export(value);
 			
 			return true;

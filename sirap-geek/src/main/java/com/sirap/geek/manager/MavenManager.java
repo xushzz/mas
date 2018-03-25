@@ -9,9 +9,9 @@ import java.util.TreeSet;
 import com.google.common.collect.Lists;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.XXXUtil;
 import com.sirap.basic.util.XmlUtil;
 
 public class MavenManager {
@@ -58,14 +58,13 @@ public class MavenManager {
 			return null;
 		}
 		
-		String fileName = home + File.separatorChar + "conf\\settings.xml";
-		File file = FileUtil.getIfNormalFile(fileName);
+		File satoshi = new File(home, "conf\\settings.xml");
 				
-		if(file == null) {
-			return null;
+		if(!satoshi.exists()) {
+			XXXUtil.alert("File non exists: " + satoshi);
 		}
 		
-		String repo = XmlUtil.readValue(fileName, "localRepository");
+		String repo = XmlUtil.readValueFromFile(satoshi.getAbsolutePath(), "localRepository");
 
 		return repo;
 	}

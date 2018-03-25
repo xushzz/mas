@@ -1,7 +1,17 @@
-path               display what you would get when "echo %PATH%"
-path tomcat        display PATH any record containing 'tomcat'
+ah A,B,C,D         split by comma and print as list
+ah A-B-C-D $s=-    split by - and print as list, option s=SPLITTER
+ah A,B,C $+s       split, sort and print list
+echo               list all environment variables and system properties, about 114 entries
+echo $-t           list all environment variables and system properties, hide type info
+echo path          list property of path, and split it by file pathSeparator then list out, only and one
+echo home		   list properties or variables whose name contains keyword home
+echo $+L           list all values in lines format, if it contains more than one item
+echo $+L,-s        list all values in lines format, if it contains more than one item, keep items as is
+echo $-v           don't show variables, only system properties
+echo $-p           don't show properties, only environment variables
 maven              display home and repository for Maven, mvn help:system
-pwd                present working directory
+pwd                present working directory, aka user.dir
+~                  display user home, aka user.home
 deps               display all depended jars in project that user.dir indicates
 deps $p=D:\pom.xml display all depended jars in project that pom.xml rests
 deps $p=D:\project display all depended jars in given project

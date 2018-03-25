@@ -685,17 +685,6 @@ public class IOUtil {
 		return MsExcelHelper.export(objList, fullFileName, params);
 	}
 	
-	public static List<String> echoPath() {
-		String path = System.getProperty("java.library.path");
-		char delimiter = ';';
-		if(PanaceaBox.isMacOrLinuxOrUnix()) {
-			delimiter = ':';
-		}
-		List<String> items = StrUtil.split(path, delimiter);
-
-		return items;
-	}
-	
 	@SuppressWarnings("resource")
 	public static Class loadClassFromJarFile(String jarLocation, String className) {
 		String regex = "^[\\w]{2,}:";

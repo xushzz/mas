@@ -66,6 +66,7 @@ public class OptionUtil {
 			value = ma.group(2);
 			if(handleSpace) {
 				value = value.replace("\\\\s", " ");
+				value = value.replace("\\\\c", ",");
 			}
 		}
 		

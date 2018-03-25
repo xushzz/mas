@@ -36,13 +36,12 @@ public class CommandMonitor extends CommandBase {
 	private static final String KEY_KEYS_READER = "k";
 	private static final String KEY_KEYS_CONFIG = "kc";
 	private static final String KEY_SYSTEM_CONFIG = "sc";
-	private static final String KEY_NODES_COFIG = "n..";
+	private static final String KEY_NODES_CONFIG = "n..";
 	private static final String KEY_COMMAND_HISTORY = ";";
 	private static final String KEY_LOGIN_HISTORY = "lh";
 	private static final String KEY_SECURITY_ENCODE = "jiami";
 	private static final String KEY_SECURITY_DECODE = "jiemi";
 	private static final String KEY_LOGIN_HISTORY_DISTRIBUTION = "ld";
-	private static final String KEY_ECHO = "ah";
 
 	private static final int[] CH_cellsWidth = {12, 38};
 	private static final int[] CH_cellsAlign = {0, 0};
@@ -52,40 +51,8 @@ public class CommandMonitor extends CommandBase {
 	private static final int[] LH_cellsAlign = {0, 1, 2};
 	private static final PDFParams LH_PDF_PARAMS = new PDFParams(LH_cellsWidth, LH_cellsAlign);
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public boolean handle() {
-		solo = parseParam(KEY_ECHO + "\\s(.+?)");
-		if(solo != null) {
-			List<String> sysProps = new ArrayList(System.getProperties().entrySet());
-			List<String> sysEnvis = new ArrayList(System.getenv().entrySet());
-			
-			String criteria = solo;
-			if(criteria.equalsIgnoreCase("-s")) {
-				export(sysProps);
-				return true;
-			} else if(criteria.equalsIgnoreCase("-e")) {
-				export(sysEnvis);
-				return true;
-			}
-			
-			List<String> records = new ArrayList<String>();
-			records.addAll(sysProps);
-			records.addAll(sysEnvis);
-			
-			if(StrUtil.isRegexMatched("-(se|es)", criteria)) {
-				export(records);
-			} else {
-				List list2 = CollUtil.filterMix(records, criteria, isCaseSensitive());
-				if(!list2.isEmpty()) {
-					export(list2);
-				} else {
-					export(StrUtil.split(criteria, '\\'));
-				}
-			}
-			
-			return true;
-		}
 		
 		params = parseParams(KEY_SECURITY_ENCODE + "(|-([a-z0-9]+))\\s(|.+?)");
 		if(params != null) {
@@ -276,7 +243,7 @@ public class CommandMonitor extends CommandBase {
 			return true;
 		}
 		
-		if(is(KEY_NODES_COFIG)) {
+		if(is(KEY_NODES_CONFIG)) {
 			List<CommandRecord> items = g().getCommandNodes();
 			export(items);
 			
