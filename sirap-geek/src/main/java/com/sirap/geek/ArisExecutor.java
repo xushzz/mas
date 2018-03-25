@@ -58,6 +58,10 @@ public class ArisExecutor {
 		this.arisPlace = arisPlace;
 		return this;
 	}
+	
+	public void setJavaFileStyle(boolean isJavaFileStyle) {
+		this.isJavaFileStyle = isJavaFileStyle;
+	}
 
 	public List<String> executeOnelineStyle(String lineJavacode, String configClasspath) {
 		Matcher ma = StrUtil.createMatcher(REGEX_IMPORT, lineJavacode);
@@ -103,13 +107,6 @@ public class ArisExecutor {
 		return process();
 	}
 	
-	public List<String> executeJavaFileStyle(List<String> textJavacode, String configClasspath) {
-		this.manualJavacode = textJavacode;
-		this.configClasspath = configClasspath;
-		this.isJavaFileStyle = true;
-		return process();
-	}
-	
 	private List<String> process() {
 		String finalJavaFileFullPath = saveSourceCode(generateSourceCode());
 		List<String> consoleOutput = compileAndRun(finalJavaFileFullPath);
@@ -120,26 +117,27 @@ public class ArisExecutor {
 		return consoleOutput;
 	}
 	
-	private List<String> generateSourceCode() {
-		String allInOneLine = StrUtil.connect(manualJavacode);
-		String regex = "public\\s+class\\s+(" + Konstants.REGEX_JAVA_IDENTIFIER + ")";
-		String tempClassName = StrUtil.findFirstMatchedItem(regex, allInOneLine);
-
-		if(tempClassName != null) {
-			publicClassName = tempClassName;
+	private String connectWithoutComments(List<String> lines) {
+		StringBuffer sb = StrUtil.sb();
+		String lineCommentRegex = "//.+";
+		for(String line : lines) {
+			sb.append(line.replaceAll(lineCommentRegex, ""));
 		}
+		
+		String temp = sb.toString();
+		String blockCommentRegex = "/\\*.*\\*/";
+		temp = temp.replaceAll(blockCommentRegex, "");
+		
+		return temp;
+	}
+	
+	private List<String> generateSourceCode() {
+		String allInOneLine = connectWithoutComments(manualJavacode);
+		String regexClassName = "public\\s+class\\s+(" + Konstants.REGEX_JAVA_IDENTIFIER + ")";
+		String existingClassName = StrUtil.findFirstMatchedItem(regexClassName, allInOneLine);
 
-		List<String> sourceCode = new ArrayList<>();
-		if(isJavaFileStyle) {
-			for(String item : manualJavacode) {
-				if(StrUtil.isRegexMatched(REGEX_PACKAGE, item.trim())) {
-					continue;
-				}
-				
-				sourceCode.add(item);
-			}
-			
-			return sourceCode;
+		if(existingClassName != null) {
+			publicClassName = existingClassName;
 		}
 		
 		List<String> imports = new ArrayList<>();
@@ -151,9 +149,24 @@ public class ArisExecutor {
 		//add configImports;
 		imports.addAll(generateConfigImportsFromClassPath());
 		imports.add("");
+
+		List<String> sourceCode = new ArrayList<>();
+		sourceCode.add("");
+		if(isJavaFileStyle) {
+			sourceCode.addAll(imports);
+			for(String item : manualJavacode) {
+				if(StrUtil.isRegexMatched(REGEX_PACKAGE, item.trim())) {
+					continue;
+				}
+				
+				sourceCode.add(item);
+			}
+			
+			return sourceCode;
+		}
 		
 		List<String> sentences = new ArrayList<>();
-		if(tempClassName == null) {
+		if(existingClassName == null) {
 			publicClassName = FINAL_CLASS_NAME;
 			sentences.add("public class " + publicClassName + " {");
 			sentences.add("");
@@ -181,12 +194,10 @@ public class ArisExecutor {
 		if(!hasMainMethodAlready) {
 			sentences.add("\t}");
 		}
-		if(tempClassName == null) {
+		if(existingClassName == null) {
 			sentences.add("}");
 		}
 
-		sourceCode = new ArrayList<>();
-		sourceCode.add("");
 		sourceCode.addAll(imports);
 		sourceCode.addAll(sentences);
 		

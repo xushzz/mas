@@ -2,7 +2,9 @@ package com.sirap.basic.util;
 
 import java.io.FileInputStream;
 import java.security.MessageDigest;
+import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.algo.SM3Digest;
 import com.sirap.basic.component.Konstants;
 
@@ -21,6 +23,22 @@ public class SecurityUtil {
 			
 			String result = StrUtil.bytesToHexString(bytes);
 			return result;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public static List<String> digest(List<String> source, String algo) {
+		try {
+			MessageDigest roy = MessageDigest.getInstance(algo);
+			List<String> items = Lists.newArrayList();
+			for(String item : source) {
+				roy.update(item.getBytes(Konstants.CODE_UTF8));
+				items.add(item + ", " + StrUtil.bytesToHexString(roy.digest()));
+			}
+			return items;
 			
 		} catch (Exception e) {
 			e.printStackTrace();

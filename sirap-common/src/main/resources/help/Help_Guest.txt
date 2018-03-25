@@ -23,6 +23,7 @@ ABC>E:             the yielded content will be exported as text to file E:\ABC.t
 ABC>E:\\max        the yielded content will be exported as text to file E:\max.txt
 ABC>E:\\max.txt    the yielded content will be exported as text to file E:\max.txt
 ABC>max            the yielded content will be exported as text to file export\max.txt
+ABC>max.md         the yielded content will be exported to text file export\max.md
 ABC>*E:            the yielded content will be sirap-encoded and exported to file E:\ABC.sirap
 ABC>.pdf           the yielded content will be exported to pdf file export\ABC.pdf
 ABC>E:\\.pdf       the yielded content will be exported to pdf file E:\ABC.pdf
@@ -32,7 +33,6 @@ ABC>.htm           the yielded content will be exported to html file export\ABC.
 ABC>E:\\.htm       the yielded content will be exported to html file E:\ABC.htm
 ABC>E:\\max.htm    the yielded content will be exported to html file E:\max.htm
 ABC>max.htm        the yielded content will be exported to html file export\max.htm
-ABC>max.md        the yielded content will be exported to html file export\max.md
 ABC>.xls           the yielded content will be exported to html file export\ABC.xls
 ABC>E:\\.xls       the yielded content will be exported to html file E:\ABC.xls
 ABC>E:\\max.xls    the yielded content will be exported to html file E:\max.xls

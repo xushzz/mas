@@ -1,6 +1,8 @@
 package com.sirap.extractor.manager;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +17,10 @@ import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.json.JsonUtil;
+import com.sirap.basic.thread.MasterItemsOriented;
+import com.sirap.basic.thread.WorkerItemsOriented;
 import com.sirap.basic.util.EmptyUtil;
+import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.domain.Link;
 import com.sirap.extractor.domain.MeijuRateItem;
@@ -23,6 +28,70 @@ import com.sirap.extractor.domain.NameRankItem;
 import com.sirap.extractor.domain.SportsMatchItem;
 
 public class Extractors {
+	
+	public static List<ValuesItem> topPasswordsAll(int maxPageNumber) {
+		List<Integer> pages = Lists.newArrayList();
+		for(int i = 1; i <= maxPageNumber; i++) {
+			pages.add(i);
+		}
+		MasterItemsOriented<Integer, ValuesItem> george = new MasterItemsOriented<>(pages, new WorkerItemsOriented<Integer, ValuesItem>() {
+
+			@Override
+			public List<ValuesItem> process(Integer page) {
+//				int count = queue.size() + 1;
+//				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "async dealing with page ", page);
+				List<ValuesItem> items = topPasswords(page);
+//				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "async done with page", page);
+				return items;
+			}
+			
+		});
+		
+		List<ValuesItem> values = george.getAllMexItems();
+		Collections.sort(values, new Comparator<ValuesItem>(){
+
+			@Override
+			public int compare(ValuesItem va, ValuesItem vb) {
+				return orderOf(va) - orderOf(vb);
+			}
+			
+			private int orderOf(ValuesItem item) {
+				String obj = item.getByIndex(0) + "";
+				return MathUtil.toInteger(obj, 0);
+			}
+			
+		});
+
+		return values;
+	}
+	
+	public static List<ValuesItem> topPasswords(int pageNumber) {
+		Extractor<ValuesItem> neymar = new Extractor<ValuesItem>() {
+
+			public String getUrl() {
+				showFetching().useGBK();
+				String template = "http://www.passwordrandom.com/most-popular-passwords/page/{0}";
+				return StrUtil.occupy(template, pageNumber);
+			}
+			
+			@Override
+			protected void parse() {
+				//<tr><td>1</td><td>password</td><td>5f4dcc3b5aa765d61d8327deb882cf99</td>
+				String regex = "<tr>\\s+<td>(\\d{1,5})</td><td>([^<>]+)</td><td>([a-z\\d]{32})</td>";
+				Matcher ma = createMatcher(regex);
+				
+				while(ma.find()) {
+					ValuesItem item = new ValuesItem();
+					item.add(ma.group(1));
+					item.add(ma.group(2));
+					item.add(ma.group(3));
+					mexItems.add(item);
+				}
+			}
+		};
+		
+		return neymar.process().getItems();
+	}
 	
 	public static List<MeijuRateItem> fetchTopMeijus() {
 		Extractor<MeijuRateItem> neymar = new Extractor<MeijuRateItem>() {
