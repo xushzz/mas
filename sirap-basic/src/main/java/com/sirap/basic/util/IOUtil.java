@@ -28,7 +28,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -245,27 +244,6 @@ public class IOUtil {
 		return null;
 	}
 	
-	public static MexedMap createMexedMapByResourceFile(String filePath) {
-		InputStream inputStream = InputStream.class.getResourceAsStream(filePath);
-		String cat = charsetOfTextFile(filePath);
-		
-		return readKeyValuesIntoMexedMap(inputStream, cat);
-	}
-	
-	public static MexedMap createMexedMapByProperties(Properties props) {
-		XXXUtil.nullCheck(props, "Properties props");
-		
-		MexedMap map = new MexedMap();
-		Enumeration<?> en = props.propertyNames();
-		while (en.hasMoreElements()) {
-			String key = (String) en.nextElement();
-			String value = props.getProperty(key).trim();
-			map.put(key.toLowerCase(), value);
-		}
-
-		return map;
-	}
-	
 	public static Properties readProperties(String filePath) {
 		Properties props = new Properties();
 		
@@ -320,27 +298,6 @@ public class IOUtil {
 				map.put(key, value);
 			}
 			return map;
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				stream.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
-		return null;
-	}
-	
-	public static MexedMap readPropertiesIntoMexedMap(InputStream stream, String charset) {
-		XXXUtil.nullCheck(stream, "InputStream stream");
-		
-		try {
-			BufferedReader reader =new BufferedReader(new InputStreamReader(stream, charset));
-			Properties props = new Properties();
-			props.load(reader);
-			return createMexedMapByProperties(props);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {

@@ -736,56 +736,6 @@ public class StrUtil {
 		return temp;
 	}
 	
-	public static String occupySapOrEav(String source, boolean useUnixFileSeparator) {
-		XXXUtil.nullCheck(source, "source");
-		
-		String regex = "\\$\\{(s:|e:|)([^\\$\\{\\}]+)\\}";
-		
-		String temp = source;
-		Matcher ma = createMatcher(regex, source);
-		while(ma.find()) {
-			String whole = ma.group(0);
-			String type = ma.group(1);
-			String item = ma.group(2);
-			String sap = System.getProperty(item);
-			String eav = System.getenv(item);
-			if(EmptyUtil.isNullOrEmpty(type)) {
-				if(sap == null && eav == null) {
-					throw new MexException("No such system property or environment variable as '{0}'", item);
-				} else if(sap != null && eav != null) {
-					String msg = "Obscure name '{0}', use ${s:{0}} to fetch system property or ${e:{0}} environment variable.";
-					msg += "\nsystem property : {1}";
-					msg += "\nenvironment variable : {2}";
-					
-					throw new MexException(msg, item, sap, eav);
-				} else {
-					if(!EmptyUtil.isNullOrEmpty(sap)) {
-						temp = temp.replace(whole, sap.replace(File.separatorChar, '/'));
-					}
-					if(!EmptyUtil.isNullOrEmpty(eav)) {
-						temp = temp.replace(whole, eav.replace(File.separatorChar, '/'));
-					}
-				}
-			}
-			if(StrUtil.equals(type, "s:")) {
-				if(EmptyUtil.isNullOrEmpty(sap)) {
-					throw new MexException("No such system property as '{0}'", item);
-				} else {
-					temp = temp.replace(whole, sap.replace(File.separatorChar, '/'));
-				}
-			}
-			if(StrUtil.equals(type, "e:")) {
-				if(EmptyUtil.isNullOrEmpty(eav)) {
-					throw new MexException("No such environment variable as '{0}'", item);
-				} else {
-					temp = temp.replace(whole, eav.replace(File.separatorChar, '/'));
-				}
-			}
-		}
-		
-		return temp;
-	}
-	
 	public static String occupyUserConfig(String source, Map<String, String> configs) {
 		XXXUtil.nullCheck(source, "source");
 		

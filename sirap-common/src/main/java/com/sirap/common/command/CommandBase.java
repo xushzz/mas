@@ -237,6 +237,9 @@ public abstract class CommandBase {
 		if(EmptyUtil.isNullOrEmpty(newList)) {
 			exportEmptyMsg();
 		} else {
+			if(OptionUtil.readBooleanPRI(options, "sort", false)) {
+				CollUtil.sortIgnoreCase(newList);
+			}
 			if(OptionUtil.readBooleanPRI(finalOptions, "self", false)) {
 				newList.add(0, "$ " + input);
 			}

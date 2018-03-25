@@ -9,8 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.google.common.collect.Lists;
+import com.sirap.basic.domain.TypedKeyValueItem;
 import com.sirap.basic.math.CircularItemsDetector;
 import com.sirap.basic.util.MathUtil;
+import com.sirap.basic.util.SatoUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.TrumpUtil;
 
@@ -22,13 +25,28 @@ public class MexedMap {
 		
 	}
 	
+	public List<TypedKeyValueItem> listOf() {
+		List<TypedKeyValueItem> items = Lists.newArrayList();
+		Iterator<String> it = container.keySet().iterator();
+		while(it.hasNext()) {
+			String key = it.next();
+			String value = container.get(key);
+			TypedKeyValueItem item = new TypedKeyValueItem(key, value);
+			item.setType("UserConfig Property");
+			items.add(item);
+		}
+		
+		return items;
+	}
+	
 	public void recoverValues(String passcode) {
 		Iterator<String> it = container.keySet().iterator();
+		List<TypedKeyValueItem> satos = SatoUtil.systemPropertiesAndEnvironmentVaribables();
 		while(it.hasNext()) {
 			String key = it.next();
 			String origin = container.get(key);
 			String temp = TrumpUtil.decodeMixedTextBySIRAP(origin, passcode);
-			String finale = StrUtil.occupySapOrEav(temp, true);
+			String finale = SatoUtil.occupyCoins(temp, satos);
 			container.put(key, finale);
 		}
 	}

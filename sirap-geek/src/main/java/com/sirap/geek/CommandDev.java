@@ -30,7 +30,7 @@ import com.sirap.basic.util.ImageUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
-import com.sirap.basic.util.SystemUtil;
+import com.sirap.basic.util.SatoUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
@@ -74,14 +74,14 @@ public class CommandDev extends CommandBase {
 			}
 			List<TypedKeyValueItem> items = Lists.newArrayList();
 			if(OptionUtil.readBooleanPRI(options, "p", true)) {
-				List<TypedKeyValueItem> sato = SystemUtil.systemProperties();
+				List<TypedKeyValueItem> sato = SatoUtil.SYSTEM_PROPERTIES;
 				if(!EmptyUtil.isNullOrEmpty(solo)) {
 					sato = CollUtil.filter(sato, solo);
 				}
 				items.addAll(sato);
 			}
 			if(OptionUtil.readBooleanPRI(options, "v", true)) {
-				List<TypedKeyValueItem> sato = SystemUtil.environmentVaribables();
+				List<TypedKeyValueItem> sato = SatoUtil.ENVIRONMENT_VARIABLES;
 				if(!EmptyUtil.isNullOrEmpty(solo)) {
 					sato = CollUtil.filter(sato, solo);
 				}

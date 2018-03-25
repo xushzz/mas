@@ -3,11 +3,14 @@ package com.sirap.common.framework;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.Lists;
+import com.sirap.basic.domain.TypedKeyValueItem;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.ObjectUtil;
 import com.sirap.basic.util.OptionUtil;
+import com.sirap.basic.util.SatoUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.ThreadUtil;
 import com.sirap.common.command.CommandBase;
@@ -61,12 +64,10 @@ public class Janitor extends Checker {
     public void process(String origin) {
     	String source = origin;
 		try {
-			String after = StrUtil.occupySapOrEav(source, true);
-			if(!StrUtil.equals(source, after)) {
-				C.pl(source + " = " + after);
-				source = after;
-			}
-			after = StrUtil.occupyUserConfig(source, konfig.getUserProps().getContainer());
+			List<TypedKeyValueItem> items = Lists.newArrayList();
+			items.addAll(SatoUtil.systemPropertiesAndEnvironmentVaribables());
+			items.addAll(konfig.getUserProps().listOf());
+			String after = SatoUtil.occupyCoins(source, items);
 			if(!StrUtil.equals(source, after)) {
 				C.pl(source + " = " + after);
 				source = after;

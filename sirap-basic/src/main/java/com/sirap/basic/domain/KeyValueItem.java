@@ -18,6 +18,10 @@ public class KeyValueItem extends MexItem implements Comparable<KeyValueItem> {
 		this.value = value;
 	}
 	
+	public Object getValue() {
+		return value;
+	}
+
 	public boolean isMatched(String keyWord) {
 		if(isRegexMatched(key, keyWord)) {
 			return true;

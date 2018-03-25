@@ -50,12 +50,24 @@ public class TypedKeyValueItem extends KeyValueItem {
 	}
 
 	public String toString() {
-		String classInfo = "";
-		if(!(value instanceof String)) {
-			classInfo = value.getClass().getName() + "#";
+		String options = "";
+		StringBuffer sb = sb();
+		if(OptionUtil.readBooleanPRI(options, "t", true)) {
+			sb.append("[" + type + "] ");
 		}
-		String msg = StrUtil.occupy("{0}={2}{1}", key, value, classInfo);
-		return msg;
+		if(OptionUtil.readBooleanPRI(options, "k", true)) {
+			sb.append(key).append(" ");
+		}
+		sb.append(OptionUtil.readString(options, "conn", "="));
+		if(OptionUtil.readBooleanPRI(options, "v", true)) {
+			sb.append(" ");
+			if(!(value instanceof String)) {
+				sb.append(value.getClass().getName() + "#");
+			}
+			sb.append(value);
+		}
+		
+		return sb.toString();
 	}
 	
 	@Override
