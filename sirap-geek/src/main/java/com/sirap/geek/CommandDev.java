@@ -73,15 +73,22 @@ public class CommandDev extends CommandBase {
 				solo = "^" + solo + "$";
 			}
 			List<TypedKeyValueItem> items = Lists.newArrayList();
-			if(OptionUtil.readBooleanPRI(options, "p", true)) {
+			if(OptionUtil.readBooleanPRI(options, "s", true)) {
 				List<TypedKeyValueItem> sato = SatoUtil.SYSTEM_PROPERTIES;
 				if(!EmptyUtil.isNullOrEmpty(solo)) {
 					sato = CollUtil.filter(sato, solo);
 				}
 				items.addAll(sato);
 			}
-			if(OptionUtil.readBooleanPRI(options, "v", true)) {
+			if(OptionUtil.readBooleanPRI(options, "e", true)) {
 				List<TypedKeyValueItem> sato = SatoUtil.ENVIRONMENT_VARIABLES;
+				if(!EmptyUtil.isNullOrEmpty(solo)) {
+					sato = CollUtil.filter(sato, solo);
+				}
+				items.addAll(sato);
+			}
+			if(OptionUtil.readBooleanPRI(options, "u", false)) {
+				List<TypedKeyValueItem> sato = g().getUserProps().listOf();
 				if(!EmptyUtil.isNullOrEmpty(solo)) {
 					sato = CollUtil.filter(sato, solo);
 				}
@@ -103,7 +110,7 @@ public class CommandDev extends CommandBase {
 				for(TypedKeyValueItem item : items) {
 					List<String> sons = item.valueItemInLines(sep);
 					if(sons.size() > 1) {
-						if(OptionUtil.readBooleanPRI(options, "s", true)) {
+						if(OptionUtil.readBooleanPRI(options, "sort", true)) {
 							CollUtil.sortIgnoreCase(sons);
 						}
 						gras.add(item.toPrint(OptionUtil.mergeOptions("-v", options)));

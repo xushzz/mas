@@ -75,7 +75,7 @@ public class SatoUtil {
 				XXXUtil.alert(msg, key, StrUtil.connectWithLineSeparator(sato));
 			}
 			
-			String value = sato.get(0).getValue() + "";
+			String value = sato.get(0).getValueX();
 			temp = temp.replace(whole, value.replace(File.separatorChar, '/'));
 		}
 		

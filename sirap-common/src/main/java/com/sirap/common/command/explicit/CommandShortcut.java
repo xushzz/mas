@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import com.sirap.basic.domain.TypedKeyValueItem;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.OptionUtil;
@@ -56,9 +57,10 @@ public class CommandShortcut extends CommandBase {
 			}
 		}
 		
-		String shortcutCommand = SimpleKonfig.g().getUserValueOf(command);
-		if(shortcutCommand != null) {
-			C.pl(command + "=" + shortcutCommand);
+		TypedKeyValueItem entry = SimpleKonfig.g().getUserConfigEntry(command);
+		if(entry != null) {
+			String shortcutCommand = entry.getValueX();
+			C.pl(entry.getKey() + "=" + shortcutCommand);
 			boolean notYetStashed = Stash.g().read(Stash.KEY_USER_INPUT_TARGET) == null;
 			if(notYetStashed) {
 				boolean hasSpecifiedTarget = !EmptyUtil.isNullOrEmpty(target.getValue());

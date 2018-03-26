@@ -75,23 +75,23 @@ public class InputAnalyzer {
 	}
 
 	public void analyze() {
+		String[] sucker = suckOptions(input);
+		String remainedInput = sucker[0];
+		options = sucker[1];
 		int idxExport = whereToSplit();
 		if(idxExport >= 0) {
-			String temp= input.substring(0, idxExport).trim();
+			String temp= remainedInput.substring(0, idxExport).trim();
 			command = removeEscape(temp);
 			
-			temp = input.substring(idxExport + 1).trim();			
+			temp = remainedInput.substring(idxExport + 1).trim();			
 			targetStr = removeEscape(temp);
 			
 			target = parseTarget(targetStr);
 		} else {
-			command = removeEscape(input);
+			command = removeEscape(remainedInput);
 			target = new TargetConsole(true);
 		}
 		
-		String[] sucker = suckOptions(command);
-		command = sucker[0];
-		options = sucker[1];
 		command = command.replace("!$", "$");
 	}
 	

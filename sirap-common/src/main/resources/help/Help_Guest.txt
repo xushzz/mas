@@ -9,7 +9,10 @@
 search             the aforementioned rules apply for any other searching commands
 search             such as 'ch fire', 'F: water' and so on
 any ${user.dir}    replace given expression with values in system props, env vars or user config if whole matched
-options            not allow space and comma, replace with \\s or \\c, $name=A\sB\\sC, means name is "A\sB C"
+options            whole expression must 1) start with $ 2) contain no space and 3) sub options separated by comma
+options            must 4) be at the beginning or end of the whole command
+options            must be separated by space with other part of the command
+options            use \\s and \\c to express space and comma respectively, $K=A\\cB\\sC, means name is "A,B C"
 quit               ${guest.quits}
 ABC $+new          any operation could be performed in a new thread, options: $+new
 ABC>$              the yielded files will be copied to folder export,!> escape export, !$ escape options

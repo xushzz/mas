@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.sirap.basic.domain.TypedKeyValueItem;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.framework.SimpleKonfig;
@@ -82,7 +83,7 @@ public class DBHelper {
 	}
 	
 	public static Map<String, DBConfigItem> getAllDBConfigItems() {
-		Map<String, DBConfigItem> map = getDBRecordsMap(SimpleKonfig.g().getUserProps().getContainer());
+		Map<String, DBConfigItem> map = getDBRecordsMap(SimpleKonfig.g().getUserProps().listOf());
 
 		DBConfigItem instash = (DBConfigItem)Stash.g().read(KEY_DB_CONFIG_FLY);
 		if(instash != null) {
@@ -99,28 +100,27 @@ public class DBHelper {
 		return record;
 	}
 
-	private static Map<String, DBConfigItem> getDBRecordsMap(Map<String, String> configs) {
+	private static Map<String, DBConfigItem> getDBRecordsMap(List<TypedKeyValueItem> configs) {
 		String keywords = "url|who";
 		List<String> list = StrUtil.split(keywords, '|');
 		String regex = "(.*?)\\.(" + keywords + ")";
 		
-		Iterator<String> it = configs.keySet().iterator();
-		Map<String, DBConfigItem> map = new HashMap<>();
-		while(it.hasNext()) {
-			String key = it.next();
+		Map<String, DBConfigItem> store = new HashMap<>();
+		for(TypedKeyValueItem config : configs) {
+			String key = config.getKey();
 			String[] entry = StrUtil.parseParams(regex, key);
 			if(entry == null) {
 				continue;
 			}
 			
 			String dbName = entry[0];
-			DBConfigItem record = map.get(dbName);
+			DBConfigItem record = store.get(dbName);
 			if(record == null) {
 				record = new DBConfigItem(dbName);
-				map.put(dbName, record);
+				store.put(dbName, record);
 			}
 			
-			String value = configs.get(key);
+			String value = config.getValueX();
 			String attribute = entry[1];
 			int index = list.indexOf(attribute);
 			if(index == 0) {
@@ -137,10 +137,10 @@ public class DBHelper {
 		}
 		
 		Map<String, DBConfigItem> map2 = new HashMap<>();
-		it = map.keySet().iterator();
+		Iterator<String> it = store.keySet().iterator();
 		while(it.hasNext()) {
 			String key = it.next();
-			DBConfigItem record = map.get(key);
+			DBConfigItem record = store.get(key);
 			if(record.isValid()) {
 				map2.put(key, record);
 			}

@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.List;
 
 import com.sirap.basic.component.MexedMap;
+import com.sirap.basic.domain.TypedKeyValueItem;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
@@ -27,7 +28,7 @@ public abstract class Konfig {
 	protected MexedMap userProperties = new MexedMap();
 
 	protected void loadSystemConfigDetail() {
-		systemProperties.getContainer().clear();
+		systemProperties.clear();
 		
 		InputStream is = getClass().getResourceAsStream(KONFIG_FILE);
 		if(is == null) {
@@ -46,13 +47,13 @@ public abstract class Konfig {
 			cat = IOUtil.charsetOfStream(getClass().getResourceAsStream(EXTRA_FILE));
 			temp = IOUtil.readKeyValuesIntoMexedMap(is, cat);
 			if(temp != null) {
-				systemProperties.getContainer().putAll(temp.getContainer());
+				systemProperties.putAll(temp);
 			}
 		}
 	}
 	
 	protected void loadUserConfigDetail() {
-		userProperties.getContainer().clear();
+		userProperties.clear();
 		
 		if(userConfigFile == null) {
 			C.pl("[Configuration] User config file unavailable, please check program arguments.");
@@ -106,6 +107,10 @@ public abstract class Konfig {
 
 	public String getUserValueOf(String key) {
 		return userProperties.get(key, null);
+	}
+
+	public TypedKeyValueItem getUserConfigEntry(String key) {
+		return userProperties.getEntryIgnorecase(key);
 	}
 
 	public String getUserValueOf(String key, String defaulIfNull) {

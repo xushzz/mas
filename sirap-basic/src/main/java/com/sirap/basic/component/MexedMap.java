@@ -12,10 +12,13 @@ import java.util.TreeMap;
 import com.google.common.collect.Lists;
 import com.sirap.basic.domain.TypedKeyValueItem;
 import com.sirap.basic.math.CircularItemsDetector;
+import com.sirap.basic.util.CollUtil;
+import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.SatoUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.TrumpUtil;
+import com.sirap.basic.util.XXXUtil;
 
 public class MexedMap {
 	
@@ -32,7 +35,7 @@ public class MexedMap {
 			String key = it.next();
 			String value = container.get(key);
 			TypedKeyValueItem item = new TypedKeyValueItem(key, value);
-			item.setType("UserConfig Property");
+			item.setType("User Config");
 			items.add(item);
 		}
 		
@@ -44,7 +47,7 @@ public class MexedMap {
 		List<TypedKeyValueItem> satos = SatoUtil.systemPropertiesAndEnvironmentVaribables();
 		while(it.hasNext()) {
 			String key = it.next();
-			String origin = container.get(key);
+			String origin = getIgnorecase(key);
 			String temp = TrumpUtil.decodeMixedTextBySIRAP(origin, passcode);
 			String finale = SatoUtil.occupyCoins(temp, satos);
 			container.put(key, finale);
@@ -70,8 +73,36 @@ public class MexedMap {
 		return get(key, key);
 	}
 
-	public String get(String key) {
-		return container.get(key);
+//	public String get(String key) {
+//		return container.get(key);
+//	}
+	
+	public String getIgnorecase(String key) {
+		String criteria = "^" + key + "$";
+		List<TypedKeyValueItem> sato = CollUtil.filter(listOf(), criteria);
+		if(EmptyUtil.isNullOrEmpty(sato)) {
+			return null;
+		}
+		if(sato.size() > 1) {
+			String msg = "More than one matched items for '{0}':\n{1}";
+			XXXUtil.alert(msg, key, StrUtil.connectWithLineSeparator(sato));
+		}
+		
+		return sato.get(0).getValueX();
+	}
+	
+	public TypedKeyValueItem getEntryIgnorecase(String key) {
+		String criteria = "^" + key + "$";
+		List<TypedKeyValueItem> sato = CollUtil.filter(listOf(), criteria);
+		if(EmptyUtil.isNullOrEmpty(sato)) {
+			return null;
+		}
+		if(sato.size() > 1) {
+			String msg = "More than one matched items for '{0}':\n{1}";
+			XXXUtil.alert(msg, key, StrUtil.connectWithLineSeparator(sato));
+		}
+		
+		return sato.get(0);
 	}
 	
 	public int getNumber(String key) {
@@ -79,7 +110,7 @@ public class MexedMap {
 	}
 	
 	public int getNumber(String key, int defaultIfNull) {
-		String strValue = container.get(key);
+		String strValue = getIgnorecase(key);
 		if(strValue == null) {
 			return defaultIfNull;
 		} else {
@@ -89,12 +120,20 @@ public class MexedMap {
 	}
 
 	public String get(String key, String defaultIfNull) {
-		String value = container.get(key);
+		String value = getIgnorecase(key);
 		return value != null ? value.trim() : defaultIfNull;
 	}
 
-	public Map<String, String> getContainer() {
+	public Map<String, String> getContainerX() {
 		return container;
+	}
+	
+	public void clear() {
+		container.clear();
+	}
+	
+	public void putAll(MexedMap another) {
+		container.putAll(another.container);
 	}
 	
 	public List<String> getValuesByKeyword(String keyword) {
@@ -127,7 +166,7 @@ public class MexedMap {
 		Iterator<String> it = container.keySet().iterator();
 		while(it.hasNext()) {
 			String key = it.next();
-			String value = container.get(key);
+			String value = getIgnorecase(key);
 			if(StrUtil.contains(key, keyword)) {
 				sortedMap.put(key, value);
 			}
@@ -143,7 +182,7 @@ public class MexedMap {
 		Iterator<String> it = container.keySet().iterator();
 		while(it.hasNext()) {
 			String key = it.next();
-			String value = container.get(key);
+			String value = getIgnorecase(key);
 			entries.add(key + "=" + value);
 		}
 		

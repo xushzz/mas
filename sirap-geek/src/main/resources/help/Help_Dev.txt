@@ -1,14 +1,15 @@
 ah A,B,C,D         split by comma and print as list
 ah A-B-C-D $s=-    split by - and print as list, option s=SPLITTER
 ah A,B,C $+s       split, sort and print list
-echo               list all environment variables and system properties, about 114 entries
-echo $-t           list all environment variables and system properties, hide type info
-echo path          list property of path, and split it by file pathSeparator then list out, only and one
-echo home		   list properties or variables whose name contains keyword home
-echo $+L           list all values in lines format, if it contains more than one item
-echo $+L,-s        list all values in lines format, if it contains more than one item, keep items as is
-echo $-v           don't show variables, only system properties
-echo $-p           don't show properties, only environment variables
+echo               regarding entries 1) system properties 2) environment variables 3) user configuration
+echo               list 1) system properties 2) environment variables, about 114 entries
+echo $+u,-e,-s     list 3) user configuration
+echo $-t           list entries without type info
+echo path          list specific entry path, and split the value by file pathSeparator in lines format
+echo home		   list entries whose key contains keyword home
+echo :jdk          list entries whose value contains keyword jdk
+echo $+L           list entries and split its value in sorted lines format, if containing more than one item
+echo $+L,-sort     list entries and split its value in lines format, if containing more than one item
 maven              display home and repository for Maven, mvn help:system
 pwd                present working directory, aka user.dir
 ~                  display user home, aka user.home
