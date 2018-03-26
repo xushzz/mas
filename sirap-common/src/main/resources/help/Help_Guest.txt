@@ -13,6 +13,8 @@ options            whole expression must 1) start with $ 2) contain no space and
 options            must 4) be at the beginning or end of the whole command
 options            must be separated by space with other part of the command
 options            use \\s and \\c to express space and comma respectively, $K=A\\cB\\sC, means name is "A,B C"
+suck               enable to suck options, default enabled
+nosuck             disable to suck options
 quit               ${guest.quits}
 ABC $+new          any operation could be performed in a new thread, options: $+new
 ABC>$              the yielded files will be copied to folder export,!> escape export, !$ escape options

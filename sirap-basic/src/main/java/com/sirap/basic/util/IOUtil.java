@@ -34,7 +34,7 @@ import java.util.Properties;
 
 import com.google.common.collect.Maps;
 import com.sirap.basic.component.Konstants;
-import com.sirap.basic.component.MexedMap;
+import com.sirap.basic.component.MexMap;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.output.ExcelParams;
 import com.sirap.basic.output.PDFParams;
@@ -232,7 +232,7 @@ public class IOUtil {
 		return countArr;
 	}
 	
-	public static MexedMap createMexedMapByRegularFile(String filePath) {
+	public static MexMap createMexedMapByRegularFile(String filePath) {
 		try {
 			InputStream inputStream = new FileInputStream(filePath);
 			String cat = charsetOfTextFile(filePath);
@@ -269,9 +269,9 @@ public class IOUtil {
 		return props;
 	}
 	
-	public static MexedMap readKeyValuesIntoMexedMap(InputStream stream, String charset) {
+	public static MexMap readKeyValuesIntoMexedMap(InputStream stream, String charset) {
 		XXXUtil.nullCheck(stream, "InputStream stream");
-		MexedMap map = new MexedMap();
+		MexMap map = new MexMap();
 		try {
 			BufferedReader reader =new BufferedReader(new InputStreamReader(stream, charset));
 			String record;

@@ -4,7 +4,7 @@ import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.util.StrUtil;
 
 @SuppressWarnings("serial")
-public class MexedOption extends MexItem {
+public class MexOption extends MexItem {
 
 	private String name;
 	private Object value;
@@ -33,7 +33,7 @@ public class MexedOption extends MexItem {
 	 */
 	@Override
 	public boolean parse(String source) {
-		String regex = "([+\\-])(\\w+)";
+		String regex = "([+\\-])(\\S+)";
 		String[] params = StrUtil.parseParams(regex, source);
 		
 		if(params != null) {
@@ -43,7 +43,7 @@ public class MexedOption extends MexItem {
 			return true;
 		}
 		
-		regex = "(\\w+)\\s*=\\s*(.+)";
+		regex = "(\\S+)\\s*=\\s*(.+)";
 		params = StrUtil.parseParams(regex, source);
 		if(params != null) {
 			name = params[0];
@@ -62,7 +62,7 @@ public class MexedOption extends MexItem {
 	
 	@Override
 	public boolean equals(Object obj) {
-		MexedOption mo = (MexedOption)obj;
+		MexOption mo = (MexOption)obj;
 		return StrUtil.equals(name, mo.getName());
 	}
 	

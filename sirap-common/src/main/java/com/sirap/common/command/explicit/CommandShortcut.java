@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.sirap.basic.domain.TypedKeyValueItem;
 import com.sirap.basic.tool.C;
+import com.sirap.basic.tool.D;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
@@ -60,7 +61,7 @@ public class CommandShortcut extends CommandBase {
 		TypedKeyValueItem entry = SimpleKonfig.g().getUserConfigEntry(command);
 		if(entry != null) {
 			String shortcutCommand = entry.getValueX();
-			C.pl(entry.getKey() + "=" + shortcutCommand);
+			C.pl("[Shortcut] " + entry.getKey() + "=" + shortcutCommand);
 			boolean notYetStashed = Stash.g().read(Stash.KEY_USER_INPUT_TARGET) == null;
 			if(notYetStashed) {
 				boolean hasSpecifiedTarget = !EmptyUtil.isNullOrEmpty(target.getValue());
@@ -68,7 +69,15 @@ public class CommandShortcut extends CommandBase {
 					Stash.g().place(Stash.KEY_USER_INPUT_TARGET, target);
 				}
 			}
-			Janitor.g().process(shortcutCommand);
+			if(isDebug()) {
+				String msg = "before process '{0}', ${1}  {2}";
+				D.ts(StrUtil.occupy(msg, shortcutCommand, options, getClass().getName()));
+			}
+			Janitor.g().process(shortcutCommand, options);
+			if(isDebug()) {
+				String msg = "after process '{0}', ${1}  {2}";
+				D.ts(StrUtil.occupy(msg, shortcutCommand, options, getClass().getName()));
+			}
 			
 			return true;
 		}

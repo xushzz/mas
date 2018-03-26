@@ -20,11 +20,11 @@ import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.TrumpUtil;
 import com.sirap.basic.util.XXXUtil;
 
-public class MexedMap {
+public class MexMap {
 	
 	private Map<String, String> container = new LinkedHashMap<String, String>();
 	
-	public MexedMap() {
+	public MexMap() {
 		
 	}
 	
@@ -59,7 +59,7 @@ public class MexedMap {
 		return james.detect();
 	}
 	
-	public MexedMap(Map<String, String> container) {
+	public MexMap(Map<String, String> container) {
 		if(container != null) {
 			this.container = container;
 		}
@@ -132,7 +132,7 @@ public class MexedMap {
 		container.clear();
 	}
 	
-	public void putAll(MexedMap another) {
+	public void putAll(MexMap another) {
 		container.putAll(another.container);
 	}
 	

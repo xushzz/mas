@@ -60,8 +60,13 @@ public class Janitor extends Checker {
 		
 		return commandList;
 	}
-
-    public void process(String origin) {
+	
+	public int depth;
+	public void process(String origin) {
+		process(origin, null);
+	}
+	
+    public void process(String origin, String highOptions) {
     	String source = origin;
 		try {
 			List<TypedKeyValueItem> items = Lists.newArrayList();
@@ -72,9 +77,9 @@ public class Janitor extends Checker {
 				C.pl(source + " = " + after);
 				source = after;
 			}
-			
 		} catch (MexException me) {
 			C.pl(me.getMessage());
+			return;
 		}
 
     	long start = System.currentTimeMillis();
@@ -93,22 +98,28 @@ public class Janitor extends Checker {
     		}
     		return;
     	}
+
+    	if(StrUtil.equals(input, "suck")) {
+    		SimpleKonfig.g().setSuckOptionsEnabled(true);
+    		C.pl2("Enable to suck options.");
+    	} else if(StrUtil.equals(input, "nosuck")) {
+    		SimpleKonfig.g().setSuckOptionsEnabled(false);
+    		C.pl2("Disable to suck options.");
+    	} 
     	
     	InputAnalyzer fara = new InputAnalyzer(input);
-    	String command = fara.getCommand();
-    	String options = fara.getOptions();
-    	Target target = fara.getTarget();
+    	fara.setOptions(OptionUtil.mergeOptions(highOptions, fara.getOptions()));
     	
-    	boolean newThread = OptionUtil.readBooleanPRI(options, "new", false);
+    	boolean newThread = OptionUtil.readBooleanPRI(fara.getOptions(), "new", false);
     	if(newThread) {
     		ThreadUtil.executeInNewThread(new Runnable() {
 				@Override
 				public void run() {
-					executionUnit(input, command, options, target);
+					executionUnit(input, fara.getCommand(), fara.getOptions(), fara.getTarget());
 				}
 			});
     	} else {
-    		executionUnit(input, command, options, target);
+    		executionUnit(input, fara.getCommand(), fara.getOptions(), fara.getTarget());
     	}
     }
     

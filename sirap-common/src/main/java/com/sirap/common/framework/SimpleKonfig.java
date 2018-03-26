@@ -43,6 +43,7 @@ public class SimpleKonfig extends Konfig {
 	private boolean isHistoryEnabled;
 	private boolean isCaptureSoundOn;
 	private boolean isGeneratedFileAutoOpen;
+	private boolean isSuckOptionsEnabled = true;
 	private String securityPasscode = "mike";
 	private String charsetInUse;
 	
@@ -213,6 +214,7 @@ public class SimpleKonfig extends Konfig {
 		sb.append(" sound" + getDisplayEnableSign(isCaptureSoundOn));
 		sb.append(" autoOpen" + getDisplayEnableSign(isGeneratedFileAutoOpen));
 		sb.append(" timestamp" + getDisplayEnableSign(isExportWithTimestampEnabled));
+		sb.append(" suck" + getDisplayEnableSign(isSuckOptionsEnabled));
 		//sb.append(" " + getDisplaySignInt("server", DateUtil.TIMEZONE_JVM));
 		
 		return sb.toString();
@@ -332,6 +334,14 @@ public class SimpleKonfig extends Konfig {
 		this.isGeneratedFileAutoOpen = flag;
 	}
 	
+	public boolean isSuckOptionsEnabled() {
+		return isSuckOptionsEnabled;
+	}
+
+	public void setSuckOptionsEnabled(boolean flag) {
+		this.isSuckOptionsEnabled = flag;
+	}
+
 	public boolean isYes(String key) {
 		boolean flag = Konstants.FLAG_YES.equalsIgnoreCase(getUserValueOf(key));
 		return flag;

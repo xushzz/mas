@@ -8,7 +8,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import com.sirap.basic.component.Konstants;
-import com.sirap.basic.component.MexedMap;
+import com.sirap.basic.component.MexMap;
 import com.sirap.basic.search.MexFilter;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.CollUtil;
@@ -92,7 +92,7 @@ public class TimeZoneManager {
 	
 	@SuppressWarnings("unchecked")
 	private static List<TZRecord> readExtraTimezones() {
-		MexedMap mm = SimpleKonfig.g().getProps();
+		MexMap mm = SimpleKonfig.g().getProps();
 		if(mm == null) {
 			return Collections.EMPTY_LIST;
 		}

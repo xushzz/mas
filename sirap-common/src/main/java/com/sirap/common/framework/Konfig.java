@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 
-import com.sirap.basic.component.MexedMap;
+import com.sirap.basic.component.MexMap;
 import com.sirap.basic.domain.TypedKeyValueItem;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.FileUtil;
@@ -24,8 +24,8 @@ public abstract class Konfig {
 	
 	protected String originalStorage;
 	protected String userConfigFile;
-	protected MexedMap systemProperties = new MexedMap();
-	protected MexedMap userProperties = new MexedMap();
+	protected MexMap systemProperties = new MexMap();
+	protected MexMap userProperties = new MexMap();
 
 	protected void loadSystemConfigDetail() {
 		systemProperties.clear();
@@ -35,7 +35,7 @@ public abstract class Konfig {
 			XXXUtil.alert("[Configuration] System config file unavailable, please check [" + KONFIG_FILE + "].");
 		}
 		String cat = IOUtil.charsetOfStream(getClass().getResourceAsStream(KONFIG_FILE));
-		MexedMap temp = IOUtil.readKeyValuesIntoMexedMap(is, cat);
+		MexMap temp = IOUtil.readKeyValuesIntoMexedMap(is, cat);
 		if(temp != null) {
 			systemProperties = temp;
 		}
@@ -69,11 +69,11 @@ public abstract class Konfig {
 	
 	protected abstract void setValues();
 
-	public MexedMap getProps() {
+	public MexMap getProps() {
 		return systemProperties;
 	}
 
-	public MexedMap getUserProps() {
+	public MexMap getUserProps() {
 		return userProperties;
 	}
 

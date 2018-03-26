@@ -71,7 +71,7 @@ public class SatoUtil {
 				continue;
 			}
 			if(sato.size() > 1) {
-				String msg = "More than one matched items for '{0}':\n{1}";
+				String msg = "More than one matched items for '{0}':\n{1}\n";
 				XXXUtil.alert(msg, key, StrUtil.connectWithLineSeparator(sato));
 			}
 			

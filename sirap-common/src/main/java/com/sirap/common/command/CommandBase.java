@@ -90,10 +90,14 @@ public abstract class CommandBase {
 	
 	public boolean process() {
 		try {
-			boolean flag = handle();
-			
 			if(isDebug()) {
-				D.ts(getClass());
+				String msg = "before handle '{0}', ${1}  {2}";
+				D.ts(StrUtil.occupy(msg, command, options, getClass().getName()));
+			}
+			boolean flag = handle();
+			if(isDebug()) {
+				String msg = "after handle '{0}', ${1}  {2}";
+				D.ts(StrUtil.occupy(msg, command, options, getClass().getName()));
 			}
 			if(!flag) {
 				return false;

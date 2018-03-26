@@ -2,11 +2,10 @@ package com.sirap.common.framework.command;
 
 import java.io.File;
 import java.util.List;
-import java.util.regex.Matcher;
 
-import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.util.FileUtil;
+import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.framework.SimpleKonfig;
 import com.sirap.common.framework.command.target.Target;
@@ -19,15 +18,9 @@ public class InputAnalyzer {
 	public static final String EXPORT_FLAG = ">";
 	public static final String OPTIONS_FLAG = "$";
 	
-	protected String input;
 	private String command;
-	private String targetStr;
-	private Target target;
 	private String options;
-	
-	public String getInput() {
-		return input;
-	}
+	private Target target;
 
 	public String getCommand() {
 		return command;
@@ -36,18 +29,20 @@ public class InputAnalyzer {
 	public String getOptions() {
 		return options;
 	}
+	
+	public void setOptions(String options) {
+		this.options = options;
+	}
 
 	public Target getTarget() {
 		return target;
 	}
 	
 	public InputAnalyzer(String input) {
-		this.input = input;
-		analyze();
+		analyze(input);
 	}
 	
-	public int whereToSplit() {
-		String source = input;
+	public int whereToSplit(String source) {
 		int indexOfGT = source.indexOf(EXPORT_FLAG);
 		while(indexOfGT >= 0) {
 			
@@ -74,44 +69,28 @@ public class InputAnalyzer {
 		return isMatched;
 	}
 
-	public void analyze() {
-		String[] sucker = suckOptions(input);
-		String remainedInput = sucker[0];
-		options = sucker[1];
-		int idxExport = whereToSplit();
+	public void analyze(String rawInput) {
+		String tempInput = rawInput;
+		if(SimpleKonfig.g().isSuckOptionsEnabled()) {
+			List<String> sucker = OptionUtil.suckOptions(tempInput);
+			tempInput = sucker.get(0);
+			options = sucker.get(1);
+		}
+		int idxExport = whereToSplit(tempInput);
 		if(idxExport >= 0) {
-			String temp= remainedInput.substring(0, idxExport).trim();
+			String temp= tempInput.substring(0, idxExport).trim();
 			command = removeEscape(temp);
 			
-			temp = remainedInput.substring(idxExport + 1).trim();			
-			targetStr = removeEscape(temp);
+			temp = tempInput.substring(idxExport + 1).trim();			
+			String targetStr = removeEscape(temp);
 			
 			target = parseTarget(targetStr);
 		} else {
-			command = removeEscape(remainedInput);
+			command = removeEscape(tempInput);
 			target = new TargetConsole(true);
 		}
 		
 		command = command.replace("!$", "$");
-	}
-	
-	public static String[] suckOptions(String source) {
-		List<String> regexes = Lists.newArrayList();
-		regexes.add("^\\$(\\S+)\\s");
-		regexes.add("\\s\\$(\\S+)\\s");
-		regexes.add("\\s\\$(\\S+)$");
-		
-		String temp = source.trim();
-		
-		for(String regex : regexes) {
-			Matcher ma = StrUtil.createMatcher(regex, temp);
-			if(ma.find()) {
-				String remain = temp.replace(ma.group(0), " ").trim();
-				return new String[]{remain, ma.group(1)};
-			}
-		}
-		
-		return new String[]{temp, null};
 	}
 	
 	private String removeEscape(String source) {

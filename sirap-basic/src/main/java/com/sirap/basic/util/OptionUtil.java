@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 
 import com.google.common.collect.Lists;
-import com.sirap.basic.component.MexedOption;
+import com.sirap.basic.component.MexOption;
 import com.sirap.basic.exception.DuplicationException;
 import com.sirap.basic.exception.MexException;
 
@@ -107,11 +107,11 @@ public class OptionUtil {
 	}
 	
 	public static String mergeOptions(String highPriority, String lowPriority) {
-		List<MexedOption> listA = parseOptions(highPriority);
-		List<MexedOption> listB = parseOptions(lowPriority);
+		List<MexOption> listA = parseOptions(highPriority);
+		List<MexOption> listB = parseOptions(lowPriority);
 		
-		List<MexedOption> listAll = Lists.newArrayList(listA);
-		for(MexedOption itemB : listB) {
+		List<MexOption> listAll = Lists.newArrayList(listA);
+		for(MexOption itemB : listB) {
 			if(listA.indexOf(itemB) >= 0) {
 				continue;
 			}
@@ -122,15 +122,15 @@ public class OptionUtil {
 		return StrUtil.connectWithComma(listAll);
 	}
 	
-	public static List<MexedOption> parseOptions(String source) {
+	public static List<MexOption> parseOptions(String source) {
 		if(EmptyUtil.isNullOrEmpty(source)) {
 			return Lists.newArrayList();
 		}
-		List<MexedOption> options = new ArrayList<>();
+		List<MexOption> options = new ArrayList<>();
 		
 		List<String> params = StrUtil.split(source);
 		for(String param : params) {
-			MexedOption mo = new MexedOption();
+			MexOption mo = new MexOption();
 			if(mo.parse(param)) {
 				options.add(mo);
 			}
@@ -138,6 +138,7 @@ public class OptionUtil {
 		
 		return options;
 	}
+	
 	/***
 	 * alphanumeric and underscore, aka \w
 	 * good: 12k,hu232,ko232,232,1999,k_3812
@@ -154,5 +155,44 @@ public class OptionUtil {
 		if(count > 1) {
 			throw new DuplicationException("Found duplicative keys: {0}", key);
 		}
+	}
+	
+	public static void suckOptions(StringBuffer source, StringBuffer options) {
+		List<String> regexes = Lists.newArrayList();
+		//[$x=12 ]
+		//[ $x=14 ]
+		//[ $x=15]
+		//[$x=16]
+		regexes.add("^\\$(\\S+)\\s");
+		regexes.add("\\s\\$(\\S+)\\s");
+		regexes.add("\\s\\$(\\S+)$");
+		regexes.add("^\\$(\\S+)$");
+		
+		String tempSource = source.toString().trim();
+
+		for(String regex : regexes) {
+			Matcher ma = StrUtil.createMatcher(regex, tempSource);
+			if(ma.find()) {
+				tempSource = tempSource.replace(ma.group(0), " ").trim();
+				source.setLength(0);
+				source.append(tempSource);
+				
+				String tempOptions = ma.group(1);
+				String merge = OptionUtil.mergeOptions(options.toString(), tempOptions);
+				options.setLength(0);
+				options.append(merge);
+				suckOptions(source, options);
+				break;
+			}
+		}
+	}
+	
+	public static List<String> suckOptions(String raw) {
+		StringBuffer source = StrUtil.sb(raw);
+		StringBuffer options = StrUtil.sb();
+		
+		suckOptions(source, options);
+		
+		return Lists.newArrayList(source.toString(), options.toString());
 	}
 }
