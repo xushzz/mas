@@ -55,15 +55,11 @@ public class IOUtil {
 	}
 	
 	public static String readURL(String address, String charset) {
-		return readURL(address, charset, true);
-	}
-
-	public static String readURL(String address, String charset, boolean printException) {
 		WebReader xiu = new WebReader(address, charset);
 		return xiu.readIntoString();
 	}
 
-	public static List<String> readURLIntoList(String address, String charset, boolean printException) {
+	public static List<String> readURLIntoList(String address, String charset) {
 		WebReader xiu = new WebReader(address, charset);
 		return xiu.readIntoList();
 	}

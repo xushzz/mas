@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
+import com.sirap.basic.tool.C;
 import com.sirap.basic.util.ArisUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.IOUtil;
@@ -58,12 +59,17 @@ public class CommandAris extends CommandBase {
 		params = parseParams(regex);
 		if(params != null) {
 			String name = params[1].replace('/', '.').replace('\\', '.').replaceAll("\\.class$", "");
-			String temp = "https://gitee.com/thewire/jdk8/raw/master/src/{0}.java";
-			String url = StrUtil.occupy(temp, name.replace('.', '/'));
-			if(OptionUtil.readBooleanPRI(options, "load", false)) {
-				Janitor.g().process(url);
-			} else if(OptionUtil.readBooleanPRI(options, "code", false)) {
-				export(IOUtil.readURLIntoList(url, g().getCharsetInUse(), true));
+			String slashedName = name.replace('.', '/');
+			boolean download = OptionUtil.readBooleanPRI(options, "load", false);
+			boolean readOnly = OptionUtil.readBooleanPRI(options, "code", false);
+			if(download || readOnly) {
+				String url = ArisUtil.sourceCodeURL(slashedName);
+				if(download) {
+					Janitor.g().process(url, options);
+				} else if(readOnly) {
+					C.pl("Fetching... " + url);
+					export(IOUtil.readURLIntoList(url, g().getCharsetInUse()));
+				}
 			} else {
 				boolean showSameClassesInSamePackage = !EmptyUtil.isNullOrEmpty(params[2]);
 				String mexCriteria = params[3];
@@ -77,7 +83,7 @@ public class CommandAris extends CommandBase {
 				} else {
 					String method = OptionUtil.readString(options, "m");
 					if(!EmptyUtil.isNullOrEmpty(method)) {
-						temp = XCodeUtil.urlDecodeUTF8(method);
+						String temp = XCodeUtil.urlDecodeUTF8(method);
 						items = GeekExtractors.fetchJDK7Api(name.replace('.', '/'), temp);
 						export(items);
 					} else {

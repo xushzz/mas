@@ -533,7 +533,7 @@ public class CommandFile extends CommandBase {
 		if(params != null) {
 			String regex = params[0].trim();
 			String pageUrl = equiHttpProtoclIfNeeded(params[1].trim());
-			String source = IOUtil.readURL(pageUrl, g().getCharsetInUse(), true);
+			String source = IOUtil.readURL(pageUrl, g().getCharsetInUse());
 			if(source != null) {
 				boolean showOrder = OptionUtil.readBooleanPRI(options, "order", false);
 				String itemConnector = OptionUtil.readString(options, "icon", ", ").replace("\\s", " ");

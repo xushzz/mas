@@ -22,6 +22,26 @@ import com.sirap.basic.tool.ArisDetail;
 
 public class ArisUtil {
 	
+	public static final List<String> SIRAP_PROJECTS = StrUtil.split("basic,common,db,executor,extractor,geek,ldap,titus");
+	public static final String TEMP_REPO_SIRAP = "https://raw.githubusercontent.com/acesfullmike/mas/master/sirap-{0}/src/main/java/{1}.java";
+	public static final String TEMP_REPO_THEWIRE = "https://gitee.com/thewire/jdk8/raw/master/src/{0}.java";
+
+	/**
+	 * https://raw.githubusercontent.com/acesfullmike/mas/master/sirap-basic/src/main/java/com/sirap/basic/util/OptionUtil.java
+	 * @param className com/sirap/basic/algo/SM3.java
+	 * @return
+	 */
+	public static String sourceCodeURL(String className) {
+		String regexSirap = "^com/sirap/([^/]+)";
+		String solo = StrUtil.findFirstMatchedItem(regexSirap, className);
+		if(solo != null && SIRAP_PROJECTS.contains(solo)) {
+			String url = StrUtil.occupy(TEMP_REPO_SIRAP, solo, className);
+			return url;
+		} else {
+			return StrUtil.occupy(TEMP_REPO_THEWIRE, className);
+		}
+	}
+	
 	public static String belongsToWhichRuntimeJar(String targetEntryName) {
 		String jreLibrary = getRuntimeLibraryLocation();
 		List<String> names = FileUtil.getAllXXXFiles(jreLibrary, ".jar");

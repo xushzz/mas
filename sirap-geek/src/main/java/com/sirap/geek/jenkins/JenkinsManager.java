@@ -63,7 +63,7 @@ public class JenkinsManager {
 		String fullUrl = StrUtil.occupy(BUILDS_RESULT_URL_TEMPLATE, url, jobName);
 		C.fetching(fullUrl);
 		
-		String source = IOUtil.readURL(fullUrl, null, false);
+		String source = IOUtil.readURL(fullUrl, null);
 		
 		if(source == null) {
 			XXXUtil.alert("This [" + jobName + "] might not be a correct Job name, please check.");
