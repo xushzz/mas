@@ -23,9 +23,12 @@ import com.sirap.basic.util.XXXUtil;
 public class MexMap {
 	
 	private Map<String, String> container = new LinkedHashMap<String, String>();
+	private String type;
 	
-	public MexMap() {
-		
+	public MexMap() {}
+	
+	public MexMap(String type) {
+		this.type = type;
 	}
 	
 	public List<TypedKeyValueItem> listOf() {
@@ -35,7 +38,7 @@ public class MexMap {
 			String key = it.next();
 			String value = container.get(key);
 			TypedKeyValueItem item = new TypedKeyValueItem(key, value);
-			item.setType("User Config");
+			item.setType(type);
 			items.add(item);
 		}
 		
@@ -73,10 +76,6 @@ public class MexMap {
 		return get(key, key);
 	}
 
-//	public String get(String key) {
-//		return container.get(key);
-//	}
-	
 	public String getIgnorecase(String key) {
 		String criteria = "^" + key + "$";
 		List<TypedKeyValueItem> sato = CollUtil.filter(listOf(), criteria);

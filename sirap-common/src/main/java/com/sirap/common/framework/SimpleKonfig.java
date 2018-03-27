@@ -66,7 +66,7 @@ public class SimpleKonfig extends Konfig {
 	}
 	
 	private void loadAndSetValues() {
-		loadSystemConfigDetail();
+		loadInnerConfigDetail();
 		loadUserConfigDetail();
 		
 		setValues();

@@ -94,6 +94,13 @@ public class CommandDev extends CommandBase {
 				}
 				items.addAll(sato);
 			}
+			if(OptionUtil.readBooleanPRI(options, "i", false)) {
+				List<TypedKeyValueItem> sato = g().getProps().listOf();
+				if(!EmptyUtil.isNullOrEmpty(solo)) {
+					sato = CollUtil.filter(sato, solo);
+				}
+				items.addAll(sato);
+			}
 			Collections.sort(items);
 			
 			Boolean showValueItemInLines = OptionUtil.readBoolean(options, "l");

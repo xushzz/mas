@@ -8,6 +8,7 @@ echo $-t           list entries without type info
 echo path          list specific entry path, and split the value by file pathSeparator in lines format
 echo home		   list entries whose key contains keyword home
 echo :jdk          list entries whose value contains keyword jdk
+echo #inner          list entries whose type contains keyword inner
 echo $+L           list entries and split its value in sorted lines format, if containing more than one item
 echo $+L,-sort     list entries and split its value in lines format, if containing more than one item
 maven              display home and repository for Maven, mvn help:system
@@ -35,4 +36,4 @@ E:\abc.jar!/a.txt  list out the content of given entry in given zip file, entry 
 sw F:\a\b\c/de     replace / with \, replace \ with /, then print these two records if any different
 https              list all http status codes
 https 404          get detail explain of given http response code
-ver=3/7/2018, III  GEEK-DEV1.0.31-DaniAlves
+ver=3/28/2018, III  GEEK-DEV1.0.32-MESOS

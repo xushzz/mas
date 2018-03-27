@@ -24,11 +24,11 @@ public abstract class Konfig {
 	
 	protected String originalStorage;
 	protected String userConfigFile;
-	protected MexMap systemProperties = new MexMap();
-	protected MexMap userProperties = new MexMap();
+	protected MexMap innerProperties = new MexMap("Inner Config");
+	protected MexMap userProperties = new MexMap("User Config");
 
-	protected void loadSystemConfigDetail() {
-		systemProperties.clear();
+	protected void loadInnerConfigDetail() {
+		innerProperties.clear();
 		
 		InputStream is = getClass().getResourceAsStream(KONFIG_FILE);
 		if(is == null) {
@@ -37,7 +37,7 @@ public abstract class Konfig {
 		String cat = IOUtil.charsetOfStream(getClass().getResourceAsStream(KONFIG_FILE));
 		MexMap temp = IOUtil.readKeyValuesIntoMexedMap(is, cat);
 		if(temp != null) {
-			systemProperties = temp;
+			innerProperties.putAll(temp);
 		}
 		
 		is = getClass().getResourceAsStream(EXTRA_FILE);
@@ -47,7 +47,7 @@ public abstract class Konfig {
 			cat = IOUtil.charsetOfStream(getClass().getResourceAsStream(EXTRA_FILE));
 			temp = IOUtil.readKeyValuesIntoMexedMap(is, cat);
 			if(temp != null) {
-				systemProperties.putAll(temp);
+				innerProperties.putAll(temp);
 			}
 		}
 	}
@@ -60,7 +60,7 @@ public abstract class Konfig {
 		} else {
 			File file = FileUtil.getIfNormalFile(userConfigFile);
 			if(file != null) {
-				userProperties = IOUtil.createMexedMapByRegularFile(file.getAbsolutePath());
+				userProperties.putAll(IOUtil.createMexedMapByRegularFile(file.getAbsolutePath()));
 			} else {
 				C.pl("[Configuration] User config file unavailable, please check [" + userConfigFile + "].");
 			}
@@ -70,7 +70,7 @@ public abstract class Konfig {
 	protected abstract void setValues();
 
 	public MexMap getProps() {
-		return systemProperties;
+		return innerProperties;
 	}
 
 	public MexMap getUserProps() {
@@ -78,23 +78,23 @@ public abstract class Konfig {
 	}
 
 	public int getNumberValueOf(String key) {
-		return systemProperties.getNumber(key, -7);
+		return innerProperties.getNumber(key, -7);
 	}
 
 	public int getNumberValueOf(String key, int defaulIfNull) {
-		return systemProperties.getNumber(key, defaulIfNull);
+		return innerProperties.getNumber(key, defaulIfNull);
 	}
 
 	public String getValueOf(String key) {
-		return systemProperties.get(key, null);
+		return innerProperties.get(key, null);
 	}
 
 	public String getValueOf(String key, String defaulIfNull) {
-		return systemProperties.get(key, defaulIfNull);
+		return innerProperties.get(key, defaulIfNull);
 	}
 	
 	public List<String> getValuesByKeyword(String keyword) {
-		return systemProperties.getValuesByKeyword(keyword);
+		return innerProperties.getValuesByKeyword(keyword);
 	}
 
 	public int getUserNumberValueOf(String key) {

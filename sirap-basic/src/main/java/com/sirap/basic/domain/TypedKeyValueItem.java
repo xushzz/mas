@@ -18,7 +18,7 @@ public class TypedKeyValueItem extends KeyValueItem {
 	public String getType() {
 		return type;
 	}
-
+	
 	public void setType(String type) {
 		this.type = type;
 	}
@@ -28,7 +28,28 @@ public class TypedKeyValueItem extends KeyValueItem {
 		
 		return items;
 	}
+	
+	@Override
+	public boolean isMatched(String keyWord) {
+		boolean isGood = super.isMatched(keyWord);
+		if(isGood) {
+			return isGood;
+		}
+		
+		String checkValue = StrUtil.parseParam("#(.+)", keyWord);
+		if(checkValue != null) {
+			if(isRegexMatched(type, checkValue)) {
+				return true;
+			}
+			
+			if(StrUtil.contains(type, checkValue)) {
+				return true;
+			}
+		}
 
+		return false;
+	}
+	
 	public String toPrint(String options) {
 		StringBuffer sb = sb();
 		if(OptionUtil.readBooleanPRI(options, "t", true)) {
