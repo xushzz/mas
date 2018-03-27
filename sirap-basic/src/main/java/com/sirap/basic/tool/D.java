@@ -64,6 +64,10 @@ public class D {
 		ls(list, false);
 	}
 	
+	public static void ps(Object line) {
+		C.pl("[" + line + "]");
+	}
+	
 	public static <E extends Object > void ls(List<E> list, boolean neverShowTotal) {
 		XXXUtil.nullCheck(list, "list");
 		

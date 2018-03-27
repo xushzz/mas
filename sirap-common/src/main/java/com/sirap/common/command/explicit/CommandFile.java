@@ -80,7 +80,7 @@ public class CommandFile extends CommandBase {
 		helpMeanings.put("text.max", DEFAULT_TEXT_MAX_SIZE);
 	}
 	
-	@SuppressWarnings("all")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public boolean handle() {
 		solo = parseParam(KEY_MIX + "\\s(.*?)");
@@ -170,19 +170,29 @@ public class CommandFile extends CommandBase {
 		if(file != null) {
 			String filePath = file.getAbsolutePath();
 			
-			if(!target.isFileRelated() && FileOpener.isZipFile(filePath)) {
+			if(OptionUtil.readBooleanPRI(options, "O", false)) {
+				FileOpener.open(filePath, options);
+				return true;
+			}
+			
+			if(target.isFileRelated()) {
+				export(file);
+				return true;
+			}
+			
+			if(FileOpener.isZipFile(filePath)) {
 				List<MexZipEntry> items = ArisUtil.parseZipEntries(filePath);
 				export(items);
 				return true;
 			}
 			
-			if(!target.isFileRelated() && StrUtil.endsWith(filePath, Konstants.DOT_CLASS)) {
+			if(StrUtil.endsWith(filePath, Konstants.DOT_CLASS)) {
 				Class glass = IOUtil.loadClassFile(filePath);
 				export(ArisUtil.getClassDetail(glass, filePath, isDebug()));
 				return true;
 			}
 			
-			if(!target.isFileRelated() && FileOpener.isTextFile(filePath) && options != null) {
+			if(FileOpener.isTextFile(filePath)) {
 				String cat = IOUtil.charsetOfTextFile(file.getAbsolutePath());
 				if(OptionUtil.readBooleanPRI(options, "x", false)) {
 					cat = switchChartset(cat);
@@ -232,21 +242,8 @@ public class CommandFile extends CommandBase {
 				return true;
 			}
 			
-			if(target instanceof TargetConsole) {
-				if(FileUtil.exists(filePath)) {
-					if(FileOpener.isImageFile(filePath) && OptionUtil.readBooleanPRI(options, "p", false)) {
-						openWithMspaint(filePath);
-					} else {
-						FileOpener.open(filePath);
-					}
-				} else {
-					XXXUtil.info("Non-existing file: {0}", filePath);
-				}
-				return true;
-			}
+			FileOpener.open(filePath, options);
 			
-			export(file);
-
 			return true;
 		}
 				
@@ -788,7 +785,6 @@ public class CommandFile extends CommandBase {
 		
 		solo = parseParam(KEY_FIX_IMAGE + "\\s+(.+)");
 		if(solo != null) {
-			String whereToSave = "";
 			String fileSizeWithUnit = OptionUtil.readString(options, "size");
 			XXXUtil.nullCheck(fileSizeWithUnit, ":You must specify the file size you want to compress to.");
 			if(FileOpener.isImageFile(solo)) {
@@ -848,10 +844,8 @@ public class CommandFile extends CommandBase {
 			if(!solo.isEmpty()) {
 				String path = solo;
 				if(FileUtil.exists(path)) {
-					if(FileOpener.isImageFile(path)) {
-						openWithMspaint(path);
-						return true;
-					}
+					FileOpener.open(path, options);
+					return true;
 				}
 			}
 
@@ -870,7 +864,7 @@ public class CommandFile extends CommandBase {
 			String filename = DateUtil.timestamp() + "_KP.jpg";
 			String filepath = StrUtil.useSeparator(location, filename);
 			ImageUtil.createImage(filepath, text, 1200, 400);
-			openWithMspaint(filepath);
+			FileOpener.open(filepath, options);
 			
 			return true;
 		}
@@ -916,11 +910,6 @@ public class CommandFile extends CommandBase {
 		}
 		
 		return false;
-	}
-	
-	private void openWithMspaint(String filepath) {
-		PanaceaBox.openFile("mspaint", filepath.replace('/', '\\'));
-		C.pl2("Open by mspaint: " + filepath);
 	}
 	
 	private void fixSingleImage(String filePath, String fileSizeWithUnit) {

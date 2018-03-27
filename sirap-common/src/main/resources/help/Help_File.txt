@@ -11,8 +11,8 @@ F:\fly.txt $+line  print target file in text manner, file size limit is ${text.m
 F:\fire\fly.mp3    for an audio file, the sound will be played by the configured audio player, same goes 
                    for video/photo/doc/docx/xls/xlsx/PDF files with their players/viewers respectively, 
                    when it comes to executable file, the file will run itself.
-                   when it is an image file and with option $+p, open with mspaint
 E:\abc.zip         list out whatever inside the zip file, same goes for .jar, .ear, and other zip files
+F:\ABC.kkk $+o     mandatory open file by default viewer, or other viewer like mspaint or text if $+p,$+n
 F:\fire            for a folder, we just simply list the stuff in this folder
 -F:\fire           for a folder, we just simply list the stuff in this folder, along with size info
 F:\fire<           for a folder with 'less than' character, open Windows resource manager at this folder

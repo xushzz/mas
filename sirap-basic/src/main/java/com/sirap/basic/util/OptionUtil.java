@@ -156,32 +156,40 @@ public class OptionUtil {
 			throw new DuplicationException("Found duplicative keys: {0}", key);
 		}
 	}
-	
-	public static void suckOptions(StringBuffer source, StringBuffer options) {
-		List<String> regexes = Lists.newArrayList();
-		//[$x=12 ]
-		//[ $x=14 ]
-		//[ $x=15]
-		//[$x=16]
-		regexes.add("^\\$(\\S+)\\s");
-		regexes.add("\\s\\$(\\S+)\\s");
-		regexes.add("\\s\\$(\\S+)$");
-		regexes.add("^\\$(\\S+)$");
-		
-		String tempSource = source.toString().trim();
 
+	/****
+	 * 
+		[$x=12 ]
+		[$x=12>]
+		[$x=12 KK]
+		[$x=12>KK]
+		[AA $x=14 KK]
+		[AA $x=14>KK]
+		[AA $x=15]
+		[$x=16]
+	 * @param source
+	 * @param optionsBox
+	 */
+	public static void suckOptions(StringBuffer source, StringBuffer optionsBox) {
+		List<String> regexes = Lists.newArrayList();
+		regexes.add("(^\\$|\\s\\$)([^\\s>]+)[\\s>]");
+		regexes.add("(^\\$|\\s\\$)([^\\s>]+)$");
+		String temp = source.toString().trim();
+		
 		for(String regex : regexes) {
-			Matcher ma = StrUtil.createMatcher(regex, tempSource);
-			if(ma.find()) {
-				tempSource = tempSource.replace(ma.group(0), " ").trim();
+			Matcher ma = StrUtil.createMatcher(regex, temp);
+			while(ma.find()) {
+				String options = ma.group(2);
+				temp = temp.replace("$" + options, "").trim();
+//				D.pl(regex, options, temp);
 				source.setLength(0);
-				source.append(tempSource);
+				source.append(temp);
+				String merge = OptionUtil.mergeOptions(optionsBox.toString(), options);
+				optionsBox.setLength(0);
+				optionsBox.append(merge);
 				
-				String tempOptions = ma.group(1);
-				String merge = OptionUtil.mergeOptions(options.toString(), tempOptions);
-				options.setLength(0);
-				options.append(merge);
-				suckOptions(source, options);
+				suckOptions(source, optionsBox);
+				
 				break;
 			}
 		}
@@ -190,9 +198,8 @@ public class OptionUtil {
 	public static List<String> suckOptions(String raw) {
 		StringBuffer source = StrUtil.sb(raw);
 		StringBuffer options = StrUtil.sb();
-		
 		suckOptions(source, options);
-		
+//		D.pl(100, source, options);
 		return Lists.newArrayList(source.toString(), options.toString());
 	}
 }

@@ -11,7 +11,7 @@ search             such as 'ch fire', 'F: water' and so on
 any ${user.dir}    replace given expression with values in system props, env vars or user config if whole matched
 options            whole expression must 1) start with $ 2) contain no space and 3) sub options separated by comma
 options            must 4) be at the beginning or end of the whole command
-options            must be separated by space with other part of the command
+options            must be separated by space or greater than symbol > with other part of the command
 options            use \\s and \\c to express space and comma respectively, $K=A\\cB\\sC, means name is "A,B C"
 suck               enable to suck options, default enabled
 nosuck             disable to suck options

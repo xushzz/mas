@@ -10,6 +10,7 @@ import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.MexUtil;
+import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.TrumpUtil;
 import com.sirap.common.framework.SimpleKonfig;
@@ -24,6 +25,12 @@ public class FileOpener {
 	public static final String KEY_OTHERS = "format.others";
 	
 	public static boolean open(String filePath) {
+		return open(filePath, null);
+	}
+	
+	public static boolean open(String filePath, String options) {
+		filePath = filePath.replace('/', '\\');
+		
 		if(isAcceptableFormat(filePath, FileUtil.SUFFIXES_AUDIO, KEY_AUDIO)) {
 			C.pl2("Play audio");
 			playThing(filePath, "audio.player");
@@ -37,8 +44,13 @@ public class FileOpener {
 			PanaceaBox.execute(filePath);
 			return true;
 		} else if(isAcceptableFormat(filePath, FileUtil.SUFFIXES_IMAGE, KEY_IMAGE)) {
-			C.pl2("View photo");
-			playThing(filePath, "image.viewer");
+			if(OptionUtil.readBooleanPRI(options, "p", false)) {
+				C.pl2("Open by mspaint: " + filePath);
+				playThingByAppName(filePath, "mspaint");
+			} else {
+				C.pl2("View photo");
+				playThing(filePath, "image.viewer");
+			}
 			return true;
 		} else if(FileUtil.isAnyTypeOf(filePath, FileUtil.SUFFIXES_PDF)) {
 			C.pl2("View pdf");
@@ -57,8 +69,14 @@ public class FileOpener {
 			playThing(filePath, "page.viewer");
 			return true;
 		} else if(isAcceptableFormat(filePath, FileUtil.SUFFIXES_TEXT, KEY_TEXT)) {
-			C.pl2("View text file.");
-			PanaceaBox.openFile(filePath);
+			if(OptionUtil.readBooleanPRI(options, "n", false)) {
+				C.pl2("Open by notepad: " + filePath);
+				playThingByAppName(filePath, "notepad");
+			} else {
+				C.pl2("View text file.");
+				PanaceaBox.openFile(filePath);
+			}
+			
 			return true;
 		} else {
 			PanaceaBox.openFile(filePath);
@@ -184,9 +202,6 @@ public class FileOpener {
 	}
 	
 	public static boolean playThing(String filePath, String playerKey, boolean mandatory) {
-		if(PanaceaBox.isMac()) {
-			return PanaceaBox.openFile(filePath);
-		}
 		String appDir = SimpleKonfig.g().getUserValueOf(playerKey);
 		if(mandatory) {
 			if(EmptyUtil.isNullOrEmpty(appDir)) {
@@ -197,6 +212,16 @@ public class FileOpener {
 				}
 			}
 		}
+		playThingByAppName(filePath, appDir);
+		
+		return true;
+	}
+	
+	public static boolean playThingByAppName(String filePath, String appDir) {
+		if(PanaceaBox.isMac()) {
+			return PanaceaBox.openFile(filePath);
+		}
+		
 		if(EmptyUtil.isNullOrEmpty(appDir) || appDir.length() < 5) {
 			PanaceaBox.openFile(filePath);
 		} else {
