@@ -24,8 +24,8 @@ public abstract class Konfig {
 	
 	protected String originalStorage;
 	protected String userConfigFile;
-	protected MexMap innerProperties = new MexMap("Inner Config");
-	protected MexMap userProperties = new MexMap("User Config");
+	protected MexMap innerProperties = new MexMap("Zoo Inner Config");
+	protected MexMap userProperties = new MexMap("Zoo User Config");
 
 	protected void loadInnerConfigDetail() {
 		innerProperties.clear();
@@ -69,7 +69,7 @@ public abstract class Konfig {
 	
 	protected abstract void setValues();
 
-	public MexMap getProps() {
+	public MexMap getInnerProps() {
 		return innerProperties;
 	}
 

@@ -73,29 +73,30 @@ public class CommandDev extends CommandBase {
 				solo = "^" + solo + "$";
 			}
 			List<TypedKeyValueItem> items = Lists.newArrayList();
-			if(OptionUtil.readBooleanPRI(options, "s", true)) {
+			boolean showAll = OptionUtil.readBooleanPRI(options, "a", false);
+			if(showAll || OptionUtil.readBooleanPRI(options, "s", true)) {
 				List<TypedKeyValueItem> sato = SatoUtil.SYSTEM_PROPERTIES;
 				if(!EmptyUtil.isNullOrEmpty(solo)) {
 					sato = CollUtil.filter(sato, solo);
 				}
 				items.addAll(sato);
 			}
-			if(OptionUtil.readBooleanPRI(options, "e", true)) {
+			if(showAll || OptionUtil.readBooleanPRI(options, "e", true)) {
 				List<TypedKeyValueItem> sato = SatoUtil.ENVIRONMENT_VARIABLES;
 				if(!EmptyUtil.isNullOrEmpty(solo)) {
 					sato = CollUtil.filter(sato, solo);
 				}
 				items.addAll(sato);
 			}
-			if(OptionUtil.readBooleanPRI(options, "u", false)) {
+			if(showAll || OptionUtil.readBooleanPRI(options, "u", false)) {
 				List<TypedKeyValueItem> sato = g().getUserProps().listOf();
 				if(!EmptyUtil.isNullOrEmpty(solo)) {
 					sato = CollUtil.filter(sato, solo);
 				}
 				items.addAll(sato);
 			}
-			if(OptionUtil.readBooleanPRI(options, "i", false)) {
-				List<TypedKeyValueItem> sato = g().getProps().listOf();
+			if(showAll || OptionUtil.readBooleanPRI(options, "i", false)) {
+				List<TypedKeyValueItem> sato = g().getInnerProps().listOf();
 				if(!EmptyUtil.isNullOrEmpty(solo)) {
 					sato = CollUtil.filter(sato, solo);
 				}

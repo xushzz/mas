@@ -267,7 +267,7 @@ public class SimpleKonfig extends Konfig {
 	}
 
 	private List<CommandRecord> parseCommandNodes() {
-		HashMap<String, String> greatMap = getProps().getKeyValuesByPartialKeyword("command.node.");
+		HashMap<String, String> greatMap = getInnerProps().getKeyValuesByPartialKeyword("command.node.");
 		HashMap<String, String> userMap = getUserProps().getKeyValuesByPartialKeyword("command.node.");
 		
 		if(!EmptyUtil.isNullOrEmpty(userMap)) {

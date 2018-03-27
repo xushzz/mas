@@ -3,7 +3,8 @@ ah A-B-C-D $s=-    split by - and print as list, option s=SPLITTER
 ah A,B,C $+s       split, sort and print list
 echo               regarding entries 1) system properties 2) environment variables 3) user configuration
 echo               list 1) system properties 2) environment variables, about 114 entries
-echo $+u,-e,-s     list 3) user configuration
+echo $+u,+i,-e,-s  list 3) user configuration and 4) user inner
+echo $+a           list all of them 1) properties 2) variables and 3) user config 4) user inner 
 echo $-t           list entries without type info
 echo path          list specific entry path, and split the value by file pathSeparator in lines format
 echo home		   list entries whose key contains keyword home

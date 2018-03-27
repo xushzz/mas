@@ -92,7 +92,7 @@ public class TimeZoneManager {
 	
 	@SuppressWarnings("unchecked")
 	private static List<TZRecord> readExtraTimezones() {
-		MexMap mm = SimpleKonfig.g().getProps();
+		MexMap mm = SimpleKonfig.g().getInnerProps();
 		if(mm == null) {
 			return Collections.EMPTY_LIST;
 		}
