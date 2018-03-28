@@ -387,22 +387,20 @@ public class CommandDev extends CommandBase {
 		
 		solo = parseParam(KEY_CHANGE_FILESEPARATOR + "\\s+(.+)");
 		if(solo != null) {
-			char windows = '\\';
-			char unix = '/';
 			List<String> items = new ArrayList<>();
-			String unixStyle = solo.replace(windows, unix);
+			String unixStyle = FileUtil.unixSeparator(solo);
 			if(!StrUtil.equals(unixStyle, solo)) {
 				items.add(unixStyle);
 			}
 			
-			String windowsStyle = solo.replace(unix, windows);
+			String windowsStyle = FileUtil.windowsSeparator(solo);
 			if(!StrUtil.equals(windowsStyle, solo)) {
 				items.add(windowsStyle);
 			}
 			
 			items.add(FileUtil.shellStyle(unixStyle));
-			
 			export(items);
+			
 			return true;
 		}
 		

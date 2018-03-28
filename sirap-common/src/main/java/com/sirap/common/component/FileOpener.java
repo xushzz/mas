@@ -29,7 +29,7 @@ public class FileOpener {
 	}
 	
 	public static boolean open(String filePath, String options) {
-		filePath = filePath.replace('/', '\\');
+		filePath = FileUtil.windowsSeparator(filePath);
 		
 		if(isAcceptableFormat(filePath, FileUtil.SUFFIXES_AUDIO, KEY_AUDIO)) {
 			C.pl2("Play audio");

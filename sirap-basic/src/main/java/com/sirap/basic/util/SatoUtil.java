@@ -1,6 +1,5 @@
 package com.sirap.basic.util;
 
-import java.io.File;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -76,7 +75,7 @@ public class SatoUtil {
 			}
 			
 			String value = sato.get(0).getValueX();
-			temp = temp.replace(whole, value.replace(File.separatorChar, '/'));
+			temp = temp.replace(whole, value);
 		}
 		
 		return temp;

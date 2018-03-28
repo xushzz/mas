@@ -137,7 +137,7 @@ public class MexFile extends MexItem implements Comparable<MexFile> {
 		} else if (OptionUtil.readBooleanPRI(options, "un", false)){
 			sb.append(getUnixPath());
 		} else {
-			sb.append(getUnixPath());
+			sb.append(getPath());
 		}
 
 		boolean flagHidden = OptionUtil.readBooleanPRI(options, "hide", false);
