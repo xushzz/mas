@@ -374,7 +374,7 @@ public class SimpleKonfig extends Konfig {
 			FileUtil.makeDirectoriesIfNonExist(path);
 		}
 
-		return StrUtil.unixSeparator(path) + "/";
+		return FileUtil.unixSeparator(path) + "/";
 	}
 
 	public boolean isHistoryEnabled() {

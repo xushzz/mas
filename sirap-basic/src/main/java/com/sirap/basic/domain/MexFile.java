@@ -49,22 +49,31 @@ public class MexFile extends MexItem implements Comparable<MexFile> {
 		return file.getName();
 	}
 	
+	//default
 	public String getPath() {
-		return file.getAbsolutePath();
-	}
-	
-	public String getUnixPath() {
 		String value = file.getAbsolutePath();
 		if(file.isDirectory()) {
 			value += File.separator;
 		}
 		
-		return value.replace('\\', '/');
+		return value;
+	}
+	
+	public String getWindowsPath() {
+		return FileUtil.windowsSeparator(getPath());
+	}
+	
+	public String getUnixPath() {
+		return FileUtil.unixSeparator(getPath());
+	}
+	
+	public String getShellPath() {
+		return FileUtil.shellStyle(getPath());
 	}
 	
 	@Override
 	public boolean isMatched(String keyWord, boolean caseSensitive) {
-		String temp = getPath();
+		String temp = getUnixPath();
 		
 		if(isRegexMatched(temp, keyWord)) {
 			return true;
@@ -73,8 +82,6 @@ public class MexFile extends MexItem implements Comparable<MexFile> {
 		if(StrUtil.contains(temp, keyWord, caseSensitive)) {
 			return true;
 		}
-		
-		temp = getUnixPath();
 		
 		if(isRegexMatched(temp, keyWord)) {
 			return true;
@@ -121,17 +128,26 @@ public class MexFile extends MexItem implements Comparable<MexFile> {
 		return file.getAbsolutePath();
 	}
 	
-	public String toPrint(String optionsStr) {
-		StringBuilder sb = new StringBuilder(getUnixPath());
-		
-		boolean flagHidden = OptionUtil.readBooleanPRI(optionsStr, "hide", false);
+	public String toPrint(String options) {
+		StringBuilder sb = new StringBuilder();
+		if(OptionUtil.readBooleanPRI(options, "win", false)) {
+			sb.append(getWindowsPath());
+		} else if(OptionUtil.readBooleanPRI(options, "sh", false)) {
+			sb.append(getShellPath());
+		} else if (OptionUtil.readBooleanPRI(options, "un", false)){
+			sb.append(getUnixPath());
+		} else {
+			sb.append(getUnixPath());
+		}
+
+		boolean flagHidden = OptionUtil.readBooleanPRI(options, "hide", false);
 		if(flagHidden) {
 			if(file.isHidden()) {
 				sb.append(" ").append("(H)");
 			}
 		}
 
-		boolean showKids = OptionUtil.readBooleanPRI(optionsStr, "kids", false);
+		boolean showKids = OptionUtil.readBooleanPRI(options, "kids", false);
 		if(showKids) {
 			String kids = getKids();
 			if(!EmptyUtil.isNullOrEmpty(kids)) {
@@ -139,19 +155,19 @@ public class MexFile extends MexItem implements Comparable<MexFile> {
 			}
 		}
 		
-		boolean showSize = OptionUtil.readBooleanPRI(optionsStr, "size", false);
+		boolean showSize = OptionUtil.readBooleanPRI(options, "size", false);
 		if(showSize) {
 			sb.append("  ");
 			sb.append(FileUtil.formatSize(file.length()));
 		}
 		
-		boolean showSizeWithFolder = OptionUtil.readBooleanPRI(optionsStr, "sizes", false);
+		boolean showSizeWithFolder = OptionUtil.readBooleanPRI(options, "sizes", false);
 		if(showSizeWithFolder) {
 			sb.append("  ");
 			sb.append(FileUtil.formatSize(getFileFize()));
 		}
 
-		boolean showDate = OptionUtil.readBooleanPRI(optionsStr, "date", false);
+		boolean showDate = OptionUtil.readBooleanPRI(options, "date", false);
 		if(showDate) {
 			sb.append("  ");
 			Date lastmodified = new Date(file.lastModified());
@@ -165,7 +181,7 @@ public class MexFile extends MexItem implements Comparable<MexFile> {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((getPath() == null) ? 0 : getPath().hashCode());
+		result = prime * result + ((getUnixPath() == null) ? 0 : getUnixPath().hashCode());
 		return result;
 	}
 
@@ -178,10 +194,10 @@ public class MexFile extends MexItem implements Comparable<MexFile> {
 		if (getClass() != obj.getClass())
 			return false;
 		MexFile other = (MexFile) obj;
-		if (getPath() == null) {
-			if (other.getPath() != null)
+		if (getUnixPath() == null) {
+			if (other.getUnixPath() != null)
 				return false;
-		} else if (!getPath().equals(other.getPath()))
+		} else if (!getUnixPath().equals(other.getUnixPath()))
 			return false;
 		
 		return true;

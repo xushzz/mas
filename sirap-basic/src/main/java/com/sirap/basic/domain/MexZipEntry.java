@@ -74,7 +74,8 @@ public class MexZipEntry extends MexItem {
 		boolean showFullpath = OptionUtil.readBooleanPRI(options, "full", true);
 		StringBuilder sb = new StringBuilder();
 		if(showFullpath) {
-			sb.append(getJarName().replace('\\', '/') + "!/");
+			sb.append(FileUtil.unixSeparator(getJarName()));
+			sb.append("!/");
 		}
 		sb.append(getName());
 		if(showSize && isNormalFile()) {

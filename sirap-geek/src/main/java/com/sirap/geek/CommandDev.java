@@ -29,8 +29,8 @@ import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.ImageUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.OptionUtil;
-import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.SatoUtil;
+import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
@@ -390,17 +390,20 @@ public class CommandDev extends CommandBase {
 			char windows = '\\';
 			char unix = '/';
 			List<String> items = new ArrayList<>();
-			String temp = solo.replace(windows, unix);
-			if(!StrUtil.equals(temp, solo)) {
-				items.add(temp);
+			String unixStyle = solo.replace(windows, unix);
+			if(!StrUtil.equals(unixStyle, solo)) {
+				items.add(unixStyle);
 			}
 			
-			temp = solo.replace(unix, windows);
-			if(!StrUtil.equals(temp, solo)) {
-				items.add(temp);
+			String windowsStyle = solo.replace(unix, windows);
+			if(!StrUtil.equals(windowsStyle, solo)) {
+				items.add(windowsStyle);
 			}
+			
+			items.add(FileUtil.shellStyle(unixStyle));
 			
 			export(items);
+			return true;
 		}
 		
 		solo = parseParam(KEY_SIZE + "([1-9]|)");
@@ -415,6 +418,7 @@ public class CommandDev extends CommandBase {
 			RenderedImage image = (new ScreenCaptor()).captureCurrentWindow();
 			items.add("acti: " + (int)image.getWidth() + " x " + (int)image.getHeight());
 			export(items);
+			return true;
 		}
 		
 		solo = parseParam(KEY_HTTP_STATUS_CODES + "\\s(.+?)");

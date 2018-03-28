@@ -168,9 +168,9 @@ public class ArisUtil {
 				String libPath = StrUtil.useSeparator(item.replaceAll("bin$", ""), "lib");
 				if(FileUtil.exists(libPath)) {
 					if(isMacOrLinuxOrUnix) {
-						libPath = libPath.replace("\\", "/");
+						libPath = FileUtil.unixSeparator(libPath);
 					} else {
-						libPath = libPath.replace("/", "\\");
+						libPath = FileUtil.windowsSeparator(libPath);
 					}
 					return libPath;
 				}
@@ -281,11 +281,14 @@ public class ArisUtil {
 	    			String path = ma.group(1);
 	    			if(!checker.contains(path)) {
 	    				checker.add(path);
-	    				String fullPackageName = ma.group(1).replace('/', '.');
+	    				String fullPackageName = path.replace('/', '.');
+	    				if(EmptyUtil.isNullOrEmpty(fullPackageName)) {
+	    					continue;
+	    				}
 	    				if(!EmptyUtil.isNullOrEmpty(desiredPkgNames) && !StrUtil.startsWith(fullPackageName, desiredPkgNames)) {
 	    					continue;
 	    				}
-		    			String item = "import " + ma.group(1).replace('/', '.') + ".*;";
+		    			String item = "import " + fullPackageName + ".*;";
 		    			imports.add(item);
 	    			}	    			
 	    		}
@@ -322,6 +325,9 @@ public class ArisUtil {
 				if(!checker.contains(folder)) {
 					checker.add(folder);
 					String packageName = folder.replace(root, "").replaceAll("[/\\\\]", ".").replaceAll("^\\.", "");
+					if(EmptyUtil.isNullOrEmpty(packageName)) {
+    					continue;
+    				}
 	    			String item = "import " + packageName + ".*;";
 	    			items.add(item);
 				}

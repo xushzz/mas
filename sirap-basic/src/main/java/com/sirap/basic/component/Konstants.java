@@ -89,5 +89,8 @@ public class Konstants {
 	public static final String OS_MAC = "Mac";
 	public static final String OS_WINDOWS = "Windows";
 	public static final String OS_LINUX = "Linux";
-	public static final String OS_UNIX = "Unix";	
+	public static final String OS_UNIX = "Unix";
+
+	public static final String FILE_SEPARATOR_WINDOWS = "\\";
+	public static final String FILE_SEPARATOR_UNIX = "/";	
 }

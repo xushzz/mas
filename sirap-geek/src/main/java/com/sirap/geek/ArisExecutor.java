@@ -275,7 +275,7 @@ public class ArisExecutor {
 	
 	private String saveSourceCode(List<String> sourceCode) {
 		String folderName = DateUtil.timestamp() + "_" + RandomUtil.letters(1, true) + RandomUtil.digits(2);
-		whereToGenerate = StrUtil.useSeparator(StrUtil.unixSeparator(arisPlace), "aris", folderName);
+		whereToGenerate = StrUtil.useSeparator(FileUtil.unixSeparator(arisPlace), "aris", folderName);
 		File target = new File(whereToGenerate);
 		target.mkdirs();
 		String finalJavaFileFullPath = StrUtil.useSeparator(whereToGenerate, publicClassName + ".java");

@@ -58,7 +58,7 @@ public class FileUtil {
 
 	public static File getIfNormalFile(String fileName) {
 		File file = new File(fileName);
-
+		
 		if (file.isFile()) {
 			return file;
 		} else {
@@ -651,7 +651,7 @@ public class FileUtil {
 		String temp = filepathHavingAsterisk;
 		boolean isWindowsStyle = temp.indexOf('\\') >= 0;
 		if(isWindowsStyle) {
-			temp = temp.replace('\\', '/');
+			temp = FileUtil.unixSeparator(filepathHavingAsterisk);
 		}
 		String regex = "(.+?)/([^/]*\\*[^/]*)(/?$|/.+)";
 		String[] params = StrUtil.parseParams(regex, temp);
@@ -671,18 +671,12 @@ public class FileUtil {
 				public boolean accept(File dir, String name) {
 					boolean isMatched = StrUtil.isRegexMatched(subRegex, name);
 					if(isMatched) {
-						String jack = dir.getAbsolutePath() + "/" + name + goodTail;
-						String james = jack.replace('/', '\\');
-						matchedFiles.add(james);
+						String jack = dir.getAbsolutePath() + File.separator + name + goodTail;
+						matchedFiles.add(jack);
 					}
 					return isMatched;
 				}
 			});
-		}
-		
-		if(isWindowsStyle) {
-			head = head.replace('/', '\\');
-			tail = tail.replace('/', '\\');
 		}
 		
 		return matchedFiles;
@@ -807,5 +801,25 @@ public class FileUtil {
 		List<String> jsonItems = JsonUtil.getPrettyTextInLines(json);
 		
 		return jsonItems;
+	}
+	
+	public static String shellStyle(String filepath) {
+		StringBuffer sb = StrUtil.sb();
+		Matcher ma = StrUtil.createMatcher("([a-z]):", unixSeparator(filepath));
+		while(ma.find()) {
+			String replacement = Konstants.FILE_SEPARATOR_UNIX + ma.group(1); 
+			ma.appendReplacement(sb, replacement);
+		}
+		
+		ma.appendTail(sb);
+		return sb.toString();
+	}
+	
+	public static String unixSeparator(String filepath) {
+		return filepath.replace(Konstants.FILE_SEPARATOR_WINDOWS, Konstants.FILE_SEPARATOR_UNIX);
+	}
+	
+	public static String windowsSeparator(String filepath) {
+		return filepath.replace(Konstants.FILE_SEPARATOR_UNIX, Konstants.FILE_SEPARATOR_WINDOWS);
 	}
 }

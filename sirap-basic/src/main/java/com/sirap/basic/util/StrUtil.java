@@ -1,6 +1,5 @@
 package com.sirap.basic.util;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -735,27 +734,6 @@ public class StrUtil {
 		
 		return temp;
 	}
-	
-	public static String occupyUserConfig(String source, Map<String, String> configs) {
-		XXXUtil.nullCheck(source, "source");
-		
-		String regex = "u\\{([^\\$\\{\\}]+)\\}";
-		
-		String temp = source;
-		Matcher ma = createMatcher(regex, source);
-		while(ma.find()) {
-			String whole = ma.group(0);
-			String key = ma.group(1);
-			String config = configs.get(key);
-			if(EmptyUtil.isNullOrEmpty(config)) {
-				throw new MexException("No such user config: {0}", key);
-			} else {
-				temp = temp.replace(whole, config.replace(File.separatorChar, '/'));
-			}
-		}
-		
-		return temp;
-	}
 
 	public static String pseudoEncrypt(String plainText) {
 		String temp = plainText.replaceAll(".", "*");
@@ -1017,10 +995,6 @@ public class StrUtil {
 	public static String useSlash(Object... items) {
 		String delimiter = "/";
 		return useDelimiter(delimiter, items);
-	}
-	
-	public static String unixSeparator(String source) {
-		return source.replace('\\', '/');
 	}
 	
 	public static StringBuffer sb() {

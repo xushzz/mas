@@ -641,7 +641,7 @@ public class IOUtil {
 	@SuppressWarnings("resource")
 	public static Class loadClassFromJarFile(String jarLocation, String className) {
 		String regex = "^[\\w]{2,}:";
-		String tempLocation = jarLocation.replace('\\', '/');
+		String tempLocation = FileUtil.unixSeparator(jarLocation);
 		if(!StrUtil.isRegexFound(regex, tempLocation)) {
 			tempLocation = "file:" + tempLocation;
 		}
@@ -663,7 +663,7 @@ public class IOUtil {
 	
 	public static Class loadClassFile(final String fileLocation) {
 		String regex = "^[\\w]{2,}:";
-		String tempLocation = fileLocation.replace('\\', '/');
+		String tempLocation = FileUtil.unixSeparator(fileLocation);
 		if(!StrUtil.isRegexFound(regex, tempLocation)) {
 			tempLocation = "file:///" + tempLocation;
 		}
