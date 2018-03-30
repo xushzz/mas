@@ -12,7 +12,6 @@ import com.sirap.basic.util.StrUtil;
 public class SirapDAO {
 
     private String url;
-    private String driver;
     private String username;    
     private String password;
   
@@ -23,10 +22,10 @@ public class SirapDAO {
     public SirapDAO(String url, String username, String password) {  
         try {
         	this.url = url;
-        	this.driver = StrUtil.getDbDriverByUrl(url);
         	this.username = username;
         	this.password = password;
         	
+        	String driver = StrUtil.getDbDriverByUrl(url);
             Class.forName(driver);
         } catch (Exception ex) {  
             throw new MexException(ex); 

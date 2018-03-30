@@ -7,9 +7,7 @@ import com.google.common.collect.Lists;
 import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.thread.MasterItemsOriented;
 import com.sirap.basic.thread.WorkerItemsOriented;
-import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.SecurityUtil;
-import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.extractor.avron.AvronExtractors;
 

@@ -1,5 +1,6 @@
 package com.sirap.extractor.avron;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 
@@ -7,15 +8,140 @@ import com.google.common.collect.Lists;
 import com.sirap.basic.component.Extractor;
 import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.domain.ValuesItem;
+import com.sirap.basic.thread.MasterItemOriented;
+import com.sirap.basic.thread.WorkerItemOriented;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
+import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.StrUtil;
 
 public class AvronExtractors {
 	
 	public static final String AREACODE_ROOT = "00";
+	
+	public static String domain() {
+		List<String> names = Lists.newArrayList();
+//		for(int i = 0; i < 1000; i++) {
+//			String temp = "k" + i;
+//			names.add(temp);
+//			for(int k = 0; k < 26; k++) {
+//					names.add(temp + (char)('a' + k));
+//			}
+//		}
+		
+		for(int i = 0; i < 26; i++) {
+			String temp = "" + (char)('a' + i);
+
+			for(int k = 0; k < 26; k++) {
+				temp = "" + (char)('a' + i) + (char)('a' + k);
+				names.add(temp);
+//				for(int m = 0; m < 99; m++) {
+//					names.add(temp + m);
+//				}
+			}
+		}
+		names.clear();
+		names = IOUtil.readFileIntoList("E:/Mas/exp/20180330_011913_zz.txt");
+//		C.listSome(names, 9);
+//		C.list(names);
+//		C.total(names.size());;
+//		names.clear();
+		MasterItemOriented<String> george = new MasterItemOriented<>(names, new WorkerItemOriented<String>() {
+
+			@Override
+			public String process(String name) {
+				return domain(name);
+			}
+		});
+		
+		List<String> values = george.getValidStringResults();
+		Collections.sort(values);
+		C.list(values);
+		
+		return "xxx";
+	}
+	
+	public static String domain(String name) {
+		Extractor<String> neymar = new Extractor<String>() {
+			
+			@Override
+			public String getUrl() {
+				showFetching().usePost();
+				String url = "http://whois.juming.com/?{0}.com";
+				return StrUtil.occupy(url, name);
+			}
+			
+			@Override
+			protected void parse() {
+				boolean isAvailable = !source.contains("注册者");
+				item = name + ".com  ";
+				if(isAvailable) {
+					item += "yes";
+				} else {
+					item += "no";
+				}
+			}
+		};
+		
+		return neymar.process().getItem();
+	}
+	
+	public static String domainTecent(String name) {
+		Extractor<String> neymar = new Extractor<String>() {
+			
+			@Override
+			public String getUrl() {
+				showFetching().usePost();
+				String url = "https://wss.cloud.tencent.com/buy/api/domains/domain/whois_info?mc_gtk=&domain={0}.com";
+				return StrUtil.occupy(url, name);
+			}
+			
+			@Override
+			protected void parse() {
+				C.pl(source);
+//				String regex = "\"name\":\"([^\"]+)\"";
+//				String temp = StrUtil.findFirstMatchedItem(regex, source);
+				boolean isAvailable = !source.contains("info");
+				item = name + ".com  ";
+				if(isAvailable) {
+					item += "yes";
+				} else {
+					item += "no";
+				}
+			}
+		};
+		
+		return neymar.process().getItem();
+	}
+	
+	public static String domainAliyun(String name) {
+		Extractor<String> neymar = new Extractor<String>() {
+			
+			@Override
+			public String getUrl() {
+				showFetching();
+				String url = "https://checkapi.aliyun.com/check/checkdomain?domain={0}.com&command=&token=Ye5341df01a6d3b3b462ab7f5a7f3efd2&ua=&currency=&site=&bid=&_csrf_token=&callback=jsonp_1522308891330_11694";
+				return StrUtil.occupy(url, name);
+			}
+			
+			@Override
+			protected void parse() {
+//				C.pl(source);
+				String regex = "\"avail\":(\\d)";
+				String temp = StrUtil.findFirstMatchedItem(regex, source);
+				item = name + ".com";
+				if(StrUtil.equals("1", temp)) {
+					item += " yes";
+				} else {
+					item += " no";
+				}
+			}
+		};
+		
+		return neymar.process().getItem();
+	}
 	
 	public static List<ValuesItem> areacodesOfChina() {
 		List<ValuesItem> allItems = Lists.newArrayList();

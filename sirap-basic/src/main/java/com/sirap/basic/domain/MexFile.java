@@ -205,9 +205,9 @@ public class MexFile extends MexItem implements Comparable<MexFile> {
 
 	@Override
 	public int compareTo(MexFile o) {
-		String path = file.getAbsolutePath();
-		String path2 = o.file.getAbsolutePath();
-		
+		String path = file.getAbsolutePath().toLowerCase();
+		String path2 = o.file.getAbsolutePath().toLowerCase();
+
 		return path.compareTo(path2);
 	}
 }

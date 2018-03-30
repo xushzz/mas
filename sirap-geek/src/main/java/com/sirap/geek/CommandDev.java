@@ -294,6 +294,9 @@ public class CommandDev extends CommandBase {
 		solo = parseParam(KEY_PAIR_KEY_VALUE + "\\s(.+)");
 		if(solo != null) {
 			List<String> pairs = StrUtil.parseUrlParams(solo);
+			if(OptionUtil.readBooleanPRI(options, "s", false)) {
+				CollUtil.sortIgnoreCase(pairs);
+			}
 			export(pairs);
 			
 			return true;

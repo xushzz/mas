@@ -74,7 +74,7 @@ public class MexFileComparator implements Comparator<MexFile> {
 		}
 
 		if(value == 0) {
-			value = fa.getAbsolutePath().compareTo(fb.getAbsolutePath());
+			value = fa.getAbsolutePath().toLowerCase().compareTo(fb.getAbsolutePath().toLowerCase());
 			if(!byNameAsc) {
 				value *=- 1;
 			}

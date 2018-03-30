@@ -64,6 +64,7 @@ public class Konstants {
 	public static final String DRIVER_SYBASE = "com.sybase.JDBC.SybDriver";
 	public static final String DRIVER_INFORMIX = "com.informix.JDBC.ifxDriver";
 	public static final String DRIVER_ACCESS = "sun.jdbc.odbc.JdbcOdbcDriver";
+	public static final String DRIVER_DERBY = "org.apache.derby.jdbc.ClientDriver";
 
 	public static final String DB_TYPE_MYSQL = "mysql";
 	public static final String DB_TYPE_ORACLE = "oracle";
@@ -73,6 +74,7 @@ public class Konstants {
 	public static final String DB_TYPE_SYBASE = "sybase";
 	public static final String DB_TYPE_INFORMIX = "informix";
 	public static final String DB_TYPE_ACCESS = "access";
+	public static final String DB_TYPE_DERBY = "derby";
 	
 	public static final Map<String, String> MAP_DB_TYPE_CLASS = new HashMap<String, String>();
 	static {
@@ -84,6 +86,7 @@ public class Konstants {
 		MAP_DB_TYPE_CLASS.put(DB_TYPE_SYBASE, DRIVER_SYBASE);
 		MAP_DB_TYPE_CLASS.put(DB_TYPE_INFORMIX, DRIVER_INFORMIX);
 		MAP_DB_TYPE_CLASS.put(DB_TYPE_ACCESS, DRIVER_ACCESS);
+		MAP_DB_TYPE_CLASS.put(DB_TYPE_DERBY, DRIVER_ACCESS);
 	}
 
 	public static final String OS_MAC = "Mac";
