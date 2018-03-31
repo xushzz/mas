@@ -28,8 +28,7 @@ public class CommandAris extends CommandBase {
 		solo = parseParam(KEY_EXECUTE_JAVACODE + "\\s+(.+)");
 		if(solo != null) {
 			boolean keepGeneratedFiles = OptionUtil.readBooleanPRI(options, "k", g().isYes("aris.keep"));
-			List<String> classPaths = g().getUserValuesByKeyword("aris.path.");
-			String classpath = StrUtil.connect(classPaths, File.pathSeparator);
+			List<String> arispathItems = g().getUserValuesByKeyword("aris.path.");
 			List<String> autoPackages = getAutoIncludedPackageNames();
 			String arisPlace = g().getUserValueOf("aris.place", System.getProperty("user.home"));
 			boolean toPrintCommand = OptionUtil.readBooleanPRI(options, "p", false);
@@ -41,9 +40,9 @@ public class CommandAris extends CommandBase {
 			if(file != null ) {
 				List<String> javacodes = IOUtil.readFileIntoList(file.getAbsolutePath());
 				instance.setJavaFileStyle(StrUtil.endsWith(solo, Konstants.DOT_JAVA));
-				export(instance.executeTextFileStyle(javacodes, classpath));
+				export(instance.executeTextFileStyle(javacodes, arispathItems));
 			} else {
-				export(instance.executeOnelineStyle(solo, classpath));
+				export(instance.executeOnelineStyle(solo, arispathItems));
 			}
 			
 			return true;

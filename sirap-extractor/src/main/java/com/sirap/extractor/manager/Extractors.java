@@ -38,10 +38,10 @@ public class Extractors {
 
 			@Override
 			public List<ValuesItem> process(Integer page) {
-//				int count = queue.size() + 1;
-//				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "async dealing with page ", page);
+				int count = queue.size() + 1;
+				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "async dealing with page ", page);
 				List<ValuesItem> items = topPasswords(page);
-//				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "async done with page", page);
+				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "async done with page", page);
 				return items;
 			}
 			

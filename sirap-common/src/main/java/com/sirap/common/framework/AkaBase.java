@@ -16,7 +16,7 @@ import com.sirap.common.manager.LoginHistoryManager;
 import com.sirap.common.manager.RemoteCommandManager;
 import com.sirap.common.manager.VFileManager;
 
-public abstract class App extends MexedTimer {
+public abstract class AkaBase extends MexedTimer {
 	
 	public static final String USERNAME = "KY#1917";
 	private static final int MAX_LEN_COMMAND = 9999;

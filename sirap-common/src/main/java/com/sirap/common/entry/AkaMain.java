@@ -2,15 +2,15 @@ package com.sirap.common.entry;
 
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.PanaceaBox;
-import com.sirap.common.framework.App;
+import com.sirap.common.framework.AkaBase;
 import com.sirap.common.framework.Janitor;
 import com.sirap.common.framework.JanitorMD5;
 import com.sirap.common.framework.SimpleKonfig;
 
-public class AppMas extends App {
+public class AkaMain extends AkaBase {
 	
 	public static void main(String[] args) {
-		App app = new AppMas();
+		AkaBase app = new AkaMain();
 		app.init(args);
 		app.run();
 	}

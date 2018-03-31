@@ -6,8 +6,11 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.util.ArisUtil;
@@ -17,19 +20,20 @@ import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.RandomUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.XXXUtil;
 
 public class ArisExecutor {
 
 	public static final String REGEX_IMPORT = StrUtil.occupy("import\\s+(static\\s+|){0}(\\s*\\.\\s*{0})*\\.(\\*|{0})\\s*;", Konstants.REGEX_JAVA_IDENTIFIER);
 	public static final String REGEX_PACKAGE = StrUtil.occupy("package\\s+(static\\s+|){0}(\\s*\\.\\s*{0})*;", Konstants.REGEX_JAVA_IDENTIFIER);
-	public static final String FINAL_CLASS_NAME = "ARIS";
+	public static final String FINAL_CLASS_NAME = "Aris";
 
 	private List<String> autoIncludedPackageNames = StrUtil.split("java.util,java.math,java.io");
 	private String arisPlace = System.getProperty("user.home");
 
 	private String whereToGenerate;
 	private List<String> manualJavacode;
-	private String configClasspath;
+	private List<String> arispathItems;
 	private String publicClassName;
 	private boolean isJavaFileStyle;
 	private boolean toPrintCommand;
@@ -44,8 +48,11 @@ public class ArisExecutor {
 		return this;
 	}
 
-	public ArisExecutor setAutoIncludedPackageNames(List<String> autoIncludedPackageNames) {
-		this.autoIncludedPackageNames = autoIncludedPackageNames;
+	public ArisExecutor setAutoIncludedPackageNames(List<String> names) {
+		Set<String> items = Sets.newConcurrentHashSet();
+		items.addAll(names);
+		items.addAll(autoIncludedPackageNames);
+		this.autoIncludedPackageNames = Lists.newArrayList(items);
 		return this;
 	}
 	
@@ -63,7 +70,7 @@ public class ArisExecutor {
 		this.isJavaFileStyle = isJavaFileStyle;
 	}
 
-	public List<String> executeOnelineStyle(String lineJavacode, String configClasspath) {
+	public List<String> executeOnelineStyle(String lineJavacode, List<String> arispathItems) {
 		Matcher ma = StrUtil.createMatcher(REGEX_IMPORT, lineJavacode);
 		StringBuffer sb = new StringBuffer();
 		List<String> items = new ArrayList<>();
@@ -97,13 +104,13 @@ public class ArisExecutor {
 		}
 		
 		this.manualJavacode = items;
-		this.configClasspath = configClasspath;
+		this.arispathItems = arispathItems;
 		return process();
 	}
 	
-	public List<String> executeTextFileStyle(List<String> textJavacode, String configClasspath) {
+	public List<String> executeTextFileStyle(List<String> textJavacode, List<String> arispathItems) {
 		this.manualJavacode = textJavacode;
-		this.configClasspath = configClasspath;
+		this.arispathItems = arispathItems;
 		return process();
 	}
 	
@@ -209,21 +216,19 @@ public class ArisExecutor {
 		if(EmptyUtil.isNullOrEmpty(autoIncludedPackageNames)) {
 			return Collections.EMPTY_LIST;
 		}
-		String runtimeJarPath = StrUtil.useSeparator(ArisUtil.getRuntimeLibraryLocation(), "rt.jar");
+		String runtimeJarPath = FileUtil.bySeparator(ArisUtil.getRuntimeLibraryLocation(), "rt.jar");
 		return ArisUtil.generateImportsByJarFile(runtimeJarPath, autoIncludedPackageNames);
 	}
 	
 	private List<String> generateConfigImportsFromClassPath() {
 		List<String> imports = new ArrayList<>();
 		
-		if(EmptyUtil.isNullOrEmpty(configClasspath)) {
+		if(EmptyUtil.isNullOrEmpty(arispathItems)) {
 			return imports;
 		}
-		
-		List<String> items = StrUtil.split(configClasspath, ';');
-		for(String item : items) {
-			if(EmptyUtil.isNullOrEmptyOrBlank(item)) {
-				continue;
+		for(String item : arispathItems) {
+			if(!FileUtil.exists(item)) {
+				XXXUtil.alert("Arispath item not found: {0}", item);
 			}
 			
 			if(StrUtil.endsWith(item, ".jar")) {
@@ -243,7 +248,8 @@ public class ArisExecutor {
 	private List<String> compileAndRun(String finalJavaFileFullPath) {
 		List<String> consoleOutput = new ArrayList<>();
 		String javacCommand = "javac -Xlint:none -cp \"{0}\" {1}";
-		javacCommand = StrUtil.occupy(javacCommand, configClasspath, finalJavaFileFullPath);
+		String arispathString = StrUtil.connect(arispathItems, File.pathSeparator);
+		javacCommand = StrUtil.occupy(javacCommand, arispathString, finalJavaFileFullPath);
 		if(toPrintCommand) {
 			consoleOutput.add("command for javac: \n" + javacCommand);
 			consoleOutput.add("");
@@ -261,7 +267,7 @@ public class ArisExecutor {
 		}
 		
 		String javaCommand = "java -cp \"{0}\" {1}";
-		String classpath = StrUtil.useDelimiter(File.pathSeparator, whereToGenerate, configClasspath);
+		String classpath = StrUtil.useDelimiter(File.pathSeparator, whereToGenerate, arispathString);
 		
 		javaCommand = StrUtil.occupy(javaCommand, classpath, publicClassName);
 		if(toPrintCommand) {
@@ -275,10 +281,10 @@ public class ArisExecutor {
 	
 	private String saveSourceCode(List<String> sourceCode) {
 		String folderName = DateUtil.timestamp() + "_" + RandomUtil.letters(1, true) + RandomUtil.digits(2);
-		whereToGenerate = StrUtil.useSeparator(FileUtil.unixSeparator(arisPlace), "aris", folderName);
+		whereToGenerate = FileUtil.bySeparator(arisPlace, "aris", folderName);
 		File target = new File(whereToGenerate);
 		target.mkdirs();
-		String finalJavaFileFullPath = StrUtil.useSeparator(whereToGenerate, publicClassName + ".java");
+		String finalJavaFileFullPath = FileUtil.bySeparator(whereToGenerate, publicClassName + ".java");
 		
 		try(BufferedWriter thomas = new BufferedWriter(new FileWriter(finalJavaFileFullPath))) {
 			for(String item : sourceCode) {

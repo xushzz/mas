@@ -27,7 +27,7 @@ public abstract class Checker {
 		
 		Date expDate = null;
 		wrappedExpirationDate = new MexObject(expDate);
-		CommonExtractors.setUserExpiration(wrappedExpirationDate, App.USERNAME);
+		CommonExtractors.setUserExpiration(wrappedExpirationDate, AkaBase.USERNAME);
 	}
 	
     public String getWhatToCheckAgainst() {
@@ -130,7 +130,7 @@ public abstract class Checker {
 			String key = "license.toExpire";
 			String toExpire = SimpleKonfig.g().getValueOf(key);
 			if(toExpire != null) {
-				printLicenseInfo(StrUtil.occupy(toExpire, App.USERNAME, number, unit, plural));
+				printLicenseInfo(StrUtil.occupy(toExpire, AkaBase.USERNAME, number, unit, plural));
 			} else {
 				XXXUtil.alert("No valid expiration alert [" + key +"] provided.");
 			}
@@ -141,7 +141,7 @@ public abstract class Checker {
 			String display = DateUtil.displayDate(expirationDate, DateUtil.DATE_US);
 			String expired = SimpleKonfig.g().getValueOf(key);
 			if(expired != null) {
-				printLicenseInfo(StrUtil.occupy(expired, App.USERNAME, display));
+				printLicenseInfo(StrUtil.occupy(expired, AkaBase.USERNAME, display));
 			} else {
 				XXXUtil.alert("No valid expiration alert [" + key +"] provided.");
 			}

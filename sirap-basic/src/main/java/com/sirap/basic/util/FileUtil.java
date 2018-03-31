@@ -822,4 +822,28 @@ public class FileUtil {
 	public static String windowsSeparator(String filepath) {
 		return filepath.replace(Konstants.FILE_SEPARATOR_UNIX, Konstants.FILE_SEPARATOR_WINDOWS);
 	}
+
+	/***
+	 * 1) A B C gets A/B/C in Unix
+	 * 2) A/ B\ C D gets A/B\C\D in Windows
+	 * @param items
+	 * @return
+	 */
+	public static String bySeparator(Object... items) {
+		StringBuffer sb = new StringBuffer();
+		for(int i = 0; i < items.length; i++) {
+			String item = items[i] + "";
+			sb.append(item);
+			
+			if(i == items.length - 1) {
+				break;
+			}
+
+			if(!item.endsWith(Konstants.FILE_SEPARATOR_UNIX) && !item.endsWith(Konstants.FILE_SEPARATOR_WINDOWS)) {
+				sb.append(File.separator);
+			}
+		}
+		
+		return sb.toString();
+	}
 }

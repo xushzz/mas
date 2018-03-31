@@ -17,7 +17,7 @@ import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.domain.SiteSearchEngine;
-import com.sirap.common.framework.App;
+import com.sirap.common.framework.AkaBase;
 import com.sirap.common.framework.Janitor;
 import com.sirap.common.framework.Stash;
 import com.sirap.common.framework.command.InputAnalyzer;
@@ -198,7 +198,7 @@ public class CommandSirap extends CommandBase {
 	protected String getSystemInfo() {
 
 		StringBuffer sb = new StringBuffer();
-		sb.append(App.USERNAME);
+		sb.append(AkaBase.USERNAME);
 		sb.append(" ").append(g().getSystemInfo());
 		
 		Date expirationDate = Janitor.g().getExpirationDate();
