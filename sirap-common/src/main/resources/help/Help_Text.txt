@@ -1,0 +1,5 @@
+F:\fly.txt fi&wa   conduct search in given text file with given criteria and print out, $+order,+line,+case
+F:\D o\a.txt, f&w  conduct search in given text file with given criteria and print out, path has spaces
+F:\fly.xls 0       print index-designated excel sheet
+F:\D o\a.xlsx, 1   print index-designated excel sheet
+p fire&water       conduct local text search with command 'p' defined by configuration, such as p#D:/SF#.txt

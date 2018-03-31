@@ -38,7 +38,7 @@ public class CommandRecord extends MexItem implements Comparable<CommandRecord> 
 		
 		String tempOrder = arr[1];
 		if(EmptyUtil.isNullOrEmpty(tempOrder)) {
-			pseudoOrder = 17;
+			pseudoOrder = 50;
 		} else {
 			pseudoOrder = MathUtil.toInteger(tempOrder);
 		}

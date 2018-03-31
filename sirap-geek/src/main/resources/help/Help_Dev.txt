@@ -1,6 +1,3 @@
-ah A,B,C,D         split by comma and print as list
-ah A-B-C-D $s=-    split by - and print as list, option s=SPLITTER
-ah A,B,C $+s       split, sort and print list
 echo               regarding entries 1) system properties 2) environment variables 3) user configuration
 echo               list 1) system properties 2) environment variables, about 114 entries
 echo $+u,+i,-e,-s  list 3) user configuration and 4) user inner
@@ -9,12 +6,20 @@ echo $-t           list entries without type info
 echo path          list specific entry path, and split the value by file pathSeparator in lines format
 echo home		   list entries whose key contains keyword home
 echo :jdk          list entries whose value contains keyword jdk
-echo #inner          list entries whose type contains keyword inner
+echo #inner        list entries whose type contains keyword inner
 echo $+L           list entries and split its value in sorted lines format, if containing more than one item
 echo $+L,-sort     list entries and split its value in lines format, if containing more than one item
-maven              display home and repository for Maven, mvn help:system
+ah A,B,C,D         split by comma and print as list
+ah A-B-C-D $s=-    split by - and print as list, option s=SPLITTER
+ah A,B,C $+s       split, sort and print list
+<                  open Windows resource manager at storage
+F:\fire<           for a folder with 'less than' character, open Windows resource manager at this folder
 pwd                present working directory, aka user.dir
 ~                  display user home, aka user.home
+pwd<               open Windows resource manager at present working directory, aka user.dir
+~<                 open Windows resource manager at user home, aka user.home
+:                  list out all available disks in detail manner, $+size,+date,+bydate,+bysize,-byname,+bytype
+maven              display home and repository for Maven, mvn help:system
 deps               display all depended jars in project that user.dir indicates
 deps $p=D:\pom.xml display all depended jars in project that pom.xml rests
 deps $p=D:\project display all depended jars in given project

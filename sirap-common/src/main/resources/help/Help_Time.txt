@@ -1,0 +1,16 @@
+ca                 display calendar of current month
+ca..               display calendar of current year
+ca2                display calendar of month February
+ca19992            display calendar of specified February
+ca199902           display calendar of specified February
+ca19990217         display calendar of specified February, mark the day of seventeenth as 17*
+ca1999             display all month calendars of year 1999 in a 4rowsx3cols matrix form
+ca1999 $d=17       display all month calendars of year 1999, mark the day of seventeenth in each month
+ca1&12&1999        display month of January, December of current year and the whole year of 1999
+d                  display server date & time
+now                display server date & time
+du                 display user date & time
+z.-7               want to know what kind of regions are in timezone -7? Creston, Dawson!
+z.Chicago          want to know the timezone of Chicago? See what happens with z.America
+z.Chi&g            display time zone info for locations who name matching 'Chi' and 'g'
+z..                display time zone info for for all listed locations

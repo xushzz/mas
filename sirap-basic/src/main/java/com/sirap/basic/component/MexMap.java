@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.sirap.basic.domain.TypedKeyValueItem;
-import com.sirap.basic.math.CircularItemsDetector;
 import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.MathUtil;
@@ -22,9 +21,13 @@ import com.sirap.basic.util.XXXUtil;
 
 public class MexMap {
 	
-	private Map<String, String> container = new LinkedHashMap<String, String>();
+	private Map<String, String> container = Maps.newConcurrentMap();
 	private String type;
 	
+	public String getType() {
+		return type;
+	}
+
 	public MexMap() {}
 	
 	public MexMap(String type) {
@@ -57,11 +60,6 @@ public class MexMap {
 		}
 	}
 	
-	public List<String> detectCircularItems() {
-		CircularItemsDetector james = new CircularItemsDetector(container);
-		return james.detect();
-	}
-	
 	public MexMap(Map<String, String> container) {
 		if(container != null) {
 			this.container = container;
@@ -71,12 +69,8 @@ public class MexMap {
 	public void put(String key, String value) {
 		container.put(key, value);
 	}
-
-	public String getReturnKeyIfNull(String key) {
-		return get(key, key);
-	}
-
-	public String getIgnorecase(String key) {
+	
+	public TypedKeyValueItem getTypedItem(String key) {
 		String criteria = "^" + key + "$";
 		List<TypedKeyValueItem> sato = CollUtil.filter(listOf(), criteria);
 		if(EmptyUtil.isNullOrEmpty(sato)) {
@@ -87,7 +81,16 @@ public class MexMap {
 			XXXUtil.alert(msg, key, StrUtil.connectWithLineSeparator(sato));
 		}
 		
-		return sato.get(0).getValueX();
+		return sato.get(0);
+	}
+
+	public String getIgnorecase(String key) {
+		TypedKeyValueItem item = getTypedItem(key);
+		if(item != null) {
+			return item.getValueX();
+		} else {
+			return null;
+		}
 	}
 	
 	public TypedKeyValueItem getEntryIgnorecase(String key) {
@@ -121,10 +124,6 @@ public class MexMap {
 	public String get(String key, String defaultIfNull) {
 		String value = getIgnorecase(key);
 		return value != null ? value.trim() : defaultIfNull;
-	}
-
-	public Map<String, String> getContainerX() {
-		return container;
 	}
 	
 	public void clear() {
@@ -187,5 +186,31 @@ public class MexMap {
 		
 		Collections.sort(entries);
 		return entries;
+	}
+	
+	public List<TypedKeyValueItem> detectCircularItems() {
+		for(TypedKeyValueItem item : listOf()) {
+			List<TypedKeyValueItem> items = check(item.getKey(), Lists.newArrayList(), Lists.newArrayList());
+			if(!EmptyUtil.isNullOrEmpty(items)) {
+				return items;
+			}
+		}
+		
+		return null;
+	}
+	
+	private List<TypedKeyValueItem> check(String key, List<String> keys, List<TypedKeyValueItem> entries) {
+		if(keys.contains(key.toLowerCase())) {
+			return entries;
+		}
+		TypedKeyValueItem item = getTypedItem(key);
+		if(item == null) {
+			return null;
+		}
+
+//		D.pl(key, keys, item, entries);
+		keys.add(key.toLowerCase());
+		entries.add(item);
+		return check(item.getValueX(), keys, entries);
 	}
 }

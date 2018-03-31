@@ -9,11 +9,8 @@ import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.mp3.MP3AudioHeader;
 import org.jaudiotagger.audio.mp3.MP3File;
 import org.jaudiotagger.tag.datatype.AbstractDataType;
-import org.jaudiotagger.tag.datatype.NumberFixedLength;
 import org.jaudiotagger.tag.id3.AbstractID3Tag;
 import org.jaudiotagger.tag.id3.AbstractTagItem;
-import org.jaudiotagger.tag.id3.ID3v23Frame;
-import org.jaudiotagger.tag.id3.ID3v23Tag;
 
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.util.PanaceaBox;

@@ -2,13 +2,14 @@ package com.sirap.basic.domain;
 
 import java.util.List;
 
+import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 
 @SuppressWarnings("serial")
 public class TypedKeyValueItem extends KeyValueItem {
 	
-	private String type;
+	private String type = "";
 	
 	public TypedKeyValueItem(String key, Object value) {
 		this.key = key;
@@ -52,7 +53,7 @@ public class TypedKeyValueItem extends KeyValueItem {
 	
 	public String toPrint(String options) {
 		StringBuffer sb = sb();
-		if(OptionUtil.readBooleanPRI(options, "t", true)) {
+		if(!EmptyUtil.isNullOrEmpty(type) && OptionUtil.readBooleanPRI(options, "t", true)) {
 			sb.append("[" + type + "] ");
 		}
 		if(OptionUtil.readBooleanPRI(options, "k", true)) {
@@ -73,7 +74,7 @@ public class TypedKeyValueItem extends KeyValueItem {
 	public String toString() {
 		String options = "";
 		StringBuffer sb = sb();
-		if(OptionUtil.readBooleanPRI(options, "t", true)) {
+		if(!EmptyUtil.isNullOrEmpty(type) && OptionUtil.readBooleanPRI(options, "t", true)) {
 			sb.append("[" + type + "] ");
 		}
 		if(OptionUtil.readBooleanPRI(options, "k", true)) {

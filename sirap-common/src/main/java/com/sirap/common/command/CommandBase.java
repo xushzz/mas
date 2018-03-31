@@ -44,6 +44,10 @@ public abstract class CommandBase {
 	public static final String KEY_REFRESH = "r";
 	public static final String KEY_EXIT = "q,e,quit,exit";
 	public static final String KEY_HTTP_WWW = "((https?://|www\\.)[\\S]{4,}?)";
+	public static final String KEY_OPEN_FOLDER = "<";
+	public static final String KEY_SHOW_DETAIL = "-";
+	public static final String KEY_FILE_REMOVE = "remove";
+	
 	public Map<String, Object> helpMeanings = new HashMap<>();
 	
 	protected String input;
@@ -661,5 +665,15 @@ public abstract class CommandBase {
 		}
 		
 		return dosCommand;
+	}
+	
+	protected void openFolder(String folderpath) {
+		if(PanaceaBox.isMac()) {
+			PanaceaBox.openFile(folderpath);
+			C.pl2("Open Mac Finder at [" + folderpath + "].");
+		} else {
+			PanaceaBox.execute("explorer " + folderpath);
+			C.pl2("Open Windows resource manager at [" + folderpath + "].");
+		}
 	}
 }

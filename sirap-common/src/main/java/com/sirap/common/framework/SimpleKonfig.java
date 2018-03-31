@@ -10,6 +10,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.sirap.basic.component.Konstants;
+import com.sirap.basic.domain.TypedKeyValueItem;
 import com.sirap.basic.email.EmailCenter;
 import com.sirap.basic.email.EmailServerItem;
 import com.sirap.basic.tool.C;
@@ -76,12 +77,10 @@ public class SimpleKonfig extends Konfig {
 	
 	private void decodeUserConfig() {
 		getUserProps().recoverValues(securityPasscode);
-		List<String> items = getUserProps().detectCircularItems();
+		List<TypedKeyValueItem> items = getUserProps().detectCircularItems();
 		if(!EmptyUtil.isNullOrEmpty(items)) {
-			C.pl("[Configuration] Circular items found in [" + instance.userConfigFile + "] as following:");
-			C.list(items);
-			C.pl("User configuration is set to be empty.");
-			getUserProps().clear();
+			String msg = "\nCircular items found in [{0}]:\n" + StrUtil.connectWithLineSeparator(items);
+			XXXUtil.alert(msg, instance.userConfigFile);
 		}
 	}
 	

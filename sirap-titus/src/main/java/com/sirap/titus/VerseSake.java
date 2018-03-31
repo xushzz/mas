@@ -1,7 +1,6 @@
 package com.sirap.titus;
 
 import com.sirap.basic.domain.MexItem;
-import com.sirap.basic.util.StrUtil;
 
 @SuppressWarnings("serial")
 public class VerseSake extends MexItem {

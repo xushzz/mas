@@ -1,4 +1,4 @@
-package com.sirap.geek.util;
+package com.sirap.basic.util;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;

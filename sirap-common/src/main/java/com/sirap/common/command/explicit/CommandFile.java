@@ -1,12 +1,7 @@
 package com.sirap.common.command.explicit;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FilenameFilter;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -14,20 +9,13 @@ import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
-import com.sirap.basic.component.comparator.MexFileComparator;
 import com.sirap.basic.component.media.MediaFileAnalyzer;
-import com.sirap.basic.domain.MexFile;
-import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.domain.MexZipEntry;
-import com.sirap.basic.email.EmailCenter;
 import com.sirap.basic.exception.MexException;
-import com.sirap.basic.search.FileSizeCriteria;
-import com.sirap.basic.search.SizeCriteria;
 import com.sirap.basic.thirdparty.msoffice.MsExcelHelper;
 import com.sirap.basic.thirdparty.msoffice.MsWordHelper;
 import com.sirap.basic.thirdparty.pdf.PdfHelper;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.tool.FileDeeper;
 import com.sirap.basic.tool.MexFactory;
 import com.sirap.basic.util.ArisUtil;
 import com.sirap.basic.util.CollUtil;
@@ -38,41 +26,23 @@ import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.ImageUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.OptionUtil;
-import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.domain.MemoryRecord;
 import com.sirap.common.framework.SimpleKonfig;
-import com.sirap.common.framework.Stash;
-import com.sirap.common.framework.command.FileSizeInputAnalyzer;
 import com.sirap.common.framework.command.InputAnalyzer;
-import com.sirap.common.framework.command.target.TargetAnalyzer;
-import com.sirap.common.framework.command.target.TargetConsole;
-import com.sirap.common.framework.command.target.TargetEmail;
-import com.sirap.common.framework.command.target.TargetFolder;
 import com.sirap.common.manager.MemorableDayManager;
-import com.sirap.common.manager.VFileManager;
 
 public class CommandFile extends CommandBase {
 
-	private static final String KEY_MIX = "x";
-	private static final String KEY_VERY_IMPORTANT_FOLDER = "v";
-	private static final String KEY_OPEN_EXPLORER = "<";
-	private static final String KEY_ALL_DISKS_SINGLE_COLON = ":";
-	private static final String KEY_ALL_DISKS_DOUBLE_COLON = "::";
 	private static final String KEY_PRINT_TXT_ONELINE = "&";
 	private static final String KEY_PRINT_TXT = "#";
-	private static final String KEY_SHOW_DETAIL = "-";
-	private static final String KEY_FOLDER_DEPTH = "#";
 	private static final String KEY_PDF = "pdf";
 	private static final String KEY_DAY_CHECK = "dc";
 	private static final String KEY_MEMORABLE = "mm";
-	private static final String KEY_FIX_IMAGE = "fix";
 	private static final String KEY_KICK_OFF = "ko";
-	private static final String KEY_KICK_PRINT = "kp";
-	private static final String KEY_FILE_REMOVE = "remove";
 	
 	public static final String DEFAULT_TEXT_MAX_SIZE = "2M";
 
@@ -83,90 +53,9 @@ public class CommandFile extends CommandBase {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public boolean handle() {
-		solo = parseParam(KEY_MIX + "\\s(.*?)");
-		if(solo != null) {
-			if(target instanceof TargetConsole) {
-				if(isEmailEnabled()) {
-					target = TargetAnalyzer.createTargetEmail(EmailCenter.DEF_RECEIVER, command);
-				} else {
-					C.pl2("Email currently disabled.");
-					return true;
-				}
-			}
-			
-			final List<Object> objs = new ArrayList<Object>();
-			List<String> items = StrUtil.split(solo, ';');
-			for(String item:items) {
-				if(EmptyUtil.isNullOrEmptyOrBlank(item)) {
-					continue;
-				}
-				
-				item = item.trim();
-				
-				String[] fileParams = StrUtil.parseParams("(#{1,2}|)(.+?)", item);
-				if(fileParams == null) {
-					continue;
-				}
-				
-				String type = fileParams[0];
-				if(type.isEmpty()) {
-					objs.add(item);
-					continue;
-				}
-				
-				String value = fileParams[1];
-				File file = parseFile(value);
-				if(file != null) {
-					String filePath = file.getAbsolutePath();
-					if(FileOpener.isTextFile(filePath)) {
-						String cat = IOUtil.charsetOfTextFile(filePath);
-						if(OptionUtil.readBooleanPRI(options, "x", false)) {
-							cat = switchChartset(cat);
-						}
-						List<String> txtContent = FileOpener.readTextContent(filePath, true, cat);
-						if(type.length() == 1) {
-							objs.add(file);
-						} else if(type.length() == 2) {
-							for(String line:txtContent) {
-								File lineFile = parseFile(line.trim());
-								if(lineFile != null) {
-									objs.add(lineFile);
-								} else {
-									objs.add(line);
-								}
-							}
-						}
-					} else {
-						objs.add(file);
-					}
-					continue;
-				}
-
-				File folder = parseFolder(value);
-				if(folder != null) {
-					folder.list(new FilenameFilter() {
-						@Override
-						public boolean accept(File dir, String name) {
-							File subFile = FileUtil.getIfNormalFile(dir + File.separator + name);
-							if(subFile != null) {
-								objs.add(subFile);
-							}
-							return false;
-						}
-					});
-					continue;
-				}
-				
-				objs.add(item);
-			}
-
-			export(objs);
-			
-			return true;
-		}
 		
-		solo = command;
-		File file = parseFile(solo);
+		// deals with normal file, open it or list out
+		File file = parseFile(command);
 		if(file != null) {
 			String filePath = file.getAbsolutePath();
 			
@@ -246,283 +135,74 @@ public class CommandFile extends CommandBase {
 			
 			return true;
 		}
-				
-		InputAnalyzer sean = new FileSizeInputAnalyzer(input);
-		regex = "(" + KEY_SHOW_DETAIL + "|" + KEY_FOLDER_DEPTH + "|)([^<]*)(<|)";
-		params = StrUtil.parseParams(regex, sean.getCommand());
+		
+		//deals with single file, show detail, print if text, show in one line
+		params = parseParams(StrUtil.occupy("({0}|{1}|{2})(.+?)", KEY_SHOW_DETAIL, KEY_PRINT_TXT, KEY_PRINT_TXT_ONELINE));
 		if(params != null) {
-			this.command = sean.getCommand();
-			this.target = sean.getTarget();
-			this.options = sean.getOptions();
-			
-			String does = params[0];
-			String path = params[1];
-			String type = params[2];
-			if(KEY_OPEN_EXPLORER.equals(type)) {
-				String targetFolder = null;
-				if(EmptyUtil.isNullOrEmpty(path)) {
-					targetFolder = storage();
-				} else {
-					targetFolder = parseFolderPath(path);
-				}
-				if(targetFolder != null) {
-					if(PanaceaBox.isMac()) {
-						PanaceaBox.openFile(targetFolder);
-						C.pl2("Open Mac Finder at [" + targetFolder + "].");
-					} else {
-						PanaceaBox.execute("explorer " + targetFolder);
-						C.pl2("Open Windows resource manager at [" + targetFolder + "].");
+			file = parseFile(params[1]);
+			if(file != null) {
+				String filePath = file.getAbsolutePath();
+				String type = params[0];
+				if(StrUtil.equals(KEY_SHOW_DETAIL, type)) {
+					List<String> items = FileUtil.detail(filePath);
+					if(!StrUtil.equals(params[1], filePath)) {
+						items.add(0, filePath);
 					}
-					
-					return true;
-				} else {
-					return false;
-				}
-			}
-			
-			if(StrUtil.equals(KEY_FOLDER_DEPTH, does)) {
-				String cleverPath = parseFolderPath(path);
-				if(FileUtil.getIfNormalFolder(cleverPath) != null) {
-					FileDeeper dima = new FileDeeper(cleverPath);
-					
-					int maxLevel = dima.howDeep();
-					List<MexFile> files = dima.getMaxLevelFiles();
-					
-					if(target.isFileRelated()) {
-						export(files);
-					} else {
-						List<String> items = new ArrayList<>();
-						for(MexFile what: files) {
-							items.add(maxLevel + " " + what.getUnixPath());
+					if(FileUtil.isAnyTypeOf(filePath, FileUtil.SUFFIXES_PDF)) {
+						int lines = PdfHelper.pagesOf(filePath);
+						items.add("pages: " + lines);
+					} else if(FileUtil.isAnyTypeOf(filePath, FileUtil.SUFFIXES_EXCEL)) {
+						List<String> sheets = MsExcelHelper.readSheetNames(filePath);
+						String msg = StrUtil.occupy("sheets({0}): {1}", sheets.size(), StrUtil.connect(sheets, ", "));
+						items.add(msg);
+					} else if(FileUtil.isAnyTypeOf(filePath, "docx")) {
+						int lines = MsWordHelper.pagesOf(filePath);
+						items.add("pages: " + lines);
+					} else if(FileOpener.isTextFile(filePath)) {
+						int[] count = IOUtil.countOfLinesChars(filePath);
+						items.add("lines: " + count[0]);
+						items.add("chars: " + count[1]);
+						items.add("coding: " + IOUtil.charsetOfTextFile(filePath));
+					} else if(FileOpener.isImageFile(filePath)) {
+						items.add("area: " + ImageUtil.readImageWidthHeight(filePath, " x "));
+						String format = ImageUtil.getRealFormat(filePath);
+						if(!StrUtil.endsWith(filePath, format)) {
+							items.add("format: " + format);
 						}
 						
-						export(items);
-					}
-					
-					return true;
-				}
-			}
-			
-			List<String> paths = new ArrayList<>();
-			if(path.startsWith(KEY_ALL_DISKS_DOUBLE_COLON)) {
-				List<String> allDisks = FileUtil.availableDiskNames();
-				
-				for(String disk : allDisks) {
-					String newSourceName = path.replaceFirst("::", disk);
-					String cleverPath = parseFolderPath(newSourceName);
-					if(cleverPath != null) {
-						paths.add(cleverPath);
-					}
-				}
-			} else {
-				//an area as restive as IRAQ, fuck no.
-				String cleverPath = parseFolderPath(path);
-				if(cleverPath != null && FileUtil.getIfNormalFolder(cleverPath) != null) {
-					paths.add(cleverPath);
-				}
-			}
-			
-			if(!EmptyUtil.isNullOrEmpty(paths)) {
-				List<MexFile> allFiles = new ArrayList<>();
-				for(String pathItem: paths) {
-					List<MexFile> records = FileUtil.listDirectory(pathItem);
-					if(!EmptyUtil.isNullOrEmpty(records)) {
-						allFiles.addAll(records);
-					}
-				}
-				
-				if(!EmptyUtil.isNullOrEmpty(allFiles)) {
-					if(target.isFileRelated()) {
-						export(CollUtil.toFileList(allFiles));
 					} else {
-						boolean orderByNameAsc = OptionUtil.readBooleanPRI(options, "byname", true);
-						MexFileComparator cesc = new MexFileComparator(orderByNameAsc);
-						boolean orderByTypeDirAtTop = OptionUtil.readBooleanPRI(options, "bytype", true);
-						cesc.setByTypeAsc(orderByTypeDirAtTop);
-						cesc.setByDateAsc(OptionUtil.readBoolean(options, "bydate"));
-						cesc.setBySizeAsc(OptionUtil.readBoolean(options, "bysize"));
-						Collections.sort(allFiles, cesc);
-						String tempOptions = "+kids";
-						if(StrUtil.equals(KEY_SHOW_DETAIL, does)) {
-							tempOptions += ",+size";
-						}
-						String finalOptions = OptionUtil.mergeOptions(options, tempOptions);
-						export(allFiles, finalOptions);
-					}
-					
-					return true;
-				}
-			}
-		}
-		
-		if(is(KEY_ALL_DISKS_SINGLE_COLON)) {
-			List<String> records = FileUtil.availableDiskDetails();
-			export(records);
-			
-			return true;
-		}
-		
-		String[] regexArr = {"(.*?)\\s+(.+)", "(.*?)\\s*,\\s*(.+)"};
-		String[] filepathAndCriteria = parseFilepathAndCriterias(input, regexArr);
-		if(filepathAndCriteria != null) {
-			String filePath = filepathAndCriteria[0];
-			String criteria = filepathAndCriteria[1];
-			
-			if(FileOpener.isTextFile(filePath)) {
-				List<MexObject> all = readFileIntoList(filePath);
-				List<MexObject> items = CollUtil.filter(all, criteria, isCaseSensitive(), isStayCriteria());
-				export(CollUtil.items2PrintRecords(items, options));
-			} else if(FileUtil.isAnyTypeOf(filePath, FileUtil.SUFFIXES_EXCEL)) {
-				Integer index = MathUtil.toInteger(criteria);
-				if(index == null) {
-					C.pl("try index like 0, 1, 2, 3... with " + filePath);
-				} else {
-					List<List<Object>> data = MsExcelHelper.readSheetByIndex(filePath, index); 
-					export(data);
-				}
-			}
-			
-			return true;
-		}
-		
-		sean = new FileSizeInputAnalyzer(input);
-		SearchComponent jack = parseFolderPathAndCriterias(sean.getCommand());
-		if(jack != null) {
-			this.command = sean.getCommand();
-			this.target = sean.getTarget();
-			this.options = sean.getOptions();
-			List<MexFile> allMexedFiles = new ArrayList<>();
-			List<String> pathList = jack.getPaths();
-			for(String path : pathList) {
-				String criterias = jack.getCriteria().trim();
-				
-				int idxOfSeparator = criterias.indexOf(' ');
-				String nameCriteria = null;
-				Integer depth = -1;
-				
-				String regexDepth = "\\d{1,2}";
-				if(idxOfSeparator < 0) {
-					if(StrUtil.isRegexMatched(regexDepth, criterias)) {
-						depth = MathUtil.toInteger(criterias);
-					} else {
-						nameCriteria = criterias;
-					}
-				} else {
-					String depthString = criterias.substring(0, idxOfSeparator);
-					if(StrUtil.isRegexMatched(regexDepth, depthString)) {
-						depth = MathUtil.toInteger(depthString);
-						nameCriteria = criterias.substring(idxOfSeparator + 1).trim();
-					} else {
-						nameCriteria = criterias;
-					}
-				}
-				
-				if(depth == -1) {
-					String negate = StrUtil.parseParam("!(.+)", nameCriteria);
-					if(negate != null) {
-						nameCriteria = negate;
-					}
-					depth = 0;
-				}
-				
-				if(depth > 0) {
-					depth--;
-				}
-				
-				List<MexFile> allFiles = FileUtil.scanSingleFolder(path, depth, true);
-				if(EmptyUtil.isNullOrEmpty(nameCriteria)) {
-					allMexedFiles.addAll(allFiles);
-				} else {
-					List<MexFile> items = CollUtil.filter(allFiles, nameCriteria, isCaseSensitive(), isStayCriteria());
-					allMexedFiles.addAll(items);
-				}
-			}
-			
-			if(EmptyUtil.isNullOrEmpty(allMexedFiles)) {
-				exportEmptyMsg();
-			} else {
-				if(target.isFileRelated()) {
-					List<File> files = new ArrayList<File>();
-					for(MexFile mf:allMexedFiles) {
-						File fileItem = mf.getFile();
-						if(fileItem.isFile()) {
-							files.add(fileItem);
+						MediaFileAnalyzer mario = MexFactory.getMediaFileAnalyzer(filePath);
+						if(mario != null) {
+							List<String> detail = mario.getDetail();
+							items.addAll(detail);
 						}
 					}
 					
-					export(files);
-				} else {
-					boolean orderByNameAsc = OptionUtil.readBooleanPRI(options, "byname", true);
-					MexFileComparator cesc = new MexFileComparator(orderByNameAsc); 
-					cesc.setByTypeAsc(OptionUtil.readBoolean(options, "bytype"));
-					cesc.setByDateAsc(OptionUtil.readBoolean(options, "bydate"));
-					cesc.setBySizeAsc(OptionUtil.readBoolean(options, "bysize"));
-					Collections.sort(allMexedFiles, cesc);
-					String tempOptions = jack.isShowDetail() ? "+size" : "";
-					String finalOptions = OptionUtil.mergeOptions(options, tempOptions);
-					export(allMexedFiles, finalOptions);
-				}
-			}
-			
-			return true;
-		}
-		
-		sean = new FileSizeInputAnalyzer(input);
-		String vRegex = "(" + KEY_SHOW_DETAIL + "|)" + KEY_VERY_IMPORTANT_FOLDER + "(\\s(.*?)|)";
-		params = StrUtil.parseParams(vRegex, sean.getCommand());
-		if(params != null && !EmptyUtil.isNullOrEmpty(params[1])) {
-			this.command = sean.getCommand();
-			this.target = sean.getTarget();
-			this.options = sean.getOptions();
-			boolean detail = !params[0].isEmpty();
-			String criteria = params[1].trim();
-			List<MexFile> records = VFileManager.g().getFileRecordsByName(criteria, isCaseSensitive());
-			if(target.isFileRelated()) {
-				Collections.sort(records);
-				export(CollUtil.toFileList(records));
-			} else {
-				boolean orderByNameAsc = OptionUtil.readBooleanPRI(options, "byname", true);
-				MexFileComparator cesc = new MexFileComparator(orderByNameAsc); 
-				cesc.setByDateAsc(OptionUtil.readBoolean(options, "bydate"));
-				cesc.setBySizeAsc(OptionUtil.readBoolean(options, "bysize"));
-				Collections.sort(records, cesc);
-				String tempOptions = detail ? "+size" : "";
-				String finalOptions = OptionUtil.mergeOptions(options, tempOptions);
-				export(records, finalOptions);
-			}
-			
-			return true;
-		}
-		
-		if(is(KEY_VERY_IMPORTANT_FOLDER + KEY_2DOTS)) {
-			List<MexFile> records = VFileManager.g().getAllFileRecords();
-			boolean orderByNameAsc = OptionUtil.readBooleanPRI(options, "byname", true);
-			MexFileComparator cesc = new MexFileComparator(orderByNameAsc); 
-			cesc.setByDateAsc(OptionUtil.readBoolean(options, "bydate"));
-			cesc.setBySizeAsc(OptionUtil.readBoolean(options, "bysize"));
-			Collections.sort(records, cesc);
+					export(items);
 
-			if(target.isFileRelated()) {
-				export(CollUtil.toFileList(records));
-			} else {
-				export(records);
+					return true;
+				}
+				
+				checkTooBigToHandle(file, g().getUserValueOf("text.max", DEFAULT_TEXT_MAX_SIZE));
+				String cat = IOUtil.charsetOfTextFile(file.getAbsolutePath());
+				if(OptionUtil.readBooleanPRI(options, "x", false)) {
+					cat = switchChartset(cat);
+				}
+				if(StrUtil.equals(KEY_PRINT_TXT_ONELINE, type)) {
+					String temp = IOUtil.readFileWithLineSeparator(filePath, "", cat);
+					String result = StrUtil.reduceMultipleSpacesToOne(temp);
+					export(result);
+				} else if(StrUtil.equals(KEY_PRINT_TXT, type)) {
+					List<String> records = FileOpener.readTextContent(filePath, true, cat);
+					if(OptionUtil.readBooleanPRI(options, "line", false)) {
+						export(CollUtil.lineNumber(records, true));
+					} else {
+						export(records);
+					}
+				}
+				
+				return true;
 			}
-			
-			return true;
-		}
-		
-		if(is(KEY_VERY_IMPORTANT_FOLDER + KEY_VERY_IMPORTANT_FOLDER)) {  
-			List<String> records = VFileManager.g().getAllFolders();
-			export(records);
-			
-			return true;
-		}
-		
-		if(is(KEY_VERY_IMPORTANT_FOLDER + KEY_REFRESH)) {
-			int[] size = VFileManager.g().refresh();
-			C.pl2("Refreshed, " + size[1] + " records, before " + size[0] + ".");
-			
-			return true;
 		}
 		
 		//list regex matched items in given website
@@ -604,74 +284,6 @@ public class CommandFile extends CommandBase {
 					export(items);
 					return true;
 				}
-			}
-		}
-		
-		params = parseParams("(-|#|&|=)(.+?)");
-		if(params != null) {
-			file = parseFile(params[1]);
-			if(file != null) {
-				String filePath = file.getAbsolutePath();
-				String type = params[0];
-				if(StrUtil.equals(KEY_SHOW_DETAIL, type)) {
-					List<String> items = FileUtil.detail(filePath);
-					if(!StrUtil.equals(params[1], filePath)) {
-						items.add(0, filePath);
-					}
-					if(FileUtil.isAnyTypeOf(filePath, FileUtil.SUFFIXES_PDF)) {
-						int lines = PdfHelper.pagesOf(filePath);
-						items.add("pages: " + lines);
-					} else if(FileUtil.isAnyTypeOf(filePath, FileUtil.SUFFIXES_EXCEL)) {
-						List<String> sheets = MsExcelHelper.readSheetNames(filePath);
-						String msg = StrUtil.occupy("sheets({0}): {1}", sheets.size(), StrUtil.connect(sheets, ", "));
-						items.add(msg);
-					} else if(FileUtil.isAnyTypeOf(filePath, "docx")) {
-						int lines = MsWordHelper.pagesOf(filePath);
-						items.add("pages: " + lines);
-					} else if(FileOpener.isTextFile(filePath)) {
-						int[] count = IOUtil.countOfLinesChars(filePath);
-						items.add("lines: " + count[0]);
-						items.add("chars: " + count[1]);
-						items.add("coding: " + IOUtil.charsetOfTextFile(filePath));
-					} else if(FileOpener.isImageFile(filePath)) {
-						items.add("area: " + ImageUtil.readImageWidthHeight(filePath, " x "));
-						String format = ImageUtil.getRealFormat(filePath);
-						if(!StrUtil.endsWith(filePath, format)) {
-							items.add("format: " + format);
-						}
-						
-					} else {
-						MediaFileAnalyzer mario = MexFactory.getMediaFileAnalyzer(filePath);
-						if(mario != null) {
-							List<String> detail = mario.getDetail();
-							items.addAll(detail);
-						}
-					}
-					
-					export(items);
-
-					return true;
-				} 
-				
-				checkTooBigToHandle(file, g().getUserValueOf("text.max", DEFAULT_TEXT_MAX_SIZE));
-				String cat = IOUtil.charsetOfTextFile(file.getAbsolutePath());
-				if(OptionUtil.readBooleanPRI(options, "x", false)) {
-					cat = switchChartset(cat);
-				}
-				if(StrUtil.equals(KEY_PRINT_TXT_ONELINE, type)) {
-					String temp = IOUtil.readFileWithLineSeparator(filePath, "", cat);
-					String result = StrUtil.reduceMultipleSpacesToOne(temp);
-					export(result);
-				} else if(StrUtil.equals(KEY_PRINT_TXT, type)) {
-					List<String> records = FileOpener.readTextContent(filePath, true, cat);
-					if(OptionUtil.readBooleanPRI(options, "line", false)) {
-						export(CollUtil.lineNumber(records, true));
-					} else {
-						export(records);
-					}
-				}
-				
-				return true;
 			}
 		}
 		
@@ -783,34 +395,6 @@ public class CommandFile extends CommandBase {
 			}
 		}
 		
-		solo = parseParam(KEY_FIX_IMAGE + "\\s+(.+)");
-		if(solo != null) {
-			String fileSizeWithUnit = OptionUtil.readString(options, "size");
-			XXXUtil.nullCheck(fileSizeWithUnit, ":You must specify the file size you want to compress to.");
-			if(FileOpener.isImageFile(solo)) {
-				fixSingleImage(solo, fileSizeWithUnit);
-				return true;
-			}
-			
-			File folder = parseFolder(solo);
-			if(folder != null) {
-				//handle all those image files in this folder
-				folder.listFiles(new FilenameFilter() {
-					
-					@Override
-					public boolean accept(File dir, String name) {
-						String filePath = StrUtil.useSeparator(dir.getAbsolutePath(), name);
-						if(FileOpener.isImageFile(filePath)) {
-							fixSingleImage(filePath, fileSizeWithUnit);
-						}
-						return false;
-					}
-				});
-				
-				return true;
-			}
-		}
-		
 		solo = parseParam(KEY_KICK_OFF + "(|\\s+.+)");
 		if(solo != null) {
 			List<String> lines = Lists.newArrayList();
@@ -839,195 +423,7 @@ public class CommandFile extends CommandBase {
 			return true;
 		}
 		
-		solo = parseParam(KEY_KICK_PRINT + "(|\\s+.+)");
-		if(solo != null) {
-			if(!solo.isEmpty()) {
-				String path = solo;
-				if(FileUtil.exists(path)) {
-					FileOpener.open(path, options);
-					return true;
-				}
-			}
-
-			String location = getExportLocation();
-			String temp = g().getUserValueOf("ko.location");
-			if(!EmptyUtil.isNullOrEmpty(temp)) {
-				File folder = FileUtil.getIfNormalFolder(temp);
-				if(folder != null) {
-					location = folder.getAbsolutePath();
-				} else {
-					XXXUtil.info("Non-existing location: {0}, use default location: {1}", temp, location);
-				}
-			}
-			
-			String text = solo.isEmpty() ? "https://en.wikipedia.org/wiki/Live_Free_or_Die" : solo;
-			String filename = DateUtil.timestamp() + "_KP.jpg";
-			String filepath = StrUtil.useSeparator(location, filename);
-			ImageUtil.createImage(filepath, text, 1200, 400);
-			FileOpener.open(filepath, options);
-			
-			return true;
-		}
-		
-		solo = parseParam(KEY_FILE_REMOVE + "\\s+(.+)");
-		if(solo != null) {
-			String filepath = null;
-
-			File ball = parseFile(solo);
-			if(ball != null) {
-				filepath = ball.getAbsolutePath();
-			} else {
-				ball = parseFolder(solo);
-				if(ball != null) {
-					filepath = ball.getAbsolutePath();
-				}
-			}
-			
-			if(filepath != null) {
-				String alert = "<5M";
-				long filesize = FileUtil.sizeOf(filepath);
-				SizeCriteria carol = new FileSizeCriteria(alert);
-				if(carol.isGood(filesize) || OptionUtil.readBooleanPRI(options, "sure", false)) {
-					boolean printLog = OptionUtil.readBooleanPRI(options, "p", true);
-					FileUtil.remove(filepath, printLog);
-
-					Object startObj = Stash.g().readAndRemove(Stash.KEY_START_IN_MILLIS);
-					if(startObj instanceof Long) {
-						long start = (Long)startObj;
-						long end = System.currentTimeMillis();
-						C.time2(start, end);
-					}
-				} else {
-					String temp = "The size {0} of {1} is greater than {2}, please confirm with option $+sure";
-					XXXUtil.info(temp, FileUtil.formatSize(filesize), filepath, alert.replace("<", ""));
-					C.pl();
-				}
-			} else {
-				C.pl2("Neither file nor folder: " + solo);
-			}
-			
-			return true;
-		}
-		
 		return false;
-	}
-	
-	private void fixSingleImage(String filePath, String fileSizeWithUnit) {
-		String whereToSave = null;
-		boolean toSameFolder = OptionUtil.readBooleanPRI(options, "same", false);
-		if(!toSameFolder) {
-			if(target instanceof TargetFolder) {
-				whereToSave = ((TargetFolder)target).getPath();
-			} else {
-				whereToSave = getExportLocation();
-			}
-		}
-		boolean withTimestamp = g().isExportWithTimestampEnabled(options);
-		String finalFilename = null;
-		//handle single image file.
-		if(toSameFolder) {
-			finalFilename = ImageUtil.compressImageToSameFolder(filePath, fileSizeWithUnit, withTimestamp);
-		} else {
-			finalFilename = ImageUtil.compressImageToTargetFolder(filePath, whereToSave, fileSizeWithUnit, withTimestamp);
-		}
-		
-		if(finalFilename != null) {
-			String info = "";
-			if(OptionUtil.readBooleanPRI(options, "d", true)) {
-				info += " " + FileUtil.formatSize(finalFilename);
-				info += " " + ImageUtil.readImageWidthHeight(finalFilename, "*");
-			}
-
-			C.pl("Saved => " + finalFilename + info);
-			tryToOpenGeneratedImage(finalFilename);
-			
-			if(target instanceof TargetEmail) {
-				export(FileUtil.getIfNormalFile(finalFilename));
-			}
-		}
-	}
-	
-	public static List<MexObject> readFileIntoList(String fileName) {
-		String cat = IOUtil.charsetOfTextFile(fileName);
-		List<MexObject> list = new ArrayList<>();
-		try {
-			InputStreamReader isr = new InputStreamReader(new FileInputStream(fileName), cat);
-			BufferedReader br = new BufferedReader(isr);
-			String record = br.readLine();
-			int line = 0;
-			while (record != null) {
-				line++;
-				MexObject mo = new MexObject(record);
-				mo.setPseudoOrder(line);
-				list.add(mo);
-				record = br.readLine();
-			}
-			br.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return list;
-	}
-	
-	private SearchComponent parseFolderPathAndCriterias(String input) {
-		String[] expArr = {"(-|)(.*?)\\s(.+)", "(-|)(.*?),\\s?(.+)"};
-		List<String> allDisks = null;
-		List<String> paths = new ArrayList<>();
-		for(int i = 0; i < expArr.length; i++) {
-			String[] params = StrUtil.parseParams(expArr[i], input);
-			if(params != null) {
-				boolean detail = !params[0].isEmpty();
-				String sourceName = params[1];
-				String criteria = params[2];
-				if(sourceName.startsWith(KEY_ALL_DISKS_DOUBLE_COLON)) {
-					if(allDisks == null) {
-						allDisks = FileUtil.availableDiskNames();
-					}
-
-					for(String disk : allDisks) {
-						String newSourceName = sourceName.replaceFirst("::", disk);
-						String cleverPath = parseFolderPath(newSourceName);
-						if(cleverPath != null) {
-							paths.add(cleverPath);
-						}
-					}
-				} else {
-					String cleverPath = parseFolderPath(sourceName);
-					if(cleverPath != null && FileUtil.getIfNormalFolder(cleverPath) != null) {
-						paths.add(cleverPath);
-					}
-				}
-				
-				if(!EmptyUtil.isNullOrEmpty(paths)) {
-					SearchComponent jack = new SearchComponent(paths, criteria);
-					jack.setShowDetail(detail);
-					return jack;
-				}
-			}
-		}
-		
-		return null;
-	}
-	
-	private String[] parseFilepathAndCriterias(String input, String[] regexArr) {
-		for(int i = 0; i < regexArr.length; i++) {
-			String[] params = parseParams(regexArr[i]);
-			if(params != null) {
-				String sourceName = params[0];
-				String criteria = params[1];
-				
-				File file = parseFile(sourceName);
-				if(file == null) {
-					continue;
-				}
-				
-				String filePath = file.getAbsolutePath();
-				return new String[]{filePath, criteria};
-			}
-		}
-		
-		return null;
 	}
 	
 	abstract class MemoryKeeper {
@@ -1093,4 +489,3 @@ class SearchComponent {
 	}
 	
 }
-//你好老总把那个

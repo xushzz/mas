@@ -1,55 +1,22 @@
-ca                 display calendar of current month
-ca..               display calendar of current year
-ca2                display calendar of month February
-ca19992            display calendar of specified February
-ca199902           display calendar of specified February
-ca19990217         display calendar of specified February, mark the day of seventeenth as 17*
-ca1999             display all month calendars of year 1999 in a 4rowsx3cols matrix form
-ca1999 $d=17       display all month calendars of year 1999, mark the day of seventeenth in each month
-ca1&12&1999        display month of January, December of current year and the whole year of 1999
+ox                 photo auto-open on/off switch after captured
+tx                 export with or without time stamp switch, options:$+ts,-ts
+ver                version of this product, plus copyright and author information
 u                  display user-concerned info like user time zone, language, timeout, ability to send email,
 u                  remote control, sound on/off, auto-open on/off, time-stamp of/off, server time zone
-d                  display server date & time
-du                 display user date & time
 u+2                set user time zone as +2
 /                  display user configuration with forward slash
 /fire              display user configuration entries matching given criterias
 ;/                 in mac, display user configuration
 cr                 refresh configuration file
-z.-7               want to know what kind of regions are in timezone -7? Creston, Dawson!
-z.Chicago          want to know the timezone of Chicago? See what happens with z.America
-z.Chi&g            display time zone info for locations who name matching 'Chi' and 'g'
-z..                display time zone info for for all listed locations
-s                  capture screen and save it to the screenshot folder as yyyyMMdd_hhmmss.bmp, 
-s                  provided configured image format is bmp, then open it with configured image
-s                  viewer if the viewer is configured and does exist
-s .jpg             capture screen and save as JPG file, other formats are ${image.formats}
-s3                 capture screen with three-second delay, options:$+d, show detail like size and width*height, default +d
-s3 fire            capture screen and save it with a special suffix, such as 20191003_234224_fire.jpg
-s+9                capture screen in consecutive mode, repeat nine times with one second interval 
-s>D:\fire          capture screen and save in folder D:\fire
-c                  capture currently active window, also has features like delay, suffix. !awesome!
-ll                 open last modified file in ll.folder, which is defaulted to be screen shot folder
-ll fire            open last modified file matching criteria in ll. folder
-ox                 photo auto-open on/off switch after captured
-sx                 sound on/off switch when capturing screen
-tx                 export with or without time stamp switch, options:$+ts,-ts
-.                  list storage with dot, $+size,+date,+bydate,+bysize,-byname,+bytype,+kids
-ver                version of this product, plus copyright and author information
 a Vincent          search 'Vincent' via AOL
 b Vincent          search 'Vincent' via Baidu
 g Vincent          search 'Vincent' via Google
 w Vincent          search 'Vincent' via Wiki
 http://aol.com     open the web page with configured explorer
 www.google.com     open the web page with configured explorer with http://www.google.com
+mac                display all currently active mac addresses 
 host               display local host name IP address, and macAddress 
 host name          display target host name and IP address if exists
-mac                display all currently active mac addresses 
-p fire&water       conduct local text search with command 'p' defined by configuration, such as p#D:/SF#.txt
 gbk                set File or HTTP Request charset as GBK, the same goes for UTF8,UTF-8,GB2312
-id criteria        local text search. local.search.5=id#E:/KDB/statics/life#.txt#+full,+short,+line
-id #shilu          local text search, short filename contains String shilu
-id ##shilu         local text search, full filename contains String shilu
-id L188            local text search, line with line number 188, check MexTextLine
 fonts              list all available font names, it is all about graphics
 stash			   print out all the stashed items

@@ -46,7 +46,7 @@ import com.sirap.geek.util.GeekExtractors;
 public class CommandDev extends CommandBase {
 
 	private static final String KEY_ECHO = "echo";
-	private static final String KEY_SPLIT = "ah";
+	private static final String KEY_AH_SPLIT = "ah";
 	private static final String KEY_PWD_USER_DIR = "pwd";
 	private static final String KEY_TILDE_USER_HOME = "~";
 	private static final String KEY_MAVEN = "maven";
@@ -63,6 +63,7 @@ public class CommandDev extends CommandBase {
 	private static final String KEY_CHANGE_FILESEPARATOR = "sw";
 	private static final String KEY_SIZE = "size";
 	private static final String KEY_HTTP_STATUS_CODES = "https";
+	private static final String KEY_ALL_DISKS_ONE_COLON = ":";
 	
 	public boolean handle() {
 		//Satoshi Nakamoto
@@ -136,7 +137,7 @@ public class CommandDev extends CommandBase {
 			return true;
 		}
 
-		solo = parseParam(KEY_SPLIT + "\\s(.+)");
+		solo = parseParam(KEY_AH_SPLIT + "\\s(.+)");
 		if(solo != null) {
 			String sepStr = OptionUtil.readString(options, "s");
 			String sep = ",";
@@ -152,17 +153,44 @@ public class CommandDev extends CommandBase {
 			
 			return true;
 		}
-
-		if(is(KEY_PWD_USER_DIR)) {
-			String value = System.getProperty("user.dir");
-			export(value);
+		
+		// open given folder
+		solo = parseParam("(.+?)" + KEY_OPEN_FOLDER);
+		if(solo != null) {
+			String folderpath = parseFolderPath(solo);
+			if(folderpath != null) {
+				openFolder(folderpath);
+				return true;
+			}
+		}
+		
+		if(is(KEY_OPEN_FOLDER)) {
+			openFolder(storage());
+			return true;
+		}
+		
+		String regex = StrUtil.occupy("({0}|{1})({2}?)", KEY_TILDE_USER_HOME, KEY_PWD_USER_DIR, KEY_OPEN_FOLDER);
+		params = parseParams(regex);
+		if(params != null) {
+			String pathname = "";
+			if(StrUtil.equals(params[0], KEY_PWD_USER_DIR)) {
+				pathname = System.getProperty("user.dir");
+			} else if(StrUtil.equals(params[0], KEY_TILDE_USER_HOME)) {
+				pathname = System.getProperty("user.home");
+			}
+			if(params[1].isEmpty()) {
+				export(pathname);
+			} else {
+				openFolder(pathname);
+			}
 			
 			return true;
 		}
 		
-		if(is(KEY_TILDE_USER_HOME)) {
-			String value = System.getProperty("user.home");
-			export(value);
+		//list out disk info such as used, available and shit
+		if(is(KEY_ALL_DISKS_ONE_COLON)) {
+			List<String> records = FileUtil.availableDiskDetails();
+			export(records);
 			
 			return true;
 		}

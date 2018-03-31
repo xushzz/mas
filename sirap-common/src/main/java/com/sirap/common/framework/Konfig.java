@@ -7,6 +7,7 @@ import java.util.List;
 import com.sirap.basic.component.MexMap;
 import com.sirap.basic.domain.TypedKeyValueItem;
 import com.sirap.basic.tool.C;
+import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.StrUtil;
@@ -53,14 +54,21 @@ public abstract class Konfig {
 	}
 	
 	protected void loadUserConfigDetail() {
-		userProperties.clear();
 		
 		if(userConfigFile == null) {
 			C.pl("[Configuration] User config file unavailable, please check program arguments.");
 		} else {
 			File file = FileUtil.getIfNormalFile(userConfigFile);
 			if(file != null) {
-				userProperties.putAll(IOUtil.createMexedMapByRegularFile(file.getAbsolutePath()));
+				MexMap mm = IOUtil.createMexedMapByRegularFile(file.getAbsolutePath());
+				List<TypedKeyValueItem> items = mm.detectCircularItems();
+				if(!EmptyUtil.isNullOrEmpty(items)) {
+					String msg = "\n[Configuration] Circular items found in [{0}]:\n" + StrUtil.connectWithLineSeparator(items);
+					XXXUtil.alert(msg, file.getAbsolutePath());
+				} else {
+					userProperties.clear();
+					userProperties.putAll(mm);
+				}
 			} else {
 				C.pl("[Configuration] User config file unavailable, please check [" + userConfigFile + "].");
 			}
