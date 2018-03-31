@@ -23,3 +23,6 @@ v homeland&tower   conduct search in v folders by multiple conditions, & for 'an
 v 5.3              the number-format criteria would be additionally read as season 05 episode 03
 remove F:\fire     remove entire folder F:\fire if entire folder size is less than 5M, $+sure if not
 remove F:\a.mp3    remove normal file F:\a.mp3 if file size is less than 5M, $+sure if not
+remove F: $+k      remove all sub files in given folder but keep the folder itself, check file size
+F: 3 fire $+remove remove all searched file items by searching, apply $+sure if needed
+v fire $+remove    remove all searched file items by vip folder, apply $+sure if needed

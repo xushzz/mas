@@ -8,8 +8,6 @@ import java.util.List;
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.comparator.MexFileComparator;
 import com.sirap.basic.domain.MexFile;
-import com.sirap.basic.search.FileSizeCriteria;
-import com.sirap.basic.search.SizeCriteria;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.FileDeeper;
 import com.sirap.basic.util.CollUtil;
@@ -18,9 +16,7 @@ import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
-import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
-import com.sirap.common.framework.Stash;
 import com.sirap.common.framework.command.FileSizeInputAnalyzer;
 import com.sirap.common.framework.command.InputAnalyzer;
 import com.sirap.common.manager.VFileManager;
@@ -164,6 +160,14 @@ public class CommandFolder extends CommandBase {
 			if(EmptyUtil.isNullOrEmpty(allMexedFiles)) {
 				exportEmptyMsg();
 			} else {
+				boolean toRemove = OptionUtil.readBooleanPRI(options, "remove", false);
+				if(toRemove) {
+					for(MexFile mf : allMexedFiles) {
+						removeFile(mf.getPath());
+					}
+					
+					return true;
+				}
 				if(target.isFileRelated()) {
 					List<File> files = new ArrayList<File>();
 					for(MexFile mf:allMexedFiles) {
@@ -202,6 +206,14 @@ public class CommandFolder extends CommandBase {
 			boolean detail = !params[0].isEmpty();
 			String criteria = params[1].trim();
 			List<MexFile> records = VFileManager.g().getFileRecordsByName(criteria, isCaseSensitive());
+			boolean toRemove = OptionUtil.readBooleanPRI(options, "remove", false);
+			if(toRemove) {
+				for(MexFile mf : records) {
+					removeFile(mf.getPath());
+				}
+				
+				return true;
+			}
 			if(target.isFileRelated()) {
 				Collections.sort(records);
 				export(CollUtil.toFileList(records));
@@ -265,24 +277,7 @@ public class CommandFolder extends CommandBase {
 			}
 			
 			if(filepath != null) {
-				String alert = "<5M";
-				long filesize = FileUtil.sizeOf(filepath);
-				SizeCriteria carol = new FileSizeCriteria(alert);
-				if(carol.isGood(filesize) || OptionUtil.readBooleanPRI(options, "sure", false)) {
-					boolean printLog = OptionUtil.readBooleanPRI(options, "p", true);
-					FileUtil.remove(filepath, printLog);
-
-					Object startObj = Stash.g().readAndRemove(Stash.KEY_START_IN_MILLIS);
-					if(startObj instanceof Long) {
-						long start = (Long)startObj;
-						long end = System.currentTimeMillis();
-						C.time2(start, end);
-					}
-				} else {
-					String temp = "The size {0} of {1} is greater than {2}, please confirm with option $+sure";
-					XXXUtil.info(temp, FileUtil.formatSize(filesize), filepath, alert.replace("<", ""));
-					C.pl();
-				}
+				removeFile(filepath);
 			} else {
 				C.pl2("Neither file nor folder: " + solo);
 			}

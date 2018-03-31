@@ -14,6 +14,8 @@ import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.output.ConsoleParams;
+import com.sirap.basic.search.FileSizeCriteria;
+import com.sirap.basic.search.SizeCriteria;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
 import com.sirap.basic.util.CollUtil;
@@ -674,6 +676,31 @@ public abstract class CommandBase {
 		} else {
 			PanaceaBox.execute("explorer " + folderpath);
 			C.pl2("Open Windows resource manager at [" + folderpath + "].");
+		}
+	}
+	
+	protected void removeFile(String filepath) {
+		String alert = "<5M";
+		long filesize = FileUtil.sizeOf(filepath);
+		SizeCriteria carol = new FileSizeCriteria(alert);
+		if(carol.isGood(filesize) || OptionUtil.readBooleanPRI(options, "sure", false)) {
+			boolean printLog = OptionUtil.readBooleanPRI(options, "p", true);
+			if(OptionUtil.readBooleanPRI(options, "k", false)) {
+				FileUtil.removeKids(filepath, printLog);
+			} else {
+				FileUtil.remove(filepath, printLog);
+			}
+
+			Object startObj = Stash.g().readAndRemove(Stash.KEY_START_IN_MILLIS);
+			if(startObj instanceof Long) {
+				long start = (Long)startObj;
+				long end = System.currentTimeMillis();
+				C.time2(start, end);
+			}
+		} else {
+			String temp = "The size {0} of {1} is greater than {2}, please confirm with option $+sure";
+			XXXUtil.info(temp, FileUtil.formatSize(filesize), filepath, alert.replace("<", ""));
+			C.pl();
 		}
 	}
 }

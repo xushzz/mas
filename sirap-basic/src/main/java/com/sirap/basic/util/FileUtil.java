@@ -686,6 +686,20 @@ public class FileUtil {
 		return remove(filepath, false);
 	}
 	
+	public static boolean removeKids(String filepath, boolean printAlong) {
+		File file = new File(filepath);
+		File[] files = file.listFiles(); 
+		D.pl(filepath, files);
+	    if(files == null) {
+	    	return false;
+	    }
+	    for (int i = 0; i < files.length; i++) {  
+	        remove(files[i].getAbsolutePath(), printAlong);  
+	    }
+	    
+	    return true;
+	}
+	
 	public static boolean remove(String filepath, boolean printAlong) {  
 		File file = new File(filepath);
 	    if (!file.exists()) {
