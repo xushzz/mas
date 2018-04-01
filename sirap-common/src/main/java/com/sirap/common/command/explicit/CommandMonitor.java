@@ -2,10 +2,13 @@ package com.sirap.common.command.explicit;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.domain.MexFile;
+import com.sirap.basic.domain.TypedKeyValueItem;
 import com.sirap.basic.output.PDFParams;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.CollUtil;
@@ -15,6 +18,7 @@ import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.OptionUtil;
+import com.sirap.basic.util.SatoUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.TrumpUtil;
 import com.sirap.basic.util.XXXUtil;
@@ -50,9 +54,80 @@ public class CommandMonitor extends CommandBase {
 	private static final int[] LH_cellsWidth = {3, 1, 3};
 	private static final int[] LH_cellsAlign = {0, 1, 2};
 	private static final PDFParams LH_PDF_PARAMS = new PDFParams(LH_cellsWidth, LH_cellsAlign);
-	
+	private static final String KEY_ECHO = "echo";
+
 	@Override
 	public boolean handle() {
+		//Satoshi Nakamoto
+		solo = parseParam(KEY_ECHO + "(|\\s.*?)");
+		if(solo != null) {
+			if(StrUtil.equals(solo, "path")) {
+				//do whole match if and only PATH
+				solo = "^" + solo + "$";
+			}
+			List<TypedKeyValueItem> items = Lists.newArrayList();
+			boolean showAll = OptionUtil.readBooleanPRI(options, "a", false);
+			if(showAll || OptionUtil.readBooleanPRI(options, "s", true)) {
+				List<TypedKeyValueItem> sato = SatoUtil.SYSTEM_PROPERTIES;
+				if(!EmptyUtil.isNullOrEmpty(solo)) {
+					sato = CollUtil.filter(sato, solo);
+				}
+				items.addAll(sato);
+			}
+			if(showAll || OptionUtil.readBooleanPRI(options, "e", true)) {
+				List<TypedKeyValueItem> sato = SatoUtil.ENVIRONMENT_VARIABLES;
+				if(!EmptyUtil.isNullOrEmpty(solo)) {
+					sato = CollUtil.filter(sato, solo);
+				}
+				items.addAll(sato);
+			}
+			if(showAll || OptionUtil.readBooleanPRI(options, "u", false)) {
+				List<TypedKeyValueItem> sato = g().getUserProps().listOf();
+				if(!EmptyUtil.isNullOrEmpty(solo)) {
+					sato = CollUtil.filter(sato, solo);
+				}
+				items.addAll(sato);
+			}
+			if(showAll || OptionUtil.readBooleanPRI(options, "i", false)) {
+				List<TypedKeyValueItem> sato = g().getInnerProps().listOf();
+				if(!EmptyUtil.isNullOrEmpty(solo)) {
+					sato = CollUtil.filter(sato, solo);
+				}
+				items.addAll(sato);
+			}
+			Collections.sort(items);
+			
+			Boolean showValueItemInLines = OptionUtil.readBoolean(options, "l");
+			if(showValueItemInLines == null) {
+				showValueItemInLines = items.size() == 1;
+			}
+			if(showValueItemInLines) {
+				List<String> gras = Lists.newArrayList();
+				String sepStr = OptionUtil.readString(options, "s");
+				String sep = File.pathSeparator;
+				if(!EmptyUtil.isNullOrEmpty(sepStr)) {
+					sep = sepStr;
+				}
+				for(TypedKeyValueItem item : items) {
+					List<String> sons = item.valueItemInLines(sep);
+					if(sons.size() > 1) {
+						if(OptionUtil.readBooleanPRI(options, "sort", true)) {
+							CollUtil.sortIgnoreCase(sons);
+						}
+						gras.add(item.toPrint(OptionUtil.mergeOptions("-v", options)));
+						gras.addAll(sons);
+					} else {
+						gras.add(item.toPrint(options));
+					}
+				}
+				
+				export(gras);
+			} else {
+				export(items);
+			}
+			
+			return true;
+		}
 		
 		params = parseParams(KEY_SECURITY_ENCODE + "(|-([a-z0-9]+))\\s(|.+?)");
 		if(params != null) {
@@ -235,9 +310,6 @@ public class CommandMonitor extends CommandBase {
 		if(params != null) {
 			String criteria = params[1];
 			List<String> list = FileUtil.readResourceFilesIntoList(SimpleKonfig.KONFIG_FILE);
-			List<String> recordsExtra = FileUtil.readResourceFilesIntoList(Konfig.EXTRA_FILE);
-			list.addAll(recordsExtra);
-			
 			export(CollUtil.filterMix(list, criteria, isCaseSensitive()));
 			
 			return true;

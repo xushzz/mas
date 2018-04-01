@@ -27,7 +27,8 @@ public class CommandTime extends CommandBase {
 	private static final String KEY_DATETIME_SERVER = "d,now";
 	private static final String KEY_DATETIME_USER = "du";
 	private static final String KEY_TIMEZONE_DISPLAY = "z\\.(.{1,20})";
-
+	private static final String KEY_TO_DATE = "td";
+	private static final String KEY_TO_LONG = "tl";
 	
 	public boolean handle() {
 		
@@ -159,6 +160,34 @@ public class CommandTime extends CommandBase {
 			}
 			
     		return true;
+		}
+		
+		solo = parseParam(KEY_TO_DATE + "\\.(-?\\d{1,14})");
+		if(solo != null) {
+			Long milliSecondsSince1970 = Long.parseLong(solo);
+			
+			List<String> items = new ArrayList<>();
+			items.add(DateUtil.convertLongToDateStr(milliSecondsSince1970, DateUtil.HOUR_Min_Sec_Milli_AM_WEEK_DATE));
+			items.add(DateUtil.convertLongToDateStr(milliSecondsSince1970, DateUtil.DATETIME_ALL_TIGHT));
+			
+			export(items);
+			
+			return true;
+		}
+		
+		if(is(KEY_TO_LONG)) {
+			long value = DateUtil.convertDateStrToLong(null);
+			export(value);
+			
+			return true;
+		}
+		
+		solo = parseParam(KEY_TO_LONG + "\\.(\\d{8,17})");
+		if(solo != null) {
+			long value = DateUtil.convertDateStrToLong(solo);
+			export(value);
+			
+			return true;
 		}
 		
 		return false;

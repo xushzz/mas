@@ -15,7 +15,6 @@ import com.sirap.basic.util.XXXUtil;
 
 public abstract class Konfig {
 
-	public static String EXTRA_FILE = "/KonfigExtra.properties";
 	public static String KONFIG_FILE = "/Konfig.properties";
 	public static String KEYS_FILE = "/Keys.txt";
 	
@@ -39,17 +38,6 @@ public abstract class Konfig {
 		MexMap temp = IOUtil.readKeyValuesIntoMexedMap(is, cat);
 		if(temp != null) {
 			innerProperties.putAll(temp);
-		}
-		
-		is = getClass().getResourceAsStream(EXTRA_FILE);
-		if(is == null) {
-			C.pl("[Configuration] Extra config file unavailable, please check [" + EXTRA_FILE + "].");
-		} else {
-			cat = IOUtil.charsetOfStream(getClass().getResourceAsStream(EXTRA_FILE));
-			temp = IOUtil.readKeyValuesIntoMexedMap(is, cat);
-			if(temp != null) {
-				innerProperties.putAll(temp);
-			}
 		}
 	}
 	

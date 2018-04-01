@@ -14,9 +14,15 @@ import com.sirap.basic.util.StrUtil;
 public class MexFile extends MexItem implements Comparable<MexFile> {
 	
 	protected File file;
+	private int depth;
 	
 	public MexFile(File file) {
 		this.file = file;
+	}
+
+	public MexFile(File file, int depth) {
+		this.file = file;
+		this.depth = depth;
 	}
 	
 	public File getFile() {
@@ -130,6 +136,10 @@ public class MexFile extends MexItem implements Comparable<MexFile> {
 	
 	public String toPrint(String options) {
 		StringBuilder sb = new StringBuilder();
+		if(OptionUtil.readBooleanPRI(options, "tree", false)) {
+			String dent = StrUtil.repeatSpace(depth * 4);
+			sb.append(dent);
+		}
 		if(OptionUtil.readBooleanPRI(options, "win", false)) {
 			sb.append(getWindowsPath());
 		} else if(OptionUtil.readBooleanPRI(options, "sh", false)) {

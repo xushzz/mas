@@ -21,13 +21,11 @@ import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
 
-public class CommandSimpleMath extends CommandBase {
+public class CommandMath extends CommandBase {
 
 	private static final String LENGTH_OF = "l\\.";
 	private static final String KEY_MAXMIN = "max,min";
 	private static final String KEY_PERMUTATION = "p=";
-	private static final String KEY_TO_DATE = "td";
-	private static final String KEY_TO_LONG = "tl";
 	private static final String REGEX_HEX8 = "0x([0-9a-f]{1,16})";
 	
 	@Override
@@ -170,34 +168,6 @@ public class CommandSimpleMath extends CommandBase {
 			String d2Str = DateUtil.displayDateCompact(d2);
 			export(d1Str + " " + operator + " " + dayDiffAbs + " = " + d2Str);
 			
-			
-			return true;
-		}
-		
-		solo = parseParam(KEY_TO_DATE + "\\.(-?\\d{1,14})");
-		if(solo != null) {
-			Long milliSecondsSince1970 = Long.parseLong(solo);
-			
-			List<String> items = new ArrayList<>();
-			items.add(DateUtil.convertLongToDateStr(milliSecondsSince1970, DateUtil.HOUR_Min_Sec_Milli_AM_WEEK_DATE));
-			items.add(DateUtil.convertLongToDateStr(milliSecondsSince1970, DateUtil.DATETIME_ALL_TIGHT));
-			
-			export(items);
-			
-			return true;
-		}
-		
-		if(is(KEY_TO_LONG)) {
-			long value = DateUtil.convertDateStrToLong(null);
-			export(value);
-			
-			return true;
-		}
-		
-		solo = parseParam(KEY_TO_LONG + "\\.(\\d{8,17})");
-		if(solo != null) {
-			long value = DateUtil.convertDateStrToLong(solo);
-			export(value);
 			
 			return true;
 		}

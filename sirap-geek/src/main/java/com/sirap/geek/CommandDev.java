@@ -5,7 +5,6 @@ import java.awt.Toolkit;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,7 +13,6 @@ import com.sirap.basic.component.Extractor;
 import com.sirap.basic.data.HttpData;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexZipEntry;
-import com.sirap.basic.domain.TypedKeyValueItem;
 import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.json.JsonUtil;
@@ -29,7 +27,6 @@ import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.ImageUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.OptionUtil;
-import com.sirap.basic.util.SatoUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
@@ -45,10 +42,7 @@ import com.sirap.geek.util.GeekExtractors;
 
 public class CommandDev extends CommandBase {
 
-	private static final String KEY_ECHO = "echo";
 	private static final String KEY_AH_SPLIT = "ah";
-	private static final String KEY_PWD_USER_DIR = "pwd";
-	private static final String KEY_TILDE_USER_HOME = "~";
 	private static final String KEY_MAVEN = "maven";
 	private static final String KEY_DEPS = "deps";
 	private static final String KEY_ISSUE = "iss";
@@ -60,82 +54,10 @@ public class CommandDev extends CommandBase {
 	private static final String KEY_TO_LOWERCASE= "lo";
 	private static final String KEY_ZIP = FileUtil.SUFFIXES_ZIP.replace(';', '|');
 	private static final String KEY_UUID = "uuid";
-	private static final String KEY_CHANGE_FILESEPARATOR = "sw";
 	private static final String KEY_SIZE = "size";
 	private static final String KEY_HTTP_STATUS_CODES = "https";
-	private static final String KEY_ALL_DISKS_ONE_COLON = ":";
 	
 	public boolean handle() {
-		//Satoshi Nakamoto
-		solo = parseParam(KEY_ECHO + "(|\\s.*?)");
-		if(solo != null) {
-			if(StrUtil.equals(solo, "path")) {
-				//do whole match if and only PATH
-				solo = "^" + solo + "$";
-			}
-			List<TypedKeyValueItem> items = Lists.newArrayList();
-			boolean showAll = OptionUtil.readBooleanPRI(options, "a", false);
-			if(showAll || OptionUtil.readBooleanPRI(options, "s", true)) {
-				List<TypedKeyValueItem> sato = SatoUtil.SYSTEM_PROPERTIES;
-				if(!EmptyUtil.isNullOrEmpty(solo)) {
-					sato = CollUtil.filter(sato, solo);
-				}
-				items.addAll(sato);
-			}
-			if(showAll || OptionUtil.readBooleanPRI(options, "e", true)) {
-				List<TypedKeyValueItem> sato = SatoUtil.ENVIRONMENT_VARIABLES;
-				if(!EmptyUtil.isNullOrEmpty(solo)) {
-					sato = CollUtil.filter(sato, solo);
-				}
-				items.addAll(sato);
-			}
-			if(showAll || OptionUtil.readBooleanPRI(options, "u", false)) {
-				List<TypedKeyValueItem> sato = g().getUserProps().listOf();
-				if(!EmptyUtil.isNullOrEmpty(solo)) {
-					sato = CollUtil.filter(sato, solo);
-				}
-				items.addAll(sato);
-			}
-			if(showAll || OptionUtil.readBooleanPRI(options, "i", false)) {
-				List<TypedKeyValueItem> sato = g().getInnerProps().listOf();
-				if(!EmptyUtil.isNullOrEmpty(solo)) {
-					sato = CollUtil.filter(sato, solo);
-				}
-				items.addAll(sato);
-			}
-			Collections.sort(items);
-			
-			Boolean showValueItemInLines = OptionUtil.readBoolean(options, "l");
-			if(showValueItemInLines == null) {
-				showValueItemInLines = items.size() == 1;
-			}
-			if(showValueItemInLines) {
-				List<String> gras = Lists.newArrayList();
-				String sepStr = OptionUtil.readString(options, "s");
-				String sep = File.pathSeparator;
-				if(!EmptyUtil.isNullOrEmpty(sepStr)) {
-					sep = sepStr;
-				}
-				for(TypedKeyValueItem item : items) {
-					List<String> sons = item.valueItemInLines(sep);
-					if(sons.size() > 1) {
-						if(OptionUtil.readBooleanPRI(options, "sort", true)) {
-							CollUtil.sortIgnoreCase(sons);
-						}
-						gras.add(item.toPrint(OptionUtil.mergeOptions("-v", options)));
-						gras.addAll(sons);
-					} else {
-						gras.add(item.toPrint(options));
-					}
-				}
-				
-				export(gras);
-			} else {
-				export(items);
-			}
-			
-			return true;
-		}
 
 		solo = parseParam(KEY_AH_SPLIT + "\\s(.+)");
 		if(solo != null) {
@@ -150,47 +72,6 @@ public class CommandDev extends CommandBase {
 			}
 			
 			export(items);
-			
-			return true;
-		}
-		
-		// open given folder
-		solo = parseParam("(.+?)" + KEY_OPEN_FOLDER);
-		if(solo != null) {
-			String folderpath = parseFolderPath(solo);
-			if(folderpath != null) {
-				openFolder(folderpath);
-				return true;
-			}
-		}
-		
-		if(is(KEY_OPEN_FOLDER)) {
-			openFolder(storage());
-			return true;
-		}
-		
-		String regex = StrUtil.occupy("({0}|{1})({2}?)", KEY_TILDE_USER_HOME, KEY_PWD_USER_DIR, KEY_OPEN_FOLDER);
-		params = parseParams(regex);
-		if(params != null) {
-			String pathname = "";
-			if(StrUtil.equals(params[0], KEY_PWD_USER_DIR)) {
-				pathname = System.getProperty("user.dir");
-			} else if(StrUtil.equals(params[0], KEY_TILDE_USER_HOME)) {
-				pathname = System.getProperty("user.home");
-			}
-			if(params[1].isEmpty()) {
-				export(pathname);
-			} else {
-				openFolder(pathname);
-			}
-			
-			return true;
-		}
-		
-		//list out disk info such as used, available and shit
-		if(is(KEY_ALL_DISKS_ONE_COLON)) {
-			List<String> records = FileUtil.availableDiskDetails();
-			export(records);
 			
 			return true;
 		}
@@ -413,25 +294,6 @@ public class CommandDev extends CommandBase {
 			}
 			
 			export(items);
-			return true;
-		}
-		
-		solo = parseParam(KEY_CHANGE_FILESEPARATOR + "\\s+(.+)");
-		if(solo != null) {
-			List<String> items = new ArrayList<>();
-			String unixStyle = FileUtil.unixSeparator(solo);
-			if(!StrUtil.equals(unixStyle, solo)) {
-				items.add(unixStyle);
-			}
-			
-			String windowsStyle = FileUtil.windowsSeparator(solo);
-			if(!StrUtil.equals(windowsStyle, solo)) {
-				items.add(windowsStyle);
-			}
-			
-			items.add(FileUtil.shellStyle(unixStyle));
-			export(items);
-			
 			return true;
 		}
 		

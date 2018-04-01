@@ -28,10 +28,10 @@ public class FileWalker {
 		File file = new File(dir);
 		if(file.isDirectory()) {
 			if(includeFolder) {
-				allFiles.add(new MexFile(file));
+				allFiles.add(new MexFile(file, current - 1));
 			}
 		} else {
-			allFiles.add(new MexFile(file));
+			allFiles.add(new MexFile(file, current - 1));
 			return;
 		}
 

@@ -9,6 +9,7 @@ import com.sirap.basic.component.Konstants;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
+import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.MexUtil;
 import com.sirap.basic.util.NetworkUtil;
@@ -36,6 +37,10 @@ public class CommandSirap extends CommandBase {
 	private static final String KEY_ASSIGN_CHARSET = "gbk,utf8,utf-8,gb2312,unicode";
 	private static final String KEY_FONTS = "fonts";
 	private static final String KEY_SHOW_STASH = "stash";
+	private static final String KEY_PWD_USER_DIR = "pwd";
+	private static final String KEY_TILDE_USER_HOME = "~";
+	private static final String KEY_ALL_DISKS_ONE_COLON = ":";
+	private static final String KEY_CHANGE_FILESEPARATOR = "sw";
 	
 	{
 		helpMeanings.put("image.formats", Konstants.IMG_FORMATS);
@@ -152,6 +157,66 @@ public class CommandSirap extends CommandBase {
 		
 		if(is(KEY_SHOW_STASH)) {
 			export(Stash.g().print());
+			return true;
+		}
+		
+		// open given folder
+		solo = parseParam("(.+?)" + KEY_OPEN_FOLDER);
+		if(solo != null) {
+			String folderpath = parseFolderPath(solo);
+			if(folderpath != null) {
+				openFolder(folderpath);
+				return true;
+			}
+		}
+		
+		if(is(KEY_OPEN_FOLDER)) {
+			openFolder(storage());
+			return true;
+		}
+		
+		String regex = StrUtil.occupy("({0}|{1})({2}?)", KEY_TILDE_USER_HOME, KEY_PWD_USER_DIR, KEY_OPEN_FOLDER);
+		params = parseParams(regex);
+		if(params != null) {
+			String pathname = "";
+			if(StrUtil.equals(params[0], KEY_PWD_USER_DIR)) {
+				pathname = System.getProperty("user.dir");
+			} else if(StrUtil.equals(params[0], KEY_TILDE_USER_HOME)) {
+				pathname = System.getProperty("user.home");
+			}
+			if(params[1].isEmpty()) {
+				export(pathname);
+			} else {
+				openFolder(pathname);
+			}
+			
+			return true;
+		}
+	
+		//list out disk info such as used, available and shit
+		if(is(KEY_ALL_DISKS_ONE_COLON)) {
+			List<String> records = FileUtil.availableDiskDetails();
+			export(records);
+			
+			return true;
+		}
+		
+		solo = parseParam(KEY_CHANGE_FILESEPARATOR + "\\s+(.+)");
+		if(solo != null) {
+			List<String> items = new ArrayList<>();
+			String unixStyle = FileUtil.unixSeparator(solo);
+			if(!StrUtil.equals(unixStyle, solo)) {
+				items.add(unixStyle);
+			}
+			
+			String windowsStyle = FileUtil.windowsSeparator(solo);
+			if(!StrUtil.equals(windowsStyle, solo)) {
+				items.add(windowsStyle);
+			}
+			
+			items.add(FileUtil.shellStyle(unixStyle));
+			export(items);
+			
 			return true;
 		}
 		

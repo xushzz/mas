@@ -1,3 +1,14 @@
+echo               regarding entries 1) system properties 2) environment variables 3) user configuration
+echo               list 1) system properties 2) environment variables, about 114 entries
+echo $+u,+i,-e,-s  list 3) user configuration and 4) user inner
+echo $+a           list all of them 1) properties 2) variables and 3) user config 4) user inner 
+echo $-t           list entries without type info
+echo path          list specific entry path, and split the value by file pathSeparator in lines format
+echo home		   list entries whose key contains keyword home
+echo :jdk          list entries whose value contains keyword jdk
+echo #inner        list entries whose type contains keyword inner
+echo $+L           list entries and split its value in sorted lines format, if containing more than one item
+echo $+L,-sort     list entries and split its value in lines format, if containing more than one item
 ;                  display previous N records of commands with backward slash, currently default N=20
 ; $+all            display all history commands, options for \, $+n,+all         
 ;fire              display all inputs matching given criteria(s), month info will be translated

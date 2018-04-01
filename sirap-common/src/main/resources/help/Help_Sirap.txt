@@ -20,3 +20,11 @@ host name          display target host name and IP address if exists
 gbk                set File or HTTP Request charset as GBK, the same goes for UTF8,UTF-8,GB2312
 fonts              list all available font names, it is all about graphics
 stash			   print out all the stashed items
+<                  open Windows resource manager at storage
+F:\fire<           for a folder with 'less than' character, open Windows resource manager at this folder
+pwd                present working directory, aka user.dir
+~                  display user home, aka user.home
+pwd<               open Windows resource manager at present working directory, aka user.dir
+~<                 open Windows resource manager at user home, aka user.home
+:                  list out all available disks in detail manner, $+size,+date,+bydate,+bysize,-byname,+bytype
+sw F:\a\b\c/de     replace / with \, replace \ with /, then print these two records if any different

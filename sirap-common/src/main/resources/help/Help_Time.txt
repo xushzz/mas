@@ -4,7 +4,8 @@ ca2                display calendar of month February
 ca19992            display calendar of specified February
 ca199902           display calendar of specified February
 ca19990217         display calendar of specified February, mark the day of seventeenth as 17*
-ca1999             display all month calendars of year 1999 in a 4rowsx3cols matrix form
+ca1999             display all month ca
+lendars of year 1999 in a 4rowsx3cols matrix form
 ca1999 $d=17       display all month calendars of year 1999, mark the day of seventeenth in each month
 ca1&12&1999        display month of January, December of current year and the whole year of 1999
 d                  display server date & time
