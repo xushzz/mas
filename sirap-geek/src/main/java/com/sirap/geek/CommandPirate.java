@@ -192,7 +192,7 @@ public class CommandPirate extends CommandBase {
 			File file = FileUtil.getIfNormalFile(solo);
 			if(file != null) {
 				List<List<Object>> list = MsExcelHelper.readSheetByIndex(file.getAbsolutePath(), 0);
-				boolean askForDonation = OptionUtil.readBooleanPRI(options, "ask", true);
+				boolean askForDonation = OptionUtil.readBooleanPRI(options, "ask", false);
 				lines = jsonDataOfMates(list, askForDonation);
 			}
 
@@ -200,7 +200,7 @@ public class CommandPirate extends CommandBase {
 				XXXUtil.alert("Neither a valid folder nor a valid path: {0}", solo);
 			}
 			
-			String name = OptionUtil.readString(options, "n", "items");
+			String name = OptionUtil.readString(options, "n", "xitems");
 			lines.set(0, StrUtil.occupy("var {0} = [", name));
 			lines.set(lines.size() - 1, "];");
 
@@ -297,7 +297,7 @@ public class CommandPirate extends CommandBase {
 				continue;
 			}
 			String phone = line.get(2) + "";
-			if(StrUtil.contains(phone, "-")) {
+			if(StrUtil.isRegexMatched("[\\-]+", phone.trim())) {
 				phone = "电话";
 			}
 			String city = line.get(4) + "";

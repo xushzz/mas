@@ -13,18 +13,23 @@
     <script src="http://webapi.amap.com/maps?v=1.4.4&key=02a37b38c4b33a671f1cd1584b54adc8&plugin=AMap.Autocomplete"></script>
     <script src="http://cache.amap.com/lbs/static/addToolbar.js"></script>
 
-		<script type="text/javascript">
-				$(document).ready(function(){
-						pick();
-						
-						var location = "108.388768,22.830138"; 
-						var address = "广西自治区环保厅";
-						//PLACEHOLDER, DON't modify this line at any time
-						locateByLngCommaLat(location);
-            			$("#lnglat").val(location);  
-            			$("#tipinput").val(address);
-            			map.setZoom(15);
-				});
+	<script type="text/javascript">
+		$(document).ready(function(){
+			pick();
+			
+			var location = "108.287459,22.824765"; 
+			var address = "青岛·美食娱乐啤酒广场";
+			//PLACEHOLDER, DON't modify this line at any time
+			locateByLngCommaLat(location);
+			$("#lnglat").val(location);  
+			$("#tipinput").val(address);
+	
+			var deli = new AMap.Marker({
+	  			raiseOnDrag: true,
+	  			position: "108.391747,22.8289511".split(","),
+	  			map: map
+			});
+	});
     </script>
 </head>
 <body>
