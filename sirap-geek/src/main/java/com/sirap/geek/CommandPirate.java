@@ -311,6 +311,7 @@ public class CommandPirate extends CommandBase {
 			String info = line.get(3) + "";
 			info = info.replaceAll("-", "") + " [" + location + "]";
 			String value = StrUtil.occupy(template, name, location, phone, city, info);
+			value = value.replace("\n", "");
 			newLines.add(value);
 		}
 		if(askForDonation) {

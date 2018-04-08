@@ -143,7 +143,7 @@ public abstract class TargetAnalyzer {
 	}
 	
 	private boolean needToAddExtensionTxt(String origin) {
-		String solidExtensions = "txt,md";
+		String solidExtensions = "txt,md,js";
 		for(String item : StrUtil.split(solidExtensions)) {
 			if(StrUtil.endsWith(origin, "." + item)) {
 				return false;
