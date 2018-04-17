@@ -197,7 +197,7 @@ public class CommandImage extends CommandBase {
 			if(file != null) {
 				String filePath = file.getAbsolutePath();
 				if(FileOpener.isTextFile(filePath)) {
-					content = IOUtil.readFileWithRegularLineSeparator(filePath);
+					content = IOUtil.readStringWithLineSeparator(filePath);
 					C.pl("Encode text file.");
 					if(EmptyUtil.isNullOrEmpty(nameInfo)) {
 						nameInfo = FileUtil.extractFilenameWithoutExtension(filePath);
@@ -240,7 +240,7 @@ public class CommandImage extends CommandBase {
 			if(!solo.isEmpty()) {
 				String path = solo;
 				if(FileUtil.exists(path)) {
-					FileOpener.open(path, options);
+					FileOpener.open(path, "+p");
 					return true;
 				}
 			}

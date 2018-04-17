@@ -229,6 +229,35 @@ public class CollUtil {
 		return result;
 	}
 	
+	/***
+	 * 
+	 * @param lines
+	 * @param prefixes
+	 * @return
+	 */
+	public static List<String> filterSome(List<String> lines, String... prefixesToIgnoreOneline) {
+		List<String> items = Lists.newArrayList();
+		for(String line : lines) {
+			boolean toIgnore = StrUtil.startsWith(line.trim(), prefixesToIgnoreOneline);
+			if(!toIgnore) {
+				items.add(line);
+			}
+		}
+		
+		return items;
+		
+		
+	}
+	
+	public static List<String> addPrefix(List<String> lines, String prefix) {
+		List<String> items = Lists.newArrayList();
+		for(String line : lines) {
+			items.add(prefix + line);
+		}
+		
+		return items;
+	}
+	
 	public static List<String> toList(Map map, String connector) {
 		List<String> list = new ArrayList<>();
 		Iterator it = map.keySet().iterator();

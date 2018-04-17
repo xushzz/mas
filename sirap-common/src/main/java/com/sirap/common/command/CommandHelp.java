@@ -13,7 +13,6 @@ import com.sirap.basic.tool.C;
 import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
-import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.ObjectUtil;
 import com.sirap.basic.util.OptionUtil;
@@ -65,18 +64,17 @@ public class CommandHelp extends CommandBase {
  			}
 			allKeys.add(KEY_TASK);
 			allKeys.add(KEY_BASIC);
-			
 			List lines = new ArrayList<>();
 			int maxLen = StrUtil.maxLengthOf(allKeys);
 			Map<String, Object> allHelpMeanings = getAllHelpMeanings();
 			for(String key : allKeys) {
 				String fileName = getHelpFileName(key);
-				String prefix = StrUtil.padRight(key, maxLen + 2);
-				List<String> items = FileUtil.readResourceFilesIntoList(fileName, prefix);
-				if(!EmptyUtil.isNullOrEmpty(items)) {
-					items = occupyDollarKeys(items, allHelpMeanings);
-					lines.addAll(items);
+				if(EmptyUtil.isNullOrEmpty(fileName)) {
+					C.pl(StrUtil.occupy("Help file for [{0}] doesn't exist.", key));
+					continue;
 				}
+				String prefix = StrUtil.padRight(key, maxLen + 2);
+				lines.addAll(occupyDollarKeys(CollUtil.addPrefix(IOUtil.readLines(fileName), prefix), allHelpMeanings));
 			}
 
 			if(!solo.isEmpty()) {
@@ -119,8 +117,6 @@ public class CommandHelp extends CommandBase {
 			String temp = StrUtil.occupy(TEMPLATE_HELP, key);
 			if(IOUtil.isSourceExist(temp)) {
 				filePath = temp;
-			} else {
-				C.pl(StrUtil.occupy("Help file for [{0}] doesn't exist.", key));
 			}
 		}
 		

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sirap.basic.tool.C;
+import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
@@ -46,7 +47,7 @@ public class CommandDatabase extends CommandBase {
 					checkTooBigToHandle(file, g().getUserValueOf(SQL_MAX_SIZE_KEY, SQL_MAX_SIZE_DEFAULT));
 					String filePath = file.getAbsolutePath();
 					String charset = IOUtil.charsetOfTextFile(filePath);
-					String temp = IOUtil.readFileWithLineSeparator(filePath, " ", charset, "--");
+					String temp = StrUtil.connectWithLineSeparator(CollUtil.filterSome(IOUtil.readLines(filePath, charset), "--"));
 					String sql = StrUtil.reduceMultipleSpacesToOne(temp).trim();
 					dealWith(sql);
 				}

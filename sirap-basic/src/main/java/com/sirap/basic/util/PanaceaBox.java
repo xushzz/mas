@@ -3,6 +3,7 @@ package com.sirap.basic.util;
 import java.io.BufferedReader;
 import java.io.Console;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -91,16 +92,38 @@ public class PanaceaBox {
 		List<String> result = new ArrayList<>();
 		try {
 			Process ps = Runtime.getRuntime().exec(command);
-			List<String> regularResult = IOUtil.readStreamIntoList(ps.getInputStream(), printAlong);
+			List<String> regularResult = readStreamIntoList(ps.getInputStream(), printAlong);
 			result.addAll(regularResult);
 
-			List<String> errorResult = IOUtil.readStreamIntoList(ps.getErrorStream(), printAlong);
+			List<String> errorResult = readStreamIntoList(ps.getErrorStream(), printAlong);
 			result.addAll(errorResult);
 		} catch (IOException e) {
 			throw new MexException(e.getMessage());
 		}
 		
 		return result;
+	}
+	
+	public static List<String> readStreamIntoList(InputStream ins, boolean printAlong) {
+		List<String> list = new ArrayList<String>();
+		
+		try {
+			InputStreamReader isr = new InputStreamReader(ins);
+			BufferedReader br = new BufferedReader(isr);
+			String record;
+			while ((record = br.readLine()) != null) {
+				if(printAlong) {
+					C.pl(record);
+				}
+				list.add(record);
+			}
+
+			br.close();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+		return list;
 	}
 	
 	public static String firstArgument(String[] args) {

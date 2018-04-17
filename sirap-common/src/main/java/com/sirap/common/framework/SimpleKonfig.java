@@ -342,12 +342,12 @@ public class SimpleKonfig extends Konfig {
 	}
 
 	public boolean isYes(String key) {
-		boolean flag = Konstants.FLAG_YES.equalsIgnoreCase(getUserValueOf(key));
+		boolean flag = StrUtil.equals(Konstants.FLAG_YES, getUserValueOf(key));
 		return flag;
 	}
 	
 	public boolean isNo(String key) {
-		boolean flag = Konstants.FLAG_NO.equalsIgnoreCase(getUserValueOf(key));
+		boolean flag = StrUtil.equals(Konstants.FLAG_NO, getUserValueOf(key));
 		return flag;
 	}
 

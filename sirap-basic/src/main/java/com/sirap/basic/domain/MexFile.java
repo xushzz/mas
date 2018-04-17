@@ -2,6 +2,7 @@ package com.sirap.basic.domain;
 
 import java.io.File;
 import java.util.Date;
+import java.util.regex.Matcher;
 
 import com.sirap.basic.search.SizeCriteria;
 import com.sirap.basic.util.DateUtil;
@@ -79,7 +80,7 @@ public class MexFile extends MexItem implements Comparable<MexFile> {
 	
 	@Override
 	public boolean isMatched(String keyWord, boolean caseSensitive) {
-		String temp = getUnixPath();
+		String temp = getPath();
 		
 		if(isRegexMatched(temp, keyWord)) {
 			return true;
@@ -94,6 +95,11 @@ public class MexFile extends MexItem implements Comparable<MexFile> {
 		}
 		
 		if(StrUtil.contains(temp, keyWord, caseSensitive)) {
+			return true;
+		}
+		
+		String sae = seasonAndEpisodeOf(keyWord);
+		if(sae != null && StrUtil.contains(temp, sae)) {
 			return true;
 		}
 		
@@ -185,6 +191,19 @@ public class MexFile extends MexItem implements Comparable<MexFile> {
 		}
 		
 		return sb.toString();
+	}
+	
+	public String seasonAndEpisodeOf(String floats) {
+		Matcher ma = StrUtil.createMatcher("(\\d{1,2})\\.(\\d{1,2})", floats);
+		if(ma.find()) {
+			String season = StrUtil.padLeft(ma.group(1), 2, "0");
+			String episode = StrUtil.padLeft(ma.group(2), 2, "0");
+			String criteria = StrUtil.occupy("S{0}E{1}", season, episode);
+			
+			return criteria;
+		}
+		
+		return null;
 	}
 	
 	@Override

@@ -6,7 +6,6 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -30,11 +29,10 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.sirap.basic.component.Konstants;
-import com.sirap.basic.component.MexMap;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.output.ExcelParams;
 import com.sirap.basic.output.PDFParams;
@@ -45,169 +43,128 @@ import com.sirap.basic.thread.MasterItemOriented;
 import com.sirap.basic.thread.Worker;
 import com.sirap.basic.thread.business.InternetFileFetcher;
 import com.sirap.basic.tool.C;
+import com.sirap.basic.tool.D;
 import com.sirap.basic.tool.MexedAudioPlayer;
 
 @SuppressWarnings({"rawtypes","unchecked"})
 public class IOUtil {
 	
-	public static String readURL(String address) {
-		return readURL(address, Konstants.CODE_UTF8);
+	private static String charset() {
+		return Charset.defaultCharset().name();
+	}
+	/***
+	 * 1) regular file such as > D:/Gitpro/OSChina/todos/high/celine.html
+	 * 	  regular file such as > D:\Gitpro\OSChina\todos\high\celine.html
+	 *    regular file such as > \\LAPTOP-RDK8AQNO\OSChina\stamina\README.md
+	 *    regular file such as > file:///D:/Gitpro/OSChina/todos/high/celine.html
+	 * 2) resource file such as > /application.properties in windows
+	 * 3) remote file such as https://gitee.com/thewire/todos/raw/master/high/celine.js
+	 * 
+	 * @param dynamicLocation
+	 * @return
+	 */
+	public static List<String> readLines(String dynamicLocation) {
+		return readLines(dynamicLocation, charset());
 	}
 	
-	public static String readURL(String address, String charset) {
-		WebReader xiu = new WebReader(address, charset);
-		return xiu.readIntoString();
-	}
+	public static List<String> readLines(String dynamicLocation, String charset) {
+		if(StrUtil.isHttp(dynamicLocation)) {
+			WebReader xiu = new WebReader(dynamicLocation, charset);
+			return xiu.readIntoList();
+		}
 
-	public static List<String> readURLIntoList(String address, String charset) {
-		WebReader xiu = new WebReader(address, charset);
-		return xiu.readIntoList();
-	}
-	
-	public static List<String> readResourceIntoList(String filePath) {
-		return readResourceIntoList(filePath, Charset.defaultCharset().name());
-	}
-	
-	public static List<String> readResourceIntoList(String filePath, String charset) {
-		XXXUtil.nullCheck(filePath, "filePath");
-		if(!filePath.startsWith("/")) {
-			filePath = "/" + filePath;
-		}
-		InputStream inputStream = InputStream.class.getResourceAsStream(filePath);
-		if(inputStream == null) {
-			return null;
-		}
-		
-		return readStreamIntoList(inputStream, false, "", charset);
-	}
-	
-	public static boolean isSourceExist(String filePath) {
-		InputStream inputStream = InputStream.class.getResourceAsStream(filePath);
-		if(inputStream == null) {
-			return false;
-		}
-		
-		return true;
-	}
-	
-	public static List<String> readStreamIntoList(InputStream inputStream) {
-		return readStreamIntoList(inputStream, false, "");
-	}
-	
-	public static List<String> readStreamIntoList(InputStream inputStream, boolean printAlong) {
-		return readStreamIntoList(inputStream, printAlong, "");
-	}
-
-	public static List<String> readStreamIntoList(InputStream inputStream, boolean printAlong, String prefix) {
-		return readStreamIntoList(inputStream, printAlong, prefix, Charset.defaultCharset().name());
-	}
-	
-	public static List<String> readStreamIntoList(InputStream inputStream, boolean printAlong, String prefix, String charset) {
-		List<String> list = new ArrayList<String>();
+		List<String> lines = Lists.newArrayList();
 		
 		try {
-			InputStreamReader isr = new InputStreamReader(inputStream, charset);
-			BufferedReader br = new BufferedReader(isr);
-			String record;
-			while ((record = br.readLine()) != null) {
-				if(printAlong) {
-					C.pl(record);
+			InputStream ins = null;
+			if(PanaceaBox.isWindows()) {
+				if(dynamicLocation.startsWith("/")) {
+					ins = InputStream.class.getResourceAsStream(dynamicLocation);
 				}
-				list.add(prefix + record);
+			}
+			
+			if(ins == null) {
+				String temp = dynamicLocation.replaceAll("^file:///", "");
+				ins = new FileInputStream(temp);
+			}
+			BufferedReader br = new BufferedReader(new InputStreamReader(ins, charset));
+			String line;
+			while ((line = br.readLine()) != null) {
+				lines.add(line);
 			}
 
 			br.close();
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			D.pl("Exception while dealing with file: " + (new File(dynamicLocation).getAbsolutePath()));
+			throw new MexException(ex);
 		}
 
-		return list;
+		return lines;
 	}
 
-	public static String readFileWithoutLineSeparator(String fileName) {
-		return readFileWithLineSeparator(fileName, "");
-	}
-
-	public static String readFileWithRegularLineSeparator(String fileName) {
-		return readFileWithLineSeparator(fileName, Konstants.NEWLINE);
+	public static String readStringWithLineSeparator(String dynamicLocation) {
+		return readString(dynamicLocation, charset(), Konstants.NEWLINE);
 	}
 	
-	public static String readFileWithLineSeparator(String fileName, String lineSeperator) {
-		String charset = charsetOfTextFile(fileName);
-		return readFileWithLineSeparator(fileName, lineSeperator, charset);
+	public static String readStringWithLineSeparator(String fileName, String lineSeperator) {
+		return readString(fileName, charset(), lineSeperator);
 	}
 	
-	public static String readFileWithLineSeparator(String fileName, String lineSeperator, String charset) {
-		return readFileWithLineSeparator(fileName, lineSeperator, charset, new String[0]);
+	public static String readString(String dynamicLocation) {
+		return readString(dynamicLocation, charset(), "");
 	}
+	
+	public static String readString(String dynamicLocation, String charset) {
+		return readString(dynamicLocation, charset, "");
+	}
+	
+	public static String readString(String dynamicLocation, String charset, String lineSeperator) {
+		if(StrUtil.isHttp(dynamicLocation)) {
+			WebReader xiu = new WebReader(dynamicLocation, charset);
+			return xiu.readIntoString();
+		}
 
-	/***
-	 * 
-	 * @param fileName
-	 * @param lineSeperator
-	 * @param prefixesToIgnoreOneline
-	 * @return
-	 */
-	public static String readFileWithLineSeparator(String fileName, String lineSeperator, String charset, String... prefixesToIgnoreOneline) {
-		StringBuffer sb = new StringBuffer();
-
+		StringBuffer sb = StrUtil.sb();
+		
 		try {
-			InputStreamReader isr = null;
-			if(charset != null) {
-				isr = new InputStreamReader(new FileInputStream(fileName), charset);
-			} else {
-				isr = new InputStreamReader(new FileInputStream(fileName));
+			InputStream ins = null;
+			if(PanaceaBox.isWindows()) {
+				if(dynamicLocation.startsWith("/")) {
+					ins = InputStream.class.getResourceAsStream(dynamicLocation);
+				}
 			}
-			BufferedReader br = new BufferedReader(isr);
-			String record = br.readLine();
+			
+			if(ins == null) {
+				String temp = dynamicLocation.replaceAll("^file:///", "");
+				ins = new FileInputStream(temp);
+			}
+			BufferedReader br = new BufferedReader(new InputStreamReader(ins, charset));
+			String line;
 			boolean theFirstOne = true;
-			while (record != null) {
+			while ((line = br.readLine()) != null) {
 				if(!theFirstOne) {
 					sb.append(lineSeperator);
 				}
-				
-				boolean toIgnore = StrUtil.startsWith(record.trim(), prefixesToIgnoreOneline);
-				if(!toIgnore) {
-					sb.append(record);
-					theFirstOne = false;
-				}
-				
-				record = br.readLine();
+				sb.append(line);
 			}
+
 			br.close();
-		} catch (Exception e) {
-			C.pl(e);
+		} catch (Exception ex) {
+			D.pl("Exception while dealing with file: " + (new File(dynamicLocation).getAbsolutePath()));
+			throw new MexException(ex);
 		}
 
 		return sb.toString();
 	}
 	
-	public static List<String> readFileIntoList(String fileName) {
-		String cat = charsetOfTextFile(fileName);
-		return readFileIntoList(fileName, cat);
+	public static boolean isSourceExist(String filePath) {
+		return InputStream.class.getResourceAsStream(filePath) != null;
 	}
 	
-	public static List<String> readFileIntoList(String fileName, String charset) {
-		List<String> list = new ArrayList<String>();
-		try {
-			InputStreamReader isr = null;
-			if(charset != null) {
-				isr = new InputStreamReader(new FileInputStream(fileName), charset);
-			} else {
-				isr = new InputStreamReader(new FileInputStream(fileName));
-			}
-			BufferedReader br = new BufferedReader(isr);
-			String record = br.readLine();
-			while (record != null) {
-				list.add(record);
-				record = br.readLine();
-			}
-			br.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return list;
+	@Deprecated
+	public static List<String> readFileIntoList(String fileName) {
+		String cat = charsetOfTextFile(fileName);
+		return readLines(fileName, cat);
 	}
 	
 	public static int[] countOfLinesChars(String fileName) {
@@ -226,85 +183,6 @@ public class IOUtil {
 		}
 
 		return countArr;
-	}
-	
-	public static MexMap createMexedMapByRegularFile(String filePath) {
-		try {
-			InputStream inputStream = new FileInputStream(filePath);
-			String cat = charsetOfTextFile(filePath);
-			return readKeyValuesIntoMexedMap(inputStream, cat);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		
-		return null;
-	}
-	
-	public static Properties readProperties(String filePath) {
-		Properties props = new Properties();
-		
-		try {
-			InputStream inputStream = new FileInputStream(filePath);
-			props = readProperties(inputStream);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		
-		return props;
-	}
-	
-	public static Properties readProperties(InputStream inputStream) {
-		Properties props = new Properties();
-		
-		try {
-			props.load(inputStream);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		
-		return props;
-	}
-	
-	public static MexMap readKeyValuesIntoMexedMap(InputStream stream, String charset) {
-		XXXUtil.nullCheck(stream, "InputStream stream");
-		MexMap map = new MexMap();
-		try {
-			BufferedReader reader =new BufferedReader(new InputStreamReader(stream, charset));
-			String record;
-			while ((record = reader.readLine()) != null) {
-				String temp = record.trim();
-				
-				boolean toIgnore = StrUtil.startsWith(temp, "#");
-				if(toIgnore) {
-					continue;
-				}
-				
-				String regex = "([^=]+)=(.+)";
-				String[] params = StrUtil.parseParams(regex, temp);
-				if(params == null) {
-					continue;
-				}
-				
-				String key = params[0].trim();
-				String value = params[1].trim();
-				
-				if(key.isEmpty() || value.isEmpty()) {
-					continue;
-				}
-				map.put(key, value);
-			}
-			return map;
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				stream.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
-		return null;
 	}
 
 	public static void playSound(String soundSource) {
@@ -716,6 +594,15 @@ public class IOUtil {
 		} catch (Exception ex) {
 			throw new MexException(ex);
 		}
-		
 	}
+	
+	public static void save(byte[] file, String filePath) { 
+        try(FileOutputStream out = new FileOutputStream(filePath)) {
+            out.write(file);
+            out.flush();
+            out.close();
+        } catch (Exception ex) {
+        	throw new MexException(ex);
+        }
+    }
 }

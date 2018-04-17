@@ -1,7 +1,6 @@
 package com.sirap.common.framework;
 
 import java.io.File;
-import java.io.InputStream;
 import java.util.List;
 
 import com.sirap.basic.component.MexMap;
@@ -9,7 +8,6 @@ import com.sirap.basic.domain.TypedKeyValueItem;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
-import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 
@@ -24,21 +22,12 @@ public abstract class Konfig {
 	
 	protected String originalStorage;
 	protected String userConfigFile;
-	protected MexMap innerProperties = new MexMap("Zoo Inner Config");
-	protected MexMap userProperties = new MexMap("Zoo User Config");
+	protected MexMap innerProperties = new MexMap();
+	protected MexMap userProperties = new MexMap();
 
 	protected void loadInnerConfigDetail() {
-		innerProperties.clear();
-		
-		InputStream is = getClass().getResourceAsStream(KONFIG_FILE);
-		if(is == null) {
-			XXXUtil.alert("[Configuration] System config file unavailable, please check [" + KONFIG_FILE + "].");
-		}
-		String cat = IOUtil.charsetOfStream(getClass().getResourceAsStream(KONFIG_FILE));
-		MexMap temp = IOUtil.readKeyValuesIntoMexedMap(is, cat);
-		if(temp != null) {
-			innerProperties.putAll(temp);
-		}
+		innerProperties = new MexMap(KONFIG_FILE);
+		innerProperties.setType("Zoo Inner Config");
 	}
 	
 	protected void loadUserConfigDetail() {
@@ -48,12 +37,13 @@ public abstract class Konfig {
 		} else {
 			File file = FileUtil.getIfNormalFile(userConfigFile);
 			if(file != null) {
-				MexMap mm = IOUtil.createMexedMapByRegularFile(file.getAbsolutePath());
+				MexMap mm = new MexMap(file.getAbsolutePath());
 				List<TypedKeyValueItem> items = mm.detectCircularItems();
 				if(!EmptyUtil.isNullOrEmpty(items)) {
 					String msg = "\n[Configuration] Circular items found in [{0}]:\n" + StrUtil.connectWithLineSeparator(items);
 					XXXUtil.alert(msg, file.getAbsolutePath());
 				} else {
+					userProperties.setType("Zoo User Config");
 					userProperties.clear();
 					userProperties.putAll(mm);
 				}

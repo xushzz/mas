@@ -3,7 +3,6 @@ package com.sirap.basic.util;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FilenameFilter;
-import java.io.InputStream;
 import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -232,7 +231,6 @@ public class FileUtil {
 		XXXUtil.nullCheck(paths, "paths");
 
 		List<MexFile> allFiles = new ArrayList<>();
-		
 		for (String path : paths) {
 			String target = path;
 			int depth = 0;
@@ -345,25 +343,6 @@ public class FileUtil {
 		records.add(new MexFile(file));
 		records.addAll(subFolders);
 		records.addAll(normalFiles);
-		
-		return records;
-	}
-	
-	public static List<String> readResourceFilesIntoList(String filePath) {
-		return readResourceFilesIntoList(filePath, "");
-	}
-
-	public static List<String> readResourceFilesIntoList(String filePath, String prefix) {
-		List<String> records = new ArrayList<String>();
-		InputStream inputStream = InputStream.class.getResourceAsStream(filePath);
-		if(inputStream == null) {
-			return Collections.EMPTY_LIST;
-		}
-		
-		List<String> items = IOUtil.readStreamIntoList(inputStream, false, prefix);
-		if(items != null) {
-			records.addAll(items);
-		}
 		
 		return records;
 	}

@@ -10,7 +10,6 @@ import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.HtmlUtil;
 import com.sirap.basic.util.IOUtil;
-import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.WebReader;
 import com.sirap.basic.util.XCodeUtil;
@@ -52,15 +51,6 @@ public abstract class Extractor<T extends Object> {
 		fetch();
 		parse();
 		
-//		if(source != null || sourceList != null) {
-//			parse();
-//			if(!allBeingWell) {
-//				C.pl2("Not cool, wrong web content");
-//			}
-//		} else {
-//			allBeingWell = false;
-//		}
-		
 		return this;
 	}
 	
@@ -84,15 +74,10 @@ public abstract class Extractor<T extends Object> {
 			if(printFetching) {
 				C.pl("Reading... " + target);
 			}
-			boolean asResourceStream = PanaceaBox.isWindows() && target.startsWith("/");
 			if(intoList) {
-				if(asResourceStream) {
-					sourceList.addAll(IOUtil.readResourceIntoList(target));
-				} else {
-					sourceList.addAll(IOUtil.readFileIntoList(target, charset));
-				}
+				sourceList.addAll(IOUtil.readLines(target, charset));
 			} else {
-				source += IOUtil.readFileWithLineSeparator(target, "", charset);
+				source += IOUtil.readString(target, charset);
 			}
 			
 			return;

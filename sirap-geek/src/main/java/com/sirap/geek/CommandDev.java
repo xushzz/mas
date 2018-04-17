@@ -149,7 +149,7 @@ public class CommandDev extends CommandBase {
 		
 		solo = parseParam(KEY_JSON + " " + KEY_HTTP_WWW);
 		if(solo != null) {
-			String source = IOUtil.readURL(solo);
+			String source = IOUtil.readString(solo, g().getCharsetInUse());
 			if(OptionUtil.readBooleanPRI(options, "r", false)) {
 				export(JsonUtil.getRawText(source));
 			} else {
@@ -178,7 +178,7 @@ public class CommandDev extends CommandBase {
 			if(file != null) {
 				String filePath = file.getAbsolutePath();
 				if(FileOpener.isTextFile(filePath)) {
-					String source = IOUtil.readFileWithoutLineSeparator(filePath);
+					String source = IOUtil.readString(filePath);
 					if(OptionUtil.readBooleanPRI(options, "r", false)) {
 						export(JsonUtil.getRawText(source));
 					} else {

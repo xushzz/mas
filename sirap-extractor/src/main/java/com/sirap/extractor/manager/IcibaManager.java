@@ -38,7 +38,7 @@ public class IcibaManager {
 		if(!FileUtil.exists(location)) {
 			return null;
 		}
-		List<String> items = IOUtil.readFileIntoList(location, charset);
+		List<String> items = IOUtil.readLines(location, charset);
 		List<ValuesItem> list = Lists.newArrayList();
 		for(String item : items) {
 			ValuesItem vi = new ValuesItem();

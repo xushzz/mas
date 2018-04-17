@@ -89,7 +89,7 @@ public class CommandFile extends CommandBase {
 				
 				List<String> records = FileOpener.readTextContent(filePath, true, cat);
 				if(OptionUtil.readBooleanPRI(options, "one", false)) {
-					String temp = IOUtil.readFileWithLineSeparator(filePath, "", cat);
+					String temp = IOUtil.readString(filePath, cat, "");
 					String result = StrUtil.reduceMultipleSpacesToOne(temp);
 					export(result);
 				} else {
@@ -189,7 +189,7 @@ public class CommandFile extends CommandBase {
 					cat = switchChartset(cat);
 				}
 				if(StrUtil.equals(KEY_PRINT_TXT_ONELINE, type)) {
-					String temp = IOUtil.readFileWithLineSeparator(filePath, "", cat);
+					String temp = IOUtil.readString(filePath, cat, "");
 					String result = StrUtil.reduceMultipleSpacesToOne(temp);
 					export(result);
 				} else if(StrUtil.equals(KEY_PRINT_TXT, type)) {
@@ -210,7 +210,7 @@ public class CommandFile extends CommandBase {
 		if(params != null) {
 			String regex = params[0].trim();
 			String pageUrl = equiHttpProtoclIfNeeded(params[1].trim());
-			String source = IOUtil.readURL(pageUrl, g().getCharsetInUse());
+			String source = IOUtil.readString(pageUrl, g().getCharsetInUse());
 			if(source != null) {
 				boolean showOrder = OptionUtil.readBooleanPRI(options, "order", false);
 				String itemConnector = OptionUtil.readString(options, "icon", ", ").replace("\\s", " ");

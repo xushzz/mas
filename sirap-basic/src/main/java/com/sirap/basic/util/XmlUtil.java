@@ -10,7 +10,7 @@ public class XmlUtil {
 	 * @return C:\M2REPO
 	 */
 	public static String readValueFromFile(String filePath, String elementName) {
-		String xmlText = IOUtil.readFileWithoutLineSeparator(filePath);
+		String xmlText = IOUtil.readString(filePath);
 		return readValue(xmlText, elementName);
 	}
 

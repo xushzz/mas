@@ -13,6 +13,7 @@ import com.google.common.collect.Maps;
 import com.sirap.basic.domain.TypedKeyValueItem;
 import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.EmptyUtil;
+import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.SatoUtil;
 import com.sirap.basic.util.StrUtil;
@@ -21,17 +22,45 @@ import com.sirap.basic.util.XXXUtil;
 
 public class MexMap {
 	
-	private Map<String, String> container = Maps.newConcurrentMap();
+	private Map<String, Object> container = Maps.newConcurrentMap();
 	private String type;
 	
 	public String getType() {
 		return type;
 	}
+	
+	public void setType(String type) {
+		this.type = type;
+	}
 
 	public MexMap() {}
 	
-	public MexMap(String type) {
-		this.type = type;
+	public MexMap(String pathname) {
+		container.clear();
+		type = pathname;
+		List<String> lines = IOUtil.readLines(pathname, Konstants.CODE_UTF8);
+		for (String line : lines) {
+			String temp = line.trim();
+			
+			boolean toIgnore = StrUtil.startsWith(temp, "#");
+			if(toIgnore) {
+				continue;
+			}
+			
+			String regex = "([^=]+)=(.+)";
+			String[] params = StrUtil.parseParams(regex, temp);
+			if(params == null) {
+				continue;
+			}
+			
+			String key = params[0].trim();
+			String value = params[1].trim();
+			
+			if(key.isEmpty() || value.isEmpty()) {
+				continue;
+			}
+			container.put(key, value);
+		}
 	}
 	
 	public List<TypedKeyValueItem> listOf() {
@@ -39,7 +68,7 @@ public class MexMap {
 		Iterator<String> it = container.keySet().iterator();
 		while(it.hasNext()) {
 			String key = it.next();
-			String value = container.get(key);
+			Object value = container.get(key);
 			TypedKeyValueItem item = new TypedKeyValueItem(key, value);
 			item.setType(type);
 			items.add(item);
@@ -60,7 +89,7 @@ public class MexMap {
 		}
 	}
 	
-	public MexMap(Map<String, String> container) {
+	public MexMap(Map<String, Object> container) {
 		if(container != null) {
 			this.container = container;
 		}
@@ -212,5 +241,19 @@ public class MexMap {
 		keys.add(key.toLowerCase());
 		entries.add(item);
 		return check(item.getValueX(), keys, entries);
+	}
+	
+	public boolean isYes(String key) {
+		boolean flag = StrUtil.equals(Konstants.FLAG_YES, getIgnorecase(key));
+		return flag;
+	}
+	
+	public boolean isNo(String key) {
+		boolean flag = StrUtil.equals(Konstants.FLAG_NO, getIgnorecase(key));
+		return flag;
+	}
+	
+	public String toString() {
+		return type + "\n" + StrUtil.connectWithLineSeparator(listOf());
 	}
 }

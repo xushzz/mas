@@ -163,14 +163,14 @@ public class FileOpener {
 				}
 			}
 		} else if(FileUtil.isAnyTypeOf(filePath, FileUtil.SUFFIX_SIRAP)) {
-			String temp = IOUtil.readFileWithoutLineSeparator(filePath);
+			String temp = IOUtil.readString(filePath);
 			String passcode = SimpleKonfig.g().getSecurityPasscode();
 			String content = TrumpUtil.decodeBySIRAP(temp, passcode);
 			if(content != null) {
 				records.add(content);
 			}
 		} else if(readAsTextAnyway || isAcceptableFormat(filePath, FileUtil.SUFFIXES_TEXT, KEY_TEXT)) {
-			List<String> temp = IOUtil.readFileIntoList(filePath, charset);
+			List<String> temp = IOUtil.readLines(filePath, charset);
 			if(temp != null) {
 				records.addAll(temp);
 			}

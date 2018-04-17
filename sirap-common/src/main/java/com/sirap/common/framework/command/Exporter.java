@@ -124,7 +124,7 @@ public class Exporter {
 			}
 			
 			params.setTopInfo(topInfo);
-			List<String> htmlTemplate = IOUtil.readResourceIntoList("/template_nice.html");
+			List<String> htmlTemplate = IOUtil.readLines("/template_nice.html", SimpleKonfig.g().getCharsetInUse());
 			List<String> htmlContent = HtmlExporter.generateHtmlContent(htmlTemplate, records, params);
 			
 			IOUtil.saveAsTxt(htmlContent, filePath);

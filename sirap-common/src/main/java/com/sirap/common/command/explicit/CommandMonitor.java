@@ -142,7 +142,7 @@ public class CommandMonitor extends CommandBase {
 			if(file != null) {
 				String filePath = file.getAbsolutePath();
 				if(FileOpener.isTextFile(filePath)) {
-					String content = IOUtil.readFileWithRegularLineSeparator(filePath);
+					String content = IOUtil.readStringWithLineSeparator(filePath);
 					String text = TrumpUtil.encodeBySIRAP(content, passcode);
 					C.pl("File, SIRAP generates " + text.length() + " chars. ");
 					export(text);
@@ -175,7 +175,7 @@ public class CommandMonitor extends CommandBase {
 			if(file != null) {
 				String filePath = file.getAbsolutePath();
 				if(FileOpener.isTextFile(filePath)) {
-					String content = IOUtil.readFileWithoutLineSeparator(filePath);
+					String content = IOUtil.readString(filePath);
 					String text = TrumpUtil.decodeBySIRAP(content, passcode, true);
 					List<String> items = StrUtil.split(text, '\n');
 					export(items);
@@ -299,7 +299,7 @@ public class CommandMonitor extends CommandBase {
 		params = parseParams(KEY_KEYS_CONFIG + "(|\\s+(.*?))");
 		if(params != null) {
 			String criteria = params[1];
-			List<String> list = FileUtil.readResourceFilesIntoList(Konfig.KEYS_FILE);
+			List<String> list = IOUtil.readLines(Konfig.KEYS_FILE);
 			
 			export(CollUtil.filterMix(list, criteria, isCaseSensitive()));
 			
@@ -309,7 +309,7 @@ public class CommandMonitor extends CommandBase {
 		params = parseParams(KEY_SYSTEM_CONFIG + "(|\\s+(.*?))");
 		if(params != null) {
 			String criteria = params[1];
-			List<String> list = FileUtil.readResourceFilesIntoList(SimpleKonfig.KONFIG_FILE);
+			List<String> list = IOUtil.readLines(SimpleKonfig.KONFIG_FILE);
 			export(CollUtil.filterMix(list, criteria, isCaseSensitive()));
 			
 			return true;

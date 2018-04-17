@@ -256,7 +256,7 @@ public class ArisUtil {
 		    if(StrUtil.endsWith(entryName, Konstants.DOT_CLASS)) {
 		    	return ArisUtil.getClassDetail(IOUtil.loadClassFromJarFile(url, entryName));
 		    } else {
-			    return IOUtil.readStreamIntoList(file.getInputStream(entry));
+			    return PanaceaBox.readStreamIntoList(file.getInputStream(entry), false);
 		    }
 		} catch (Exception ex) {
 			throw new MexException(ex);

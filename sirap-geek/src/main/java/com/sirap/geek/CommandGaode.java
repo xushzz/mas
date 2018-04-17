@@ -204,8 +204,8 @@ public class CommandGaode extends CommandBase {
 	}
 	
 	private void generatePicker(String addressAndLocationVariables) {
-		String filePath = "data/pickerT.html";
-		List<String> lines = IOUtil.readResourceIntoList(filePath, Konstants.CODE_UTF8);
+		String filePath = "/data/pickerT.html";
+		List<String> lines = IOUtil.readLines(filePath, Konstants.CODE_UTF8);
 		String newLine = null;
 		int index = 0;
 		String key = "//PLACEHOLDER";

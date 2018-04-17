@@ -67,7 +67,7 @@ public class CommandAris extends CommandBase {
 					Janitor.g().process(url, options);
 				} else if(readOnly) {
 					C.pl("Fetching... " + url);
-					export(IOUtil.readURLIntoList(url, g().getCharsetInUse()));
+					export(IOUtil.readLines(url, g().getCharsetInUse()));
 				}
 			} else {
 				boolean showSameClassesInSamePackage = !EmptyUtil.isNullOrEmpty(params[2]);
