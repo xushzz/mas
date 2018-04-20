@@ -49,6 +49,18 @@ public class FileUtil {
 	public static final char[] BAD_CHARS_FOR_FILENAME_MAC = {'/','?','~','^','&','*'};
 	
 	public static final String SLASH_DOUBLE = "\\\\";
+
+	public static boolean isExcel(String filepath) {
+		return StrUtil.endsWith(filepath, Konstants.DOT_EXCEL);
+	}
+
+	public static boolean isExcelX(String filepath) {
+		return StrUtil.endsWith(filepath, Konstants.DOT_EXCEL_X);
+	}
+
+	public static boolean isCSV(String filepath) {
+		return StrUtil.endsWith(filepath, Konstants.DOT_CSV);
+	}
 	
 	public static boolean isNormalFile(String fileName) {
 		File file = new File(fileName);

@@ -29,6 +29,8 @@ public class Konstants {
 	public static final String DOT_PDF = ".pdf";
 	public static final String DOT_HTM = ".htm";
 	public static final String DOT_EXCEL = ".xls";
+	public static final String DOT_CSV = ".csv";
+	public static final String DOT_EXCEL_X = ".xlsx";
 	public static final String DOT_MEX = ".mex";
 	public static final String DOT_SIRAP = ".sirap";
 	public static final String DOT_JPG = ".jpg";

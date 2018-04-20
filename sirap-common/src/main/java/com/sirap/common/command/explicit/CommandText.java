@@ -43,7 +43,7 @@ public class CommandText extends CommandBase {
 				if(index == null) {
 					C.pl("try index like 0, 1, 2, 3... with " + filePath);
 				} else {
-					List<List<Object>> data = MsExcelHelper.readSheetByIndex(filePath, index); 
+					List<List<String>> data = MsExcelHelper.readSheetByIndex(filePath, index); 
 					export(data);
 				}
 			}

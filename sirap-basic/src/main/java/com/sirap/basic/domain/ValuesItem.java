@@ -16,6 +16,10 @@ public class ValuesItem extends MexItem {
 
 	}
 	
+	public int size() {
+		return values.size();
+	}
+	
 	public boolean inRange(int index) {
 		return index >=0 && index < values.size();
 	}

@@ -17,7 +17,7 @@ public abstract class TargetAnalyzer {
 	public static final String KEY_EXPORT_INFO_TO_TEXTFILE = "(\\*|)(.*?)";
 	public static final String KEY_EXPORT_INFO_TO_PDF = ".*\\.pdf$";
 	public static final String KEY_EXPORT_INFO_TO_HTML = ".*\\.htm$";
-	public static final String KEY_EXPORT_INFO_TO_EXCEL = ".*\\.xls$";
+	public static final String KEY_EXPORT_INFO_TO_EXCEL = ".*\\.xlsx?$";
 	public static final String KEY_EXPORT_FILE_TO_FOLDER = "\\$(.*?)";
 	
 	public Target parse(String command, String target) {
@@ -202,8 +202,9 @@ public abstract class TargetAnalyzer {
 	}
 	
 	private TargetExcel createTargetExcel(String destInfo, String command) {
-		String commandConvertedFileName = FileUtil.generateLegalFileName(command) + Konstants.DOT_EXCEL;
-		if(destInfo.equalsIgnoreCase(Konstants.DOT_EXCEL)) {
+		String extension = FileUtil.isExcel(destInfo) ? Konstants.DOT_EXCEL : Konstants.DOT_EXCEL_X;
+		String commandConvertedFileName = FileUtil.generateLegalFileName(command) + extension;
+		if(StrUtil.equals(destInfo, Konstants.DOT_EXCEL) || StrUtil.equals(destInfo, Konstants.DOT_EXCEL_X)) {
 			return new TargetExcel(getDefaultExportFolder(), commandConvertedFileName);			
 		}
 		
@@ -212,7 +213,7 @@ public abstract class TargetAnalyzer {
 			String folderPath = parseRealFolderPath(folderAndFile[0]);
 			if(folderPath != null) {
 				String newFileName = folderAndFile[1];
-				if(newFileName.equalsIgnoreCase(Konstants.DOT_EXCEL)) {
+				if(StrUtil.equals(newFileName, Konstants.DOT_EXCEL) || StrUtil.equals(newFileName, Konstants.DOT_EXCEL_X)) {
 					newFileName = commandConvertedFileName;
 				}
 			

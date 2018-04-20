@@ -79,7 +79,7 @@ public class CommandPirate extends CommandBase {
 				boolean isText = FileOpener.isTextFile(source);
 				if(isText) {
 					String path = parseFile(source).getAbsolutePath();
-					List<String> allAreas = IOUtil.readFileIntoList(path);
+					List<String> allAreas = IOUtil.readLines(path);
 					export2(allAreas, solo);
 				} else {
 					C.pl2("Not a text file: " + source);
@@ -191,7 +191,7 @@ public class CommandPirate extends CommandBase {
 			}
 			File file = FileUtil.getIfNormalFile(solo);
 			if(file != null) {
-				List<List<Object>> list = MsExcelHelper.readSheetByIndex(file.getAbsolutePath(), 0);
+				List<List<String>> list = MsExcelHelper.readSheetByIndex(file.getAbsolutePath(), 0);
 				boolean askForDonation = OptionUtil.readBooleanPRI(options, "ask", false);
 				lines = jsonDataOfMates(list, askForDonation);
 			}
@@ -285,13 +285,13 @@ public class CommandPirate extends CommandBase {
 		export(items);
 	}
 	
-	public List<String> jsonDataOfMates(List<List<Object>> data, boolean askForDonation) {
+	public List<String> jsonDataOfMates(List<List<String>> data, boolean askForDonation) {
 		String digao = "108.037172,24.686088";
 		String sftech = "113.940025,22.524648";
 		List<String> newLines = Lists.newArrayList();
 		String template = "{\"name\": \"{0}\",\"location\": \"{1}\",\"phone\": \"{2}\",\"city\": \"{3}\",\"address\": \"{4}\"}";
 		for(int countX = 2; countX < data.size(); countX++) {
-			List<Object> line = data.get(countX);
+			List<String> line = data.get(countX);
 			String name = line.get(1) + "";
 			if(StrUtil.contains(name + "", "-")) {
 				continue;
