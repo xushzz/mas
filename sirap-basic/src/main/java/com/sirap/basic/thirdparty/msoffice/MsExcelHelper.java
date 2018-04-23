@@ -2,6 +2,7 @@ package com.sirap.basic.thirdparty.msoffice;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
 import java.util.List;
@@ -27,16 +28,25 @@ import com.sirap.basic.util.StrUtil;
 public class MsExcelHelper {
 	
 	public static Workbook workbookOf(String filepath) throws MexException {
+		FileInputStream fis = null;
 		try {
+			fis = new FileInputStream(filepath);
 			if (FileUtil.isExcel(filepath)) {
-				return new HSSFWorkbook(new FileInputStream(filepath));
+				return new HSSFWorkbook(fis);
 			} else if (FileUtil.isExcelX(filepath)) {
-				return new XSSFWorkbook(new FileInputStream(filepath));
+				return new XSSFWorkbook(fis);
 			} else {
 				throw new MexException("Invalid excel file: " + filepath);
 			}
 		} catch (Exception ex) {
+			ex.printStackTrace();
 			throw new MexException(ex);
+		} finally {
+			try {
+				fis.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
