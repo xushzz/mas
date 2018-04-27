@@ -8,6 +8,7 @@ import java.util.Map;
 import com.sirap.basic.thirdparty.email.EmailService;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
+import com.sirap.basic.util.MiscUtil;
 import com.sirap.basic.util.StrUtil;
 
 public class EmailCenter {
@@ -151,7 +152,7 @@ public class EmailCenter {
 		List<String>  items = StrUtil.split(temp, ";");
 		
 		for(String item:items) {
-			if(StrUtil.isEmail(item)) {
+			if(MiscUtil.isEmail(item)) {
 				list.add(item.trim());
 			}
 		}

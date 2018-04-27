@@ -644,7 +644,12 @@ public abstract class CommandBase {
 		ma.put(Konstants.CODE_GBK, Konstants.CODE_UTF8);
 		ma.put(Konstants.CODE_UTF8, Konstants.CODE_GBK);
 		
-		return ma.get(key);
+		String value = ma.get(key.toUpperCase());
+		if(EmptyUtil.isNullOrEmpty(value)) {
+			XXXUtil.alert("Not supported charset {0}, only {1} and {2}.", key, Konstants.CODE_GBK, Konstants.CODE_UTF8);
+		}
+		
+		return value;
 	}
 	
 	protected String translatePath(String dosCommand, String path) {
@@ -702,5 +707,19 @@ public abstract class CommandBase {
 			XXXUtil.info(temp, FileUtil.formatSize(filesize), filepath, alert.replace("<", ""));
 			C.pl();
 		}
+	}
+	
+	protected String charset() {
+		return g().getCharsetInUse();
+	}
+	
+	protected String charsetX() {
+		String value = g().getCharsetInUse();
+		boolean toSwitch = OptionUtil.readBooleanPRI(options, "x", false);
+		if(toSwitch) {
+			value = switchChartset(value);
+		}
+		
+		return value;
 	}
 }

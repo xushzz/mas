@@ -22,3 +22,5 @@ donation/dashang   still, donation, also for dashang in chinese
 kp                 kick print, create a new image file and open with mspaint
 kp non-Path text   kick print, create a new image file with given text and open with mspaint
 kp D:\a.jpg        kick print, open given image file with mspaint
+fix D:\images $s=500k 	compress images in specific folder to target size
+fix D:\a.jpg $s=500k 	compress specific image to target size

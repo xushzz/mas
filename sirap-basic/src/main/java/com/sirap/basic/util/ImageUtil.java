@@ -176,6 +176,20 @@ public class ImageUtil {
 			throw new MexException(ex);
 		}
 	}
+	
+	public static int[] widthAndHeight(String filepath) {
+		try {
+			BufferedImage image = ImageIO.read(new File(filepath));
+			if(image == null) {
+				String msg = "Not valid image [" + filepath + "]";
+				throw new MexException(msg);
+			}
+
+			return new int[]{image.getWidth(), image.getHeight()};
+		} catch (Exception ex) {
+			throw new MexException(ex);
+		}
+	}
 
 	//D:/Github/Wiki/mas.wiki/maps/china.jpg
 	//D:/Github/Wiki/mas.wiki/maps/20171214_001010_china_500k.jpg

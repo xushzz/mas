@@ -68,7 +68,7 @@ public class IOUtil {
 	}
 	
 	public static List<String> readLines(String dynamicLocation, String charset) {
-		if(StrUtil.isHttp(dynamicLocation)) {
+		if(MiscUtil.isHttp(dynamicLocation)) {
 			WebReader xiu = new WebReader(dynamicLocation, charset);
 			return xiu.readIntoList();
 		}
@@ -119,7 +119,7 @@ public class IOUtil {
 	}
 	
 	public static String readString(String dynamicLocation, String charset, String lineSeperator) {
-		if(StrUtil.isHttp(dynamicLocation)) {
+		if(MiscUtil.isHttp(dynamicLocation)) {
 			WebReader xiu = new WebReader(dynamicLocation, charset);
 			return xiu.readIntoString();
 		}
@@ -427,6 +427,45 @@ public class IOUtil {
 		
 		return flag;
 	}
+	
+	public static boolean copyFile(File sourceFile, File targetFile)  {
+    	XXXUtil.nullOrEmptyCheck(sourceFile, "sourceFile");
+    	XXXUtil.nullOrEmptyCheck(targetFile, "targetPath");
+    	
+    	if(sourceFile.getParentFile().equals(targetFile)) {
+    		XXXUtil.info("File [{0}] is already out there [{1}].", sourceFile, targetFile);
+    		return false;
+    	}
+
+    	BufferedInputStream inBuff = null;
+        BufferedOutputStream outBuff = null;
+        try {
+            inBuff = new BufferedInputStream(new FileInputStream(sourceFile));
+            outBuff = new BufferedOutputStream(new FileOutputStream(targetFile));
+
+            byte[] b = new byte[Konstants.FILE_SIZE_STEP * 5];
+            int len;
+            while ((len = inBuff.read(b)) != -1) {
+                outBuff.write(b, 0, len);
+            }
+            outBuff.flush();
+            
+            return true;
+        } catch (Exception ex) {
+        	ex.printStackTrace();        	
+        } finally {
+        	try {
+                if (inBuff != null)
+                    inBuff.close();
+                if (outBuff != null)
+                    outBuff.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+        }
+        
+        return false;
+    }
 	
 	public static boolean copyFileToFolder(File sourceFile, String targetFolder)  {
     	XXXUtil.nullOrEmptyCheck(sourceFile, "sourceFile");

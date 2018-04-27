@@ -10,6 +10,7 @@ import com.sirap.basic.tool.C;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
+import com.sirap.basic.util.MiscUtil;
 import com.sirap.basic.util.StrUtil;
 
 public class Email {
@@ -108,7 +109,7 @@ public class Email {
 	public boolean isInvalid() {
 		String template = "Invalid {0}[{1}], please conduct mail setting.";
 		
-		if(!StrUtil.isEmail(mailFrom)) {
+		if(!MiscUtil.isEmail(mailFrom)) {
 			C.pl(StrUtil.occupy(template, "sender", mailFrom));
 			return true;
 		}
@@ -118,7 +119,7 @@ public class Email {
 			return true;
 		}
 		
-		if(!StrUtil.isEmail(mailTo)) {
+		if(!MiscUtil.isEmail(mailTo)) {
 			C.pl(StrUtil.occupy(template, "receiver", mailTo));
 			return true;
 		}

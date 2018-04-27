@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.exception.MexException;
 
@@ -648,41 +649,6 @@ public class StrUtil {
 		return null;
 	}
 	
-	public static boolean isHttp(String source) {
-		String regex = "https?://[\\S]{3,}";
-		return isRegexMatched(regex, source);
-	}
-	
-	public static boolean isEmail(String source) {
-		if(EmptyUtil.isNullOrEmpty(source)) {
-			return false;
-		}
-		
-		String regex ="^([a-zA-Z0-9]*[-_\\.]?[a-zA-Z0-9]+)*@([a-zA-Z0-9]*[-_]?[a-zA-Z0-9]+)+[\\.][A-Za-z]{2,3}([\\.][A-Za-z]{2})?$";
-		Matcher m = Pattern.compile(regex).matcher(source);
-		
-		return m.matches();
-	}
-	
-	public static boolean isLegalIP(String source) {
-		if(EmptyUtil.isNullOrEmpty(source)) {
-			return false;
-		}
-		
-		String temp = "([01]?\\d\\d?|2[0-4]\\d|25[0-5])";
-		StringBuilder sb = new StringBuilder();
-		sb.append("^").append(temp).append("\\.");
-		sb.append(temp).append("\\.");
-		sb.append(temp).append("\\.");
-		sb.append(temp).append("$");
-		
-		String regex = sb.toString();
-
-		Matcher m = Pattern.compile(regex).matcher(source);
-		
-		return m.matches();
-	}
-	
 	/**
 	 * 
 	 * @param source What is your {0}, {1}?
@@ -1015,5 +981,16 @@ public class StrUtil {
 		}
 		
 		return sb.toString();
+	}
+	
+	public static List<String> listOf(String[] arr) {
+		List<String> items = Lists.newArrayList();
+		if(!EmptyUtil.isNullOrEmpty(arr)) {
+			for(int i = 0; i < arr.length; i++) {
+				items.add(arr[i]);
+			}
+		}
+		
+		return items;
 	}
 }

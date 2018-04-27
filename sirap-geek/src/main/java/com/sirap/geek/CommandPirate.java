@@ -48,7 +48,7 @@ public class CommandPirate extends CommandBase {
 			if(file != null) {
 				String filePath = file.getAbsolutePath();
 				if(FileOpener.isTextFile(filePath)) {
-					List<String> records = IOUtil.readFileIntoList(filePath);
+					List<String> records = IOUtil.readLines(filePath, charset());
 					boolean byDays = StrUtil.equals("hdays", params[1]);
 					boolean descend = StrUtil.equals("-", params[2]);
 

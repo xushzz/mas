@@ -2,7 +2,6 @@ package com.sirap.basic.thirdparty.msoffice;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
 import java.util.List;
@@ -13,6 +12,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.google.common.collect.Lists;
@@ -24,13 +24,47 @@ import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.StrUtil;
 
-@SuppressWarnings("all")
+@SuppressWarnings("rawtypes")
 public class MsExcelHelper {
-	
-	public static Workbook workbookOf(String filepath) throws MexException {
-		FileInputStream fis = null;
+
+	public static List<String> readSheetNames(String filepath) {
 		try {
-			fis = new FileInputStream(filepath);
+			if (FileUtil.isExcel(filepath)) {
+				return readXlsSheetNames(filepath);
+			} else if (FileUtil.isExcelX(filepath)) {
+				return ExcelXReader.readSheetNames(filepath);
+			} else {
+				throw new MexException("Invalid excel file: " + filepath);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new MexException(ex);
+		}
+	}
+
+	public static List<List<String>> readFirstSheet(String filepath) {
+		return readSheetByIndex(filepath, 0);
+	}
+	
+	public static List<List<String>> readSheetByIndex(String filepath, int index) {
+		try {
+//			D.sink("readXlsSheetByIndex " + filepath);
+//			D.sink("readXlsSheetByIndex " + FileUtil.formatSize(filepath));
+			if (FileUtil.isExcel(filepath)) {
+				return readXlsSheetByIndex(filepath, index);
+			} else if (FileUtil.isExcelX(filepath)) {
+				return ExcelXReader.readSheetByIndex(filepath, index);
+			} else {
+				throw new MexException("Invalid excel file: " + filepath);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new MexException(ex);
+		}
+	}
+	
+	private static Workbook workbookOf(String filepath) throws MexException {
+		try(FileInputStream fis = new FileInputStream(filepath)) {
 			if (FileUtil.isExcel(filepath)) {
 				return new HSSFWorkbook(fis);
 			} else if (FileUtil.isExcelX(filepath)) {
@@ -41,17 +75,10 @@ public class MsExcelHelper {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new MexException(ex);
-		} finally {
-			try {
-				fis.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 		}
 	}
 	
 	public static Workbook newWorkbook(String filepath) throws MexException {
-		Workbook wb = null;
 		if (FileUtil.isExcel(filepath)) {
 			return new HSSFWorkbook();
 		} else if (FileUtil.isExcelX(filepath)) {
@@ -61,7 +88,7 @@ public class MsExcelHelper {
 		}
 	}
 
-	public static List<String> sheetNamesOf(String filepath) {
+	public static List<String> readXlsSheetNames(String filepath) {
 		List<String> items = Lists.newArrayList();
 		Workbook wb = workbookOf(filepath);
 		int count = wb.getNumberOfSheets();
@@ -74,10 +101,10 @@ public class MsExcelHelper {
 		return items;
 	}
 	
-	public static List<List<String>> readSheetByIndex(String filepath, int sheetIndex) {
+	public static List<List<String>> readXlsSheetByIndex(String filepath, int sheetIndex) {
 		List<List<String>> data = Lists.newArrayList();
-		try {
-			Workbook wb = workbookOf(filepath);
+		try(FileInputStream fis = new FileInputStream(filepath)) {
+			Workbook wb = WorkbookFactory.create(fis);
 			
 			Sheet st = wb.getSheetAt(sheetIndex);
 			for (int rowIndex = 0; rowIndex <= st.getLastRowNum(); rowIndex++) {

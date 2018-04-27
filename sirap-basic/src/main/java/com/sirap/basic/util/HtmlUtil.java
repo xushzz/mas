@@ -42,6 +42,9 @@ public class HtmlUtil {
 		String temp = source;
 		while(ma.find()) {
 			int unicode = Integer.parseInt(ma.group(1));
+			if(unicode == 160) {
+				unicode = 32;
+			}
 			temp = temp.replace(ma.group(0), "" + (char)unicode);
 		}
 		

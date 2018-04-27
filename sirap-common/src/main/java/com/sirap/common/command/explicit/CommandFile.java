@@ -25,6 +25,7 @@ import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.ImageUtil;
 import com.sirap.basic.util.MathUtil;
+import com.sirap.basic.util.MiscUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
@@ -152,7 +153,7 @@ public class CommandFile extends CommandBase {
 						int lines = PdfHelper.pagesOf(filePath);
 						items.add("pages: " + lines);
 					} else if(FileUtil.isAnyTypeOf(filePath, FileUtil.SUFFIXES_EXCEL)) {
-						List<String> sheets = MsExcelHelper.sheetNamesOf(filePath);
+						List<String> sheets = MsExcelHelper.readSheetNames(filePath);
 						String msg = StrUtil.occupy("sheets({0}): {1}", sheets.size(), StrUtil.connect(sheets, ", "));
 						items.add(msg);
 					} else if(FileUtil.isAnyTypeOf(filePath, "docx")) {
@@ -423,7 +424,71 @@ public class CommandFile extends CommandBase {
 			return true;
 		}
 		
+
+		
+		solo = parseParam("rename (.+?)");
+		if(solo != null) {
+			List<String> items = StrUtil.split(solo);
+			boolean isGood = isValidFolderAndTextFile(items);
+			if(!isGood) {
+				items = StrUtil.split(solo, " ");
+				isGood = isValidFolderAndTextFile(items);
+			}
+			
+			if(isGood) {
+				List<String> tasks = Lists.newArrayList();
+				List<String> epis = IOUtil.readLines(items.get(1));
+				File folder = new File(items.get(0));
+				File[] files = folder.listFiles();
+				if(files != null) {
+					for(File fileItem : files) {
+						String originShortName = fileItem.getName();
+						String epi = MiscUtil.seasonAndEpisode(originShortName);
+						if(epi == null) {
+							C.pl("Not found sAAeBB for: " + originShortName);
+							continue;
+						}
+						String mexCriteria = folder.getName() + "." + epi;
+						Object title = CollUtil.findFirst(epis, mexCriteria, false);
+						if(title == null) {
+							C.pl("Not found niceName for: " + mexCriteria);
+							continue;
+						}
+						String extension = StrUtil.findFirstMatchedItem("(\\.[^\\.]+$)", originShortName);
+						String nicename = title + "" + extension;
+						boolean same = StrUtil.equals(nicename, originShortName);
+						if(same) {
+							C.pl("Already niceName: " + originShortName);
+							continue;
+						}
+						String cmd = StrUtil.occupy("c.rename \"{0}\" \"{1}\"", fileItem.getAbsolutePath(), nicename);
+						tasks.add(cmd);
+					}
+				}
+				
+				export(tasks);
+			}
+			
+			return true;
+		}
+		
 		return false;
+	}
+	
+	public boolean isValidFolderAndTextFile(List<String> items) {
+		if(items.size() != 2) {
+			return false;
+		}
+		
+		if(FileUtil.getIfNormalFolder(items.get(0)) == null) {
+			return false;
+		}
+		
+		if(FileUtil.getIfNormalFile(items.get(1)) == null) {
+			return false;
+		}
+		
+		return true;
 	}
 	
 	abstract class MemoryKeeper {

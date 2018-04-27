@@ -193,7 +193,16 @@ public class CollUtil {
 		
 		return files;
 	}
-	
+
+	public static Object findFirst(List rawItems, String mexCriteria, boolean isCaseSensitive) {
+		List items = filterMix(rawItems, mexCriteria, isCaseSensitive);
+		if(!items.isEmpty()) {
+			return items.get(0);
+		}
+		
+		return null;
+	}
+		
 	public static List filterMix(List rawItems, String mexCriteria, boolean isCaseSensitive) {
 		if(EmptyUtil.isNullOrEmpty(mexCriteria)) {
 			return rawItems;
