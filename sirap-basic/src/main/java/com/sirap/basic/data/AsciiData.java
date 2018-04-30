@@ -98,6 +98,6 @@ public class AsciiData {
 	}
 
 	public static List<String> eggs() {
-		return CollUtil.toList(EGGS, ", ");
+		return CollUtil.mapToList(EGGS, ", ");
 	}
 }

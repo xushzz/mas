@@ -238,9 +238,9 @@ public class CommandImage extends CommandBase {
 		solo = parseParam(KEY_KICK_PRINT + "(|\\s+.+)");
 		if(solo != null) {
 			if(!solo.isEmpty()) {
-				String path = solo;
-				if(FileUtil.exists(path)) {
-					FileOpener.open(path, "+p");
+				File image = parseFile(solo);
+				if(image != null) {
+					FileOpener.open(image.getAbsolutePath(), "+p");
 					return true;
 				}
 			}
@@ -260,7 +260,7 @@ public class CommandImage extends CommandBase {
 			String filename = DateUtil.timestamp() + "_KP.jpg";
 			String filepath = StrUtil.useSeparator(location, filename);
 			ImageUtil.createImage(filepath, text, 1200, 400);
-			FileOpener.open(filepath, options);
+			FileOpener.open(filepath, "+p");
 			
 			return true;
 		}

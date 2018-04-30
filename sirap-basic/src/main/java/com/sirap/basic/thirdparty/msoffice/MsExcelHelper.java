@@ -155,10 +155,8 @@ public class MsExcelHelper {
 			}
 		}
 
-		try {
-			OutputStream stream = new FileOutputStream(fullFileName);
+		try(OutputStream stream = new FileOutputStream(fullFileName)) {
 			wb.write(stream);
-			stream.close();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -194,8 +192,8 @@ public class MsExcelHelper {
 				} else {
 					value = Konstants.SHITED_FACE;
 				}
+				rowItems.add(value);
 			}
-			rowItems.add(value);
 		}
 		
 		return rowItems;

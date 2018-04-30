@@ -82,6 +82,6 @@ public class HttpData {
 	}
 	
 	public static List<String> eggs() {
-		return CollUtil.toList(EGGS, ", ");
+		return CollUtil.mapToList(EGGS, ", ");
 	}
 }

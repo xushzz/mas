@@ -38,6 +38,8 @@ public class CommandText extends CommandBase {
 				List<MexObject> all = readFileIntoList(filePath);
 				List<MexObject> items = CollUtil.filter(all, criteria, isCaseSensitive(), isStayCriteria());
 				export(CollUtil.items2PrintRecords(items, options));
+				
+				return true;
 			} else if(FileUtil.isAnyTypeOf(filePath, FileUtil.SUFFIXES_EXCEL)) {
 				Integer index = MathUtil.toInteger(criteria);
 				if(index == null) {
@@ -46,9 +48,9 @@ public class CommandText extends CommandBase {
 					List<List<String>> data = MsExcelHelper.readSheetByIndex(filePath, index);
 					export(data);
 				}
+				
+				return true;
 			}
-			
-			return true;
 		}
 		
 		List<TextSearchEngine> locals = getTextSearchEngines();

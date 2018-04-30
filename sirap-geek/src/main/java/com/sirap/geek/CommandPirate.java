@@ -190,19 +190,26 @@ public class CommandPirate extends CommandBase {
 				lines = FileUtil.muse(folder.getAbsolutePath(), mexCriteria);
 			}
 			File file = FileUtil.getIfNormalFile(solo);
+			String type = OptionUtil.readString(options, "t");
 			if(file != null) {
-				List<List<String>> list = MsExcelHelper.readSheetByIndex(file.getAbsolutePath(), 0);
+				List<List<String>> list = MsExcelHelper.readXlsSheetByIndex(file.getAbsolutePath(), 0);
 				boolean askForDonation = OptionUtil.readBooleanPRI(options, "ask", false);
-				lines = jsonDataOfMates(list, askForDonation);
+				if(EmptyUtil.isNullOrEmpty(type)) {
+					lines = jsonDataOfMates(list, askForDonation);
+				} else {
+					lines = sqlDataOfMates(list, askForDonation, type);
+				}
 			}
 
 			if(lines == null) {
 				XXXUtil.alert("Neither a valid folder nor a valid path: {0}", solo);
 			}
 			
-			String name = OptionUtil.readString(options, "n", "xitems");
-			lines.set(0, StrUtil.occupy("var {0} = [", name));
-			lines.set(lines.size() - 1, "];");
+			if(EmptyUtil.isNullOrEmpty(type)) {
+				String name = OptionUtil.readString(options, "n", "xitems");
+				lines.set(0, StrUtil.occupy("var {0} = [", name));
+				lines.set(lines.size() - 1, "];");
+			}
 
 			export(lines);
 			return true;
@@ -320,5 +327,37 @@ public class CommandPirate extends CommandBase {
 		}
 		String json = "[" + StrUtil.connect(newLines, ", ") + "]";
 		return JsonUtil.getPrettyTextInLines(json);
+	}
+	
+	public List<String> sqlDataOfMates(List<List<String>> data, boolean askForDonation, String type) {
+		String digao = "108.037172,24.686088";
+		List<String> newLines = Lists.newArrayList();
+		String template = "insert into fish_item values(null, '{0}', '{1}', '{2}', '{3}', '{4}', '{5}', now());";
+		for(int countX = 2; countX < data.size(); countX++) {
+			List<String> line = data.get(countX);
+			String name = line.get(1) + "";
+			if(StrUtil.contains(name, Konstants.SHITED_FACE)) {
+				continue;
+			}
+			String phone = line.get(2) + "";
+			if(StrUtil.contains(phone, Konstants.SHITED_FACE)) {
+				phone = "电话";
+			}
+			String city = line.get(4) + "";
+			String location = line.get(5) + "";
+			if(StrUtil.contains(location, Konstants.SHITED_FACE)) {
+				location = digao;
+			}
+			if(StrUtil.contains(city, Konstants.SHITED_FACE)) {
+				city = "城市";
+			}
+			String info = line.get(3) + "";
+			info = info.replaceAll("-", "") + " [" + location + "]";
+			String value = StrUtil.occupy(template, type, name, location, phone, city, info);
+			value = value.replace("\n", "");
+			newLines.add(value);
+		}
+		
+		return newLines;
 	}
 }

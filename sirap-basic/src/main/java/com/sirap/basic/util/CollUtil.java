@@ -267,7 +267,11 @@ public class CollUtil {
 		return items;
 	}
 	
-	public static List<String> toList(Map map, String connector) {
+	public static List<String> mapToList(Map map) {
+		return mapToList(map, "=");
+	}
+	
+	public static List<String> mapToList(Map map, String connector) {
 		List<String> list = new ArrayList<>();
 		Iterator it = map.keySet().iterator();
 		while(it.hasNext()) {
