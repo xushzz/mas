@@ -128,7 +128,6 @@ public class D {
 			}
 			D.pl("D.list end, total: " + list.size());
 		}
-		
 	}
 
 	public static void list2(List list) {
@@ -137,10 +136,35 @@ public class D {
 		} else {
 			D.pl("D.list start");
 			for(Object obj : list) {
-				D.pl((obj != null ? obj.getClass() + "  " : "") + obj);
+				D.pl((obj != null ? obj.getClass() + "  " : "") + "[" + obj + "]");
 			}
 			D.pl("D.list end, total: " + list.size());
 		}
-		
+	}
+	
+	public static void bs(byte[] bytes) {
+		if(EmptyUtil.isNull(bytes)) {
+			D.sink("null bytes");
+		} else {
+			D.pl("D.bytes start");
+			for(byte obj : bytes) {
+				D.pl(obj);
+			}
+			D.pl("D.bytes end, total: " + bytes.length);
+		}
+	}
+	
+	public static void bs2(byte[] bytes) {
+		if(EmptyUtil.isNull(bytes)) {
+			D.sink("null bytes");
+		} else {
+			StringBuffer sb = StrUtil.sb();
+			D.pl("D.bytes start");
+			for(byte obj : bytes) {
+				sb.append(obj).append(" ");
+			}
+			D.pl(sb);
+			D.pl("D.bytes end, total: " + bytes.length);
+		}
 	}
 }

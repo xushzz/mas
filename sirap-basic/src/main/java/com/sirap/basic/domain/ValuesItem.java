@@ -24,6 +24,14 @@ public class ValuesItem extends MexItem {
 		return index >=0 && index < values.size();
 	}
 	
+	public boolean isEmpty() {
+		return values.isEmpty();
+	}
+	
+	public boolean isNotEmpty() {
+		return !values.isEmpty();
+	}
+	
 	public Object getByIndex(int index) {
 		return values.get(index);
 	}

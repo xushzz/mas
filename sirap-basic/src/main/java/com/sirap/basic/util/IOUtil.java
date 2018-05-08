@@ -49,7 +49,7 @@ import com.sirap.basic.tool.MexedAudioPlayer;
 @SuppressWarnings({"rawtypes","unchecked"})
 public class IOUtil {
 	
-	private static String charset() {
+	public static String charset() {
 		return Charset.defaultCharset().name();
 	}
 	/***
@@ -96,6 +96,7 @@ public class IOUtil {
 			br.close();
 		} catch (Exception ex) {
 			D.pl("Exception while dealing with file: " + (new File(dynamicLocation).getAbsolutePath()));
+			ex.printStackTrace();
 			throw new MexException(ex);
 		}
 
@@ -380,7 +381,8 @@ public class IOUtil {
 	public static Object readObject(String fileName) {
 		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName))) {
 			return ois.readObject();
-		} catch (Exception e) {
+		} catch (Exception ex) {
+			ex.printStackTrace();
 			throw new MexException("{0}, {1}, {2}.", IOUtil.class, "readObject", fileName);
 		}
 	}
@@ -615,6 +617,13 @@ public class IOUtil {
 		}
 	}
 	
+	/***
+	 * 0xefbb utf8
+	 * 0xfffe unicode -1,-2
+	 * 
+	 * @param stream
+	 * @return
+	 */
 	public static String charsetOfStream(InputStream stream) {
 	    Integer key0xefbb = 61371, key0xfeff = 65279, key0xfffe = 65534;
 		Map<Integer, String> headAndType = Maps.newConcurrentMap();
@@ -629,6 +638,7 @@ public class IOUtil {
 		    if(temp != null) {
 		    	code = temp;
 		    }
+//		    D.pl(head, code);
 			return code;
 		} catch (Exception ex) {
 			throw new MexException(ex);

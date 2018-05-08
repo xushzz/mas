@@ -19,6 +19,7 @@ p=ABCD,3           permutation with given samples, display all the possibilities
 h=FFF[,21][..]     display hex, decimal, octal and binary values for hex numbers 'FFF' and '21' and others, 
 h=FFF[,21][..]     the type of the numbers can be 'd', 'o' and 'b', aka 'hex', 'dec', 'oct' and 'bin'.
 h=FFF[,21][..]     The numbers can be split by space or ',', this rule also applies to RGB cases
+d=-124             negative numbers are also acceptable
 sudoku             the solution for the puzzle can be found if exists, in input the zero stands for blank
 sudoku             000010000,000007645,906000700,400000302,870000000,000000060,000020590,230600000,089403000
 2012.12.23-2010.12.2 calculate day difference

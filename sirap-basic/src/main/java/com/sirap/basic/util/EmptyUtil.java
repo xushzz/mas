@@ -15,6 +15,9 @@ public class EmptyUtil {
 	public static boolean isNullOrEmpty(Object[] arr) {
 		return arr == null || arr.length == 0;
 	}
+	public static boolean isNull(Object obj) {
+		return obj == null;
+	}
 
 	@SuppressWarnings("rawtypes")
 	public static boolean isNullOrEmpty(Map map) {

@@ -95,7 +95,7 @@ public class CommandMath extends CommandBase {
 			return true;
 		}
 		
-		params = parseParams("(h|hex|d|dec|o|oct|b|bin|)=([a-f|\\d|,|\\s]+)");
+		params = parseParams("(h|hex|d|dec|o|oct|b|bin|)=([\\-a-f|\\d|,|\\s]+)");
 		if(params != null) {
 			MexNumberConverter salim = new MexNumberConverter(params[0], params[1]);
 			List<String> results = salim.getResult();

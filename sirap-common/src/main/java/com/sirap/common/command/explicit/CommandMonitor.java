@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.google.common.collect.Lists;
+import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.domain.TypedKeyValueItem;
 import com.sirap.basic.output.PDFParams;
@@ -142,7 +143,7 @@ public class CommandMonitor extends CommandBase {
 			if(file != null) {
 				String filePath = file.getAbsolutePath();
 				if(FileOpener.isTextFile(filePath)) {
-					String content = IOUtil.readStringWithLineSeparator(filePath);
+					String content = IOUtil.readString(filePath, charset(), Konstants.NEWLINE);
 					String text = TrumpUtil.encodeBySIRAP(content, passcode);
 					C.pl("File, SIRAP generates " + text.length() + " chars. ");
 					export(text);

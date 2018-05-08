@@ -82,7 +82,11 @@ public class AsciiRecord extends MexItem {
 			return true;
 		}
 		
-		if(StrUtil.contains((char)base + "", keyWord)) {
+		if(StrUtil.equals((char)base + "", keyWord)) {
+			return true;
+		}
+		
+		if(StrUtil.equals(quote(), keyWord)) {
 			return true;
 		}
 		
@@ -101,6 +105,17 @@ public class AsciiRecord extends MexItem {
 		return sb.toString();
 	}
 	
+	public String quote() {
+		String temp = "";
+		if(base != 8 && base != 10 && base != 12 && base != 13) {
+			temp = StrUtil.occupy("'{0}'", (char)base);
+		} else {
+			temp = StrUtil.occupy("'{0}'", '#');
+		}
+		
+		return temp;
+	}
+	
 	@Override
 	public String toString() {
 		String space = StrUtil.repeat(' ', 4);
@@ -109,11 +124,7 @@ public class AsciiRecord extends MexItem {
 		sb.append(octal).append(space);
 		sb.append(decimal).append(space);
 		sb.append(hex).append(space);
-		if(base != 8 && base != 10 && base != 12 && base != 13) {
-			sb.append('\'').append((char)base).append('\'');
-		} else {
-			sb.append("#");
-		}
+		sb.append(quote());
 		if(info != null) {
 			sb.append(", ").append(info);
 		}

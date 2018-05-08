@@ -28,6 +28,7 @@ import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.MiscUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.XCodeUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
@@ -44,6 +45,8 @@ public class CommandFile extends CommandBase {
 	private static final String KEY_DAY_CHECK = "dc";
 	private static final String KEY_MEMORABLE = "mm";
 	private static final String KEY_KICK_OFF = "ko";
+	private static final String KEY_HEX = "hex";
+	private static final String KEY_XEH = "xeh";
 	
 	public static final String DEFAULT_TEXT_MAX_SIZE = "2M";
 
@@ -477,6 +480,38 @@ public class CommandFile extends CommandBase {
 				
 				export(tasks);
 			}
+			
+			return true;
+		}
+		
+		solo = parseParam(KEY_HEX + "\\s+(.+)");
+		if(solo != null) {
+
+			File ball = parseFile(solo);
+			List<String> items = null;
+			boolean toHex = OptionUtil.readBooleanPRI(options, "h", true);
+			if(ball != null) {
+				items = XCodeUtil.bytesOfFile(ball.getAbsolutePath(), toHex);
+			} else {
+				items = XCodeUtil.bytesOfString(solo, charset(), toHex);
+			}
+			
+			boolean toSplit = OptionUtil.readBooleanPRI(options, "k", true);
+			if(toSplit) {
+				int kPerLine = OptionUtil.readIntegerPRI(options, "k", 16);
+				String finalOptions = OptionUtil.mergeOptions(options, "conn=\\\\s");
+				export(XCodeUtil.group(items, kPerLine), finalOptions);
+			} else {
+				export(items);
+			}
+			
+			return true;
+		}
+		
+		solo = parseParam(KEY_XEH + "\\s+(.+)");
+		if(solo != null) {
+			String temp = XCodeUtil.bytesToString(solo, charset());
+			export(temp);
 			
 			return true;
 		}
