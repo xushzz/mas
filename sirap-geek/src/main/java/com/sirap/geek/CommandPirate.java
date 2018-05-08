@@ -29,6 +29,7 @@ import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
 import com.sirap.geek.domain.CaroItem;
+import com.sirap.geek.manager.FiveOManager;
 import com.sirap.geek.manager.HiredDaysCalculator;
 
 public class CommandPirate extends CommandBase {
@@ -39,6 +40,7 @@ public class CommandPirate extends CommandBase {
 	private static final String KEY_BEEP_HOUR = "bmw";
 	private static final String KEY_CARO = "caro";
 	private static final String KEY_MATE_JSON = "mate";
+	private static final String KEY_51job = "51job";
 
 	public boolean handle() {
 		
@@ -179,6 +181,17 @@ public class CommandPirate extends CommandBase {
 			export(lines);
 			
 			return true;
+		}
+		
+		solo = parseParam(KEY_51job + "\\s(.+)");
+		if(solo != null) {
+			String startpage = solo;
+			List<String> lines = FiveOManager.g().job51(startpage);
+			String name = OptionUtil.readString(options, "n", "xitems");
+			lines.set(0, StrUtil.occupy("var {0} = [", name));
+			lines.set(lines.size() - 1, "];");
+			
+			export(lines);
 		}
 		
 		solo = parseParam(KEY_MATE_JSON + "\\s(.+)");

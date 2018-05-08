@@ -23,6 +23,8 @@ public class FileOpener {
 	public static final String KEY_TEXT = "format.text";
 	public static final String KEY_EXECUTABLE = "format.exe";
 	public static final String KEY_OTHERS = "format.others";
+	public static final String KEY_TXT_ULTRA_EDITOR = "ue";
+	public static final String KEY_TXT_NOTEPAD = "np";
 	
 	public static boolean open(String filePath) {
 		return open(filePath, null);
@@ -69,7 +71,10 @@ public class FileOpener {
 			playThing(filePath, "page.viewer");
 			return true;
 		} else if(isAcceptableFormat(filePath, FileUtil.SUFFIXES_TEXT, KEY_TEXT)) {
-			if(OptionUtil.readBooleanPRI(options, "n", false)) {
+			if(OptionUtil.readBooleanPRI(options, KEY_TXT_ULTRA_EDITOR, false)) {
+				C.pl2("Open by ultraedit: " + filePath);
+				playThing(filePath, "txt.ue");
+			} else if(OptionUtil.readBooleanPRI(options, KEY_TXT_NOTEPAD, false)) {
 				C.pl2("Open by notepad: " + filePath);
 				playThingByAppName(filePath, "notepad");
 			} else {

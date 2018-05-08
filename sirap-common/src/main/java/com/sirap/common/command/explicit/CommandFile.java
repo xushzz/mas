@@ -60,7 +60,16 @@ public class CommandFile extends CommandBase {
 		if(file != null) {
 			String filePath = file.getAbsolutePath();
 			
+			boolean toOpen = false;
 			if(OptionUtil.readBooleanPRI(options, "O", false)) {
+				toOpen = true;
+			} else if(OptionUtil.readBooleanPRI(options, FileOpener.KEY_TXT_NOTEPAD, false)) {
+				toOpen = true;
+			} else if(OptionUtil.readBooleanPRI(options, FileOpener.KEY_TXT_ULTRA_EDITOR, false)) {
+				toOpen = true;
+			}
+			
+			if(toOpen) {
 				FileOpener.open(filePath, options);
 				return true;
 			}

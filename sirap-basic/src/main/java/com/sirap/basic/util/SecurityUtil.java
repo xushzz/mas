@@ -2,6 +2,7 @@ package com.sirap.basic.util;
 
 import java.io.FileInputStream;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -61,13 +62,14 @@ public class SecurityUtil {
 		return result;
 	}
 	
-	@SuppressWarnings("resource")
 	public static String digestFile(String filepath, String algo) {
-		FileInputStream fis = null;
-
-	      try {
-	        MessageDigest roy = MessageDigest.getInstance(algo);
-	        fis = new FileInputStream(filepath);
+		MessageDigest roy = null;
+		try {
+			roy = MessageDigest.getInstance(algo);
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		try(FileInputStream fis = new FileInputStream(filepath)) {
 	        byte[] buffer = new byte[2048];
 	        int length = -1;
 	        while ((length = fis.read(buffer)) != -1) {
@@ -78,9 +80,9 @@ public class SecurityUtil {
 	        String result = StrUtil.bytesToHexString(bytes);
 	        
 			return result;
-	      } catch (Exception ex) {
+		} catch (Exception ex) {
 	        ex.printStackTrace();
 	        return null;
-	      }
+	    }	      
 	}
 }

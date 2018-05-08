@@ -1,5 +1,6 @@
 package com.sirap.geek;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -12,7 +13,6 @@ import com.sirap.basic.search.MexFilter;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.EmptyUtil;
-import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.LocaleUtil;
 import com.sirap.basic.util.SecurityUtil;
 import com.sirap.basic.util.StrUtil;
@@ -109,10 +109,11 @@ public class CommandXCode extends CommandBase {
 				algo = sb.toString();
 			}
 			
-			boolean isFile = FileUtil.isNormalFile(what);
+			File normal = parseFile(what);
+			boolean isFile = normal != null;
 			String result = null;
 			if(isFile) {
-				result = SecurityUtil.digestFile(what, algo);
+				result = SecurityUtil.digestFile(normal.getAbsolutePath(), algo);
 			} else {
 				result = SecurityUtil.digest(what, algo);
 			}
