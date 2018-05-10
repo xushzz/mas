@@ -312,24 +312,25 @@ public class CommandPirate extends CommandBase {
 		String template = "{\"name\": \"{0}\",\"location\": \"{1}\",\"phone\": \"{2}\",\"city\": \"{3}\",\"address\": \"{4}\"}";
 		for(int countX = 2; countX < data.size(); countX++) {
 			List<String> line = data.get(countX);
+//			D.pl(line);
 			String name = line.get(1) + "";
-			if(StrUtil.contains(name + "", "-")) {
+			if(StrUtil.equals(name, Konstants.SHITED_FACE)) {
 				continue;
 			}
 			String phone = line.get(2) + "";
-			if(StrUtil.isRegexMatched("[\\-]+", phone.trim())) {
+			if(StrUtil.equals(phone, Konstants.SHITED_FACE)) {
 				phone = "电话";
 			}
 			String city = line.get(4) + "";
 			String location = line.get(5) + "";
-			if(StrUtil.contains(location, "-")) {
+			if(StrUtil.equals(location, Konstants.SHITED_FACE)) {
 				location = digao;
 			}
-			if(StrUtil.contains(city, "-")) {
+			if(StrUtil.equals(city, Konstants.SHITED_FACE)) {
 				city = "城市";
 			}
 			String info = line.get(3) + "";
-			info = info.replaceAll("-", "") + " [" + location + "]";
+			info = info.replaceAll(Konstants.SHITED_FACE, "") + " [" + location + "]";
 			String value = StrUtil.occupy(template, name, location, phone, city, info);
 			value = value.replace("\n", "");
 			newLines.add(value);

@@ -14,6 +14,7 @@ import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.MathUtil;
+import com.sirap.basic.util.MiscUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.basic.util.XmlUtil;
@@ -31,6 +32,8 @@ public class GaodeUtils {
 	public static final String TEMPLATE_PLACE_TEXT = "http://restapi.amap.com/v3/place/text?output=xml&offset=1000&key={0}&keywords={1}&types={2}&city={3}";
 	public static final String TEMPLATE_PLACE_AROUND = "http://restapi.amap.com/v3/place/around?output=xml&offset=1000&key={0}&keywords={1}&types={2}&location={3}&radius={4}";
 	public static final String TEMPLATE_DISTANCE = "http://restapi.amap.com/v3/distance?origins={0}&destination={1}&output=xml&key={2}";
+	public static final String TEMPLATE_IP_NOPARAM = "http://restapi.amap.com/v3/ip?key={0}";
+	public static final String TEMPLATE_IP = "http://restapi.amap.com/v3/ip?key={0}&ip={1}";
 
 	public static List<DistrictItem> provincesOfChina() {
 		Extractor<DistrictItem> neymar = new Extractor<DistrictItem>() {
@@ -248,12 +251,53 @@ public class GaodeUtils {
 	}
 	
 	/***
-	 * http://lbs.amap.com/api/webservice/guide/api/georegeo
-	 * 地理编码/逆地理编码 API 是通过 HTTP/HTTPS 协议访问远程服务的接口，提供结构化地址与经纬度之间的相互转化的能力。
+	 * http://lbs.amap.com/api/webservice/guide/api/ipconfig/
+	 * IP定位是一个简单的HTTP接口，根据用户输入的IP地址，能够快速的帮用户定位IP的所在位置。
 	 * @param address
 	 * @param city
 	 * @return
 	 */
+	public static List<String> locationOfIp(String ipAddress) {
+		Extractor<String> neymar = new Extractor<String>() {
+
+			public String getUrl() {
+				showFetching().useUTF8();
+				String url = "";
+				if(MiscUtil.isLegalIP(ipAddress)) {
+					url = StrUtil.occupy(TEMPLATE_IP, API_KEY, ipAddress);
+				} else {
+					XXXUtil.alert("Not a valid ip: ", ipAddress);
+				}
+				return url;
+			}
+			
+			@Override
+			protected void parse() {
+				mexItems = JsonUtil.getPrettyTextInLines(source);
+			}
+		};
+		
+		return neymar.process().getItems();
+	}
+	
+	public static List<String> locationOfIp() {
+		Extractor<String> neymar = new Extractor<String>() {
+
+			public String getUrl() {
+				showFetching().useUTF8();
+				String url = StrUtil.occupy(TEMPLATE_IP_NOPARAM, API_KEY);
+				return url;
+			}
+			
+			@Override
+			protected void parse() {
+				mexItems = JsonUtil.getPrettyTextInLines(source);
+			}
+		};
+		
+		return neymar.process().getItems();
+	}
+	
 	public static List<String> geocodeOf(String address, String city) {
 		Extractor<String> neymar = new Extractor<String>() {
 
