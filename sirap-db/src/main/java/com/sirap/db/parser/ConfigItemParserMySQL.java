@@ -3,6 +3,7 @@ package com.sirap.db.parser;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import com.sirap.basic.util.StrUtil;
 import com.sirap.db.DBConfigItem;
@@ -24,7 +25,7 @@ public class ConfigItemParserMySQL extends ConfigItemParser {
 		
 		for(int i = 1; i < list.size(); i++) {
 			String item = list.get(i).trim();
-			String[] arr = StrUtil.parseParams("([a-z])(.+)", item);
+			String[] arr = StrUtil.parseParams("([a-z])(.+)", item, Pattern.CASE_INSENSITIVE);
 			if(arr == null) {
 				continue;
 			}

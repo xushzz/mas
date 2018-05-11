@@ -10,7 +10,9 @@ import java.util.regex.Pattern;
 
 import com.sirap.basic.domain.TypedKeyValueItem;
 import com.sirap.basic.exception.MexException;
+import com.sirap.basic.util.DBUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.framework.SimpleKonfig;
 import com.sirap.common.framework.Stash;
 import com.sirap.db.parser.SchemaNameParser;
@@ -52,30 +54,38 @@ public class DBHelper {
 		KEYS_DML_LIST.toArray(KEYS_DML_ARRAY);
 	}
 	
+	private static DBConfigItem activeDB;
+	
 	public static DBConfigItem getActiveDB() throws MexException {
-		DBConfigItem item = null;
-		
-		String dbName = SimpleKonfig.g().getUserValueOf("db.active");
-		if(dbName == null) {
-			throw new MexException("No setting for active database [db.active].");
-		} else {
-			item = DBHelper.getDatabaseByName(dbName);
-			if(item == null) {
-				throw new MexException("No configuration for active database [" + dbName + "].");
+		if(activeDB == null) {
+			String key = "db.active";
+			String dbName = SimpleKonfig.g().getUserValueOf(key);
+			if(dbName == null) {
+				XXXUtil.alert("No setting for active database [{0}].", key);
+			} else {
+				DBConfigItem item = DBHelper.getDatabaseByName(dbName);
+				if(item == null) {
+					throw new MexException("No configuration for active database [" + dbName + "].");
+				}
+				
+				activeDB = item;
 			}
 		}
 		
-		String schema = SimpleKonfig.g().getUserValueOf("db.schema");
-		if(schema != null) {
-			String url = item.getUrl();
-			String dbType = StrUtil.parseDbTypeByUrl(url);
-			SchemaNameParser zhihui = DBFactory.getSchemaNameParser(dbType);
-			String fixedUrl = zhihui.fixUrlByChangingSchema(item.getUrl(), schema);
-			
-			item.setUrl(fixedUrl);
-		}
-		
-		return item;
+		return activeDB;
+	}
+	
+	public static void setActiveDB(DBConfigItem db) throws MexException {
+		activeDB = db;
+	}
+	
+	public static void setActiveDBSchema(String schema) throws MexException {
+		DBConfigItem item = getActiveDB();
+		String url = item.getUrl();
+		String dbType = DBUtil.dbTypeOfUrl(url);
+		SchemaNameParser zhihui = DBFactory.getSchemaNameParser(dbType);
+		String fixedUrl = zhihui.fixUrlByChangingSchema(item.getUrl(), schema);
+		item.setUrl(fixedUrl);
 	}
 	
 	public static List<DBConfigItem> getAllDBRecords() {
@@ -84,6 +94,10 @@ public class DBHelper {
 	
 	public static Map<String, DBConfigItem> getAllDBConfigItems() {
 		Map<String, DBConfigItem> map = getDBRecordsMap(SimpleKonfig.g().getUserProps().listOf());
+
+		if(activeDB != null) {
+			map.put(activeDB.getItemName(), activeDB);
+		}
 
 		DBConfigItem instash = (DBConfigItem)Stash.g().read(KEY_DB_CONFIG_FLY);
 		if(instash != null) {
@@ -190,5 +204,11 @@ public class DBHelper {
 		}
 		
 		return true;
+	}
+	
+	public static String schemaOfUrl(String jdbcUrl) {
+		String dbType = DBUtil.dbTypeOfUrl(jdbcUrl);
+		String schema = DBFactory.getSchemaNameParser(dbType).parseSchema(jdbcUrl);
+		return schema;
 	}
 }

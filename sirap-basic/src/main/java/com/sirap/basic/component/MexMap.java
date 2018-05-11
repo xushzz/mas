@@ -95,7 +95,7 @@ public class MexMap {
 		}
 	}
 
-	public void put(String key, String value) {
+	public void put(String key, Object value) {
 		container.put(key, value);
 	}
 	

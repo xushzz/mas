@@ -7,7 +7,13 @@ SQL_KEYWORDS       select,show,desc,describe,from,insert,delete,update,into,coun
 SQL_KEYWORDS       create,drop,alter,call,truncate
 t my_usrs          search all table names containing given criteria
 tbs                tables, show tables in current schema
-dbs                databases, show databases on the server
+dbs                databases/schemas, show databases on the server
+sma..              databases/schemas, show databases on the server
 sma=schemaName     change schema, like 'use databaseName' in mysql
-mysql -uroot -p    use cmd connection string to create solid mysql connection
-ver=1/14/2018, VII  Database1.0.13-COUTINHO  
+sma=               select no schema
+db                 display current db connection
+db.aliyun          display db connection aliyun
+db=aliyun          use aliyun as current db connection, aka active db connection
+db..               list all db connections in user config
+mysql -uroot -p    create solid mysql connection, -u username -p password, -h host, -P port, -D schema
+ver=5/11/2018, V  Database1.0.14-COUTINHO

@@ -60,6 +60,10 @@ public class D {
 		System.out.println();
 	}
 	
+	public static void pls(String abc) {
+		System.out.println("PLS: " + StrUtil.occupy("[{0}]", abc));
+	}
+	
 	public static <E extends Object > void ls(List<E> list) {
 		ls(list, false);
 	}

@@ -13,7 +13,6 @@ import com.sirap.common.component.FileOpener;
 import com.sirap.common.framework.Stash;
 import com.sirap.common.framework.command.InputAnalyzer;
 import com.sirap.common.framework.command.target.TargetExcel;
-import com.sirap.db.parser.ConfigItemParser;
 import com.sirap.db.parser.ConfigItemParserMySQL;
 
 public class CommandDatabase extends CommandBase {
@@ -58,10 +57,12 @@ public class CommandDatabase extends CommandBase {
 			return true;
 		}
 		
-		if(is(KEY_SHOW_DATABSES)) {
+		if(isIn(KEY_SHOW_DATABSES, KEY_SCHEMA + KEY_2DOTS)) {
 			String sql = DBKonstants.SHOW_DATABASES;
 			QueryWatcher ming = query(sql);
-			export(ming.exportLiteralStrings());
+			List<String> items = ming.exportLiteralStrings();
+			CollUtil.sortIgnoreCase(items);
+			export(items);
 			
 			return true;
 		}
@@ -69,7 +70,9 @@ public class CommandDatabase extends CommandBase {
 		if(is(KEY_SHOW_TABLES)) {
 			String sql = DBKonstants.SHOW_TABLES;
 			QueryWatcher ming = query(sql);
-			export(ming.exportLiteralStrings());
+			List<String> items = ming.exportLiteralStrings();
+			CollUtil.sortIgnoreCase(items);
+			export(items);
 			
 			return true;
 		}
@@ -139,9 +142,8 @@ public class CommandDatabase extends CommandBase {
 			String dbName = solo;
 			DBConfigItem db = DBHelper.getDatabaseByName(dbName);
 			if(db != null) {
-				g().getUserProps().put("db.active", dbName);
+				DBHelper.setActiveDB(db);
 				C.pl2("currently active: " + dbName + "");
-				g().getUserProps().put("db.schema", null);
 				export(db.toPrint());
 			} else {
 				export("No configuration for database [" + dbName + "].");
@@ -151,13 +153,11 @@ public class CommandDatabase extends CommandBase {
 		}
 		
 		if(StrUtil.isRegexMatched(KEY_MYSQL + " (.+)", command)) {
-			ConfigItemParser hai = new ConfigItemParserMySQL();
-			DBConfigItem db = hai.parse(command);
-			String dbName = db.getItemName();
+			DBConfigItem db = (new ConfigItemParserMySQL()).parse(command);
 			if(db != null) {
+				DBHelper.setActiveDB(db);
+				String dbName = db.getItemName();
 				Stash.g().place(dbName, db);
-				g().getUserProps().put("db.active", dbName);
-				g().getUserProps().put("db.schema", null);
 				C.pl2("currently active: " + dbName + "");
 				export(db.toPrint());
 			}
@@ -165,26 +165,32 @@ public class CommandDatabase extends CommandBase {
 			return true;
 		}
 		
-		solo = parseParam(KEY_SCHEMA + "=(.+)");
+		solo = parseParam(KEY_SCHEMA + "=(.*)");
 		if(solo != null) {
-			String sql = DBKonstants.SHOW_DATABASES;
-			String actualSchema = null;
-			
-			QueryWatcher ming = query(sql);
-			List<String> items = ming.exportLiteralStrings();
-			for(String item : items) {
-				if(StrUtil.equals(solo, item)) {
-					actualSchema = item;
-				}
-			}
-			
-			if(actualSchema != null) {
-				g().getUserProps().put("db.schema", actualSchema);
-				C.pl2("currently active schema: " + actualSchema + "");
+			if(solo.isEmpty()) {
+				DBHelper.setActiveDBSchema("");
+				C.pl2("No schema/database selected.");
 			} else {
-				C.pl("Not found schema [" + solo + "], available schemas:");
-				C.list(items);
-				C.pl();
+				String sql = DBKonstants.SHOW_DATABASES;
+				String actualSchema = null;
+				
+				QueryWatcher ming = query(sql);
+				List<String> items = ming.exportLiteralStrings();
+				for(String item : items) {
+					if(StrUtil.equals(solo, item)) {
+						actualSchema = item;
+					}
+				}
+				
+				if(actualSchema != null) {
+					DBHelper.setActiveDBSchema(actualSchema);
+					C.pl2("currently active schema: " + actualSchema + "");
+				} else {
+					C.pl("Not found schema [" + solo + "], available schemas:");
+					CollUtil.sortIgnoreCase(items);
+					C.list(items);
+					C.pl();
+				}
 			}
 			
 			return true;
@@ -207,7 +213,8 @@ public class CommandDatabase extends CommandBase {
 			if(g().isYes("sql.print")) {
 				C.pl("doing... " + sql);
 			}
-			int affectedRows = DBManager.g().update(sql);
+			boolean printSql = g().isYes("sql.print");
+			int affectedRows = manager().update(sql, printSql);
 			String plural = affectedRows > 1 ? "s" : "";
 			String tempalte = "affected row{0}: {1}.";
 			String temp = StrUtil.occupy(tempalte, plural, affectedRows);
@@ -218,10 +225,15 @@ public class CommandDatabase extends CommandBase {
 	private QueryWatcher query(String sql) {
 		boolean printSql = g().isYes("sql.print");
 		boolean printColumnName = g().isYes("sql.columnName.print");
-		QueryWatcher ming = DBManager.g().query(sql, true, printSql);
+		QueryWatcher ming = manager().query(sql, true, printSql);
 		
 		ming.setPrintColumnName(printColumnName);
 		
 		return ming;
+	}
+
+	private DBManager manager() {
+		DBConfigItem item = DBHelper.getActiveDB();
+		return DBManager.g(item.getUrl(), item.getUsername(), item.getPassword());
 	}
 }

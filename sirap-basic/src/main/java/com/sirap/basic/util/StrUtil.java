@@ -533,7 +533,7 @@ public class StrUtil {
 		XXXUtil.nullCheck(regex, "regex");
 		XXXUtil.nullCheck(source, "source");
 		
-		Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
+		Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE | Pattern.DOTALL).matcher(source);
 		if(m.matches()) {
 			return m.group(1).trim();
 		}
@@ -542,7 +542,7 @@ public class StrUtil {
 	}
 
 	public static String[] parseParams(String regex, String source) {
-		return parseParams(regex, source, Pattern.CASE_INSENSITIVE);
+		return parseParams(regex, source, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 	}
 	
 	public static String[] parseParams(String regex, String source, int flags) {
@@ -550,7 +550,7 @@ public class StrUtil {
 			return null;
 		}
 		
-		Matcher m = Pattern.compile(regex, flags).matcher(source);
+		Matcher m = Pattern.compile(regex, flags | Pattern.DOTALL).matcher(source);
 		if(m.matches()) {
 			int count = m.groupCount();
 			String[] strArr = new String[count];
@@ -755,28 +755,6 @@ public class StrUtil {
 		temp = temp.replaceAll("\\s{2,}", " ");
 		
 		return temp;
-	}
-	
-	public static String parseDbTypeByUrl(String url) {
-		if(StrUtil.contains(url, "Microsoft Access Driver")) {
-			return Konstants.DB_TYPE_ACCESS;
-		} else if(StrUtil.contains(url, "microsoft:sqlserver")) {
-			return Konstants.DB_TYPE_SQLSERVER;
-		}
-		
-		String regex = "jdbc:([^:-]+).+";
-		String param = StrUtil.parseParam(regex, url);
-		
-		return param;
-	}
-	
-	public static String getDbDriverByUrl(String url) {
-		String dbType = parseDbTypeByUrl(url);
-		String className = Konstants.MAP_DB_TYPE_CLASS.get(dbType);
-
-		XXXUtil.nullCheck(className, ":Unsupported database : " + dbType + ", available: " + Konstants.MAP_DB_TYPE_CLASS.keySet());
-		
-		return className;
 	}
 	
 	public static int maxLengthOf(List<String> records) {

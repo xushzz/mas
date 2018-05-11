@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import com.sirap.basic.exception.MexException;
-import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.DBUtil;
 
 public class SirapDAO {
 
@@ -25,7 +25,7 @@ public class SirapDAO {
         	this.username = username;
         	this.password = password;
         	
-        	String driver = StrUtil.getDbDriverByUrl(url);
+        	String driver = DBUtil.dbDriverOfUrl(url);
             Class.forName(driver);
         } catch (Exception ex) {  
             throw new MexException(ex); 

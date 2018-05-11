@@ -8,27 +8,15 @@ import java.util.List;
 import com.sirap.basic.db.SirapDAO;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.DBUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.db.adjustor.QuerySqlAdjustor;
 
 public class DBManager extends SirapDAO {
 	
 	private static DBManager instance;
-
-	public static DBManager g() {
-		DBConfigItem db = DBHelper.getActiveDB();
-
-		String url = db.getValidUrl();
-	    String username = db.getUsername();    
-	    String password = db.getPassword();
-
-	    instance = new DBManager(url, username, password);
-	    
-		return instance;
-	}
 	
-	public static DBManager g2(String url, String username, String password) {
+	public static DBManager g(String url, String username, String password) {
 		instance = new DBManager(url, username, password);
 		
 		return instance;
@@ -38,14 +26,18 @@ public class DBManager extends SirapDAO {
 		super(url, username, password);
 	}
 	
-	public int update(String sql) {
+	public int update(String sql, boolean printSql) {
 		try {
+			if(printSql) {
+				C.pl("remoting... " + sql + " " + instance.getUrl());
+			}
 			int result = executeUpdate(sql);
 			closeStuff();
 			
 			return result;
 			
 		} catch (Exception ex) {
+//			ex.printStackTrace();
             throw new MexException(ex);
         } 
 	}
@@ -61,7 +53,7 @@ public class DBManager extends SirapDAO {
 			
 			String tempSql = sql;
 			if(toAdjust) {
-				String dbType = StrUtil.parseDbTypeByUrl(getUrl());
+				String dbType = DBUtil.dbTypeOfUrl(getUrl());
 				QuerySqlAdjustor zhihui = DBFactory.getQuerySqlAdjustor(dbType);
 				if(zhihui != null) {
 					String schema = DBFactory.getSchemaNameParser(dbType).parseSchema(getUrl());
@@ -73,7 +65,7 @@ public class DBManager extends SirapDAO {
 			}
 			
 			if(printSql) {
-				C.pl("fetching... " + tempSql);
+				C.pl("remoting... " + tempSql + " " + instance.getUrl());
 			}
 			
 			ResultSet result = executeQuery(tempSql);
@@ -100,6 +92,7 @@ public class DBManager extends SirapDAO {
 	        
 	        closeStuff();
 		} catch (Exception ex) {  
+//			ex.printStackTrace();
             throw new MexException(ex);
         } 
 		
