@@ -1,11 +1,12 @@
 package com.sirap.db.adjustor;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.common.collect.Lists;
+import com.sirap.basic.component.DBKonstants;
 import com.sirap.basic.util.StrUtil;
-import com.sirap.db.DBKonstants;
-
 
 public abstract class QuerySqlAdjustor {
 	
@@ -76,26 +77,32 @@ public abstract class QuerySqlAdjustor {
 	}
 	
 	public String showTables() {
-		String temp = "show tables";
+		String temp = DBKonstants.SHOW_TABLES;
 		
 		return temp;
 	}
 	
 	public String showTables(String schema) {
-		String temp = null;
-		
+		StringBuffer sb = StrUtil.sb();
+		sb.append("select a.table_schema, a.table_name, b.table_cols from information_schema.tables a join (");
+		sb.append("select table_name, count(1) TABLE_COLS from information_schema.columns where table_schema {0} group by table_name");
+		sb.append(") b on a.table_name = b.table_name");
+		String gist = null;
 		if(schema != null) {
-			temp = "select table_name, table_rows from information_schema.tables where TABLE_SCHEMA = '" + schema + "'";
+			gist = StrUtil.occupy("= '{0}'", schema);
 		} else {
-			temp = "show tables";
+			List<String> ins = Lists.newArrayList();
+			for(String item : DBKonstants.MYSQL_SCHEMAS) {
+				ins.add("'" + item + "'");
+			}
+			gist = StrUtil.occupy("not in ({0})", StrUtil.connectWithCommaSpace(ins));
 		}
 		
-		return temp;
+		return StrUtil.occupy(sb.toString(), gist);
 	}
-
+	
 	public String showDatabases() {
-		String temp = "show databases";
-		return temp;
+		return DBKonstants.SHOW_DATABASES;
 	}
 	
 	public String showCreation(String sql, String type, String name) {

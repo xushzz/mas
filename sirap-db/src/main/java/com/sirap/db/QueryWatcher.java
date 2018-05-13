@@ -51,7 +51,7 @@ public class QueryWatcher {
 	}
 	
 	public List<String> exportLiteralStrings() {
-		return exportLiteralStrings(false, false, ", ");
+		return exportLiteralStrings(false, false, " , ");
 	}
 	
 	public List<String> exportLiteralStrings(boolean rotate, boolean pretty, String connector) {

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.Lists;
+import com.sirap.basic.component.DBKonstants;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.DBUtil;
@@ -26,7 +27,7 @@ public class CommandDatabase extends CommandBase {
 	private static final String KEY_DATABASE = "db";
 	private static final String KEY_SCHEMA = "sma";
 	private static final String KEY_SHOW_TABLES = "tbs";
-	private static final String KEY_SHOW_DATABSES = "dbs";
+	private static final String KEY_SHOW_DATABASES = "dbs";
 	private static final String KEY_MYSQL = "mysql";
 
 	public static final String SQL_MAX_SIZE_DEFAULT = "10M";
@@ -72,8 +73,8 @@ public class CommandDatabase extends CommandBase {
 			return true;
 		}
 		
-		if(isIn(KEY_SHOW_DATABSES, KEY_SCHEMA + KEY_2DOTS)) {
-			String sql = DBKonstants.SHOW_DATABASES;
+		if(isIn(KEY_SHOW_DATABASES, KEY_SCHEMA + KEY_2DOTS)) {
+			String sql = DBUtil.mysqlShowDatabasesX();
 			QueryWatcher ming = query(sql);
 			watcherExport(ming);
 			
@@ -186,8 +187,8 @@ public class CommandDatabase extends CommandBase {
 				QueryWatcher ming = query(sql);
 				List<String> items = ming.exportLiteralStrings();
 				for(String item : items) {
-					if(StrUtil.equals(solo, item)) {
-						actualSchema = item;
+					if(StrUtil.equals(item, solo)) {
+						actualSchema = solo;
 					}
 				}
 				
@@ -221,7 +222,7 @@ public class CommandDatabase extends CommandBase {
 	private void watcherExport(QueryWatcher ming) {
 		boolean rotate = OptionUtil.readBooleanPRI(options, "r", false);
 		boolean pretty = OptionUtil.readBooleanPRI(options, "p", true);
-		String connector = OptionUtil.readString(options, "c", ", ");
+		String connector = OptionUtil.readString(options, "c", " , ");
 		
 		List<String> items = ming.exportLiteralStrings(rotate, pretty, connector);
 		export2(items, solo);
@@ -245,7 +246,7 @@ public class CommandDatabase extends CommandBase {
 		String[] queryPrefixes = DBHelper.KEYS_QUERY.split(";");
 		boolean rotate = OptionUtil.readBooleanPRI(options, "r", false);
 		boolean pretty = OptionUtil.readBooleanPRI(options, "p", true);
-		String connector = OptionUtil.readString(options, "c", ", ");
+		String connector = OptionUtil.readString(options, "c", " , ");
 		if(StrUtil.startsWith(sql, queryPrefixes)) {
 			QueryWatcher ming = query(sql);
 			if(target instanceof TargetExcel) {
