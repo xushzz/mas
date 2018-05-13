@@ -4,10 +4,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.CollUtil;
-import com.sirap.basic.util.IOUtil;
+import com.sirap.basic.util.DBUtil;
+import com.sirap.basic.util.EmptyUtil;
+import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.framework.Stash;
@@ -17,7 +21,7 @@ import com.sirap.db.parser.ConfigItemParserMySQL;
 
 public class CommandDatabase extends CommandBase {
 
-	private static final String KEY_SQL = "!";
+	private static final String KEY_EXECUTE_SQL = "!";
 	private static final String KEY_TABLE = "t";
 	private static final String KEY_DATABASE = "db";
 	private static final String KEY_SCHEMA = "sma";
@@ -36,22 +40,33 @@ public class CommandDatabase extends CommandBase {
 	@Override
 	public boolean handle() {
 		InputAnalyzer sean = new SqlInputAnalyzer(input);
-		solo = StrUtil.parseParam(KEY_SQL + "(.{4,})", sean.getCommand());
+		solo = StrUtil.parseParam(KEY_EXECUTE_SQL + "(.{4,})", sean.getCommand());
 		if(solo != null) {
-			this.command = sean.getCommand();
-			this.target = sean.getTarget();
 			File file = parseFile(solo);
+			boolean reduce = OptionUtil.readBooleanPRI(options, "r", true);
+			List<String> sqls = null;
 			if(file != null) {
-				if(FileOpener.isTextFile(file.getAbsolutePath())) {
+				String filepath = file.getAbsolutePath();
+				if(FileOpener.isTextFile(filepath)) {
 					checkTooBigToHandle(file, g().getUserValueOf(SQL_MAX_SIZE_KEY, SQL_MAX_SIZE_DEFAULT));
-					String filePath = file.getAbsolutePath();
-					String charset = IOUtil.charsetOfTextFile(filePath);
-					String temp = StrUtil.connectWithLineSeparator(CollUtil.filterSome(IOUtil.readLines(filePath, charset), "--"));
-					String sql = StrUtil.reduceMultipleSpacesToOne(temp).trim();
-					dealWith(sql);
+					sqls = DBUtil.readSqlFile(filepath, charset(), reduce);
+				} else {
+					XXXUtil.alert("Not a text file: {0}", solo);
 				}
 			} else {
-				dealWith(solo);
+				sqls = DBUtil.readSqls(solo, reduce);
+			}
+			
+			if(EmptyUtil.isNullOrEmpty(sqls)) {
+				XXXUtil.alert("Sql file virtually empty: {0}", solo);
+			} else {
+				boolean batch = OptionUtil.readBooleanPRI(options, "b", false);
+				if(batch) {
+					int[] result = manager().batch(sqls, printSql());
+					export(printResult(result, sqls));						
+				} else {
+					dealWith(sqls);
+				}
 			}
 			
 			return true;
@@ -60,9 +75,7 @@ public class CommandDatabase extends CommandBase {
 		if(isIn(KEY_SHOW_DATABSES, KEY_SCHEMA + KEY_2DOTS)) {
 			String sql = DBKonstants.SHOW_DATABASES;
 			QueryWatcher ming = query(sql);
-			List<String> items = ming.exportLiteralStrings();
-			CollUtil.sortIgnoreCase(items);
-			export(items);
+			watcherExport(ming);
 			
 			return true;
 		}
@@ -70,9 +83,7 @@ public class CommandDatabase extends CommandBase {
 		if(is(KEY_SHOW_TABLES)) {
 			String sql = DBKonstants.SHOW_TABLES;
 			QueryWatcher ming = query(sql);
-			List<String> items = ming.exportLiteralStrings();
-			CollUtil.sortIgnoreCase(items);
-			export(items);
+			watcherExport(ming);
 			
 			return true;
 		}
@@ -81,9 +92,7 @@ public class CommandDatabase extends CommandBase {
 		if(solo != null) {
 			String sql = DBKonstants.SHOW_TABLES;
 			QueryWatcher ming = query(sql);
-
-			List<String> items = ming.exportLiteralStrings();
-			export2(items, solo);
+			watcherExport(ming);
 			
 			return true;
 		}
@@ -199,22 +208,53 @@ public class CommandDatabase extends CommandBase {
 		return false;
 	}
 	
+	private List<String> printResult(int[] result, List<String> sqls) {
+		List<String> lines = Lists.newArrayList("Results:");
+		String tempalte = "#{0} rows affected {1} by {2}";
+		for(int i = 0; i < result.length; i++) {
+			lines.add(StrUtil.occupy(tempalte, i + 1, result[i], StrUtil.firstK(sqls.get(i), 100)));
+		}
+		
+		return lines;
+	}
+	
+	private void watcherExport(QueryWatcher ming) {
+		boolean rotate = OptionUtil.readBooleanPRI(options, "r", false);
+		boolean pretty = OptionUtil.readBooleanPRI(options, "p", true);
+		String connector = OptionUtil.readString(options, "c", ", ");
+		
+		List<String> items = ming.exportLiteralStrings(rotate, pretty, connector);
+		export2(items, solo);
+	}
+	
+	private void dealWith(List<String> sqls) {
+		boolean fix = OptionUtil.readBooleanPRI(options, "f", true);
+		String temp = DBHelper.SQL_RESERVED_WORDS.replaceAll(";", "|");
+		for(String sql : sqls) {
+			if(fix) {
+				String[] params = StrUtil.parseParams("(" + temp + ")\\s+(.+)", sql);
+				if(params != null) {
+					sql = DBHelper.rephrase(params);
+				}
+			}
+			dealWith(sql);
+		}
+	}
+	
 	private void dealWith(String sql) {
 		String[] queryPrefixes = DBHelper.KEYS_QUERY.split(";");
-		
+		boolean rotate = OptionUtil.readBooleanPRI(options, "r", false);
+		boolean pretty = OptionUtil.readBooleanPRI(options, "p", true);
+		String connector = OptionUtil.readString(options, "c", ", ");
 		if(StrUtil.startsWith(sql, queryPrefixes)) {
 			QueryWatcher ming = query(sql);
 			if(target instanceof TargetExcel) {
-				export(ming.exportListItems());
+				export(ming.exportListItems(rotate));
 			} else {
-				export(ming.exportLiteralStrings());
+				export(ming.exportLiteralStrings(rotate, pretty, connector));
 			}
 		} else {
-			if(g().isYes("sql.print")) {
-				C.pl("doing... " + sql);
-			}
-			boolean printSql = g().isYes("sql.print");
-			int affectedRows = manager().update(sql, printSql);
+			int affectedRows = manager().update(sql, printSql());
 			String plural = affectedRows > 1 ? "s" : "";
 			String tempalte = "affected row{0}: {1}.";
 			String temp = StrUtil.occupy(tempalte, plural, affectedRows);
@@ -223,9 +263,9 @@ public class CommandDatabase extends CommandBase {
 	}
 	
 	private QueryWatcher query(String sql) {
-		boolean printSql = g().isYes("sql.print");
-		boolean printColumnName = g().isYes("sql.columnName.print");
-		QueryWatcher ming = manager().query(sql, true, printSql);
+		Boolean pc2 = OptionUtil.readBoolean(options, "c");
+		boolean printColumnName = pc2 != null ? pc2 : g().isYes("sql.columnName.print");
+		QueryWatcher ming = manager().query(sql, true, printSql());
 		
 		ming.setPrintColumnName(printColumnName);
 		
@@ -235,5 +275,9 @@ public class CommandDatabase extends CommandBase {
 	private DBManager manager() {
 		DBConfigItem item = DBHelper.getActiveDB();
 		return DBManager.g(item.getUrl(), item.getUsername(), item.getPassword());
+	}
+	
+	private boolean printSql() {
+		return g().isYes("sql.print");
 	}
 }

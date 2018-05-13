@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.sirap.basic.component.Konstants;
 import com.sirap.basic.data.HtmlData;
 
 public class HtmlUtil {
@@ -24,7 +25,17 @@ public class HtmlUtil {
 	
 	public static String removeComment(String source) {
 		XXXUtil.nullCheck(source, "source");
-		String temp = source.replaceAll("<!--.+?-->", "");
+		String temp = source.replaceAll("<!--.*?-->", "");
+		
+		return temp;
+	}
+	
+	public static String removeBlockComment(String source) {
+		XXXUtil.nullCheck(source, "source");
+		String temp = source;
+		for(String regex : Konstants.COMMENTS_REGEX) {
+			temp = temp.replaceAll(regex, "");
+		}
 		
 		return temp;
 	}

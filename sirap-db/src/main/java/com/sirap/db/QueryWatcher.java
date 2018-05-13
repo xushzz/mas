@@ -1,9 +1,9 @@
 package com.sirap.db;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import com.sirap.basic.util.StrUtil;
+import com.google.common.collect.Lists;
+import com.sirap.basic.util.MatrixUtil;
 
 @SuppressWarnings("rawtypes")
 public class QueryWatcher {
@@ -51,35 +51,42 @@ public class QueryWatcher {
 	}
 	
 	public List<String> exportLiteralStrings() {
-		List<String> allRecords = new ArrayList<>();
-		
+		return exportLiteralStrings(false, false, ", ");
+	}
+	
+	public List<String> exportLiteralStrings(boolean rotate, boolean pretty, String connector) {
+		List<List> total = Lists.newArrayList();
 		if(printColumnName && columnNames != null) {
-			allRecords.add(columnNames.toString());
+			total.add(columnNames);
+		}
+		total.addAll(records);
+		
+		if(rotate) {
+			total = MatrixUtil.rotate(total);
 		}
 		
-		if(records != null) {
-			for(List<Object> items : records) {
-				String item = StrUtil.connect(items, ", ");
-				allRecords.add(item);
-			}
+		if(pretty) {
+			return MatrixUtil.prettyMatrixLines(total, connector);
+		} else {
+			return MatrixUtil.lines(total, connector);
 		}
-		
-		return allRecords;
 	}
 	
 	public List<List> exportListItems() {
-		List<List> allRecords = new ArrayList<>();
-		
+		return exportListItems(false);
+	}
+	
+	public List<List> exportListItems(boolean rotate) {
+		List<List> total = Lists.newArrayList();
 		if(printColumnName && columnNames != null) {
-			allRecords.add(columnNames);
+			total.add(columnNames);
+		}
+		total.addAll(records);
+		
+		if(rotate) {
+			total = MatrixUtil.rotate(total);
 		}
 		
-		if(records != null) {
-			for(List<Object> items : records) {
-				allRecords.add(items);
-			}
-		}
-		
-		return allRecords;
+		return total;
 	}
 }

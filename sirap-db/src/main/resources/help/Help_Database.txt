@@ -1,7 +1,14 @@
-!sql_sentence      issue sql command against configured database and display result
-!D:\onesql.txt     read sql file, connect all items to single one line then issue sql command
+!sql_sentences     split mixed sentences by semicolon and execute before displaying result
+!D:\users.sql      read sql file, remove comments, connect and split by semicolon
+!D:\users.sql $-f  read sql file, no fix, "from user" won't be translated "select * from user"
 !D:\onesql.txt     read sql file, file size limit is ${sql.max} by default, check key ${sql.max.key}
-from customer      issue sql "select * from customer"
+from user          issue sql "select * from customer"
+from user $-c      issue sql "select * from customer" but display no column names, $-c column names
+from user $+r      display the result in rotation manner, $+r means rotate, connect by comma+space
+from user $+p      display the result in pretty manner, $+p means pretty
+from user $c=#s4   display the result in pretty manner, connect by four spaces, c means connect
+from user $c=#c#s  display the result in pretty manner, connect by comma+space
+from user $c=#s#c  display the result in pretty manner, connect by space+comma
 desc customer      issue sql "desc customer"
 SQL_KEYWORDS       select,show,desc,describe,from,insert,delete,update,into,count,cnt
 SQL_KEYWORDS       create,drop,alter,call,truncate

@@ -55,7 +55,7 @@ public class EmptyUtil {
 	}
 
 	public static boolean isNullOrEmptyOrBlankOrLiterallyNull(String str) {
-		if(str == null || str.length() == 0 || str.equalsIgnoreCase("null")) {
+		if(str == null || str.trim().length() == 0 || str.trim().equalsIgnoreCase("null")) {
 			return true;
 		} else {
 			return false;

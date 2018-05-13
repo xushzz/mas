@@ -96,6 +96,10 @@ public class C {
 	}
 	
 	public static void listSome(List list, int maxRecords) {
+		listSome(list, maxRecords, false);
+	}
+	
+	public static void listSome(List list, int maxRecords, boolean showOrder) {
 		if(list == null) return;
 		
 		int count = 0;
@@ -104,7 +108,11 @@ public class C {
 				if(obj instanceof MexItem) {
 					((MexItem)obj).print();
 				} else {
-					C.pl(obj);
+					String order = "";
+					if(showOrder) {
+						order = StrUtil.occupy("#{0} ", count + 1);
+					}
+					C.pl(order + obj);
 				}
 				count++;
 			} else {

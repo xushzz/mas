@@ -132,7 +132,7 @@ public class ArisExecutor {
 		}
 		
 		String temp = sb.toString();
-		String blockCommentRegex = "/\\*.*\\*/";
+		String blockCommentRegex = "/\\*.*?\\*/";
 		temp = temp.replaceAll(blockCommentRegex, "");
 		
 		return temp;

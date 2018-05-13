@@ -30,7 +30,7 @@ public class LocationsExtractors {
 					}
 					continue;
 				}
-				String allStars = "[" + StrUtil.connectWithComma(mexItems) + "]";
+				String allStars = "[" + StrUtil.connectWithCommaSpace(mexItems) + "]";
 				C.pl(allStars);
 			}
 		};

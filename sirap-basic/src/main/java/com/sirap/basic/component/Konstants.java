@@ -1,5 +1,9 @@
 package com.sirap.basic.component;
 
+import java.util.List;
+
+import com.google.common.collect.Lists;
+
 public class Konstants {
 	public static final int TIME_STEP = 60;
 	public static final int MILLI_PER_SECOND = 1000;
@@ -61,5 +65,13 @@ public class Konstants {
 	public static final String OS_UNIX = "Unix";
 
 	public static final String FILE_SEPARATOR_WINDOWS = "\\";
-	public static final String FILE_SEPARATOR_UNIX = "/";	
+	public static final String FILE_SEPARATOR_UNIX = "/";
+	
+	public static final String COMMENT_2HYPENS = "--";
+	public static final String COMMENT_POUND = "#";
+	public static final String COMMENT_2SLASHES = "//";
+	public static final String COMMENT_REGEX_HTML = "<!--.*?-->";
+	public static final String COMMENT_REGEX_JAVA = "/\\*.*?\\*/";
+	public static final List<String> COMMENTS_REGEX = Lists.newArrayList(COMMENT_REGEX_HTML, COMMENT_REGEX_JAVA);
+	public static final List<String> COMMENTS_START_WITH = Lists.newArrayList(COMMENT_2HYPENS, COMMENT_2SLASHES, COMMENT_POUND);
 }

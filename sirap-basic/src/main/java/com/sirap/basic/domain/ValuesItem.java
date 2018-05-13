@@ -16,6 +16,16 @@ public class ValuesItem extends MexItem {
 
 	}
 	
+	public ValuesItem(Object value) {
+		values.add(value);
+	}
+	
+	public ValuesItem(Object... valueobjs) {
+		for(Object obj : valueobjs) {
+			values.add(obj);
+		}
+	}
+	
 	public int size() {
 		return values.size();
 	}
@@ -32,12 +42,12 @@ public class ValuesItem extends MexItem {
 		return !values.isEmpty();
 	}
 	
+	public List<Object> getValues() {
+		return values;
+	}
+
 	public Object getByIndex(int index) {
 		return values.get(index);
-	}
-	
-	public ValuesItem(Object value) {
-		values.add(value);
 	}
 	
 	public void add(Object value) {

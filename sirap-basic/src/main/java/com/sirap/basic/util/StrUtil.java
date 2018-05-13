@@ -101,8 +101,13 @@ public class StrUtil {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static String connectWithComma(List items) {
-		return connect(items, ",");
+	public static String connectWithCommaSpace(List items) {
+		return connect(items, ", ");
+	}
+
+	@SuppressWarnings("rawtypes")
+	public static String connectWithSpace(List items) {
+		return connect(items, " ");
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -443,8 +448,22 @@ public class StrUtil {
 	}
 	
 	public static int countOfAscii(char car) {
-		byte[] bs = (car + "").getBytes();
+		byte[] bs;
+		try {
+			bs = (car + "").getBytes(Konstants.CODE_GBK);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new MexException(ex);
+		}
 		return bs.length;
+	}
+	
+	public static String firstK(String source, int kchars) {
+		if(source.length() < kchars) {
+			return source;
+		}
+		
+		return source.substring(0, kchars) + "...";
 	}
 	
 	public static String padLeft(String source, int targetLen) {
@@ -757,10 +776,22 @@ public class StrUtil {
 		return temp;
 	}
 	
-	public static int maxLengthOf(List<String> records) {
+	public static <T extends Object> int maxAsciiLengthOf(List<T> records) {
 		int max = 0;
-		for(String item : records) {
-			int len = item.length();
+		for(T item : records) {
+			int len = countOfAscii(item + "");
+			if(len > max) {
+				max = len;
+			}
+		}
+		
+		return max;
+	}
+	
+	public static <T extends Object> int maxLengthOf(List<T> records) {
+		int max = 0;
+		for(T item : records) {
+			int len = (item + "").length();
 			if(len > max) {
 				max = len;
 			}

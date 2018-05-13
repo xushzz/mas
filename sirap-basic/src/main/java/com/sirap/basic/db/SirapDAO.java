@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.util.DBUtil;
@@ -17,7 +18,7 @@ public class SirapDAO {
   
     private Connection conn;
     private Statement stmt;
-    private ResultSet result;  
+    private ResultSet result;
   
     public SirapDAO(String url, String username, String password) {  
         try {
@@ -27,44 +28,59 @@ public class SirapDAO {
         	
         	String driver = DBUtil.dbDriverOfUrl(url);
             Class.forName(driver);
-        } catch (Exception ex) {  
+        } catch (Exception ex) {
             throw new MexException(ex); 
         }  
     }
     
-    protected Connection createConnection() {
+    public Connection createConnection() {
     	try {
 			conn = DriverManager.getConnection(url, username, password);
+			return conn;
 		} catch (SQLException ex) {
 			throw new MexException(ex); 
 		}
-    	
-    	return null;
     }
     
-    protected ResultSet executeQuery(String sql) throws Exception {
-    	createConnection();
-    	stmt = conn.createStatement();
+    public ResultSet executeQuery(String sql) throws Exception {
+    	stmt = createConnection().createStatement();
     	result = stmt.executeQuery(sql);
     	
     	return result;
     }
     
-    protected int executeUpdate(String sql) throws Exception {
-    	createConnection();
-    	stmt = conn.createStatement();
+    public int executeUpdate(String sql) throws Exception {
+    	stmt = createConnection().createStatement();
     	int affectedRows = stmt.executeUpdate(sql);
     	
     	return affectedRows;
     }
+    
+    public int[] executeBatch(List<String> sqls) throws Exception {
+    	createConnection();
+    	conn.setAutoCommit(false);
+    	stmt = conn.createStatement();
+    	for(String sql : sqls) {
+    		stmt.addBatch(sql);
+    	}
+
+    	int[] result = stmt.executeBatch();
+    	conn.commit();
+
+    	return result;
+    }
   
-    protected void closeStuff() {  
+    public void closeTrio() {  
         try {
         	if(result != null) {
                 result.close();
         	}
-            stmt.close();
-            conn.close();  
+        	if(stmt != null) {
+                stmt.close();
+        	}
+        	if(conn != null) {
+                conn.close();  
+        	}
         } catch (SQLException e) {  
             e.printStackTrace();  
         }  

@@ -233,7 +233,7 @@ public class AvronExtractors {
 					mexItems.add(temp);
 				}
 				
-				item = "[" + StrUtil.connectWithComma(mexItems) + "]";
+				item = "[" + StrUtil.connectWithCommaSpace(mexItems) + "]";
 			}
 		};
 		
@@ -266,7 +266,7 @@ public class AvronExtractors {
 					mexItems.add(temp);
 				}
 				
-				item = "[" + StrUtil.connectWithComma(mexItems) + "]";
+				item = "[" + StrUtil.connectWithCommaSpace(mexItems) + "]";
 				C.pl(item);
 			}
 		};

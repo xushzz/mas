@@ -1,5 +1,6 @@
 package com.sirap.basic.tool;
 
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
@@ -9,6 +10,7 @@ import java.util.Map;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.ThreadUtil;
 import com.sirap.basic.util.XXXUtil;
 
 /***
@@ -170,5 +172,43 @@ public class D {
 			D.pl(sb);
 			D.pl("D.bytes end, total: " + bytes.length);
 		}
+	}
+	
+	public static void ins(int[] ints) {
+		if(EmptyUtil.isNull(ints)) {
+			D.sink("null ints");
+		} else {
+			D.pl("D.ints start");
+			for(int obj : ints) {
+				D.pl(obj);
+			}
+			D.pl("D.ints end, total: " + ints.length);
+		}
+	}
+	
+	public static void ins2(int[] ints) {
+		if(EmptyUtil.isNull(ints)) {
+			D.sink("null ints");
+		} else {
+			StringBuffer sb = StrUtil.sb();
+			D.pl("D.ints start");
+			for(int obj : ints) {
+				sb.append(obj).append(" ");
+			}
+			D.pl(sb);
+			D.pl("D.ints end, total: " + ints.length);
+		}
+	}
+	
+	public static void sleep10seconds() {
+		ThreadUtil.sleepInSeconds(10);
+	}
+	
+	public static void sleep20seconds() {
+		ThreadUtil.sleepInSeconds(20);
+	}
+	
+	public static void charset() {
+		D.ts(Charset.defaultCharset().name());
 	}
 }

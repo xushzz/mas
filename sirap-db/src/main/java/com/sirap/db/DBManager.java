@@ -9,6 +9,7 @@ import com.sirap.basic.db.SirapDAO;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.DBUtil;
+import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.db.adjustor.QuerySqlAdjustor;
 
@@ -29,13 +30,30 @@ public class DBManager extends SirapDAO {
 	public int update(String sql, boolean printSql) {
 		try {
 			if(printSql) {
-				C.pl("remoting... " + sql + " " + instance.getUrl());
+				C.pl("updating... " + sql + " " + instance.getUrl());
 			}
 			int result = executeUpdate(sql);
-			closeStuff();
+			closeTrio();
 			
 			return result;
 			
+		} catch (Exception ex) {
+//			ex.printStackTrace();
+            throw new MexException(ex);
+        } 
+	}
+	
+	public int[] batch(List<String> sqls, boolean printSql) {
+		try {
+			if(printSql) {
+				int some = 9;
+				C.pl(StrUtil.occupy("batching... {0} sqls on {1}:", sqls.size(), instance.getUrl()));
+				C.listSome(sqls, some, true);
+			}
+			int[] result = executeBatch(sqls);
+			closeTrio();
+			
+			return result;
 		} catch (Exception ex) {
 //			ex.printStackTrace();
             throw new MexException(ex);
@@ -65,7 +83,7 @@ public class DBManager extends SirapDAO {
 			}
 			
 			if(printSql) {
-				C.pl("remoting... " + tempSql + " " + instance.getUrl());
+				C.pl("querying... " + tempSql + " " + instance.getUrl());
 			}
 			
 			ResultSet result = executeQuery(tempSql);
@@ -90,7 +108,7 @@ public class DBManager extends SirapDAO {
 	        }
 	        ming.setRecords(records);
 	        
-	        closeStuff();
+	        closeTrio();
 		} catch (Exception ex) {  
 //			ex.printStackTrace();
             throw new MexException(ex);

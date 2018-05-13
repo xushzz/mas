@@ -60,13 +60,29 @@ public class OptionUtil {
 		String value = null;
 		int count = 0;
 		
-		while(ma.find()) {
+		if(ma.find()) {
 			count++;
 			OptionUtil.checkDuplicativeKeys(key, count);
 			value = ma.group(2);
 			if(handleSpace) {
-				value = value.replace("\\\\s", " ");
-				value = value.replace("\\\\c", ",");
+				String regex = "#([sc])(\\d{0,3})";
+				Matcher mat = StrUtil.createMatcher(regex, value);
+				StringBuffer sb = StrUtil.sb();
+				while(mat.find()) {
+					String flag = mat.group(1);
+					String repeat = mat.group(2);
+					String what = null;
+					if(StrUtil.equals("s", flag)) {
+						what = " ";
+					} else if(StrUtil.equals("c", flag)) {
+						what = ",";
+					}
+					int times = repeat.isEmpty() ? 1 : Integer.parseInt(repeat);
+					String stuff = StrUtil.repeat(what, times);
+					mat.appendReplacement(sb, stuff);
+				}
+				mat.appendTail(sb);
+				value = sb.toString();
 			}
 		}
 		
@@ -119,7 +135,7 @@ public class OptionUtil {
 			listAll.add(itemB);
 		}
 		
-		return StrUtil.connectWithComma(listAll);
+		return StrUtil.connectWithCommaSpace(listAll);
 	}
 	
 	public static List<MexOption> parseOptions(String source) {

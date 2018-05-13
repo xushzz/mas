@@ -13,6 +13,7 @@ import com.sirap.basic.component.comparator.StringSenseComparator;
 import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexObject;
+import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.search.MexFilter;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -244,7 +245,7 @@ public class CollUtil {
 	 * @param prefixes
 	 * @return
 	 */
-	public static List<String> filterSome(List<String> lines, String... prefixesToIgnoreOneline) {
+	public static List<String> filterSome(List<String> lines, List<String> prefixesToIgnoreOneline) {
 		List<String> items = Lists.newArrayList();
 		for(String line : lines) {
 			boolean toIgnore = StrUtil.startsWith(line.trim(), prefixesToIgnoreOneline);
@@ -352,5 +353,21 @@ public class CollUtil {
 		}
 		
 		return records;
+	}
+	
+	public static List listOf(Object obj) {
+		XXXUtil.nullCheck(obj, "obj");
+		List items = null;
+		if(obj instanceof String) {
+			items = StrUtil.split(obj + "");
+		} else if (obj instanceof ValuesItem) {
+			items = ((ValuesItem)obj).getValues();
+		} else if (obj instanceof List) {
+			items = (List)obj;
+		} else {
+			XXXUtil.alert("Unsupported data type {0} of {1}", obj.getClass(), obj);
+		}
+		
+		return items;
 	}
 }

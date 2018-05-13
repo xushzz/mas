@@ -1,7 +1,11 @@
 package com.sirap.basic.util;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import com.google.common.collect.Lists;
+import com.sirap.basic.component.Konstants;
 
 public class DBUtil {
     
@@ -65,5 +69,30 @@ public class DBUtil {
 		return className;
 	}
 	
-
+	public static List<String> readSqls(String mixedSqls, boolean reduce) {
+		List<String> lines = StrUtil.split(mixedSqls, ";");
+		return readSqls(lines, reduce);
+	}
+	
+	public static List<String> readSqlFile(String filepath, String charset, boolean reduce) {
+		List<String> lines = IOUtil.readLines(filepath, charset);
+		lines = CollUtil.filterSome(lines, Konstants.COMMENTS_START_WITH);
+		String oneline = HtmlUtil.removeBlockComment(StrUtil.connectWithSpace(lines));
+		return readSqls(StrUtil.split(oneline, ";"), reduce);
+	}
+	
+	public static List<String> readSqls(List<String> lines, boolean reduce) {
+		List<String> sqls = Lists.newArrayList();
+		for(String line : lines) {
+			if(EmptyUtil.isNullOrEmptyOrBlankOrLiterallyNull(line)) {
+				continue;
+			}
+			if(reduce) {
+				line = StrUtil.reduceMultipleSpacesToOne(line).trim();
+			}
+			sqls.add(line);
+		}
+		
+		return sqls;
+	}
 }
