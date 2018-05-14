@@ -61,14 +61,4 @@ public class DBUtil {
 		
 		return sqls;
 	}
-	
-	public static String mysqlShowDatabasesX() {
-		StringBuffer sb = StrUtil.sb();
-		sb.append("select case when SCHEMA_NAME in ('information_schema', 'performance_schema', 'sys', 'mysql') then concat('*', schema_name)");
-		sb.append(" else SCHEMA_NAME end as 'SCHEMA_NAME', ");
-		sb.append("DEFAULT_CHARACTER_SET_NAME, DEFAULT_COLLATION_NAME ");
-		sb.append("from information_schema.SCHEMATA order by schema_name");
-		
-		return sb.toString();
-	}
 }

@@ -186,7 +186,7 @@ public class DistrictItem extends MexItem implements Comparable<DistrictItem> {
 		item.add(level);
 //		item.add(kids);
 		
-		return item.toPrint("conn= ");
+		return item.toPrint("c= ");
 	}
 	
 	@Override
@@ -206,7 +206,7 @@ public class DistrictItem extends MexItem implements Comparable<DistrictItem> {
 		item.add(level);
 //		item.add(kids);
 		
-		return item.toPrint("conn= ");
+		return item.toPrint("c= ");
 	}
 	
 	@Override

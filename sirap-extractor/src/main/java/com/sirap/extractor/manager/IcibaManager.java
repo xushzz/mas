@@ -29,7 +29,7 @@ public class IcibaManager {
 		} else {
 			items = Lists.newArrayList();
 		}
-		items.add(item.toPrint("conn=|"));
+		items.add(item.toPrint("c=|"));
 
 		return IOUtil.saveAsTxtWithCharset(items, location, charset);
 	}

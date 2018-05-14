@@ -29,6 +29,8 @@ public class DBKonstants {
 	
 	public static final String SHOW_TABLES = "show tables";
 	public static final String SHOW_DATABASES = "show databases";
+	public static final String SHOW_DATABASES_X = "show databases X";
+	public static final String SHOW_CURRENT_DATABASE = "show current database";
 	public static final String SHOW_CREATE = "show create";
 	public static final String SHOW_LIMIT = "limit";
 	public static final String SHOW_TOP = "top";

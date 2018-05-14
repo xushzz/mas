@@ -16,7 +16,6 @@ import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.search.MexFilter;
 
-@SuppressWarnings({ "rawtypes", "unchecked" })
 public class CollUtil {
 
 	public static List reverse(List list) {

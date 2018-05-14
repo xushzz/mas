@@ -59,7 +59,7 @@ public class TypedKeyValueItem extends KeyValueItem {
 		if(OptionUtil.readBooleanPRI(options, "k", true)) {
 			sb.append(key).append(" ");
 		}
-		sb.append(OptionUtil.readString(options, "conn", "="));
+		sb.append(OptionUtil.readString(options, "c", "="));
 		if(OptionUtil.readBooleanPRI(options, "v", true)) {
 			sb.append(" ");
 			if(!(value instanceof String)) {
@@ -80,7 +80,7 @@ public class TypedKeyValueItem extends KeyValueItem {
 		if(OptionUtil.readBooleanPRI(options, "k", true)) {
 			sb.append(key).append(" ");
 		}
-		sb.append(OptionUtil.readString(options, "conn", "="));
+		sb.append(OptionUtil.readString(options, "c", "="));
 		if(OptionUtil.readBooleanPRI(options, "v", true)) {
 			sb.append(" ");
 			if(!(value instanceof String)) {

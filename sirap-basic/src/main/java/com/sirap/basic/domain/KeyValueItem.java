@@ -66,7 +66,7 @@ public class KeyValueItem extends MexItem implements Comparable<KeyValueItem> {
 		if(OptionUtil.readBooleanPRI(options, "ko", false)) {
 			return key;
 		}
-		String connector = OptionUtil.readString(options, "conn", "=");
+		String connector = OptionUtil.readString(options, "c", "=");
 		String classInfo = "";
 		if(!(value instanceof String)) {
 			classInfo = value.getClass().getName() + "#";

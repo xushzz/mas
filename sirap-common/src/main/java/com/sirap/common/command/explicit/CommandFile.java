@@ -486,7 +486,6 @@ public class CommandFile extends CommandBase {
 		
 		solo = parseParam(KEY_HEX + "\\s+(.+)");
 		if(solo != null) {
-
 			File ball = parseFile(solo);
 			List<String> items = null;
 			boolean toHex = OptionUtil.readBooleanPRI(options, "h", true);
@@ -499,7 +498,7 @@ public class CommandFile extends CommandBase {
 			boolean toSplit = OptionUtil.readBooleanPRI(options, "k", true);
 			if(toSplit) {
 				int kPerLine = OptionUtil.readIntegerPRI(options, "k", 16);
-				String finalOptions = OptionUtil.mergeOptions(options, "conn=\\\\s");
+				String finalOptions = OptionUtil.mergeOptions(options, "c=#s");
 				export(XCodeUtil.group(items, kPerLine), finalOptions);
 			} else {
 				export(items);

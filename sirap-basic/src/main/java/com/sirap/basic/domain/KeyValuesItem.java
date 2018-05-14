@@ -43,7 +43,7 @@ public class KeyValuesItem extends MexItem {
 	
 	public String toPrint(String options) {
 		String keys = OptionUtil.readString(options, "keys", "");
-		String connector = OptionUtil.readString(options, "conn", ", ");
+		String connector = OptionUtil.readString(options, "c", ", ");
 		List<String> list;
 		if(keys.isEmpty()) {
 			list = Lists.newArrayList(box.keySet());

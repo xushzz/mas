@@ -72,9 +72,25 @@ public class CommandDatabase extends CommandBase {
 			
 			return true;
 		}
+
+		if(isIn(KEY_SHOW_DATABASES)) {
+			String sql = DBKonstants.SHOW_DATABASES_X;
+			QueryWatcher ming = query(sql);
+			watcherExport(ming);
+			
+			return true;
+		}
+
+		if(isIn(KEY_SCHEMA + KEY_2DOTS)) {
+			String sql = DBKonstants.SHOW_DATABASES;
+			QueryWatcher ming = query(sql);
+			watcherExport(ming);
+			
+			return true;
+		}
 		
-		if(isIn(KEY_SHOW_DATABASES, KEY_SCHEMA + KEY_2DOTS)) {
-			String sql = DBUtil.mysqlShowDatabasesX();
+		if(isIn(KEY_SCHEMA)) {
+			String sql = DBKonstants.SHOW_CURRENT_DATABASE;
 			QueryWatcher ming = query(sql);
 			watcherExport(ming);
 			
@@ -186,16 +202,26 @@ public class CommandDatabase extends CommandBase {
 				
 				QueryWatcher ming = query(sql);
 				List<String> items = ming.exportLiteralStrings();
-				for(String item : items) {
-					if(StrUtil.equals(item, solo)) {
-						actualSchema = solo;
+				String smaCriteria = "^" + solo + "$";
+				List tempA = CollUtil.filterMix(items, smaCriteria, false);
+				if(tempA.size() == 1) {
+					actualSchema = solo;
+				} else {
+					smaCriteria = solo;
+					tempA = CollUtil.filterMix(items, smaCriteria, false);
+					if(tempA.size() == 1) {
+						actualSchema = tempA.get(0).toString();
+					} else if(tempA.size() > 1) {
+						C.pl("Not found schema [" + solo + "], similar schemas:");
+						C.list(tempA);
+						C.pl();
 					}
 				}
 				
 				if(actualSchema != null) {
 					DBHelper.setActiveDBSchema(actualSchema);
 					C.pl2("currently active schema: " + actualSchema + "");
-				} else {
+				} else if(tempA.isEmpty()) {
 					C.pl("Not found schema [" + solo + "], available schemas:");
 					CollUtil.sortIgnoreCase(items);
 					C.list(items);

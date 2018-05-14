@@ -17,13 +17,23 @@ public abstract class QuerySqlAdjustor {
 	public String adjust(String sql, String schema) {
 		String temp;
 		
-		if(StrUtil.startsWith(sql, DBKonstants.SHOW_TABLES)) {
+		if(StrUtil.equals(sql, DBKonstants.SHOW_TABLES)) {
 			temp = showTables(schema);
 			return temp;
 		}
 		
-		if(StrUtil.startsWith(sql, DBKonstants.SHOW_DATABASES)) {
+		if(StrUtil.equals(sql, DBKonstants.SHOW_DATABASES)) {
 			temp = showDatabases();
+			return temp;
+		}
+		
+		if(StrUtil.equals(sql, DBKonstants.SHOW_DATABASES_X)) {
+			temp = showDatabasesX();
+			return temp;
+		}
+		
+		if(StrUtil.equals(sql, DBKonstants.SHOW_CURRENT_DATABASE)) {
+			temp = showCurrentDatabase();
 			return temp;
 		}
 		
@@ -84,7 +94,7 @@ public abstract class QuerySqlAdjustor {
 	
 	public String showTables(String schema) {
 		StringBuffer sb = StrUtil.sb();
-		sb.append("select a.table_schema, a.table_name, b.table_cols from information_schema.tables a join (");
+		sb.append("select a.table_schema, a.table_name, a.table_rows, b.table_cols from information_schema.tables a join (");
 		sb.append("select table_name, count(1) TABLE_COLS from information_schema.columns where table_schema {0} group by table_name");
 		sb.append(") b on a.table_name = b.table_name");
 		String gist = null;
@@ -105,6 +115,14 @@ public abstract class QuerySqlAdjustor {
 		return DBKonstants.SHOW_DATABASES;
 	}
 	
+	public String showDatabasesX() {
+		return mysqlShowDatabasesX();
+	}
+	
+	public String showCurrentDatabase() {
+		return "select database() SCHEMA_NAME";
+	}
+	
 	public String showCreation(String sql, String type, String name) {
 		return sql;
 	}
@@ -115,5 +133,15 @@ public abstract class QuerySqlAdjustor {
 	
 	public String showTop(String sql, String temp, String kkk) {
 		return sql;
+	}
+	
+	public static String mysqlShowDatabasesX() {
+		StringBuffer sb = StrUtil.sb();
+		sb.append("select case when SCHEMA_NAME in ('information_schema', 'performance_schema', 'sys', 'mysql') then concat('* ', schema_name)");
+		sb.append(" else SCHEMA_NAME end as 'SCHEMA_NAME', ");
+		sb.append("DEFAULT_CHARACTER_SET_NAME, DEFAULT_COLLATION_NAME ");
+		sb.append("from information_schema.SCHEMATA order by schema_name");
+		
+		return sb.toString();
 	}
 }

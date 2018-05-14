@@ -151,7 +151,7 @@ public class CommandCollect extends CommandBase {
 				for(String single : words) {
 					items.addAll(getTranslation(fetchOnly, single, filePath));
 				}
-				export(items, "conn=\n");
+				export(items, "c=\n");
 			}
 
 			return true;

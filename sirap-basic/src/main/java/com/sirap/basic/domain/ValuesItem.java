@@ -86,7 +86,7 @@ public class ValuesItem extends MexItem {
 	}
 	
 	public String toPrint(String options) {
-		String conn = OptionUtil.readString(options, "conn", ", ");
+		String conn = OptionUtil.readString(options, "c", ", ");
 		String result = StrUtil.connect(values, conn);
 
 		return result;

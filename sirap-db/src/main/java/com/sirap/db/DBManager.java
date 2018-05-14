@@ -68,7 +68,6 @@ public class DBManager extends SirapDAO {
 		QueryWatcher ming = new QueryWatcher();
 		
 		try {
-			
 			String tempSql = sql;
 			if(toAdjust) {
 				String dbType = DBUtil.dbTypeOfUrl(getUrl());
