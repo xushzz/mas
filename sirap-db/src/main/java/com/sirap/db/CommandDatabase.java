@@ -26,8 +26,9 @@ public class CommandDatabase extends CommandBase {
 	private static final String KEY_TABLE = "t";
 	private static final String KEY_DATABASE = "db";
 	private static final String KEY_SCHEMA = "sma";
-	private static final String KEY_SHOW_TABLES = "tbs";
-	private static final String KEY_SHOW_DATABASES = "dbs";
+	private static final String KEY_TABLES = "tbs";
+	private static final String KEY_DATABASES = "dbs";
+	private static final String KEY_VARIABLES = "vas";
 	private static final String KEY_MYSQL = "mysql";
 
 	public static final String SQL_MAX_SIZE_DEFAULT = "10M";
@@ -73,10 +74,18 @@ public class CommandDatabase extends CommandBase {
 			return true;
 		}
 
-		if(isIn(KEY_SHOW_DATABASES)) {
+		if(is(KEY_VARIABLES)) {
+			String sql = DBKonstants.SHOW_VARIABLES;
+			QueryWatcher ming = query(sql);
+			export(watcherExport(ming));
+			
+			return true;
+		}
+
+		if(isIn(KEY_DATABASES)) {
 			String sql = DBKonstants.SHOW_DATABASES_X;
 			QueryWatcher ming = query(sql);
-			watcherExport(ming);
+			export(watcherExport(ming));
 			
 			return true;
 		}
@@ -84,7 +93,7 @@ public class CommandDatabase extends CommandBase {
 		if(isIn(KEY_SCHEMA + KEY_2DOTS)) {
 			String sql = DBKonstants.SHOW_DATABASES;
 			QueryWatcher ming = query(sql);
-			watcherExport(ming);
+			export(watcherExport(ming));
 			
 			return true;
 		}
@@ -92,24 +101,33 @@ public class CommandDatabase extends CommandBase {
 		if(isIn(KEY_SCHEMA)) {
 			String sql = DBKonstants.SHOW_CURRENT_DATABASE;
 			QueryWatcher ming = query(sql);
-			watcherExport(ming);
+			export(watcherExport(ming));
 			
 			return true;
 		}
 		
-		if(is(KEY_SHOW_TABLES)) {
-			String sql = DBKonstants.SHOW_TABLES;
+		if(is(KEY_TABLES)) {
+			boolean showAll = OptionUtil.readBooleanPRI(options, "a", false);
+			String sql = showAll ? DBKonstants.SHOW_ALL_SCHEMA_TABLES : DBKonstants.SHOW_CURRENT_SCHEMA_TABLES;
 			QueryWatcher ming = query(sql);
-			watcherExport(ming);
+			export(watcherExport(ming));
+			
+			return true;
+		}
+		
+		if(is(KEY_TABLES + KEY_2DOTS)) {
+			String sql = DBKonstants.SHOW_USER_SCHEMA_TABLES;
+			QueryWatcher ming = query(sql);
+			export(watcherExport(ming));
 			
 			return true;
 		}
 		
 		solo = parseParam(KEY_TABLE + "\\s(.+)");
 		if(solo != null) {
-			String sql = DBKonstants.SHOW_TABLES;
+			String sql = DBKonstants.SHOW_CURRENT_SCHEMA_TABLES;
 			QueryWatcher ming = query(sql);
-			watcherExport(ming);
+			export2(watcherExport(ming), solo);
 			
 			return true;
 		}
@@ -245,13 +263,13 @@ public class CommandDatabase extends CommandBase {
 		return lines;
 	}
 	
-	private void watcherExport(QueryWatcher ming) {
+	private List<String> watcherExport(QueryWatcher ming) {
 		boolean rotate = OptionUtil.readBooleanPRI(options, "r", false);
 		boolean pretty = OptionUtil.readBooleanPRI(options, "p", true);
 		String connector = OptionUtil.readString(options, "c", " , ");
 		
 		List<String> items = ming.exportLiteralStrings(rotate, pretty, connector);
-		export2(items, solo);
+		return items;
 	}
 	
 	private void dealWith(List<String> sqls) {

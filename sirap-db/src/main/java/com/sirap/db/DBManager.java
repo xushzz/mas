@@ -73,8 +73,7 @@ public class DBManager extends SirapDAO {
 				String dbType = DBUtil.dbTypeOfUrl(getUrl());
 				QuerySqlAdjustor zhihui = DBFactory.getQuerySqlAdjustor(dbType);
 				if(zhihui != null) {
-					String schema = DBFactory.getSchemaNameParser(dbType).parseSchema(getUrl());
-					tempSql = zhihui.adjust(tempSql, schema);
+					tempSql = zhihui.adjust(tempSql);
 				} else {
 					String msg = "Not yet supported database type: " + dbType;
 					XXXUtil.alert(msg);

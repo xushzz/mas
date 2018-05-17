@@ -8,13 +8,7 @@ import com.sirap.basic.util.XXXUtil;
 public class QueryAdjustorSqlServer extends QuerySqlAdjustor {
 
 	@Override
-	public String showTables(String schema) {
-		String temp = showTables();
-		return temp;
-	}
-	
-	@Override
-	public String showTables() {
+	public String showCurrentSchemaTables() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT a.name 'TABLE_NAME', cast(b.rows as varchar(10)) 'TABLE_ROWS' FROM sysobjects AS a");
 		sb.append(" INNER JOIN sysindexes AS b ON a.id = b.id");

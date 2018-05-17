@@ -11,14 +11,25 @@ import com.sirap.basic.util.StrUtil;
 public abstract class QuerySqlAdjustor {
 	
 	public String adjust(String sql) {
-		return adjust(sql, null);
-	}
-
-	public String adjust(String sql, String schema) {
 		String temp;
+
+		if(StrUtil.equals(sql, DBKonstants.SHOW_CURRENT_SCHEMA_TABLES)) {
+			temp = showCurrentSchemaTables();
+			return temp;
+		}
 		
-		if(StrUtil.equals(sql, DBKonstants.SHOW_TABLES)) {
-			temp = showTables(schema);
+		if(StrUtil.equals(sql, DBKonstants.SHOW_USER_SCHEMA_TABLES)) {
+			temp = showUserSchemaTables();
+			return temp;
+		}
+		
+		if(StrUtil.equals(sql, DBKonstants.SHOW_ALL_SCHEMA_TABLES)) {
+			temp = showAllSchemaTables();
+			return temp;
+		}
+		
+		if(StrUtil.equals(sql, DBKonstants.SHOW_VARIABLES)) {
+			temp = showVariables();
 			return temp;
 		}
 		
@@ -37,25 +48,25 @@ public abstract class QuerySqlAdjustor {
 			return temp;
 		}
 		
-		String regex = DBKonstants.SHOW_CREATE + "\\s+(|[^\\s]+)\\s+([^\\s]+)";
+		String regex = DBKonstants.TO_CREATE + "\\s+(|[^\\s]+)\\s+([^\\s]+)";
 		String[] params = StrUtil.parseParams(regex, sql);
 		if(params != null) {
 			temp = showCreation(sql, params[0], params[1]);
 			return temp;
 		}
 		
-		regex = DBKonstants.SHOW_CREATE + "\\s+([^\\s]+)";
+		regex = DBKonstants.TO_CREATE + "\\s+([^\\s]+)";
 		String singleParam = StrUtil.parseParam(regex, sql);
 		if(singleParam != null) {
 			String keyword = "table";
-			temp = sql.replace(DBKonstants.SHOW_CREATE, DBKonstants.SHOW_CREATE + " " + keyword);
+			temp = sql.replace(DBKonstants.TO_CREATE, DBKonstants.TO_CREATE + " " + keyword);
 			temp = showCreation(temp, keyword, singleParam);
 			
 
 			return temp;
 		}
 		
-		regex = "(\\s+" + DBKonstants.SHOW_LIMIT + "\\s+([\\d]{1,9})$)";
+		regex = "(\\s+" + DBKonstants.TO_LIMIT + "\\s+([\\d]{1,9})$)";
 		Matcher auntie = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(sql);
 		String tempLimit = null;
 		String kkk = null;
@@ -69,7 +80,7 @@ public abstract class QuerySqlAdjustor {
 			return temp;
 		}
 		
-		regex = "(\\s+" + DBKonstants.SHOW_TOP + "\\s+([\\d]{1,9})$)";
+		regex = "(\\s+" + DBKonstants.TO_TOP + "\\s+([\\d]{1,9})$)";
 		auntie = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(sql);
 		tempLimit = null;
 		kkk = null;
@@ -86,33 +97,45 @@ public abstract class QuerySqlAdjustor {
 		return sql;
 	}
 	
-	public String showTables() {
-		String temp = DBKonstants.SHOW_TABLES;
-		
-		return temp;
+	public String showCurrentSchemaTables() {
+		StringBuffer sb = StrUtil.sb();
+ 		sb.append("select c.schema_name, a.table_name, a.table_rows, b.table_cols from (select database() SCHEMA_NAME) c, information_schema.tables a, ");
+ 		sb.append("(select table_name, count(1) TABLE_COLS from information_schema.columns group by table_name) b ");
+ 		sb.append("where a.table_schema = c.schema_name and a.table_name = b.table_name");
+ 		
+ 		return sb.toString();
 	}
 	
-	public String showTables(String schema) {
+	public String showVariables() {
+		return "show variables";
+	}
+	
+	public String showAllSchemaTables() {
 		StringBuffer sb = StrUtil.sb();
-		sb.append("select a.table_schema, a.table_name, a.table_rows, b.table_cols from information_schema.tables a join (");
+		sb.append("select concat(a.table_schema, '.', a.table_name) table_name, a.table_rows, b.table_cols from information_schema.tables a join (");
+		sb.append("select table_name, count(1) TABLE_COLS from information_schema.columns group by table_name");
+		sb.append(") b on a.table_name = b.table_name");
+		
+		return sb.toString();
+	}
+	
+	public String showUserSchemaTables() {
+		StringBuffer sb = StrUtil.sb();
+		sb.append("select concat(a.table_schema, '.', a.table_name) table_name, a.table_rows, b.table_cols from information_schema.tables a join (");
 		sb.append("select table_name, count(1) TABLE_COLS from information_schema.columns where table_schema {0} group by table_name");
 		sb.append(") b on a.table_name = b.table_name");
 		String gist = null;
-		if(schema != null) {
-			gist = StrUtil.occupy("= '{0}'", schema);
-		} else {
-			List<String> ins = Lists.newArrayList();
-			for(String item : DBKonstants.MYSQL_SCHEMAS) {
-				ins.add("'" + item + "'");
-			}
-			gist = StrUtil.occupy("not in ({0})", StrUtil.connectWithCommaSpace(ins));
+		List<String> ins = Lists.newArrayList();
+		for(String item : DBKonstants.MYSQL_GIVEN_SCHEMAS) {
+			ins.add("'" + item + "'");
 		}
+		gist = StrUtil.occupy("not in ({0})", StrUtil.connectWithCommaSpace(ins));
 		
 		return StrUtil.occupy(sb.toString(), gist);
 	}
 	
 	public String showDatabases() {
-		return DBKonstants.SHOW_DATABASES;
+		return "show databases";
 	}
 	
 	public String showDatabasesX() {

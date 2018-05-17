@@ -46,6 +46,6 @@ public class AkaMain extends AkaBase {
 
 	@Override
 	protected String system() {
-		return "Mas";
+		return "SOS";
 	}
 }

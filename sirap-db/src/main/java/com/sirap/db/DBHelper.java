@@ -205,10 +205,4 @@ public class DBHelper {
 		
 		return true;
 	}
-	
-	public static String schemaOfUrl(String jdbcUrl) {
-		String dbType = DBUtil.dbTypeOfUrl(jdbcUrl);
-		String schema = DBFactory.getSchemaNameParser(dbType).parseSchema(jdbcUrl);
-		return schema;
-	}
 }

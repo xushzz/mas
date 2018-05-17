@@ -26,18 +26,18 @@ public class DBKonstants {
 	public static final String DB_TYPE_INFORMIX = "informix";
 	public static final String DB_TYPE_ACCESS = "access";
 	public static final String DB_TYPE_DERBY = "derby";
-	
-	public static final String SHOW_TABLES = "show tables";
-	public static final String SHOW_DATABASES = "show databases";
-	public static final String SHOW_DATABASES_X = "show databases X";
-	public static final String SHOW_CURRENT_DATABASE = "show current database";
-	public static final String SHOW_CREATE = "show create";
-	public static final String SHOW_LIMIT = "limit";
-	public static final String SHOW_TOP = "top";
 
-	public static String SQL_SHOW_TABLES = "show tables";
-	public static String SQL_SHOW_DATABSES = "show databases";
-	
+	public static final String SHOW_CURRENT_SCHEMA_TABLES = "current schema tables";
+	public static final String SHOW_USER_SCHEMA_TABLES = "user schema tables";
+	public static final String SHOW_ALL_SCHEMA_TABLES = "all schema tables";
+	public static final String SHOW_DATABASES = "databases";
+	public static final String SHOW_VARIABLES = "variables";
+	public static final String SHOW_DATABASES_X = "databases X";
+	public static final String SHOW_CURRENT_DATABASE = "current database";
+	public static final String TO_CREATE = "show create";
+	public static final String TO_LIMIT = "limit";
+	public static final String TO_TOP = "top";
+
 	public static final Map<String, String> MAP_DB_TYPE_CLASS = new HashMap<String, String>();
 	static {
 		MAP_DB_TYPE_CLASS.put(DB_TYPE_MYSQL, DRIVER_MYSQL);
@@ -51,5 +51,5 @@ public class DBKonstants {
 		MAP_DB_TYPE_CLASS.put(DB_TYPE_DERBY, DRIVER_ACCESS);
 	}
 	
-	public static final List<String> MYSQL_SCHEMAS = StrUtil.split("information_schema,performance_schema,sys,mysql");
+	public static final List<String> MYSQL_GIVEN_SCHEMAS = StrUtil.split("information_schema,performance_schema,sys,mysql");
 }

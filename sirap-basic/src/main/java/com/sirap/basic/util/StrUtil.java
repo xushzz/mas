@@ -95,6 +95,18 @@ public class StrUtil {
 		return sb.toString();
 	}
 	
+	public static String conn(Object... items) {
+		return connect(Arrays.asList(items), "");
+	}
+
+	public static String connWithSpace(Object... items) {
+		return connect(Arrays.asList(items), " ");
+	}
+
+	public static String connWithCommaSpace(Object... items) {
+		return connect(Arrays.asList(items), ", ");
+	}
+	
 	@SuppressWarnings("rawtypes")
 	public static String connect(List items) {
 		return connect(items, "");

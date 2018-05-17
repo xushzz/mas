@@ -6,15 +6,8 @@ import java.util.regex.Pattern;
 import com.sirap.basic.util.StrUtil;
 
 public class QueryAdjustorOracle extends QuerySqlAdjustor {
-
 	@Override
-	public String showTables(String schema) {
-		String temp = showTables();
-		return temp;
-	}
-	
-	@Override
-	public String showTables() {
+	public String showCurrentSchemaTables() {
 		String temp = "select table_name, num_rows from user_tables";
 		return temp;
 	}

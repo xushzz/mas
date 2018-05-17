@@ -1,10 +1,14 @@
 package com.sirap.common.framework;
 
+import java.util.List;
+
+import com.sirap.basic.component.Konstants;
 import com.sirap.basic.component.MexedTimer;
 import com.sirap.basic.exception.QuitException;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
+import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.MexUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.ThreadUtil;
@@ -123,6 +127,9 @@ public abstract class AkaBase extends MexedTimer {
     }
     
     protected void welcome() {
+    	List<String> lines = IOUtil.readLines("/welcome.txt", Konstants.CODE_UTF8);
+    	lines.remove(0);
+    	C.list(lines, false);
 		String source = "=== hi {0}, welcome to {1}, {2} ===";
 		String result = StrUtil.occupy(source, USERNAME, system(), getDatetimeString());
 		C.pl2(result);
