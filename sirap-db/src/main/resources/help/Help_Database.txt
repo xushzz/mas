@@ -14,11 +14,14 @@ SQL_KEYWORDS       select,show,desc,describe,from,insert,delete,update,into,coun
 SQL_KEYWORDS       create,drop,alter,call,truncate
 t my_usrs          search all table names containing given criteria
 tbs                tables, show tables in current schema
+tbs..              tables, show tables in all user schemas
+tbs $+a            tables, show tables in all schemas, user+system,
 dbs                databases/schemas, show databases including DEFAULT_CHARACTER_SET_NAME and DEFAULT_COLLATION_NAME
 sma..              databases/schemas, show databases in concise manner
 sma                show current selected database               
 sma=schemaName     change schema, like 'use databaseName' in mysql, the schema name could partly matched
 sma=               select no schema
+vas                show variables
 db                 display current db connection
 db.aliyun          display db connection aliyun
 db=aliyun          use aliyun as current db connection, aka active db connection

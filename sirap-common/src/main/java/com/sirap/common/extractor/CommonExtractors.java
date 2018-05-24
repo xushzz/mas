@@ -8,7 +8,7 @@ import com.sirap.basic.util.ThreadUtil;
 public class CommonExtractors {
 	
 	public static void setWorldTime(final MexObject mDate) {
-		final WorldTimeExtractor frank = new WorldTimeBJTimeOrgExtractor();
+		final WorldTimeExtractor frank = new WorldTimeTianqiExtractor();
 		ThreadUtil.executeInNewThread(new Runnable() {
 			@Override
 			public void run() {
@@ -31,7 +31,7 @@ public class CommonExtractors {
 	}
 	
 	public static Date getWorldTime() {
-		WorldTimeExtractor frank = new WorldTimeBJTimeOrgExtractor();
+		WorldTimeExtractor frank = new WorldTimeTianqiExtractor();
 		frank.process();
 		return frank.getDatetime();
 	}
