@@ -27,4 +27,5 @@ db.aliyun          display db connection aliyun
 db=aliyun          use aliyun as current db connection, aka active db connection
 db..               list all db connections in user config
 mysql -uroot -p    create solid mysql connection, -u username -p password, -h host, -P port, -D schema
-ver=5/17/2018, IV  Database1.0.15-COUTINHO
+mysql -uroot -p    create solid mysql connection, default username as root, schema as mysql
+ver=5/25/2018, V  Database1.0.16-WENGER

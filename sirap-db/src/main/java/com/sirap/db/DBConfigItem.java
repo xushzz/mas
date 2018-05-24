@@ -78,7 +78,7 @@ public class DBConfigItem extends MexItem {
 	public String toPrint() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(itemName + ".url=" + url).append("\n");
-		sb.append(itemName + ".who=" + username).append(",").append(password);
+		sb.append(itemName + ".who=" + username).append(",").append(StrUtil.maskSome(password));
 		
 		return sb.toString();
 	}

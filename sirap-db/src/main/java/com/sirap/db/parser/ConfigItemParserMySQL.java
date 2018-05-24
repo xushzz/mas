@@ -16,12 +16,13 @@ public class ConfigItemParserMySQL extends ConfigItemParser {
 		List<String> list = StrUtil.splitByRegex(source, "\\s+-");
 		
 		DBConfigItem config = new DBConfigItem();
+		config.setUsername("root");
 		String urlTemplate = "jdbc:mysql://${host}${port}${schema}";
 		
 		Map<String, Object> params = new HashMap<>();
 		params.put("host", "localhost");
 		params.put("port", "");
-		params.put("schema", "");
+		params.put("schema", "mysql");
 		
 		for(int i = 1; i < list.size(); i++) {
 			String item = list.get(i).trim();

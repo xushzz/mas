@@ -175,7 +175,7 @@ public class EmailCenter {
 		
 		String temp = item;
 		if(starInsteadOfChar) {
-			temp = StrUtil.pseudoPartlyEncrypt(temp);
+			temp = StrUtil.maskSome(temp);
 		}
 		
 		return temp;
@@ -197,7 +197,7 @@ public class EmailCenter {
 			return null;
 		}
 	
-		String result = StrUtil.pseudoPartlyEncrypt(password);
+		String result = StrUtil.maskSome(password);
 		return result;
 	}
 }

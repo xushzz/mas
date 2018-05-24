@@ -732,12 +732,12 @@ public class StrUtil {
 		return temp;
 	}
 
-	public static String pseudoEncrypt(String plainText) {
+	public static String mask(String plainText) {
 		String temp = plainText.replaceAll(".", "*");
 		return temp;
 	}
 	
-	public static String pseudoPartlyEncrypt(String plainText) {
+	public static String maskSome(String plainText) {
 		int len = plainText.length();
 		if(len <= 2) {
 			return plainText;
