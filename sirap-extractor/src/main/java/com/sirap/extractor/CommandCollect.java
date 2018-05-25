@@ -54,7 +54,7 @@ public class CommandCollect extends CommandBase {
 	private static final String KEY_PHONE_MOBILE = "@";
 	private static final String KEY_DICTONARY = "ia";
 	private static final String KEY_TRANSLATE = "i";
-	private static final String KEY_FOREX = "\\$([a-z]{3})" + Konstants.REGEX_FLOAT + "(|/|[a-z,]+)";
+	private static final String KEY_FOREX = "#([a-z]{3})" + Konstants.REGEX_FLOAT + "(|/|[a-z,]+)";
 	private static final String KEY_TULING_ASK = "tl\\*";
 	private static final String KEY_ZHIHU_ASK = "\\*";
 	private static final String KEY_BAIDU_BAIKE_SUMMARY = "bk";

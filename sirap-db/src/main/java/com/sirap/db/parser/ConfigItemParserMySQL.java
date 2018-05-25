@@ -22,7 +22,7 @@ public class ConfigItemParserMySQL extends ConfigItemParser {
 		Map<String, Object> params = new HashMap<>();
 		params.put("host", "localhost");
 		params.put("port", "");
-		params.put("schema", "mysql");
+		params.put("schema", "/mysql");
 		
 		for(int i = 1; i < list.size(); i++) {
 			String item = list.get(i).trim();

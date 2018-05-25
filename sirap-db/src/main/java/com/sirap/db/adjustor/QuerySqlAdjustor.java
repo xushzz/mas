@@ -99,7 +99,7 @@ public abstract class QuerySqlAdjustor {
 	
 	public String showCurrentSchemaTables() {
 		StringBuffer sb = StrUtil.sb();
- 		sb.append("select c.schema_name, a.table_name, a.table_rows, b.table_cols from (select database() SCHEMA_NAME) c, information_schema.tables a, ");
+ 		sb.append("select c.schema_name, a.table_name, a.table_rows, b.table_cols, a.table_type from (select database() SCHEMA_NAME) c, information_schema.tables a, ");
  		sb.append("(select table_name, count(1) TABLE_COLS from information_schema.columns group by table_name) b ");
  		sb.append("where a.table_schema = c.schema_name and a.table_name = b.table_name");
  		
@@ -112,7 +112,7 @@ public abstract class QuerySqlAdjustor {
 	
 	public String showAllSchemaTables() {
 		StringBuffer sb = StrUtil.sb();
-		sb.append("select concat(a.table_schema, '.', a.table_name) table_name, a.table_rows, b.table_cols from information_schema.tables a join (");
+		sb.append("select concat(a.table_schema, '.', a.table_name) table_name, a.table_rows, b.table_cols, a.table_type from information_schema.tables a join (");
 		sb.append("select table_name, count(1) TABLE_COLS from information_schema.columns group by table_name");
 		sb.append(") b on a.table_name = b.table_name");
 		
@@ -121,7 +121,7 @@ public abstract class QuerySqlAdjustor {
 	
 	public String showUserSchemaTables() {
 		StringBuffer sb = StrUtil.sb();
-		sb.append("select concat(a.table_schema, '.', a.table_name) table_name, a.table_rows, b.table_cols from information_schema.tables a join (");
+		sb.append("select concat(a.table_schema, '.', a.table_name) table_name, a.table_rows, b.table_cols, a.table_type from information_schema.tables a join (");
 		sb.append("select table_name, count(1) TABLE_COLS from information_schema.columns where table_schema {0} group by table_name");
 		sb.append(") b on a.table_name = b.table_name");
 		String gist = null;

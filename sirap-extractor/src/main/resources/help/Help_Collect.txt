@@ -8,10 +8,10 @@ i fact             options, $+force, forcibly fetch only
 i jurist, de jure  fetch a couple of words in one go, split by comma
 i E:\fa.txt        batch translation by iciba
 ia de facto        look up dictionary for this English word, courtesy of ${dictionary.url}
-$CNY10000          how much could you have in other currencies by trading given amount of given currency
-$CNY10000          under going rate? Such as top currencies GBP,EUR,CHF,USD,CAD,AUD,SGD,NZD,CNY,HKD,JPY.
-$CNY10000/         more than just top but total of 56 currencies will be listed, TWD,KWD,BHD and so on.
-$CNY100JPY[,HKD]   forex, specified currencies will be listed, courtesy of ${money.forex.url}
+#CNY10000          how much could you have in other currencies by trading given amount of given currency
+#CNY10000          under going rate? Such as top currencies GBP,EUR,CHF,USD,CAD,AUD,SGD,NZD,CNY,HKD,JPY.
+#CNY10000/         more than just top but total of 56 currencies will be listed, TWD,KWD,BHD and so on.
+#CNY100JPY[,HKD]   forex, specified currencies will be listed, courtesy of ${money.forex.url}
 tl*Alan Turing     ask tuling question, start with asterisk, courtesy of ${tuling.url}
 *Zhihu Wenda       ask zhihu question, start with pound, courtesy of ${zhihu.url}
 bk James           fetch summay of baidu baike with keyword James, courtesy of https://baike.baidu.com
@@ -33,4 +33,4 @@ this.load E:\      download all history events to a given location, such as E:/h
 hist               list events in this day in history, courtesy of http://www.historynet.com
 hist5.6            list events in May 6th in history, same as 5/26,5-16, courtesy of http://www.historynet.com
 nobel 2007&james   list nobel prize info, filter by mex criteria
-ver=11/18/2017, VI  EXTRACTOR-COLLECT1.0.15-CANTONA
+ver=5/25/2018, V  EXTRACTOR-COLLECT1.0.16-CANTONA

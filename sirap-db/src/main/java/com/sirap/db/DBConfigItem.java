@@ -1,6 +1,7 @@
 package com.sirap.db;
 
 import com.sirap.basic.domain.MexItem;
+import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.StrUtil;
 
 public class DBConfigItem extends MexItem {
@@ -78,7 +79,13 @@ public class DBConfigItem extends MexItem {
 	public String toPrint() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(itemName + ".url=" + url).append("\n");
-		sb.append(itemName + ".who=" + username).append(",").append(StrUtil.maskSome(password));
+		String temp = password;
+		if(EmptyUtil.isNullOrEmpty(password)) {
+			temp = "[empty]";
+		} else {
+			temp = StrUtil.maskSome(password);
+		}
+		sb.append(itemName + ".who=" + username).append(",").append(temp);
 		
 		return sb.toString();
 	}
