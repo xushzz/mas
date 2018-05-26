@@ -6,7 +6,7 @@ u                  remote control, sound on/off, auto-open on/off, time-stamp of
 u+2                set user time zone as +2
 /                  display user configuration with forward slash
 /fire              display user configuration entries matching given criterias
-;/                 in mac, display user configuration
+#/                 in unix-style system, display user configuration
 cr                 refresh configuration file
 a Vincent          search 'Vincent' via AOL
 b Vincent          search 'Vincent' via Baidu
@@ -15,6 +15,8 @@ w Vincent          search 'Vincent' via Wiki
 http://aol.com     open the web page with configured explorer
 www.google.com     open the web page with configured explorer with http://www.google.com
 ip                 show local ip address and public ip address
+ip 120.79.195.133  convert ip address to number style, like function inet_aton in mysql
+ip 2018493317      parse ip address from number style, like function inet_ntoa in mysql
 host               display localhost name, IP address, and macAddress 
 host..             dusolay localhost name, IP address, and macAddress and mac info
 host name          display target host name and IP address if exists

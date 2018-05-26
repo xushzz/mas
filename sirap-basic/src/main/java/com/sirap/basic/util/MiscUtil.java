@@ -28,23 +28,6 @@ public class MiscUtil {
 		return StrUtil.isRegexMatched(regex, source);
 	}
 	
-	public static boolean isLegalIP(String source) {
-		if(EmptyUtil.isNullOrEmpty(source)) {
-			return false;
-		}
-		
-		String temp = "([01]?\\d\\d?|2[0-4]\\d|25[0-5])";
-		StringBuilder sb = new StringBuilder();
-		sb.append("^").append(temp).append("\\.");
-		sb.append(temp).append("\\.");
-		sb.append(temp).append("\\.");
-		sb.append(temp).append("$");
-		
-		String regex = sb.toString();
-
-		return StrUtil.isRegexMatched(regex, source);
-	}
-	
 	public static List<String> illegalPlates(String filepath) {
 		List<String> items = IOUtil.readLines(filepath, Konstants.CODE_UTF8);
 		List<String> goods = Lists.newArrayList();

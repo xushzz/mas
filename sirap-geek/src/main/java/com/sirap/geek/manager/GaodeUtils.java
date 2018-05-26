@@ -14,7 +14,7 @@ import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.MathUtil;
-import com.sirap.basic.util.MiscUtil;
+import com.sirap.basic.util.NetworkUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.basic.util.XmlUtil;
@@ -263,7 +263,7 @@ public class GaodeUtils {
 			public String getUrl() {
 				showFetching().useUTF8();
 				String url = "";
-				if(MiscUtil.isLegalIP(ipAddress)) {
+				if(NetworkUtil.isLegalIP(ipAddress)) {
 					url = StrUtil.occupy(TEMPLATE_IP, API_KEY, ipAddress);
 				} else {
 					XXXUtil.alert("Not a valid ip: ", ipAddress);

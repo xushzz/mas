@@ -89,7 +89,7 @@ public class CommandSirap extends CommandBase {
 		
 		String userConfig = KEY_USER_CONFIGURATION;
 		if(PanaceaBox.isMac()) {
-			userConfig = ";" + KEY_USER_CONFIGURATION;
+			userConfig = "#" + KEY_USER_CONFIGURATION;
 		}
 		
 		params = parseParams(userConfig + "(|(.*?))");
@@ -129,6 +129,18 @@ public class CommandSirap extends CommandBase {
 			items.add("Private IP: " + NetworkUtil.getLocalhostIp());
 			items.add("Public IP:  " + NetworkUtil.getPublicIp(OptionUtil.readBooleanPRI(options, "u", false)));
 			export(items);
+			return true;
+		}
+		
+		solo = parseParam(KEY_IP + "\\s([\\d\\.]+)");
+		if(solo != null) {
+			String item;
+			if(StrUtil.isDigitsOnly(solo)) {
+				item = NetworkUtil.ipFromNumber(Long.parseLong(solo));
+			} else {
+				item = NetworkUtil.ipToNumber(solo) + "";
+			}
+			export(solo + " => " + item);
 			return true;
 		}
 		

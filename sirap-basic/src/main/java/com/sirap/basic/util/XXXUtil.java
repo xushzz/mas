@@ -26,9 +26,15 @@ public class XXXUtil {
 		}
 	}
 	
-	public static void checkRange(int value, int min, int max) {
+	public static void checkRange(long value, long min, long max) {
 		if(value < min || value > max) {
 			throw new MexException("Value '{0}' out of range, should be between {1} and {2}, both inclusive.", value, min, max);
+		}
+	}
+	
+	public static void checkRange(long value, long min, long max, String info) {
+		if(value < min || value > max) {
+			throw new MexException("Invalid {3} [{0}], should be between {1} and {2}, both inclusive.", value, min, max, info);
 		}
 	}
 	

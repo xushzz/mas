@@ -3,6 +3,7 @@ package com.sirap.basic.component;
 import java.util.List;
 
 import com.google.common.collect.Lists;
+import com.sirap.basic.util.StrUtil;
 
 public class Konstants {
 	public static final int TIME_STEP = 60;
@@ -16,6 +17,11 @@ public class Konstants {
 	public static final String REGEX_FLOAT = "(\\d+|\\d+\\.\\d*|\\d*\\.\\d+)";
 	public static final String REGEX_SIGN_FLOAT = "(-?\\d+|-?\\d+\\.\\d*|-?\\d*\\.\\d+)";
 	public static final String REGEX_JAVA_IDENTIFIER = "[a-zA-Z_$][\\da-zA-Z_$]*";
+	public static final String REGEX_IP;
+	static {
+		String digit = "([01]?\\d\\d?|2[0-4]\\d|25[0-5])";
+		REGEX_IP = StrUtil.repeat(digit + "\\.", 3) + digit;	
+	}
 
 	public static final String FOLDER_EXPORT = "exp";
 	public static final String FOLDER_IMG = "img";

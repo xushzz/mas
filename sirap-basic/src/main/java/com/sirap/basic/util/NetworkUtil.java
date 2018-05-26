@@ -6,8 +6,11 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.regex.Matcher;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.component.Extractor;
+import com.sirap.basic.component.Konstants;
 import com.sirap.basic.exception.MexException;
 
 public class NetworkUtil {
@@ -188,5 +191,53 @@ public class NetworkUtil {
         
         return items;  
     }
-      
+
+	public static long ipToNumber(String source) {
+		Matcher ma = StrUtil.createMatcher(Konstants.REGEX_IP, source);
+		if(!ma.matches()) {
+			XXXUtil.alert("Not a legal ip [{0}], must be like [0-255]x4 and dots.", source);
+		}
+		
+		long total = 0;
+		List<String> items = Lists.newArrayList(ma.group(1), ma.group(2), ma.group(3), ma.group(4));
+		for(int i = 0; i < items.size(); i++) {
+			String item = items.get(i);
+			long value = Integer.parseInt(item);
+			total += value << ((3 - i) * 8);
+		}
+		
+		return total;
+	}
+	
+	/***
+	 * 103.228.210.1
+	 * 1743049217
+	 * @param source
+	 * @return
+	 */
+	public static String ipFromNumber(long source) {
+		long maxip = 0L + Integer.MAX_VALUE - Integer.MIN_VALUE;
+		XXXUtil.checkRange(source, 0, maxip, "ip");
+		long remain = source;
+		String ip = "";
+		for(int i = 0; i < 4; i++) {
+			long offset = (3 - i) * 8;
+			long mod = remain >> offset;
+			remain = remain - (mod << offset);
+			if(i != 0) {
+				ip += ".";
+			}
+			ip += mod;
+		}
+		
+		return ip;
+	}
+	
+	public static boolean isLegalIP(String source) {
+		if(EmptyUtil.isNull(source)) {
+			return false;
+		}
+		
+		return StrUtil.isRegexMatched(Konstants.REGEX_IP, source);
+	}
 }
