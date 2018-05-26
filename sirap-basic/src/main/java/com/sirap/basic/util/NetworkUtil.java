@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
+import com.sirap.basic.component.Extractor;
 import com.sirap.basic.exception.MexException;
 
 public class NetworkUtil {
@@ -71,6 +72,32 @@ public class NetworkUtil {
 		}
 		
 		return null;
+	}
+	
+	public static String getPublicIp() {
+		return getPublicIp(false);
+	}
+	
+	public static String getPublicIp(boolean showUrl) {
+		Extractor<String> neymar = new Extractor<String>() {
+
+			public String getUrl() {
+				if(showUrl) {
+					showFetching();
+				}
+				useGBK().setPrintExceptionIfNeeded(true);
+				String url = "http://www.net.cn/static/customercare/yourip.asp";
+				return url;
+			}
+			
+			@Override
+			protected void parse() {
+				String regex = "<h2>(.+?)</h2>";
+				item = StrUtil.findFirstMatchedItem(regex, source);
+			}
+		};
+		
+		return neymar.process().getItem();
 	}
 	
 	public static String getLocalhostName() {

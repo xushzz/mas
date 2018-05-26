@@ -14,8 +14,9 @@ g Vincent          search 'Vincent' via Google
 w Vincent          search 'Vincent' via Wiki
 http://aol.com     open the web page with configured explorer
 www.google.com     open the web page with configured explorer with http://www.google.com
-mac                display all currently active mac addresses 
-host               display local host name IP address, and macAddress 
+ip                 show local ip address and public ip address
+host               display localhost name, IP address, and macAddress 
+host..             dusolay localhost name, IP address, and macAddress and mac info
 host name          display target host name and IP address if exists
 gbk                set File or HTTP Request charset as GBK, the same goes for UTF8,UTF-8,GB2312
 fonts              list all available font names, it is all about graphics

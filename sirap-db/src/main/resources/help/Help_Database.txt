@@ -24,6 +24,8 @@ sma=               select no schema
 vas                show variables
 db                 display current db connection
 db.aliyun          display db connection aliyun
+db=aliyun.ah       use aliyun as current db connection, and set schema as ah
+db=aliyun.         use aliyun as current db connection, and set schema as empty
 db=aliyun          use aliyun as current db connection, aka active db connection
 db..               list all db connections in user config
 mysql -uroot -p    create solid mysql connection, -u username -p password, -h host, -P port, -D schema

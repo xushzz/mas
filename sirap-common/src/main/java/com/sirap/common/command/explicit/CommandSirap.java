@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.component.Extractor;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.tool.C;
@@ -13,6 +14,7 @@ import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.MexUtil;
 import com.sirap.basic.util.NetworkUtil;
+import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
@@ -33,7 +35,7 @@ public class CommandSirap extends CommandBase {
 	private static final String KEY_GENERATEDFILE_AUTOOPEN_ONOFF_SWITCH = "ox";
 	private static final String KEY_TIMESTAMP_ENABLED_SWITCH = "tx";
 	private static final String KEY_HOST = "host";
-	private static final String KEY_MAC = "mac";
+	private static final String KEY_IP = "ip";
 	private static final String KEY_ASSIGN_CHARSET = "gbk,utf8,utf-8,gb2312,unicode";
 	private static final String KEY_FONTS = "fonts";
 	private static final String KEY_SHOW_STASH = "stash";
@@ -121,14 +123,25 @@ public class CommandSirap extends CommandBase {
 			return true;
 		}
 		
+		
+		if(is(KEY_IP)) {
+			List<String> items = Lists.newArrayList();
+			items.add("Private IP: " + NetworkUtil.getLocalhostIp());
+			items.add("Public IP:  " + NetworkUtil.getPublicIp(OptionUtil.readBooleanPRI(options, "u", false)));
+			export(items);
+			return true;
+		}
+		
 		if(is(KEY_HOST)) {
 			String result = NetworkUtil.getLocalhostNameIpMac();
 			export(result);
 			return true;
 		}
 		
-		if(is(KEY_MAC)) {
-			List<String> items = NetworkUtil.getLocalMacItems();
+		if(is(KEY_HOST + KEY_2DOTS)) {
+			List<String> items = Lists.newArrayList();
+			items.add(NetworkUtil.getLocalhostNameIpMac());
+			items.addAll(NetworkUtil.getLocalMacItems());
 			export(items);
 			return true;
 		}

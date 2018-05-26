@@ -19,6 +19,7 @@ import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.thread.MasterItemsOriented;
 import com.sirap.basic.thread.WorkerItemsOriented;
+import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.StrUtil;
@@ -28,6 +29,36 @@ import com.sirap.extractor.domain.NameRankItem;
 import com.sirap.extractor.domain.SportsMatchItem;
 
 public class Extractors {
+	
+	public static List<String> topPasswordsSqls(String filepath) {
+		Extractor<String> neymar = new Extractor<String>() {
+
+			public String getUrl() {
+				useList().showFetching();
+				return filepath;
+			}
+			
+			@Override
+			protected void parse() {
+				String max = "";
+				String sqlTemp = "insert into top_pwd values({0}, '{1}', '{2}');";
+				for(String line : sourceList) {
+					List<String> items = StrUtil.split(line);
+					if(items.size() != 3) {
+						continue;
+					}
+					String pwd = items.get(1);
+					if(pwd.length() > max.length()) {
+						max = pwd;
+					}
+					mexItems.add(StrUtil.occupy(sqlTemp, items.get(0), items.get(1), items.get(2)));
+				}
+				C.pl(max);
+			}
+		};
+		
+		return neymar.process().getItems();
+	}
 	
 	public static List<ValuesItem> topPasswordsAll(int maxPageNumber) {
 		List<Integer> pages = Lists.newArrayList();

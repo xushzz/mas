@@ -33,14 +33,15 @@ public class DBManager extends SirapDAO {
 				C.pl("updating... " + sql + " " + instance.getUrl());
 			}
 			int result = executeUpdate(sql);
-			closeTrio();
 			
 			return result;
 			
 		} catch (Exception ex) {
 //			ex.printStackTrace();
             throw new MexException(ex);
-        } 
+        } finally {
+			closeTrio();
+        }
 	}
 	
 	public int[] batch(List<String> sqls, boolean printSql) {
@@ -51,13 +52,14 @@ public class DBManager extends SirapDAO {
 				C.listSome(sqls, some, true);
 			}
 			int[] result = executeBatch(sqls);
-			closeTrio();
-			
+
 			return result;
 		} catch (Exception ex) {
 //			ex.printStackTrace();
             throw new MexException(ex);
-        } 
+        } finally {
+        	closeTrio();
+        }
 	}
 	
 	public QueryWatcher query(String sql) {
@@ -105,12 +107,12 @@ public class DBManager extends SirapDAO {
 	        	records.add(items);
 	        }
 	        ming.setRecords(records);
-	        
-	        closeTrio();
 		} catch (Exception ex) {  
 //			ex.printStackTrace();
             throw new MexException(ex);
-        } 
+        } finally {
+	        closeTrio();
+        }
 		
         return ming;
 	}
