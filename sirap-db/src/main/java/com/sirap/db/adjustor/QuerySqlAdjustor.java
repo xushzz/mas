@@ -55,6 +55,13 @@ public abstract class QuerySqlAdjustor {
 			return temp;
 		}
 		
+		regex = DBKonstants.SHOW_COLUMNS + "\\s+(.+?)";
+		String param = StrUtil.parseParam(regex, sql);
+		if(param != null) {
+			temp = showColumns(param);
+			return temp;
+		}
+		
 		regex = DBKonstants.TO_CREATE + "\\s+([^\\s]+)";
 		String singleParam = StrUtil.parseParam(regex, sql);
 		if(singleParam != null) {
@@ -147,6 +154,23 @@ public abstract class QuerySqlAdjustor {
 	}
 	
 	public String showCreation(String sql, String type, String name) {
+		return sql;
+	}
+	
+	public String showColumns(String tableInfo) {
+		List<String> items = StrUtil.split(tableInfo, ".");
+		String sql;
+		StringBuffer sb = StrUtil.sb();
+		String space = StrUtil.repeatSpace(4);
+		sb.append("select concat(table_schema, '.', table_name, '{0}', group_concat(column_name separator ', ')) from information_schema.columns where table_name = '{1}'");
+		if(items.size() == 2) {
+			sb.append(" and table_schema = '{2}' group by table_schema");
+			sql = StrUtil.occupy(sb.toString(), space, items.get(1), items.get(0));
+		} else {
+			sb.append(" group by table_schema");
+			sql = StrUtil.occupy(sb.toString(), space, tableInfo);
+		}
+		
 		return sql;
 	}
 	

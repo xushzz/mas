@@ -7,6 +7,7 @@ import java.util.List;
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.DBKonstants;
 import com.sirap.basic.tool.C;
+import com.sirap.basic.tool.D;
 import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.DBUtil;
 import com.sirap.basic.util.EmptyUtil;
@@ -30,6 +31,7 @@ public class CommandDatabase extends CommandBase {
 	private static final String KEY_DATABASES = "dbs";
 	private static final String KEY_VARIABLES = "vas";
 	private static final String KEY_MYSQL = "mysql";
+	private static final String KEY_EXPLODE = "*";
 
 	public static final String SQL_MAX_SIZE_DEFAULT = "10M";
 	public static final String SQL_MAX_SIZE_KEY = "sql.max";
@@ -71,6 +73,58 @@ public class CommandDatabase extends CommandBase {
 				}
 			}
 			
+			return true;
+		}
+		
+		params = parseParams("(\\*\\s*|cols\\s)(\\S+)(.*?)");
+		if(params != null) {
+			String type = params[0];
+			String tableInfo = params[1];
+			String remain = params[2];
+
+			if(DBHelper.takeAsColumnOrTableName(tableInfo)) {
+				String sql = DBKonstants.SHOW_COLUMNS + " " + tableInfo;
+				List<String> items = manager().query(sql, true, printSql()).exportLiteralStrings();
+				if(EmptyUtil.isNullOrEmpty(items)) {
+					XXXUtil.info("Found no columns from: [{0}]", tableInfo);
+					C.pl();
+				} else {
+					boolean showColumns = StrUtil.equals("cols", type);
+					boolean sort = OptionUtil.readBooleanPRI(options, "s", false);
+					boolean single = items.size() == 1;
+					if(showColumns) {
+						if(single) {
+							String[] arr = items.get(0).split("\\s{2,}");
+							List<String> rotate = Lists.newArrayList();
+							rotate.add(arr[0].trim());
+							List<String> cols = StrUtil.split(arr[1].trim());
+							if(sort) {
+								CollUtil.sortIgnoreCase(cols);
+							}
+							rotate.addAll(cols);
+							export(rotate);
+						} else {
+							export(items);
+						}
+					} else {
+						List<String> lines = Lists.newArrayList();
+						for(String item : items) {
+							String[] arr = item.split("\\s{2,}");
+							String schemaAndTable = arr[0].trim();
+							List<String> cols = StrUtil.split(arr[1].trim());
+							if(sort) {
+								CollUtil.sortIgnoreCase(cols);
+							}
+							String newSql = StrUtil.occupy("select {0} from {1} {2}", StrUtil.connectWithCommaSpace(cols), schemaAndTable, remain);
+							lines.add(newSql);
+						}
+						export(lines);
+					}
+				}
+			} else {
+				XXXUtil.info("Not a valid table name: [{0}]", tableInfo);
+				C.pl();
+			}
 			return true;
 		}
 
@@ -343,10 +397,8 @@ public class CommandDatabase extends CommandBase {
 	
 	private boolean printSql() {
 		Boolean toPrint = OptionUtil.readBoolean(options, "pn");
-		if(toPrint != null) {
-			return toPrint;
-		} else {
-			return g().isYes("sql.print");			
-		}
+		boolean flag = toPrint != null ? toPrint : g().isYes("sql.print");
+		
+		return flag;
 	}
 }

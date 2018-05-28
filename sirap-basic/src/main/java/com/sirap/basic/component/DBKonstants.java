@@ -32,6 +32,7 @@ public class DBKonstants {
 	public static final String SHOW_ALL_SCHEMA_TABLES = "all schema tables";
 	public static final String SHOW_DATABASES = "databases";
 	public static final String SHOW_VARIABLES = "variables";
+	public static final String SHOW_COLUMNS = "columns";
 	public static final String SHOW_DATABASES_X = "databases X";
 	public static final String SHOW_CURRENT_DATABASE = "current database";
 	public static final String TO_CREATE = "show create";

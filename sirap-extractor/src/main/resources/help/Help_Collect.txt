@@ -13,7 +13,7 @@ ia de facto        look up dictionary for this English word, courtesy of ${dicti
 #CNY10000/         more than just top but total of 56 currencies will be listed, TWD,KWD,BHD and so on.
 #CNY100JPY[,HKD]   forex, specified currencies will be listed, courtesy of ${money.forex.url}
 tl*Alan Turing     ask tuling question, start with asterisk, courtesy of ${tuling.url}
-*Zhihu Wenda       ask zhihu question, start with pound, courtesy of ${zhihu.url}
+zhihu*Zhihu Wenda       ask zhihu question, start with pound, courtesy of ${zhihu.url}
 bk James           fetch summay of baidu baike with keyword James, courtesy of https://baike.baidu.com
 wk James           fetch summay of wikipedia with keyword James, courtesy of https://en.wikipedia.org
 jar DaoSupport     fetch jar info with keyword DaoSupport, courtesy of http://www.findjar.com

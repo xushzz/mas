@@ -164,14 +164,26 @@ public class StrUtil {
 	 * @param regex
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public static List<String> splitByRegex(String source, String regex) {
+		return splitByRegex(source, regex, true);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static List<String> splitByRegex(String source, String regex, boolean trimEachItem) {
 		if(EmptyUtil.isNullOrEmptyOrBlank(source)) {
 			return Collections.EMPTY_LIST;
 		}
+		
 		XXXUtil.nullCheck(regex, "regex");
 		String[] strs = source.trim().split(regex);
-		List<String> strList = new ArrayList<>(Arrays.asList(strs));
+		List<String> strList = Lists.newArrayList();
+		for(String str : strs) {
+			if(trimEachItem) {
+				strList.add(str.trim());
+			} else {
+				strList.add(str);
+			}
+		}
 		
 		return strList;
 	}
