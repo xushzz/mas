@@ -21,6 +21,8 @@ sma..              databases/schemas, show databases in concise manner
 sma                show current selected database               
 sma=schemaName     change schema, like 'use databaseName' in mysql, the schema name could partly matched
 sma=               select no schema
+cols sakila.actor  show column names of table actor from schema sakila in vertical manner, $+s to sort columns
+cols actor         show column names of table actor, in vertical manner if only on actor in all schemas
 *sakila.actor      select all fields, such as select actor_id, ..., last_update from sakila.actor, sentence only
 *actor             select all fields, such as select actor_id, first_name, last_name, last_update from actor
 vas                show variables
@@ -32,4 +34,4 @@ db=aliyun          use aliyun as current db connection, aka active db connection
 db..               list all db connections in user config
 mysql -uroot -p    create solid mysql connection, -u username -p password, -h host, -P port, -D schema
 mysql -uroot -p    create solid mysql connection, default username as root, schema as mysql
-ver=5/27/2018, VII  Database1.0.17-KARIUS
+ver=5/28/2018, I  Database1.0.17-KARIUS
