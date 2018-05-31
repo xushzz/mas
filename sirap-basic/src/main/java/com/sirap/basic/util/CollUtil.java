@@ -203,7 +203,7 @@ public class CollUtil {
 		return null;
 	}
 		
-	public static List filterMix(List rawItems, String mexCriteria, boolean isCaseSensitive) {
+	public static List<MexItem> filterMix(List rawItems, String mexCriteria, boolean isCaseSensitive) {
 		if(EmptyUtil.isNullOrEmpty(mexCriteria)) {
 			return rawItems;
 		}

@@ -537,7 +537,7 @@ public class StrUtil {
 		}
 	}
 	
-	public static String repeatSpace(int times) {
+	public static String spaces(int times) {
 		return repeat(" ", times);
 	}
 

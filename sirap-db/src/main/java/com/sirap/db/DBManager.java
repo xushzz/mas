@@ -1,17 +1,20 @@
 package com.sirap.db;
 
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.sirap.basic.db.SirapDAO;
+import com.sirap.basic.domain.KeyValuesItem;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.DBUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.db.adjustor.QuerySqlAdjustor;
+import com.sirap.db.resultset.ResultSetAnalyzer;
+import com.sirap.db.resultset.ResultSetKeyValuesAnalyer;
+import com.sirap.db.resultset.ResultSetObjectMatrixAnalyer;
+import com.sirap.db.resultset.ResultSetStringMatrixAnalyer;
 
 public class DBManager extends SirapDAO {
 	
@@ -40,7 +43,7 @@ public class DBManager extends SirapDAO {
 //			ex.printStackTrace();
             throw new MexException(ex);
         } finally {
-			closeTrio();
+			closeUp();
         }
 	}
 	
@@ -58,17 +61,15 @@ public class DBManager extends SirapDAO {
 //			ex.printStackTrace();
             throw new MexException(ex);
         } finally {
-        	closeTrio();
+        	closeUp();
         }
 	}
 	
-	public QueryWatcher query(String sql) {
-		return query(sql, false, false);
+	public <T extends Object> T query(ResultSetAnalyzer<T> rest, String sql) {
+		return query(rest, sql, false, false);
 	}
 	
-	public QueryWatcher query(String sql,  boolean toAdjust, boolean printSql) {
-		QueryWatcher ming = new QueryWatcher();
-		
+	public <T extends Object> T query(ResultSetAnalyzer<T> rest, String sql,  boolean toAdjust, boolean printSql) {
 		try {
 			String tempSql = sql;
 			if(toAdjust) {
@@ -87,33 +88,42 @@ public class DBManager extends SirapDAO {
 			}
 			
 			ResultSet result = executeQuery(tempSql);
-	    	ResultSetMetaData meta = result.getMetaData();
-	    	int count = meta.getColumnCount();
-	    	
-	    	if(true) {
-	    		List<String> items = new ArrayList<>();
-		    	for(int i = 1; i <= count; i++) {
-		    		items.add(meta.getColumnName(i));
-		    	}
-		    	ming.setColumnNames(items);
-	    	}
-	    	
-	    	List<List<Object>> records = new ArrayList<>(); 
-	        while (result.next()) {
-	        	List<Object> items = new ArrayList<>();
-	        	for(int i = 1; i <= count; i++) {
-	        		items.add(result.getObject(i));
-	        	}
-	        	records.add(items);
-	        }
-	        ming.setRecords(records);
+			return rest.analyze(result);
 		} catch (Exception ex) {  
 //			ex.printStackTrace();
             throw new MexException(ex);
         } finally {
-	        closeTrio();
+	        closeUp();
         }
-		
-        return ming;
+	}
+	
+	public List<List<Object>> queryAsObjectMatrix(String sql, boolean getColumn) {
+//		D.ts("queryAsObjectMatrix...");
+		return queryAsObjectMatrix(sql, getColumn, false, false);
+	}
+	
+	public List<List<Object>> queryAsObjectMatrix(String sql, boolean getColumn, boolean toAdjust, boolean printSql) {
+		ResultSetAnalyzer<List<List<Object>>> rest = new ResultSetObjectMatrixAnalyer(getColumn);
+		return query(rest, sql, toAdjust, printSql);
+	}
+	
+	public List<List<String>> queryAsStringMatrix(String sql, boolean getColumn) {
+//		D.ts("queryAsStringMatrix...");
+		return queryAsStringMatrix(sql, getColumn, false, false);
+	}
+	
+	public List<List<String>> queryAsStringMatrix(String sql, boolean getColumn, boolean toAdjust, boolean printSql) {
+		ResultSetAnalyzer<List<List<String>>> rest = new ResultSetStringMatrixAnalyer(getColumn);
+		return query(rest, sql, toAdjust, printSql);
+	}
+	
+	public List<KeyValuesItem> queryAsKeyValues(String sql) {
+//		D.ts("queryAsStringMatrix...");
+		return queryAsKeyValues(sql, false, false);
+	}
+	
+	public List<KeyValuesItem> queryAsKeyValues(String sql, boolean toAdjust, boolean printSql) {
+		ResultSetAnalyzer<List<KeyValuesItem>> rest = new ResultSetKeyValuesAnalyer();
+		return query(rest, sql, toAdjust, printSql);
 	}
 }

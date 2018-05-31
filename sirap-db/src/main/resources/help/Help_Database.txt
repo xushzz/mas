@@ -1,3 +1,4 @@
+dba                check connection, display time spent, url and version info if copacetic
 !sql_sentences     split mixed sentences by semicolon and execute before displaying result
 !D:\users.sql      read sql file, remove comments, connect and split by semicolon
 !D:\users.sql $-f  read sql file, no fix, "from user" won't be translated "select * from user"
@@ -34,4 +35,11 @@ db=aliyun          use aliyun as current db connection, aka active db connection
 db..               list all db connections in user config
 mysql -uroot -p    create solid mysql connection, -u username -p password, -h host, -P port, -D schema
 mysql -uroot -p    create solid mysql connection, default username as root, schema as mysql
+mys                display all mysql help topics with category names
+mys $-t            display all mysql help category names only, no topic
+mys $+k            display all mysql help topics with category names, plus default 100-chars of example and description
+mys $k=77          display all mysql help topics with category names, plus 77-chars of example and description
+mys drop           criteria with no dot, display all mysql help topics containing keyword drop
+mys 321.           number plus dot, display help topic whose id is 321
+mys DROP TABLE.    string plus dot, display help topic whose name is DROP TABLE
 ver=5/28/2018, I  Database1.0.17-KARIUS

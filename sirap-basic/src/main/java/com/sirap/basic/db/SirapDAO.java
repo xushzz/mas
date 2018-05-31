@@ -70,7 +70,7 @@ public class SirapDAO {
     	return result;
     }
   
-    public void closeTrio() {  
+    public void closeUp() {  
         try {
         	if(result != null) {
                 result.close();

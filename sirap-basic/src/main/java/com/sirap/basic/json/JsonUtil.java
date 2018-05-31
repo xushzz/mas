@@ -12,17 +12,30 @@ import com.sirap.basic.util.XXXUtil;
 
 public class JsonUtil {
 	
-	public static String createJson(String key, Object value) {
-		XXXUtil.nullCheck(value, "value");
+	/***
+	 * As its name suggests, could be any kind of object
+	 * Convert it to json string, SOLID response
+	 * @param key
+	 * @param anyKindOfObject
+	 * @return
+	 */
+	public static String toJson(String key, Object anyKindOfObject) {
 		String template = "{\"{0}\":{1}}";
-		String actual = null;
-		if(value instanceof String) {
-			actual = "\"" + value.toString() + "\"";
-		} else {
-			actual = value.toString();
-		}
+		String actual = toJson(anyKindOfObject);
 		
 		return StrUtil.occupy(template, key, actual);
+	}
+	
+	public static String toJson(Object anyKindOfObject) {
+		return JsonConvertManager.toJson(anyKindOfObject);
+	}
+	
+	public static String toPrettyJson(Object anyKindOfObject) {
+		return toPrettyJson(anyKindOfObject, 0);
+	}
+	
+	public static String toPrettyJson(Object anyKindOfObject, int depth) {
+		return JsonConvertManager.toPrettyJson(anyKindOfObject, depth);
 	}
 	
 	public static String getFirstStringValueByKey(String source, String key) {
@@ -55,9 +68,15 @@ public class JsonUtil {
 		return null;
 	}
 	
+	public static String quote(Object obj) {
+		String temp = obj + "";
+		temp = temp.replace("\"", "\\\"");
+		return StrUtil.occupy("\"{0}\"", temp);
+	}
+	
 	@SuppressWarnings("rawtypes")
-	public static List toList(String json) {
-		Object sea = parseObject(json);
+	public static List toList(String jsonString) {
+		Object sea = parseObject(jsonString);
 		
 		if(!(sea instanceof List)) {
 			XXXUtil.alert("can't convert the json to List, could be " + sea.getClass().getName());
@@ -66,9 +85,9 @@ public class JsonUtil {
 		return (List)sea;
 	}
 
-	public static boolean isLegalJson(String json) {
+	public static boolean isLegalJson(String jsonString) {
 		try {
-			JsonBox beiring = new JsonBox(json);
+			JsonBox beiring = new JsonBox(jsonString);
 			
 			return beiring.isLegalJson();
 		} catch (MexException ex) {
@@ -76,16 +95,16 @@ public class JsonUtil {
 		}
 	}
 
-	public static Object parseObject(String json) {
-		JsonBox beiring = new JsonBox(json);
+	public static Object parseObject(String jsonString) {
+		JsonBox beiring = new JsonBox(jsonString);
 		Object sea = beiring.getKing();
 		
 		return sea;
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static Map toMap(String json) {
-		Object sea = parseObject(json);
+	public static Map toMap(String jsonString) {
+		Object sea = parseObject(jsonString);
 		
 		if(!(sea instanceof Map)) {
 			XXXUtil.alert("can't convert the json to Map, could be " + sea.getClass().getName());
@@ -93,44 +112,27 @@ public class JsonUtil {
 		
 		return (Map)sea;
 	}
-	public static List<String> getPrettyTextInLines(String json) {
-		String prettyAce = getPrettyText(json);
+	
+	public static List<String> getPrettyTextInLines(String jsonString) {
+		String prettyAce = getPrettyText(jsonString);
 		return StrUtil.split(prettyAce, "\n", false);
 	}
 	
-	public static String getPrettyText(String json) {
-		if(EmptyUtil.isNullOrEmpty(json)) {
+	public static String getPrettyText(String jsonString) {
+		if(EmptyUtil.isNullOrEmpty(jsonString)) {
+			return jsonString;
+		}
+		
+		return toPrettyJson(parseObject(jsonString));
+	}
+	
+	public static String getRawText(String jsonString) {
+		if(EmptyUtil.isNullOrEmpty(jsonString)) {
 			return null;
 		}
 		
-		JsonBox beiring = new JsonBox(json);
-		JsonPrinter master = new JsonPrinter(beiring.getKing());
-		
-		return master.getPrettyText();
+		return toJson(parseObject(jsonString));
 	}
-	
-	public static String getRawText(String json) {
-		if(EmptyUtil.isNullOrEmpty(json)) {
-			return null;
-		}
-		
-		JsonBox beiring = new JsonBox(json);
-		JsonPrinter master = new JsonPrinter(beiring.getKing());
-		
-		return master.getRawText();
-	}
-	
-	public static String getPrettyText(Object json) {
-		JsonPrinter master = new JsonPrinter(json);
-		
-		return master.getPrettyText();
-	}
-	
-	public static String getRawText(Object json) {
-		JsonPrinter master = new JsonPrinter(json);
-		
-		return master.getRawText();
-	} 
 	
 	public static Object readObjectByPath(Object json, String path) {
 		JsonReader master = new JsonReader(json);

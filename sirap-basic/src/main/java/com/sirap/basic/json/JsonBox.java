@@ -183,7 +183,7 @@ public class JsonBox {
 			stuff = stuff.replace(CHARS_OCCUPY_ARR[i], CHARS_ARR[i]);
 		}
 		
-		stuff = stuff.replace(CHAR_DOUBLE_QUOTE, CHAR_DB);
+		stuff = stuff.replace(CHAR_DOUBLE_QUOTE, "\"");
 		
 		return stuff;
 	}

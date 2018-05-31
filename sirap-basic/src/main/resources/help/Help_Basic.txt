@@ -1,1 +1,1 @@
-ver=5/13/2018, VII  Basic3.6.10-SATOSHI
+ver=5/31/2018, III  Basic3.6.11-SATOSHI

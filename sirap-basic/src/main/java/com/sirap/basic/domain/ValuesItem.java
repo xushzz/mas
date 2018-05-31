@@ -3,6 +3,7 @@ package com.sirap.basic.domain;
 import java.util.List;
 
 import com.google.common.collect.Lists;
+import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
@@ -71,6 +72,16 @@ public class ValuesItem extends MexItem {
 		}
 		
 		return false;
+	}
+	
+	@Override
+	public String toJson() {
+		return JsonUtil.toJson(values);
+	}
+	
+	@Override
+	public String toPrettyJson(int depth) {
+		return JsonUtil.toPrettyJson(values, depth);
 	}
 
 	@Override

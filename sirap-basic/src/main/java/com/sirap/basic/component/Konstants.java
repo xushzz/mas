@@ -1,6 +1,8 @@
 package com.sirap.basic.component;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.collect.Lists;
 import com.sirap.basic.util.StrUtil;
@@ -80,4 +82,20 @@ public class Konstants {
 	public static final String COMMENT_REGEX_JAVA = "/\\*.*?\\*/";
 	public static final List<String> COMMENTS_REGEX = Lists.newArrayList(COMMENT_REGEX_HTML, COMMENT_REGEX_JAVA);
 	public static final List<String> COMMENTS_START_WITH = Lists.newArrayList(COMMENT_2HYPENS, COMMENT_2SLASHES, COMMENT_POUND);
+
+	public static final List<Class<?>> PRIMITIVE_ARRAY_CLASSES = Lists.newArrayList();
+	static {
+		PRIMITIVE_ARRAY_CLASSES.add(byte[].class);
+		PRIMITIVE_ARRAY_CLASSES.add(short[].class);
+		PRIMITIVE_ARRAY_CLASSES.add(int[].class);
+		PRIMITIVE_ARRAY_CLASSES.add(long[].class);
+		PRIMITIVE_ARRAY_CLASSES.add(float[].class);
+		PRIMITIVE_ARRAY_CLASSES.add(double[].class);
+		PRIMITIVE_ARRAY_CLASSES.add(char[].class);
+		PRIMITIVE_ARRAY_CLASSES.add(boolean[].class);
+	}
+	public static final List<String> PRIMITIVE_ARRAY_SIMPLENAMES = Lists.newArrayList();
+	static {
+		PRIMITIVE_ARRAY_CLASSES.stream().forEach(item -> PRIMITIVE_ARRAY_SIMPLENAMES.add(item.getName() + " " + item.getSimpleName()));
+	}
 }

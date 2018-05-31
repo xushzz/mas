@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.search.FileSizeCriteria;
 import com.sirap.basic.search.MexFilter;
 import com.sirap.basic.search.SizeCriteria;
@@ -98,6 +99,14 @@ public abstract class MexItem implements Serializable {
 		}
 		
 		return false;
+	}
+	
+	public String toJson() {
+		return JsonUtil.quote(toString());
+	}
+	
+	public String toPrettyJson(int depth) {
+		return JsonUtil.quote(toString());
 	}
 	
 	public String toPrint() {

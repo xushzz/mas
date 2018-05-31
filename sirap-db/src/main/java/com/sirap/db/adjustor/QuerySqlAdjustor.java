@@ -161,7 +161,7 @@ public abstract class QuerySqlAdjustor {
 		List<String> items = StrUtil.split(tableInfo, ".");
 		String sql;
 		StringBuffer sb = StrUtil.sb();
-		String space = StrUtil.repeatSpace(4);
+		String space = StrUtil.spaces(4);
 		sb.append("select concat(table_schema, '.', table_name, '{0}', group_concat(column_name separator ', ')) from information_schema.columns where table_name = '{1}'");
 		if(items.size() == 2) {
 			sb.append(" and table_schema = '{2}' group by table_schema");

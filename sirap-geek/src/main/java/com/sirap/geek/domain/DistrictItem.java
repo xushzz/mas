@@ -180,7 +180,7 @@ public class DistrictItem extends MexItem implements Comparable<DistrictItem> {
 		if(index < 0) {
 			index = 0;
 		}
-		item.add(StrUtil.repeatSpace(index * 2) + adcode);
+		item.add(StrUtil.spaces(index * 2) + adcode);
 		item.add(name);
 		item.add(center);
 		item.add(level);
@@ -198,7 +198,7 @@ public class DistrictItem extends MexItem implements Comparable<DistrictItem> {
 		}
 		String dent = "";
 		if(OptionUtil.readBooleanPRI(options, "dent", true)) {
-			dent = StrUtil.repeatSpace(index * 2);
+			dent = StrUtil.spaces(index * 2);
 		}
 		item.add(dent + adcode);
 		item.add(name);

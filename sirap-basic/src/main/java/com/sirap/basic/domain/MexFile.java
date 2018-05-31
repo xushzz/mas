@@ -143,7 +143,7 @@ public class MexFile extends MexItem implements Comparable<MexFile> {
 	public String toPrint(String options) {
 		StringBuilder sb = new StringBuilder();
 		if(OptionUtil.readBooleanPRI(options, "tree", false)) {
-			String dent = StrUtil.repeatSpace(depth * 4);
+			String dent = StrUtil.spaces(depth * 4);
 			sb.append(dent);
 		}
 		if(OptionUtil.readBooleanPRI(options, "win", false)) {

@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.StrUtil;
@@ -52,6 +53,13 @@ public class D {
 		}
 		
 		return temp;
+	}
+	
+	public static void pl(Object obj) {
+		System.out.println("Debug.start");
+		String temp = JsonUtil.toPrettyJson(obj);
+		System.out.println(temp);
+		System.out.println("Debug.end");
 	}
 	
 	public static void pl(Object... obj) {

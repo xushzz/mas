@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Lists;
+import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 
@@ -34,6 +35,16 @@ public class KeyValuesItem extends MexItem {
 		}
 		
 		return false;
+	}
+	
+	@Override
+	public String toJson() {
+		return JsonUtil.toJson(box);
+	}
+	
+	@Override
+	public String toPrettyJson(int depth) {
+		return JsonUtil.toPrettyJson(box, depth);
 	}
 	
 	public String toPrint() {

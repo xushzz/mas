@@ -11,7 +11,7 @@ public class QueryWatcher {
 	private boolean printColumnName;
 	private String sql;
 	private List<String> columnNames;
-	private List<List<Object>> records;
+	private List<List> records;
 	
 	public QueryWatcher() {}
 	
@@ -43,10 +43,10 @@ public class QueryWatcher {
 		this.columnNames = columnNames;
 	}
 	
-	public List<List<Object>> getRecords() {
+	public List<List> getRecords() {
 		return records;
 	}
-	public void setRecords(List<List<Object>> records) {
+	public void setRecords(List<List> records) {
 		this.records = records;
 	}
 	

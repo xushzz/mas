@@ -64,7 +64,7 @@ public class MeijuRateItem extends MexItem implements Comparable<MeijuRateItem> 
 		int space = OptionUtil.readIntegerPRI(options, "space", 2);
 		StringBuffer sb = new StringBuffer();
 		sb.append(StrUtil.padRightAscii(name, maxLen + space));
-		sb.append(rate).append(StrUtil.repeatSpace(space));
+		sb.append(rate).append(StrUtil.spaces(space));
 		sb.append(href);
 		
 		return sb.toString();

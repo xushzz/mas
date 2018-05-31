@@ -6,8 +6,8 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.DBKonstants;
+import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.tool.D;
 import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.DBUtil;
 import com.sirap.basic.util.EmptyUtil;
@@ -19,7 +19,10 @@ import com.sirap.common.component.FileOpener;
 import com.sirap.common.framework.Stash;
 import com.sirap.common.framework.command.InputAnalyzer;
 import com.sirap.common.framework.command.target.TargetExcel;
+import com.sirap.db.domain.MysqlHelpCategory;
+import com.sirap.db.domain.MysqlHelpTopic;
 import com.sirap.db.parser.ConfigItemParserMySQL;
+import com.sirap.db.resultset.ResultSetMingAnalyzer;
 
 public class CommandDatabase extends CommandBase {
 
@@ -31,7 +34,7 @@ public class CommandDatabase extends CommandBase {
 	private static final String KEY_DATABASES = "dbs";
 	private static final String KEY_VARIABLES = "vas";
 	private static final String KEY_MYSQL = "mysql";
-	private static final String KEY_EXPLODE = "*";
+	private static final String KEY_MYSQL_HELP = "mys";
 
 	public static final String SQL_MAX_SIZE_DEFAULT = "10M";
 	public static final String SQL_MAX_SIZE_KEY = "sql.max";
@@ -84,7 +87,7 @@ public class CommandDatabase extends CommandBase {
 
 			if(DBHelper.takeAsColumnOrTableName(tableInfo)) {
 				String sql = DBKonstants.SHOW_COLUMNS + " " + tableInfo;
-				List<String> items = manager().query(sql, true, printSql()).exportLiteralStrings();
+				List<String> items = manager().query(restAsList(), sql, true, printSql()).exportLiteralStrings();
 				if(EmptyUtil.isNullOrEmpty(items)) {
 					XXXUtil.info("Found no columns from: [{0}]", tableInfo);
 					C.pl();
@@ -261,6 +264,22 @@ public class CommandDatabase extends CommandBase {
 			return true;
 		}
 		
+		if(is("dba")) {
+			long start = System.currentTimeMillis();
+			String sql = "select version()";
+			DBConfigItem item = DBHelper.getActiveDB();
+			DBManager karius = DBManager.g(item.getUrl(), item.getUsername(), item.getPassword());
+			QueryWatcher ming = karius.query(restAsList(), sql);
+			List<String> items = ming.exportLiteralStrings();
+			if(items.size() > 0) {
+				long cost = System.currentTimeMillis() - start;
+				String line = StrUtil.occupy("Connected [{0} millis] to {1} by {2} [version: {3}]", cost, item.getUrl(), item.getUsername(), items.get(0));
+				export(line);
+			}
+			
+			return true;
+		}
+		
 		if(StrUtil.isRegexMatched(KEY_MYSQL + " (.+)", command)) {
 			DBConfigItem db = (new ConfigItemParserMySQL()).parse(command);
 			if(db != null) {
@@ -277,6 +296,52 @@ public class CommandDatabase extends CommandBase {
 		solo = parseParam(KEY_SCHEMA + "=(.*)");
 		if(solo != null) {
 			setSchema(solo);
+			
+			return true;
+		}
+		
+		solo = parseParam(KEY_MYSQL_HELP + "(|\\s+.+?)");
+		if(solo != null) {
+			String topicInfo = StrUtil.parseParam("(.+?)\\.", solo);
+			if(topicInfo != null) {
+				MysqlHelpTopic topic;
+				if(StrUtil.isRegexMatched("\\d{1,3}", topicInfo)) {
+					int id = Integer.parseInt(topicInfo);
+					topic = MysqlHelper.getHelpTopic(manager(), id);
+				} else {
+					topic = MysqlHelper.getHelpTopic(manager(), topicInfo);
+				}
+				if(topic == null) {
+					C.pl2("Not found MySQL help topic: " + topicInfo);
+				} else {
+					export(topic.list());
+				}
+			} else {
+				List<MysqlHelpCategory> cats = MysqlHelper.getHelpCategories(manager());
+				boolean showTopic = OptionUtil.readBooleanPRI(options, "t", true);
+				if(showTopic) {
+					List<MysqlHelpTopic> topics =MysqlHelper.getHelpTopics(manager());
+					MysqlHelper.addTopics(cats, topics);
+				}
+				
+				MysqlHelpCategory root = MysqlHelper.categoryTreeOf(cats);
+
+				int kInfo = 0;
+				Boolean kk = OptionUtil.readBoolean(options, "k");
+				if(kk != null) {
+					kInfo = kk ? 100 : 0;
+				} else {
+					kInfo = OptionUtil.readIntegerPRI(options, "k", 0);
+				}
+				
+				List<String> lines = root.list(kInfo, showTopic);
+
+				if(solo.isEmpty()) {
+					export(lines);
+				} else {
+					export2(lines, solo);
+				}
+			}
 			
 			return true;
 		}
@@ -300,7 +365,7 @@ public class CommandDatabase extends CommandBase {
 		ming.setPrintColumnName(false);
 		List<String> items = ming.exportLiteralStrings();
 		String smaCriteria = "^" + tempSchema + "$";
-		List tempA = CollUtil.filterMix(items, smaCriteria, false);
+		List<MexItem> tempA = CollUtil.filterMix(items, smaCriteria, false);
 		if(tempA.size() == 1) {
 			actualSchema = tempSchema;
 		} else {
@@ -383,7 +448,7 @@ public class CommandDatabase extends CommandBase {
 	private QueryWatcher query(String sql) {
 		Boolean pc2 = OptionUtil.readBoolean(options, "c");
 		boolean printColumnName = pc2 != null ? pc2 : g().isYes("sql.columnName.print");
-		QueryWatcher ming = manager().query(sql, true, printSql());
+		QueryWatcher ming = manager().query(restAsList(), sql, true, printSql());
 		
 		ming.setPrintColumnName(printColumnName);
 		
@@ -400,5 +465,9 @@ public class CommandDatabase extends CommandBase {
 		boolean flag = toPrint != null ? toPrint : g().isYes("sql.print");
 		
 		return flag;
+	}
+	
+	public ResultSetMingAnalyzer restAsList() {
+		return new ResultSetMingAnalyzer();
 	}
 }
