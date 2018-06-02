@@ -1,222 +1,227 @@
 package com.sirap.basic.tool;
 
 import java.nio.charset.Charset;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
+import com.sirap.basic.json.JsonConvertManager;
 import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.util.DateUtil;
-import com.sirap.basic.util.EmptyUtil;
+import com.sirap.basic.util.ObjectUtil;
+import com.sirap.basic.util.RandomUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.ThreadUtil;
-import com.sirap.basic.util.XXXUtil;
 
 /***
- * D for Debug
+ * D means Debug
  * @author dell
- * @Date September 19, 2014
+ * @Date September 19, 2014 created
+ * @Date June 1, 2018 , the day LeBron James lost G1 to Warriors in 2018 NBA final.
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
 public class D {
 	
-	public static boolean eq(Object a, Object b) {
-		if(!a.equals(b)) {
-			throw new RuntimeException(a + " is not equal to " + b);
-		}
-		
-		return true;
+	public static final String DEBUG = "[DEBUG]";
+	
+	public static void pl() {
+		println();
 	}
 	
-	public static void pr(Object... obj) {
-		System.out.print(convert(obj));
+	/***
+	 * solid response
+	 * [DEBUG] D.pl => from Boston Celtics to Golden State Warriors
+	 * @param obj
+	 */
+	public static void pl(Object obj) {
+		StackTraceElement item = whoCalls();
+		String simpleName = ObjectUtil.simpleNameOf(item.getClassName());
+		String temp = DEBUG + " {0}.{1} > {2} {3}";
+		String type = ObjectUtil.simpleNameOfInstance(obj);
+		println(StrUtil.occupy(temp, simpleName, item.getMethodName(), type, obj));
+		println();
 	}
+	
+	/***
+	 * print array with timestamp info, another solid response
+	 * @param objs
+	 */
+	public static <T> void pla(T... objs) {
+		String ts = tan();
+		printStart(ts);
+		printArray(objs);
+		printEnd(ts);
+	}
+	
+	/****
+	 * print Array, nothing else
+	 * @param objs
+	 */
+	public static <T> void printArray(T... objs) {
+		int maxLen = 0;
+		for(Object obj : objs) {
+			String name = ObjectUtil.simpleNameOfInstance(obj);
+			int len = name.length();
+			if(maxLen < len) {
+				maxLen = len;
+			}
+		}
 
-	private static Object convert(Object... obj) {
-		Object temp = null;
-		if(obj == null) {
-			C.pl("Null stuff.");
-			return null;
+		String temp = "#{0} {1} {2}";
+		int count = 0;
+		for(Object obj : objs) {
+			count++;
+			String name = ObjectUtil.simpleNameOfInstance(obj);
+			String pretty = StrUtil.padRight(name, maxLen);
+			println(StrUtil.occupy(temp, count, pretty, StrUtil.of(obj)));
 		}
-		if(obj.length == 1) {
-			temp = StrUtil.arrayToString(obj[0]);
-			if(temp == null) {
-				temp = obj[0];
-			}
-		} else {
-			temp = Arrays.toString(obj);
-			if(temp == null) {
-				temp = obj;
-			}
-		}
-		
+	}
+	
+	/**
+	 * print obj as json format, JS means json
+	 * @param obj
+	 */
+	public static void pjs(Object obj) {
+		println(js(obj));
+	}
+	
+	public static void pjs(Object obj, Class<?>... rockClasses) {
+		println(js(obj, rockClasses));
+	}
+	
+	public static String js(Object obj) {
+		String temp = JsonUtil.toJson(obj);
 		return temp;
 	}
 	
-	public static void pl(Object obj) {
-		System.out.println("Debug.start");
+	public static String js(Object obj, Class<?>... rockClasses) {
+		String temp = JsonConvertManager.g().toJsonByFields(obj, rockClasses);
+		return temp;
+	}
+	
+	/**
+	 * print obj as pretty json format, p means pretty, while js means json
+	 * @param obj
+	 */
+	public static String jsp(Object obj) {
 		String temp = JsonUtil.toPrettyJson(obj);
-		System.out.println(temp);
-		System.out.println("Debug.end");
+		return temp;
 	}
 	
-	public static void pl(Object... obj) {
-		System.out.println(convert(obj));
+	public static String jsp(Object obj, Class<?>... rockClasses) {
+		String temp = JsonConvertManager.g(true).toJsonByFields(obj, rockClasses);
+		return temp;
 	}
 
-	public static void pl() {
-		System.out.println();
-	}
-	
-	public static void pls(String abc) {
-		System.out.println("PLS: " + StrUtil.occupy("[{0}]", abc));
-	}
-	
-	public static <E extends Object > void ls(List<E> list) {
-		ls(list, false);
-	}
-	
-	public static void ps(Object line) {
-		C.pl("[" + line + "]");
-	}
-	
-	public static <E extends Object > void ls(List<E> list, boolean neverShowTotal) {
-		XXXUtil.nullCheck(list, "list");
-		
-		for(Object obj: list) {
-			C.pl(obj);
-		}
-		
-		if(!neverShowTotal && list.size() > 5) {
-			C.total(list.size());
-		}
-	}
-
-	public static void debug(Class<?> clz, String method, Object... objects) {
-		StringBuffer sb = new StringBuffer();
-		sb.append("Debug:" + clz.getName() + "." + method);
-		sb.append(Arrays.asList(objects));
-		D.pl(sb);
+	public static void params(Object... objects) {
+		String methodInfo = whoCalls().toString();
+		String temp = DEBUG + " params of " + methodInfo;
+		println(temp);
+		printArray(objects);
+		pl();
 	}
 	
 	public static void sink() {
-		D.pl("SINK");
+		sink("");
 	}
 	
 	public static void sink(Object stuff) {
-		D.pl("SINK> " + stuff);
+		println(DEBUG + " SINK> " + StrUtil.of(stuff));
+	}
+
+	/***
+	 * Time and Random stuff
+	 * @return
+	 */
+	public static String tan() {
+		String temp = RandomUtil.letters(2, true) + " " + DateUtil.displayDate(new Date(), DateUtil.DATE_TIME_FULL);
+		return temp;
+	}
+
+	private static String METHOD_INFO = DEBUG + " {0}.{1} {2} {3} {4}";
+	
+	//[DEBUG] D.pla => SL 2018-06-02_10:49:12.359 com.sirap.basic.tool.D.pla(D.java:53)
+	public static void printStart(String tan) {
+		StackTraceElement item = whoCalls();
+		String simpleName = item.getClassName().replaceAll("^.+\\.", "");
+		println(StrUtil.occupy(METHOD_INFO, simpleName, item.getMethodName(), "=>", tan, item));
+	}
+	
+	public static void printEnd(String tan) {
+		StackTraceElement item = whoCalls();
+		String simpleName = item.getClassName().replaceAll("^.+\\.", "");
+		println(StrUtil.occupy(METHOD_INFO, simpleName, item.getMethodName(), "<=", tan, item));
+		println();
 	}
 	
 	public static void ts() {
-		String str = DateUtil.displayDate(new Date(), DateUtil.DATE_TIME_FULL);
-		D.pl(str);
+		ts("");
 	}
 	
+	//[DEBUG] 2018
 	public static void ts(Object stuff) {
 		String str = DateUtil.displayDate(new Date(), DateUtil.DATE_TIME_FULL);
-		D.pl(str + "> " + stuff);
-	}
-	
-	public static void pl(Map map) {
-		Iterator it = map.keySet().iterator();
-		while(it.hasNext()) {
-			Object key = it.next();
-			pl(key + " => " + map.get(key));
-		}
-	}
-	
-	public static <E extends Object > void list(E... objArr) {
-		List list = Arrays.asList(objArr);
-		C.list(list);
+		println(DEBUG + StrUtil.occupy(" {0}> {1}", str, StrUtil.of(stuff)));
 	}
 
-	public static void list(List list) {
-		if(EmptyUtil.isNullOrEmpty(list)) {
-			D.sink("empty list");
-		} else {
-			D.pl("D.list start");
-			for(Object obj : list) {
-				D.pl(obj.getClass().getName() + " " + obj);
-			}
-			D.pl("D.list end, total: " + list.size());
-		}
+	/***
+	 * list out stuff
+	 * @param list
+	 */
+	public static <T> void list(List<T> list) {
+		String ts = tan();
+		printStart(ts);
+		printArray(list.toArray());
+		printEnd(ts);
 	}
 
-	public static void list2(List list) {
-		if(EmptyUtil.isNullOrEmpty(list)) {
-			D.sink("empty list");
-		} else {
-			D.pl("D.list start");
-			for(Object obj : list) {
-				D.pl((obj != null ? obj.getClass() + "  " : "") + "[" + obj + "]");
-			}
-			D.pl("D.list end, total: " + list.size());
+	public static void sleepK(double seconds) {
+		String temp = "[DEBUG] sleeping for {0} seconds ";
+		String str = StrUtil.occupy(temp, (int)seconds);
+		System.out.print(str);
+		for(int i = 0; i < seconds; i++) {
+			ThreadUtil.sleepInSeconds(1);
+			System.out.print(".");
 		}
+		println();
 	}
 	
-	public static void bs(byte[] bytes) {
-		if(EmptyUtil.isNull(bytes)) {
-			D.sink("null bytes");
-		} else {
-			D.pl("D.bytes start");
-			for(byte obj : bytes) {
-				D.pl(obj);
-			}
-			D.pl("D.bytes end, total: " + bytes.length);
-		}
+	public static void sleep5() {
+		sleepK(5);
 	}
 	
-	public static void bs2(byte[] bytes) {
-		if(EmptyUtil.isNull(bytes)) {
-			D.sink("null bytes");
-		} else {
-			StringBuffer sb = StrUtil.sb();
-			D.pl("D.bytes start");
-			for(byte obj : bytes) {
-				sb.append(obj).append(" ");
-			}
-			D.pl(sb);
-			D.pl("D.bytes end, total: " + bytes.length);
-		}
+	public static void sleep10() {
+		sleepK(10);
 	}
 	
-	public static void ins(int[] ints) {
-		if(EmptyUtil.isNull(ints)) {
-			D.sink("null ints");
-		} else {
-			D.pl("D.ints start");
-			for(int obj : ints) {
-				D.pl(obj);
-			}
-			D.pl("D.ints end, total: " + ints.length);
-		}
-	}
-	
-	public static void ins2(int[] ints) {
-		if(EmptyUtil.isNull(ints)) {
-			D.sink("null ints");
-		} else {
-			StringBuffer sb = StrUtil.sb();
-			D.pl("D.ints start");
-			for(int obj : ints) {
-				sb.append(obj).append(" ");
-			}
-			D.pl(sb);
-			D.pl("D.ints end, total: " + ints.length);
-		}
-	}
-	
-	public static void sleep10seconds() {
-		ThreadUtil.sleepInSeconds(10);
-	}
-	
-	public static void sleep20seconds() {
-		ThreadUtil.sleepInSeconds(20);
+	public static void sleep20() {
+		sleepK(20);
 	}
 	
 	public static void charset() {
 		D.ts(Charset.defaultCharset().name());
+	}
+	
+	public static void println() {
+		System.out.println();
+	}
+	
+	public static void println(Object obj) {
+		System.out.println(obj);
+	}
+	
+	public static StackTraceElement who() {
+		StackTraceElement[] items = Thread.currentThread().getStackTrace();
+		
+		return items[2];
+	}
+	
+	public static void trace() {
+		StackTraceElement[] items = Thread.currentThread().getStackTrace();
+		printArray(items);
+	}
+	
+	public static StackTraceElement whoCalls() {
+		StackTraceElement[] items = Thread.currentThread().getStackTrace();
+		
+		return items[3];
 	}
 }

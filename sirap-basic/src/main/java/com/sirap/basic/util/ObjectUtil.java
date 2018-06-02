@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sirap.basic.component.Konstants;
 import com.sirap.basic.exception.MexException;
 
 @SuppressWarnings("rawtypes")
@@ -144,5 +145,22 @@ public class ObjectUtil {
 		}
 		
 		return null;
+	}
+	
+	public static String simpleNameOfInstance(Object instance) {
+		return instance != null ? instance.getClass().getSimpleName() : Konstants.FAKED_NULL;
+	}
+	
+	/***
+	 * 
+	 * @param fullclassName could be full class name or regular class name
+	 * @return
+	 */
+	public static String simpleNameOf(String fullclassName) {
+		return fullclassName != null ? fullclassName.replaceAll("^.+\\.", "") : Konstants.FAKED_NULL;
+	}
+	
+	public static String simpleNameOf(Class<?> clazz) {
+		return clazz != null ? clazz.getSimpleName() : Konstants.FAKED_NULL;
 	}
 }

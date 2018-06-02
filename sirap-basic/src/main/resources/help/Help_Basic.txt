@@ -1,1 +1,7 @@
-ver=5/31/2018, III  Basic3.6.11-SATOSHI
+cl com.sirap.basic.util.StrUtil* show all util classes
+pl                 DebugUtil, D, print Object info, with StrUtil.of
+pla                DebugUtil, D, print array of Objects
+list               DebugUtil, D, print list of Objects
+ts                 DebugUtil, D, print object with timestamp
+sleepK             DebugUtil, D, sleep given seconds
+ver=6/2/2018, VI  Basic3.6.12-JRSMITH

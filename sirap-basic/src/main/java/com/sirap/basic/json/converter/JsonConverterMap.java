@@ -26,7 +26,7 @@ public class JsonConverterMap extends JsonConverter<Map> {
 			count++;
 			sb.append(JsonUtil.quote(key));
 			sb.append(":");
-			sb.append(JsonConvertManager.toJson(value));
+			sb.append(JsonConvertManager.g().toJson(value));
 		}
 		sb.append("}");
 		return sb.toString();
@@ -48,7 +48,7 @@ public class JsonConverterMap extends JsonConverter<Map> {
 			sb.append(JsonUtil.quote(key));
 			sb.append(":");
 			boolean isNotLastElement = count != ant.size() - 1;
-			sb.append(JsonConvertManager.toPrettyJson(value, depth + 1));
+			sb.append(JsonConvertManager.g(true).toJson(value, depth + 1));
 			if(isNotLastElement) {
 				sb.append(", ");
 			}

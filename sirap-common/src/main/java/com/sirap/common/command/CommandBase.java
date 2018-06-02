@@ -663,7 +663,7 @@ public abstract class CommandBase {
 		String mvnWithSpace = "mvn ";
 		if(StrUtil.startsWith(dosCommand, mvnWithSpace)) {
 			String info = " -f";
-			if(StrUtil.endsWith(path, ".xml")) {
+			if(StrUtil.isRegexFound("\\.(xml|pom)$", path)) {
 				info += path;
 			} else {
 				info += StrUtil.useSeparator(path, "pom.xml");

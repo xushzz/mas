@@ -923,33 +923,30 @@ public class StrUtil {
 		return ma;
 	}
 	
-	public static String arrayToString(Object arr) {
-		String temp = null;
-		if(arr instanceof boolean[]) {
-			temp = Arrays.toString((boolean[])arr);
-		} else if(arr instanceof byte[]) {
-			temp = Arrays.toString((byte[])arr);
-		} else if(arr instanceof byte[]) {
-			temp = Arrays.toString((byte[])arr);
-		} else if(arr instanceof char[]) {
-			temp = Arrays.toString((char[])arr);
-		} else if(arr instanceof double[]) {
-			temp = Arrays.toString((double[])arr);
-		} else if(arr instanceof float[]) {
-			temp = Arrays.toString((float[])arr);
-		} else if(arr instanceof int[]) {
-			temp = Arrays.toString((int[])arr);
-		} else if(arr instanceof long[]) {
-			temp = Arrays.toString((long[])arr);
-		} else if(arr instanceof short[]) {
-			temp = Arrays.toString((short[])arr);
-		} else if(arr instanceof Object[]) {
-			temp = Arrays.toString((Object[])arr);
+	public static String of(Object obj) {
+		String temp;
+		if(obj == null) {
+			temp = null;
+		} else {
+			Class<?> carrie = obj.getClass();
+			boolean isObjArr = obj instanceof Object[];
+			if(Konstants.PRIMITIVE_ARRAY_CLASSES.contains(carrie) || isObjArr) {
+				Class<?> clazzParam = isObjArr ? Object[].class : carrie;
+				Object value = ObjectUtil.execute(Arrays.class, "toString", new Class[]{clazzParam}, obj);
+				temp = value + "";
+				temp = temp.replaceAll("^\\[", "{");
+				temp = temp.replaceAll("\\]$", "}");
+				int size = split(temp).size();
+				String type = carrie.getSimpleName();
+				type = type.replace("[", "[" + size);
+				temp = type + temp;
+			} else {
+				temp = obj.toString();
+			}
 		}
-		
+
 		if(temp != null) {
-			temp = temp.replaceAll("^\\[", "{");
-			temp = temp.replaceAll("\\]$", "}");
+			temp = temp.replaceAll("(^\\s|\\s$)", Konstants.FAKED_SPACE);
 		}
 		
 		return temp;

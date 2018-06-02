@@ -86,7 +86,7 @@ public class ArisExecutor {
 		String[] params = StrUtil.parseParams(regex, remain);
 		if(params != null) {
 			String glass = params[0] + params[1] + Konstants.DOT_CLASS;
-			items.add(StrUtil.occupy("C.list(ArisUtil.getClassDetail({0}, false));", glass));
+			items.add(StrUtil.occupy("C.list(ArisUtil.getClassDetail({0}, true));", glass));
 		} else {
 			String[] arr = StrUtil.parseParams("^(={1,2})(.+)", remain);
 			if(arr != null) {

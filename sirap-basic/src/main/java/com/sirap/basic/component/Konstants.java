@@ -1,8 +1,6 @@
 package com.sirap.basic.component;
 
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.google.common.collect.Lists;
 import com.sirap.basic.util.StrUtil;
@@ -46,6 +44,9 @@ public class Konstants {
 	public static final String DOT_CLASS = ".class";
 	public static final String DOT_JAVA = ".java";
 
+	//á 225 aacute, small a, acute accent
+	public static final String FAKED_NULL = "NULL";
+	public static final String FAKED_SPACE = "" + (char)225;
 	public static final String SHITED_FACE = "^=^";
 	public static final String HYPHEN = "-";
 	public static final String NEWLINE = "\n";
@@ -94,6 +95,7 @@ public class Konstants {
 		PRIMITIVE_ARRAY_CLASSES.add(char[].class);
 		PRIMITIVE_ARRAY_CLASSES.add(boolean[].class);
 	}
+
 	public static final List<String> PRIMITIVE_ARRAY_SIMPLENAMES = Lists.newArrayList();
 	static {
 		PRIMITIVE_ARRAY_CLASSES.stream().forEach(item -> PRIMITIVE_ARRAY_SIMPLENAMES.add(item.getName() + " " + item.getSimpleName()));

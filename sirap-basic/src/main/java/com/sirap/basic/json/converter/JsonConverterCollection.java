@@ -6,7 +6,7 @@ import com.sirap.basic.json.JsonConvertManager;
 import com.sirap.basic.util.StrUtil;
 
 @SuppressWarnings("rawtypes")
-public class JsonConverterList extends JsonConverter<Collection> {
+public class JsonConverterCollection extends JsonConverter<Collection> {
 
 	@Override
 	public String toJson(Collection ant) {
@@ -18,7 +18,7 @@ public class JsonConverterList extends JsonConverter<Collection> {
 				sb.append(",");
 			}
 			count++;
-			sb.append(JsonConvertManager.toJson(obj));
+			sb.append(JsonConvertManager.g().toJson(obj));
 		}
 		sb.append("]");
 		return sb.toString();
@@ -34,7 +34,7 @@ public class JsonConverterList extends JsonConverter<Collection> {
 		for(Object obj : ant) {
 			sb.append(dent);
 			boolean isNotLastElement = count != ant.size() - 1;
-			sb.append(JsonConvertManager.toPrettyJson(obj, depth + 1));
+			sb.append(JsonConvertManager.g(true).toJson(obj, depth + 1));
 			if(isNotLastElement) {
 				sb.append(", ");
 			}

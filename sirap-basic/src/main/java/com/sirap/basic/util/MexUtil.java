@@ -180,7 +180,7 @@ public class MexUtil {
 				}
 			}
 		} catch (Exception e) {
-			D.debug(MexUtil.class, "readAndParseByClassName", fileName, className);
+			D.params(fileName, className);
 			e.printStackTrace();
 		}
 		

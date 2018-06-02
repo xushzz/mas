@@ -680,8 +680,10 @@ public class FileUtil {
 	public static boolean removeKids(String filepath, boolean printAlong) {
 		File file = new File(filepath);
 		File[] files = file.listFiles(); 
-		D.pl(filepath, files);
-	    if(files == null) {
+		D.pl(file);
+		D.pl(files);
+
+		if(files == null) {
 	    	return false;
 	    }
 	    for (int i = 0; i < files.length; i++) {  

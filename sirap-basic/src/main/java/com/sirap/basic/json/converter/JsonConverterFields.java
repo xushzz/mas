@@ -6,7 +6,7 @@ import com.sirap.basic.json.JsonConvertManager;
 import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.util.StrUtil;
 
-public class JsonConverterPojo extends JsonConverter<Object> {
+public class JsonConverterFields extends JsonConverter<Object> {
 
 	@Override
 	public String toJson(Object ant) {
@@ -29,7 +29,7 @@ public class JsonConverterPojo extends JsonConverter<Object> {
 			count++;
 			sb.append(JsonUtil.quote(key));
 			sb.append(":");
-			sb.append(JsonConvertManager.toJson(value));
+			sb.append(JsonConvertManager.g().toJson(value));
 		}
 		sb.append("}");
 		
@@ -57,7 +57,7 @@ public class JsonConverterPojo extends JsonConverter<Object> {
 			sb.append(JsonUtil.quote(key));
 			sb.append(":");
 			boolean isNotLastElement = count != fields.length - 1;
-			sb.append(JsonConvertManager.toPrettyJson(value, depth + 1));
+			sb.append(JsonConvertManager.g(true).toJson(value, depth + 1));
 			if(isNotLastElement) {
 				sb.append(", ");
 			}

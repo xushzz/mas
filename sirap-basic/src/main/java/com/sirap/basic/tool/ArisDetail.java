@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.sirap.basic.component.Konstants;
+import com.sirap.basic.json.JsonConvertManager;
 import com.sirap.basic.util.ArisUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.StrUtil;
@@ -144,28 +146,15 @@ public class ArisDetail {
 	private Object getFieldValue(Field item) {
 		Class type = item.getType();
 		item.setAccessible(true);
-		String arrValue = null;
-		Object value = null;
 		try {
-			value = item.get(glass);
-			arrValue = StrUtil.arrayToString(value);
+			Object value = item.get(glass);
+			return JsonConvertManager.g(true).toJson(value, 2);
 		} catch(Exception ex) {
 			if(printException) {
 				String msg = "Exception when accessing {0} {1} of {2}, {3}";
-				C.pl(StrUtil.occupy(msg, type, item.getName(), glass, ex));
+				C.pl2(StrUtil.occupy(msg, type.getSimpleName(), item.getName(), glass, ex));
 			}
-		}
-
-		if(value == null) {
-			return null;
-		} else if(arrValue != null) {
-			return arrValue;
-		} else if("char".equals(type.toString()) || Character.class.equals(type)) {
-			return "\'" + value + "\'";
-		} else if(String.class.equals(type)) {
-			return "\"" + value + "\"";
-		} else {
-			return value;
+			return Konstants.SHITED_FACE;
 		}
 	}
 
@@ -332,8 +321,4 @@ public class ArisDetail {
 		imports.add(realClassName);
 		return true;
 	}
-}
-
-enum LOTS {
-	
 }

@@ -307,7 +307,7 @@ public class XCodeUtil {
 			} else {
 				by = (byte)in;
 				if(by != in) {
-					D.pl("Uncanny, not equal by and in ", by, in);
+					D.pla("Uncanny, not equal by and in ", by, in);
 				}
 			}
 			data[i] = by;

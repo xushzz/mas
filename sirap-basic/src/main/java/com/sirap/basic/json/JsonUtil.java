@@ -27,7 +27,7 @@ public class JsonUtil {
 	}
 	
 	public static String toJson(Object anyKindOfObject) {
-		return JsonConvertManager.toJson(anyKindOfObject);
+		return JsonConvertManager.g().toJson(anyKindOfObject);
 	}
 	
 	public static String toPrettyJson(Object anyKindOfObject) {
@@ -35,7 +35,7 @@ public class JsonUtil {
 	}
 	
 	public static String toPrettyJson(Object anyKindOfObject, int depth) {
-		return JsonConvertManager.toPrettyJson(anyKindOfObject, depth);
+		return JsonConvertManager.g(true).toJson(anyKindOfObject, depth);
 	}
 	
 	public static String getFirstStringValueByKey(String source, String key) {
