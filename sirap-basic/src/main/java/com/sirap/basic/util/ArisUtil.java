@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexZipEntry;
 import com.sirap.basic.exception.MexException;
@@ -334,5 +335,32 @@ public class ArisUtil {
 			}
 			readRecursively(items, root, StrUtil.useSeparator(folder, shortPath));
 		}
+	}
+	
+	/***
+	 * #java.class.path#itext-asian => D:\M2REPO\com\itextpdf\itext-asian\5.2.0\itext-asian-5.2.0.jar
+	 * @param arispathItems
+	 * @return
+	 */
+	public static List<String> occupySystemPropertyKid(List<String> arispathItems) {
+		List<String> newlist = Lists.newArrayList();
+		for(String item : arispathItems) {
+			String[] arr = StrUtil.parseParams("#(.+?)#(.+?)", item);
+			if(arr != null) {
+				String propertyName = arr[0];
+				String keyword = arr[1];
+				
+				String desire = SatoUtil.kidOfSystemProperty(propertyName, keyword);
+				if(desire == null) {
+					XXXUtil.alert("Not exist property and kid: " + item);
+				} else {
+					newlist.add(desire);
+				}
+			} else {
+				newlist.add(item);
+			}
+		}
+		
+		return newlist;
 	}
 }

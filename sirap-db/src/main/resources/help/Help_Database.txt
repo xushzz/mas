@@ -3,7 +3,7 @@ dba                check connection, display time spent, url and version info if
 !D:\users.sql      read sql file, remove comments, connect and split by semicolon
 !D:\users.sql $-f  read sql file, no fix, "from user" won't be translated "select * from user"
 !D:\onesql.txt     read sql file, file size limit is ${sql.max} by default, check key ${sql.max.key}
-from user          issue sql "select * from customer"
+from user          issue sql "select * from customer", $+sql to show sql
 from user $-c      issue sql "select * from customer" but display no column names, $-c column names
 from user $+r      display the result in rotation manner, $+r means rotate, connect by comma+space
 from user $+p      display the result in pretty manner, $+p means pretty

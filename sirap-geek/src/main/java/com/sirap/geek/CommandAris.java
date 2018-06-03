@@ -28,8 +28,9 @@ public class CommandAris extends CommandBase {
 		solo = parseParam(KEY_EXECUTE_JAVACODE + "\\s+(.+)");
 		if(solo != null) {
 			boolean keepGeneratedFiles = OptionUtil.readBooleanPRI(options, "k", g().isYes("aris.keep"));
-			List<String> arispathItems = g().getUserValuesByKeyword("aris.path.");
+			List<String> arispathItems = ArisUtil.occupySystemPropertyKid(g().getUserValuesByKeyword("aris.path."));
 			List<String> autoPackages = getAutoIncludedPackageNames();
+//			D.list(arispathItems);
 			String arisPlace = g().getUserValueOf("aris.place", System.getProperty("user.home"));
 			boolean toPrintCommand = OptionUtil.readBooleanPRI(options, "p", false);
 			ArisExecutor instance = ArisExecutor.g().setToPrintCommand(toPrintCommand).setArisPlace(arisPlace).setToKeepGeneratedFiles(keepGeneratedFiles);

@@ -214,6 +214,10 @@ public class StrUtil {
 		XXXUtil.nullCheck(source, "source");
 		XXXUtil.nullCheck(delimiter, "delimiter");
 		
+		if(source.isEmpty()) {
+			return Collections.EMPTY_LIST;
+		}
+		
 		if(delimiter.isEmpty()) {
 			return splitByRegex(source, "");
 		}
@@ -936,7 +940,7 @@ public class StrUtil {
 				temp = value + "";
 				temp = temp.replaceAll("^\\[", "{");
 				temp = temp.replaceAll("\\]$", "}");
-				int size = split(temp).size();
+				int size = temp.length() == 2 ? 0 : split(temp).size();
 				String type = carrie.getSimpleName();
 				type = type.replace("[", "[" + size);
 				temp = type + temp;
@@ -946,7 +950,11 @@ public class StrUtil {
 		}
 
 		if(temp != null) {
-			temp = temp.replaceAll("(^\\s|\\s$)", Konstants.FAKED_SPACE);
+			if(temp.isEmpty()) {
+				temp = Konstants.FAKED_EMPTY;
+			} else {
+				temp = temp.replaceAll("(^\\s|\\s$)", Konstants.FAKED_SPACE);
+			}
 		}
 		
 		return temp;

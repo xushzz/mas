@@ -43,10 +43,12 @@ public class Konstants {
 	public static final String DOT_JPG = ".jpg";
 	public static final String DOT_CLASS = ".class";
 	public static final String DOT_JAVA = ".java";
+	public static final String DOT_JAR = ".jar";
 
 	//á 225 aacute, small a, acute accent
 	public static final String FAKED_NULL = "NULL";
 	public static final String FAKED_SPACE = "" + (char)225;
+	public static final String FAKED_EMPTY = "[EMPTY]";
 	public static final String SHITED_FACE = "^=^";
 	public static final String HYPHEN = "-";
 	public static final String NEWLINE = "\n";

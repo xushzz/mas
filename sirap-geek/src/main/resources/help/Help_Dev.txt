@@ -1,7 +1,7 @@
 ah A,B,C,D         split by comma and print as list
 ah A-B-C-D $s=-    split by - and print as list, option s=SPLITTER
 ah A,B,C $+s       split, sort and print list
-maven              display home and repository for Maven, mvn help:system
+maven              display home, repository and location of super POM for Maven
 deps               display all depended jars in project that user.dir indicates
 deps $p=D:\pom.xml display all depended jars in project that pom.xml rests
 deps $p=D:\project display all depended jars in given project

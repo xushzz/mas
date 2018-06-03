@@ -1,5 +1,6 @@
 package com.sirap.basic.util;
 
+import java.io.File;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -8,7 +9,9 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 
 import com.google.common.collect.Lists;
+import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.TypedKeyValueItem;
+import com.sirap.basic.tool.C;
 
 public class SatoUtil {
 	
@@ -79,5 +82,33 @@ public class SatoUtil {
 		}
 		
 		return temp;
+	}
+	
+	public static String kidOfJavaLibPath(String keyword) {
+		String propertyName = "java.library.path";
+		return kidOfSystemProperty(propertyName, keyword);
+	}
+	
+	public static String kidOfJavaClassPath(String keyword) {
+		String propertyName = "java.class.path";
+		return kidOfSystemProperty(propertyName, keyword);
+	}
+	
+	public static String kidOfSystemProperty(String propertyName, String keyword) {
+//		D.pl(propertyName);
+		String path = System.getProperty(propertyName);
+		List<String> items = StrUtil.split(path, File.pathSeparator);
+//		D.list(items);
+		List<MexItem> desire = CollUtil.filterMix(items, keyword, false);
+		if(desire.isEmpty()) {
+			C.list(items);
+			XXXUtil.info("Value of {0} contains no {1}.", propertyName, keyword);
+			return null;
+		} else if(desire.size() > 1) {
+			C.list(desire);
+			XXXUtil.alert("Value of {0} contains more than one match of {1}.", propertyName, keyword);
+		}
+		
+		return desire.get(0).toString();
 	}
 }

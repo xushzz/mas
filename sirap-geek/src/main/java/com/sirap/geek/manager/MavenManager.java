@@ -10,6 +10,7 @@ import com.google.common.collect.Lists;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.PanaceaBox;
+import com.sirap.basic.util.SatoUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.basic.util.XmlUtil;
@@ -32,28 +33,35 @@ public class MavenManager {
 	
 	public List<String> getMavenInfo() {
 		List<String> items = new ArrayList<>();
-		items.add("Maven Home = " + getMavenHome());
-		items.add("Maven Repo = " + getMavenRepo());
+		String home = getMavenHome();
+		items.add("Maven home : " + home);
+		items.add("Maven repo : " + getMavenRepo(home));
+		items.add("Super pom  : " + getSuperPom(home));
 		
 		return items;
 	}
 	
 	private String getMavenHome() {
-		String path = System.getProperty("java.library.path");
-		List<String> items = StrUtil.split(path, ';');
-		for(String item : items) {
-			if(StrUtil.contains(item, "maven")) {
-				String temp = item.replaceAll("\\\\bin", "");
-				return temp;
-			}
-		}
+		String mavenBin = SatoUtil.kidOfJavaLibPath("maven");
+		XXXUtil.nullCheck(mavenBin, "mavenBin");
+		String temp = mavenBin.replaceAll("\\\\bin", "");
 		
-		
-		return null;
+		return temp;
 	}
 	
-	private String getMavenRepo() {
-		String home = getMavenHome();
+	public String getSuperPom(String home) {
+		String regex = "(\\d\\.\\d\\.\\d{1,2})";
+		String version = StrUtil.findFirstMatchedItem(regex, home);
+		String jarName = StrUtil.occupy("maven-model-builder-{0}.jar", version);
+		String jarPath = StrUtil.useDelimiter(File.separator, home, "lib", jarName);
+		String pomPath = jarPath.replace('\\', '/') + "!/org/apache/maven/model/pom-4.0.0.xml";
+		//C:\apache-maven-3.3.9\lib\maven-model-builder-3.3.9.jar
+		//C:/apache-maven-3.3.9/lib/maven-model-builder-3.3.9.jar!/org/apache/maven/model/pom-4.0.0.xml
+		
+		return pomPath;
+	}
+	
+	private String getMavenRepo(String home) {
 		if(home == null) {
 			return null;
 		}
@@ -75,7 +83,7 @@ public class MavenManager {
 		C.pl2("building... " + mvnCommand);
 		
 		List<String> buildResult = PanaceaBox.executeAndRead(newCommand);
-		List<String> deps = validateAndParseDeps(getMavenRepo(), buildResult);
+		List<String> deps = validateAndParseDeps(getMavenRepo(getMavenHome()), buildResult);
 		
 		return deps;
 	}

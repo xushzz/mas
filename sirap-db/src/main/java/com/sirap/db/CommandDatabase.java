@@ -461,7 +461,7 @@ public class CommandDatabase extends CommandBase {
 	}
 	
 	private boolean printSql() {
-		Boolean toPrint = OptionUtil.readBoolean(options, "pn");
+		Boolean toPrint = OptionUtil.readBoolean(options, "sql");
 		boolean flag = toPrint != null ? toPrint : g().isYes("sql.print");
 		
 		return flag;

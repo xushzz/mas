@@ -153,11 +153,11 @@ public class ObjectUtil {
 	
 	/***
 	 * 
-	 * @param fullclassName could be full class name or regular class name
+	 * @param fullClassName could be full class name or regular class name
 	 * @return
 	 */
-	public static String simpleNameOf(String fullclassName) {
-		return fullclassName != null ? fullclassName.replaceAll("^.+\\.", "") : Konstants.FAKED_NULL;
+	public static String simpleNameOf(String fullClassName) {
+		return fullClassName != null ? fullClassName.replaceAll("^.+\\.", "") : Konstants.FAKED_NULL;
 	}
 	
 	public static String simpleNameOf(Class<?> clazz) {

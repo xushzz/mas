@@ -20,10 +20,12 @@ import com.sirap.basic.util.ThreadUtil;
  */
 public class D {
 	
-	public static final String DEBUG = "[DEBUG]";
+	public static final String DEBUG = "[GUBED]";
 	
 	public static void pl() {
-		println();
+		StackTraceElement parent = parent();
+		String temp = DEBUG + " {0} #by {1}";
+		println(StrUtil.occupy(temp, StrUtil.spaces(30), parent));
 	}
 	
 	/***
@@ -32,12 +34,11 @@ public class D {
 	 * @param obj
 	 */
 	public static void pl(Object obj) {
-		StackTraceElement item = whoCalls();
-		String simpleName = ObjectUtil.simpleNameOf(item.getClassName());
-		String temp = DEBUG + " {0}.{1} > {2} {3}";
+		String simple = simpleClassNameDotMethodOf(current());
+		StackTraceElement parent = parent();
+		String temp = DEBUG + " {0} > {1} {2}     #by {3}";
 		String type = ObjectUtil.simpleNameOfInstance(obj);
-		println(StrUtil.occupy(temp, simpleName, item.getMethodName(), type, obj));
-		println();
+		println(StrUtil.occupy(temp, simple, type, StrUtil.of(obj), parent));
 	}
 	
 	/***
@@ -45,10 +46,11 @@ public class D {
 	 * @param objs
 	 */
 	public static <T> void pla(T... objs) {
-		String ts = tan();
-		printStart(ts);
+		String simple = simpleClassNameDotMethodOf(current());
+		String random = mark();
+		printStart(simple, random, parent());
 		printArray(objs);
-		printEnd(ts);
+		printEnd(simple, random, parent());
 	}
 	
 	/****
@@ -87,6 +89,14 @@ public class D {
 		println(js(obj, rockClasses));
 	}
 	
+	public static void pjsp(Object obj) {
+		println(jsp(obj));
+	}
+	
+	public static void pjsp(Object obj, Class<?>... rockClasses) {
+		println(jsp(obj, rockClasses));
+	}
+	
 	public static String js(Object obj) {
 		String temp = JsonUtil.toJson(obj);
 		return temp;
@@ -112,7 +122,7 @@ public class D {
 	}
 
 	public static void params(Object... objects) {
-		String methodInfo = whoCalls().toString();
+		String methodInfo = parent().toString();
 		String temp = DEBUG + " params of " + methodInfo;
 		println(temp);
 		printArray(objects);
@@ -120,46 +130,53 @@ public class D {
 	}
 	
 	public static void sink() {
-		sink("");
+		StackTraceElement parent = parent();
+		String temp = DEBUG + " {0} >      #by {1}";
+		println(StrUtil.occupy(temp, "SINK", parent));
 	}
 	
-	public static void sink(Object stuff) {
-		println(DEBUG + " SINK> " + StrUtil.of(stuff));
+	public static void sink(Object obj) {
+		StackTraceElement parent = parent();
+		String temp = DEBUG + " {0} > {1} {2}     #by {3}";
+		String type = ObjectUtil.simpleNameOfInstance(obj);
+		println(StrUtil.occupy(temp, "SINK", type, StrUtil.of(obj), parent));
 	}
 
 	/***
 	 * Time and Random stuff
 	 * @return
 	 */
-	public static String tan() {
-		String temp = RandomUtil.letters(2, true) + " " + DateUtil.displayDate(new Date(), DateUtil.DATE_TIME_FULL);
-		return temp;
+	public static String mark() {
+		return RandomUtil.letters(2, true);
 	}
 
-	private static String METHOD_INFO = DEBUG + " {0}.{1} {2} {3} {4}";
+	private static String METHOD_INFO = DEBUG + " {0} {1} {2} {3}     #by {4}";
 	
 	//[DEBUG] D.pla => SL 2018-06-02_10:49:12.359 com.sirap.basic.tool.D.pla(D.java:53)
-	public static void printStart(String tan) {
-		StackTraceElement item = whoCalls();
-		String simpleName = item.getClassName().replaceAll("^.+\\.", "");
-		println(StrUtil.occupy(METHOD_INFO, simpleName, item.getMethodName(), "=>", tan, item));
+	public static void printStart(String simpleClassNameDotMethod, String random, StackTraceElement stackInfo) {
+		String timestamp = DateUtil.displayDate(new Date(), DateUtil.DATE_TIME_FULL);
+		println(StrUtil.occupy(METHOD_INFO, simpleClassNameDotMethod, "=>", random, timestamp, stackInfo));
 	}
 	
-	public static void printEnd(String tan) {
-		StackTraceElement item = whoCalls();
-		String simpleName = item.getClassName().replaceAll("^.+\\.", "");
-		println(StrUtil.occupy(METHOD_INFO, simpleName, item.getMethodName(), "<=", tan, item));
-		println();
+	public static void printEnd(String simpleClassNameDotMethod, String random, StackTraceElement stackInfo) {
+		String timestamp = DateUtil.displayDate(new Date(), DateUtil.DATE_TIME_FULL);
+		println(StrUtil.occupy(METHOD_INFO, simpleClassNameDotMethod, "<=", random, timestamp, stackInfo));
 	}
 	
 	public static void ts() {
-		ts("");
+		String timestamp = DateUtil.displayDate(new Date(), DateUtil.DATE_TIME_FULL);
+		StackTraceElement parent = parent();
+		String temp = DEBUG + " {0} >      #by {1}";
+		println(StrUtil.occupy(temp, timestamp, parent));
 	}
 	
 	//[DEBUG] 2018
-	public static void ts(Object stuff) {
-		String str = DateUtil.displayDate(new Date(), DateUtil.DATE_TIME_FULL);
-		println(DEBUG + StrUtil.occupy(" {0}> {1}", str, StrUtil.of(stuff)));
+	public static void ts(Object obj) {
+		String timestamp = DateUtil.displayDate(new Date(), DateUtil.DATE_TIME_FULL);
+		StackTraceElement parent = parent();
+		String temp = DEBUG + " {0} > {1} {2}     #by {3}";
+		String type = ObjectUtil.simpleNameOfInstance(obj);
+		println(StrUtil.occupy(temp, timestamp, type, StrUtil.of(obj), parent));
 	}
 
 	/***
@@ -167,10 +184,17 @@ public class D {
 	 * @param list
 	 */
 	public static <T> void list(List<T> list) {
-		String ts = tan();
-		printStart(ts);
+		String simple = simpleClassNameDotMethodOf(current());
+		String random = mark();
+		printStart(simple, random, parent());
 		printArray(list.toArray());
-		printEnd(ts);
+		printEnd(simple, random, parent());
+	}
+	
+	public static String simpleClassNameDotMethodOf(StackTraceElement stackItem) {
+		String temp = ObjectUtil.simpleNameOf(stackItem.getClassName()) + "." + stackItem.getMethodName();
+		
+		return temp;
 	}
 
 	public static void sleepK(double seconds) {
@@ -219,9 +243,18 @@ public class D {
 		printArray(items);
 	}
 	
-	public static StackTraceElement whoCalls() {
+	public static StackTraceElement current() {
+		return parentK(0);
+	}
+	
+	public static StackTraceElement parent() {
+		return parentK(1);
+	}
+	
+	public static StackTraceElement parentK(int k) {
 		StackTraceElement[] items = Thread.currentThread().getStackTrace();
-		
-		return items[3];
+
+		int index = k + 3;
+		return items[index];
 	}
 }
