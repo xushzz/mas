@@ -1,0 +1,3 @@
+bat a              display all aliases for mybatis project, $-a to show build-in only
+bat d              display xxx.dtd files in mybatis.x.x.x.jar
+ver=6/3/2018, VII  Batis1.0.0-DURANT

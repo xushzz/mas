@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 
 import com.sirap.basic.tool.C;
+import com.sirap.basic.tool.D;
 import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
@@ -56,6 +57,8 @@ public class CommandHelp extends CommandBase {
 				String tempName = getHelpFileName(key);
 				if(tempName != null) {
 					allKeys.add(key);
+				} else {
+					D.pl("Missing help file for " + key);
 				}
 			}
 			

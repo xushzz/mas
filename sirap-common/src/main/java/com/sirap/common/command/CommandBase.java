@@ -23,6 +23,7 @@ import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
+import com.sirap.basic.util.MatrixUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.RandomUtil;
@@ -159,6 +160,17 @@ public abstract class CommandBase {
 	@SuppressWarnings({ "rawtypes"})
 	public void export(List list) {
 		export(list, options);
+	}
+	
+	@SuppressWarnings({ "rawtypes"})
+	public void exportMatrix(List<List> matrix) {
+		boolean pretty = OptionUtil.readBooleanPRI(options, "p", true);
+		String connector = OptionUtil.readString(options, "c", " , ");
+		if(pretty) {
+			export(MatrixUtil.prettyMatrixLines(matrix, connector));
+		} else {
+			export(MatrixUtil.lines(matrix, connector));
+		}
 	}
 	
 	@SuppressWarnings("rawtypes")
@@ -685,9 +697,9 @@ public abstract class CommandBase {
 	}
 	
 	protected void removeFile(String filepath) {
-		String alert = "<5M";
+		String alert = "5M";
 		long filesize = FileUtil.sizeOf(filepath);
-		SizeCriteria carol = new FileSizeCriteria(alert);
+		SizeCriteria carol = new FileSizeCriteria("<" + alert);
 		if(carol.isGood(filesize) || OptionUtil.readBooleanPRI(options, "sure", false)) {
 			boolean printLog = OptionUtil.readBooleanPRI(options, "p", true);
 			if(OptionUtil.readBooleanPRI(options, "k", false)) {
@@ -704,7 +716,7 @@ public abstract class CommandBase {
 			}
 		} else {
 			String temp = "The size {0} of {1} is greater than {2}, please confirm with option $+sure";
-			XXXUtil.info(temp, FileUtil.formatSize(filesize), filepath, alert.replace("<", ""));
+			XXXUtil.info(temp, FileUtil.formatSize(filesize), filepath, alert);
 			C.pl();
 		}
 	}

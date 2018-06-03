@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>     
+<!DOCTYPE mapper     
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"    
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">   
+<mapper namespace="com.sirap.orm.mybatis.dao.ActorDao">  
+  
+   <insert id="insertActor">
+   		insert into actor values(null, #{firstName}, #{lastName}, sysdate())
+   </insert>
+
+   <delete id="deleteActorById">
+   		delete from actor where actor_id = #{id}
+   </delete>
+
+   <update id="updateActor">
+   		update actor set first_name = #{firstName}, last_name=#{lastName}, last_update = sysdate() where actor_id = #{actorId}
+   </update>
+
+   <select id="findActorById" resultType="Actorx" >   
+      	select * from actor where actor_id = #{id}  
+   </select>
+    
+    <resultMap type="ActorX" id="BaseResultMap">
+	</resultMap>
+    
+    <select id="findActorByIdX" resultMap="BaseResultMap">
+		select * from actor where actor_id = #{id}  
+  	</select>
+  	
+  	<select id="findActorsByIdList" resultType="ActorX">   
+  		select * from actor 
+  		<where>
+  			<if test="listA != null and listA.size() > 0">  
+	  		actor_id in
+	  		<foreach collection="listA" index="index" item="item" open="(" separator="," close=")"> 
+	  			#{item}
+	  		</foreach>
+	  		</if>
+  		</where>
+  	</select>
+    
+  	<select id="findActorsByIntegerArr" resultType="ActorX">   
+  		select * from actor 
+  		<where>
+  			<if test="listA != null">  
+	  		actor_id in
+	  		<foreach collection="listA" index="index" item="item" open="(" separator="," close=")"> 
+	  			#{item}
+	  		</foreach>
+	  		</if>
+  		</where>
+  	</select>
+    
+  	<select id="findActorsByTwoIdLists" resultType="ActorX">   
+  		select * from actor 
+  		<where>
+	  		actor_id in
+	  		<foreach collection="listA" index="index" item="item" open="(" separator="," close=")"> 
+	  			#{item}
+	  		</foreach>
+	  		or actor_id in
+	  		<foreach collection="listB" index="index" item="item" open="(" separator="," close=")"> 
+	  			#{item}
+	  		</foreach>
+  		</where>
+  	</select>
+    
+  	<select id="findActorsByName" resultType="ActorX">   
+  		select * from actor 
+  		<where>
+	  		<if test="name != null and name != ''">
+				first_name like #{name}
+				and last_name like #{name}
+			</if>
+  		</where>
+  	</select>
+    
+  	<select id="findActorsByBothName" resultType="ActorX">   
+  		select * from actor 
+  		<where>
+	  		first_name like #{0} and last_name like #{1}
+  		</where>
+  	</select>
+    
+  	<select id="findActorsByOrName" resultType="ActorX">   
+  		select * from actor 
+  		<where>
+	  		first_name like #{0} or last_name like #{1}
+  		</where>
+  	</select>
+    
+  	<select id="findActorsByNameMap" resultType="ActorX">   
+  		select * from actor 
+  		<where>
+	  		first_name like #{fake} and last_name like #{lake}
+	  		and actor_id in
+	  		<foreach collection="ids" index="index" item="item" open="(" separator="," close=")"> 
+	  			#{item}
+	  		</foreach>
+  		</where>
+  	</select>
+  
+    <select id="findActors" resultType="ActorX">   
+		select * from actor 
+		<where>
+			<include refid="where_of_actor"/>
+		</where>
+   </select>
+   
+   <select id="findActorByIdWithMap" resultType="map">
+      	select * from actor where actor_id = #{iddddddddd}
+   </select>
+   
+   <sql id="where_of_actor">
+		<if test="firstName != null and firstName != ''">
+			first_name like #{firstName}
+		</if>
+		<if test="lastName != null and lastName != ''">
+			and last_name like #{lastName}
+		</if>
+   </sql>
+</mapper>  

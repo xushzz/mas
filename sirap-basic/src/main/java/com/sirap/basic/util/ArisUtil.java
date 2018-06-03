@@ -345,12 +345,9 @@ public class ArisUtil {
 	public static List<String> occupySystemPropertyKid(List<String> arispathItems) {
 		List<String> newlist = Lists.newArrayList();
 		for(String item : arispathItems) {
-			String[] arr = StrUtil.parseParams("#(.+?)#(.+?)", item);
-			if(arr != null) {
-				String propertyName = arr[0];
-				String keyword = arr[1];
-				
-				String desire = SatoUtil.kidOfSystemProperty(propertyName, keyword);
+			String keyword = StrUtil.parseParam("\\$(.+?)", item);
+			if(keyword != null) {
+				String desire = SatoUtil.kidOfJavaClassPath(keyword);
 				if(desire == null) {
 					XXXUtil.alert("Not exist property and kid: " + item);
 				} else {

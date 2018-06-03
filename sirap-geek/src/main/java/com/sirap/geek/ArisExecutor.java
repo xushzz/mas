@@ -88,13 +88,16 @@ public class ArisExecutor {
 			String glass = params[0] + params[1] + Konstants.DOT_CLASS;
 			items.add(StrUtil.occupy("C.list(ArisUtil.getClassDetail({0}, true));", glass));
 		} else {
-			String[] arr = StrUtil.parseParams("^(={1,2})(.+)", remain);
+			String[] arr = StrUtil.parseParams("^(={1,3})(.+)", remain);
 			if(arr != null) {
+				int len = arr[0].length();
 				String template;
-				if(StrUtil.equals("==", arr[0])) {
-					template = "C.list({0});";
+				if(len == 3) {
+					template = "D.pla({0});";
+				} else if(len == 2) {
+					template = "D.list({0});";
 				} else {
-					template = "System.out.println({0});";
+					template = "D.pl({0});";
 				}
 				String expression = arr[1].replaceAll("[,\\.;]+$", "");
 				items.add(StrUtil.occupy(template, expression));

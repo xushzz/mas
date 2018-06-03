@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE configuration  
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">  
+<configuration>  
+  <properties resource="dbconfig.properties"></properties> 
+	<!--    
+  <properties resource="log4j.properties">
+  	<property name="lake" value="win" />
+  	<property name="boston" value="celtic" />
+  </properties>  
+     --> 
+  <settings>  
+     <!-- 
+	 <setting name="logImpl" value="STDOUT_LOGGING" />
+      -->
+     <setting name="logImpl" value="LOG4J"/>  
+     <setting name="mapUnderscoreToCamelCase" value="true"/>
+  </settings>  
+  
+  <typeAliases>
+  <!-- 
+  	<typeAlias alias="ActorX" type="com.sirap.orm.mybatis.entity.Actor" />
+  	<typeAlias alias="LangY" type="com.sirap.orm.mybatis.entity.Lang" />
+  	<typeAlias alias="ActorQueryVO" type="com.sirap.orm.mybatis.vo.ActorQueryVO" />
+	 -->
+	 <package name="com.sirap.orm.mybatis.entity"/>
+  </typeAliases>
+        
+  <environments default="development">  
+    <environment id="development">  
+      <transactionManager type="JDBC"/>
+      <dataSource type="UNPOOLED">  
+           
+        <property name="driver" value="com.mysql.jdbc.Driver"/>  
+        <property name="url" value="jdbc:mysql://localhost:3306/sakila"/>  
+        <property name="username" value="root"/>  
+        <property name="password" value="${db.password}"/>  
+         
+            <!--  
+         <property name="driver" value="${driver}"/>  
+         <property name="url" value="${url}"/>  
+         <property name="username" value="${username}"/>  
+         <property name="password" value="${password}"/>  
+           -->  
+      </dataSource>  
+    </environment>  
+  </environments>  
+      
+  <mappers> 
+  <!-- 
+    <mapper resource="com/sirap/orm/mybatis/dao/actorDaoMapper.xml"/>
+    <mapper resource="com/sirap/orm/mybatis/dao/langDaoMapper.xml"/>
+    
+    <mapper class="com.sirap.orm.mybatis.dao.ActorDao"/> 
+    <mapper class="com.sirap.orm.mybatis.dao.LangDao"/>  
+    --> 
+    
+    <package name="com.sirap.orm.mybatis.dao"/>  
+  </mappers>  
+    
+</configuration>

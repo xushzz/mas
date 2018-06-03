@@ -1,6 +1,7 @@
 ar java code       compile and execute java code, options: $+p, print command $+k, keep java&class files
-ar =42+323         compile and execute java code, System.out.println(42+323);
-ar ==givenList     compile and execute java code, C.list(givenList);
+ar =42+323         compile and execute java code, D.pl(42+323);
+ar ==givenList     compile and execute java code, D.list(givenList);
+ar ===givenArray   compile and execute java code, D.pla(givenList); PLA mean print ln array
 ar Date.class      compile and execute, with ArisUtil.getClassDetail(Date.class), could be other class.
 ar Date...         compile and execute, same as Date.class, three dots at least, could be as much as 99 dots
 ar D:\aris.txt     read text file, construct java code and execute
@@ -19,4 +20,4 @@ cl com/a/Fury      display class detail of class Fury if exists
 cl com/Fury.class  display class detail of class Fury if exists
 cl com\a\Fury      display class detail of class Fury if exists, options: $+debug
 cl com\a\Fury criteria     display class detail of class wherever matching criteria
-ver=11/27/2017, I  GEEK-ARIS1.0.10-DEMBELE
+ver=6/3/2017, VII  GEEK-ARIS1.0.11-DEMBELE

@@ -44,6 +44,8 @@ public class Konstants {
 	public static final String DOT_CLASS = ".class";
 	public static final String DOT_JAVA = ".java";
 	public static final String DOT_JAR = ".jar";
+	public static final String JAVA_DOT_CLASS_DOT_PATH = "java.class.path";
+	public static final String JAVA_DOT_LIBRARY_DOT_PATH = "java.library.path";
 
 	//á 225 aacute, small a, acute accent
 	public static final String FAKED_NULL = "NULL";

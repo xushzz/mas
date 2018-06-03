@@ -17,6 +17,7 @@ mvn.result.txt
 **/bin
 !**/Config_Mas.properties
 !**/Extra.properties
+!**/log4j.properties
 /sirap-email
 /sirap-zoo
 

@@ -9,6 +9,7 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 
 import com.google.common.collect.Lists;
+import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.TypedKeyValueItem;
 import com.sirap.basic.tool.C;
@@ -85,12 +86,12 @@ public class SatoUtil {
 	}
 	
 	public static String kidOfJavaLibPath(String keyword) {
-		String propertyName = "java.library.path";
+		String propertyName = Konstants.JAVA_DOT_LIBRARY_DOT_PATH;
 		return kidOfSystemProperty(propertyName, keyword);
 	}
 	
 	public static String kidOfJavaClassPath(String keyword) {
-		String propertyName = "java.class.path";
+		String propertyName = Konstants.JAVA_DOT_CLASS_DOT_PATH;
 		return kidOfSystemProperty(propertyName, keyword);
 	}
 	
@@ -102,11 +103,11 @@ public class SatoUtil {
 		List<MexItem> desire = CollUtil.filterMix(items, keyword, false);
 		if(desire.isEmpty()) {
 			C.list(items);
-			XXXUtil.info("Value of {0} contains no {1}.", propertyName, keyword);
+			XXXUtil.info("None of entries of {0} contains {1}.", propertyName, keyword);
 			return null;
 		} else if(desire.size() > 1) {
 			C.list(desire);
-			XXXUtil.alert("Value of {0} contains more than one match of {1}.", propertyName, keyword);
+			XXXUtil.alert("More than one entry of {0} contains {1}.", propertyName, keyword);
 		}
 		
 		return desire.get(0).toString();

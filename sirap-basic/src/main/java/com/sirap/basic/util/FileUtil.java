@@ -680,12 +680,11 @@ public class FileUtil {
 	public static boolean removeKids(String filepath, boolean printAlong) {
 		File file = new File(filepath);
 		File[] files = file.listFiles(); 
-		D.pl(file);
-		D.pl(files);
 
 		if(files == null) {
 	    	return false;
 	    }
+		
 	    for (int i = 0; i < files.length; i++) {  
 	        remove(files[i].getAbsolutePath(), printAlong);  
 	    }
@@ -696,7 +695,8 @@ public class FileUtil {
 	public static boolean remove(String filepath, boolean printAlong) {  
 		File file = new File(filepath);
 	    if (!file.exists()) {
-	    	throw new MexException("File not found: {0}", filepath);
+	    	XXXUtil.info("File not found: {0}", filepath);
+	    	return false;
 	    }
 	    if (file.isFile()) {
 	    	boolean flag = false;
