@@ -33,7 +33,6 @@ import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.framework.SimpleKonfig;
 import com.sirap.common.framework.Stash;
-import com.sirap.common.framework.command.Exporter;
 import com.sirap.common.framework.command.target.Target;
 import com.sirap.common.framework.command.target.TargetConsole;
 import com.sirap.common.framework.command.target.TargetExcel;
@@ -97,14 +96,18 @@ public abstract class CommandBase {
 	
 	public boolean process() {
 		try {
+			String msg = "[{0}] {1} {2} {3} ${4}     #by {5}";
+			String simple = getClass().getSimpleName();
+			String direction;
+			String nice = D.acronymTrace(D.current());
 			if(isDebug()) {
-				String msg = "before handle '{0}', ${1}  {2}";
-				D.ts(StrUtil.occupy(msg, command, options, getClass().getName()));
+				direction = "=>";
+				D.println(StrUtil.occupy(msg, D.now(), simple, direction, command, options, nice));
 			}
 			boolean flag = handle();
 			if(isDebug()) {
-				String msg = "after handle '{0}', ${1}  {2}";
-				D.ts(StrUtil.occupy(msg, command, options, getClass().getName()));
+				direction = "<=";
+				D.println(StrUtil.occupy(msg, D.now(), simple, direction, command, options, nice));
 			}
 			if(!flag) {
 				return false;
@@ -114,14 +117,18 @@ public abstract class CommandBase {
 			if(isDebug()) {
 				if(ex.getOrigin() != null) {
 					stv.append(XXXUtil.getStackTrace(ex.getOrigin()));
+					D.pl("isdebug, has origin");
 				} else {
 					stv.append(XXXUtil.getStackTrace(ex));
+					D.pl("isdebug, no origin");
 				}
 			} else {
 				if(ex.getOrigin() != null) {
 					stv.append(ex.getOrigin());
+					D.pl("no debug, has origin");
 				} else {
 					stv.append(ex);
+					D.pl("no debug, no origin");
 				}
 			}
 			export(stv);
@@ -265,7 +272,8 @@ public abstract class CommandBase {
 			if(OptionUtil.readBooleanPRI(finalOptions, "self", false)) {
 				newList.add(0, "$ " + input);
 			}
-			Exporter.exportList(input, newList, where, finalOptions);
+//			Exporter.exportList(input, newList, where, finalOptions);
+			where.export(newList, finalOptions, g().isExportWithTimestampEnabled(finalOptions));
 		}
 	}
 	
@@ -292,7 +300,10 @@ public abstract class CommandBase {
 	}
 
 	public void exportEmptyMsg() {
-		Exporter.exportList(input, Lists.newArrayList("The result is empty."), whereToShot(), options);		
+		Target where = whereToShot();
+		List newList = Lists.newArrayList("The result is empty.");
+//		Exporter.exportList(input, Lists.newArrayList("The result is empty."), whereToShot(), options);	
+		where.export(newList, options, g().isExportWithTimestampEnabled(options));
 	}
 
 	@SuppressWarnings("rawtypes")

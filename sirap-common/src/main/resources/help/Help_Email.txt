@@ -1,5 +1,5 @@
 A>@                execute command A then a mail with the result could be sent to configured receiver
-A>$@               with dollar symbol, the result would be parsed as files and attached to the email
+A>@ $+ff           with option $+ff, the result would be parsed as files and attached to the email
 A>k@g.cn           execute command A then a mail with the result could be sent to fire@g.cn
 A>k@g.cn[;m@z.cn]  multiple receivers separated by semi-colons are perfectly acceptable                    
 A>@,Hello          the mail will be with a subject 'Hello', same goes for specified receiver

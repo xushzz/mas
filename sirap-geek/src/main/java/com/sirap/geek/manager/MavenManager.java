@@ -49,21 +49,24 @@ public class MavenManager {
 		return temp;
 	}
 	
+	//C:/apache-maven-3.3.9/lib/maven-model-builder-3.3.9.jar!/org/apache/maven/model/pom-4.0.0.xml
 	public String getSuperPom(String home) {
 		String regex = "(\\d\\.\\d\\.\\d{1,2})";
 		String version = StrUtil.findFirstMatchedItem(regex, home);
 		String jarName = StrUtil.occupy("maven-model-builder-{0}.jar", version);
 		String jarPath = StrUtil.useDelimiter(File.separator, home, "lib", jarName);
 		String pomPath = jarPath.replace('\\', '/') + "!/org/apache/maven/model/pom-4.0.0.xml";
-		//C:\apache-maven-3.3.9\lib\maven-model-builder-3.3.9.jar
-		//C:/apache-maven-3.3.9/lib/maven-model-builder-3.3.9.jar!/org/apache/maven/model/pom-4.0.0.xml
 		
 		return pomPath;
 	}
 	
-	private String getMavenRepo(String home) {
+	public String getMavenRepo() {
+		return getMavenRepo(null);
+	}
+	
+	public String getMavenRepo(String home) {
 		if(home == null) {
-			return null;
+			home = getMavenHome();
 		}
 		
 		File satoshi = new File(home, "conf\\settings.xml");
@@ -149,5 +152,29 @@ public class MavenManager {
 		sb.append(".").append(type);
 		
 		return StrUtil.useSeparator(repo, sb);
+	}
+	
+	/***
+	 * #1 org.springframework.spring-beans.3.0.5.RELEASE
+	 *    org/springframework/spring-beans.3.0.5.RELEASE
+	 * #2 org.springframework.spring-beans/3.0.5.RELEASE
+	 *    org/springframework/spring-beans/3.0.5.RELEASE
+	 * @return
+	 */
+	public static String toNormalPath(String origin) {
+		int len = origin.length();
+		char[] dest = new char[len];
+		for(int k = 0; k < len; k++) {
+			char current = origin.charAt(k);
+			int left = k - 1, right = k + 1;
+			if(current != '.' || left >= 0 && StrUtil.isDigit(origin.charAt(left)) || right <= len - 1 && StrUtil.isDigit(origin.charAt(right))) {
+				dest[k] = current;
+				continue;
+			}
+			
+			dest[k] = '/';
+		}
+		
+		return new String(dest);
 	}
 }

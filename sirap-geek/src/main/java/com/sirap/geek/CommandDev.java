@@ -5,12 +5,15 @@ import java.awt.Toolkit;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.Extractor;
+import com.sirap.basic.component.comparator.MexFileComparator;
 import com.sirap.basic.data.HttpData;
+import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexZipEntry;
 import com.sirap.basic.domain.ValuesItem;
@@ -44,6 +47,7 @@ public class CommandDev extends CommandBase {
 
 	private static final String KEY_AH_SPLIT = "ah";
 	private static final String KEY_MAVEN = "maven";
+	private static final String KEY_MAVEN_REPO = "repo";
 	private static final String KEY_DEPS = "deps";
 	private static final String KEY_ISSUE = "iss";
 	private static final String KEY_JENKINS = "jk";
@@ -75,7 +79,60 @@ public class CommandDev extends CommandBase {
 			
 			return true;
 		}
-		
+
+		params = parseParams(KEY_MAVEN_REPO + "\\s+([\\S]+?)(|\\s(.+?))");
+		if(params != null) {
+			String repo = MavenManager.g().getMavenRepo() + "/";
+			String path = MavenManager.toNormalPath(params[0]);
+			String criteria = params[1];
+			String full = StrUtil.useSeparator(repo, path);
+			int depth = OptionUtil.readIntegerPRI(options, "d", 2);
+			List<MexFile> items = FileUtil.scanSingleFolder(full, depth, true);
+			if(!EmptyUtil.isNullOrEmpty(criteria)) {
+				items = CollUtil.filter(items, criteria, isCaseSensitive(), isStayCriteria());
+			}
+			
+			if(EmptyUtil.isNullOrEmpty(items)) {
+				exportEmptyMsg();
+			} else {
+				boolean toRemove = OptionUtil.readBooleanPRI(options, "remove", false);
+				if(toRemove) {
+					for(MexFile mf : items) {
+						removeFile(mf.getPath());
+					}
+					
+					return true;
+				}
+				if(target.isFileRelated()) {
+					List<File> files = new ArrayList<File>();
+					for(MexFile mf : items) {
+						File fileItem = mf.getFile();
+						if(fileItem.isFile()) {
+							files.add(fileItem);
+						}
+					}
+					
+					export(files);
+				} else {
+					boolean orderByNameAsc = OptionUtil.readBooleanPRI(options, "byname", true);
+					MexFileComparator cesc = new MexFileComparator(orderByNameAsc); 
+					cesc.setByTypeAsc(OptionUtil.readBoolean(options, "bytype"));
+					cesc.setByDateAsc(OptionUtil.readBoolean(options, "bydate"));
+					cesc.setBySizeAsc(OptionUtil.readBoolean(options, "bysize"));
+					Collections.sort(items, cesc);
+					export(items);
+				}
+			}
+			
+			return true;
+		}
+
+		if(is(KEY_MAVEN_REPO)) {
+			export(MavenManager.g().getMavenRepo());
+			
+			return true;
+		}
+
 		if(is(KEY_MAVEN)) {
 			List<String> items = MavenManager.g().getMavenInfo();
 			export(items);

@@ -109,6 +109,13 @@ public class ObjectUtil {
 		return flag;
 	}
 	
+	public static Object execute(final Object instanceOrClazz, final String methodName) {
+		Class[] clazzArr = {};
+		Object[] args = {};
+		
+		return execute(instanceOrClazz, methodName, clazzArr, args);
+	}
+	
 	public static Object execute(final Object instanceOrClazz, final String methodName, Class[] clazzArr, Object... args) {
 		boolean isStaticMethod = ObjectUtil.isStaticClass(instanceOrClazz);
 		
@@ -126,8 +133,8 @@ public class ObjectUtil {
 			}
 			
 			return obj;
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
 		
 		return null;
@@ -158,6 +165,32 @@ public class ObjectUtil {
 	 */
 	public static String simpleNameOf(String fullClassName) {
 		return fullClassName != null ? fullClassName.replaceAll("^.+\\.", "") : Konstants.FAKED_NULL;
+	}
+	
+	/***
+	 * com.sirap.basic.tool.Debug =>
+	 * c.s.b.t.Debug
+	 * @param instance
+	 * @return
+	 */
+	public static String acronymNameOf(String fullClassName) {
+		String dot = ".";
+		List<String> items = StrUtil.split(fullClassName, dot);
+		StringBuffer sb = StrUtil.sb();
+		int count = 0;
+		for(String item : items) {
+			if(count == items.size() - 1) {
+				sb.append(item);
+				break;
+			}
+			if(!item.isEmpty()) {
+				sb.append(item.charAt(0));
+			}
+			sb.append(dot);
+			count++;
+		}
+		
+		return sb.toString();
 	}
 	
 	public static String simpleNameOf(Class<?> clazz) {

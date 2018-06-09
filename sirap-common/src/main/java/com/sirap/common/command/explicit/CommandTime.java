@@ -17,7 +17,7 @@ import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.domain.TZRecord;
-import com.sirap.common.framework.command.target.TargetPDF;
+import com.sirap.common.framework.command.target.TargetPdf;
 import com.sirap.common.manager.TimeZoneManager;
 
 public class CommandTime extends CommandBase {
@@ -148,7 +148,7 @@ public class CommandTime extends CommandBase {
 		solo = parseParam(KEY_TIMEZONE_DISPLAY);
 		if(solo != null) {
 			List<TZRecord> records = TimeZoneManager.g().getTimeZones(solo, g().getLocale(), false);
-			if(target instanceof TargetPDF) {
+			if(target instanceof TargetPdf) {
 				int[] cellsWidth = {1, 1};
 				int[] cellsAlign = {0, 0};
 				PDFParams pdfParams = new PDFParams(cellsWidth, cellsAlign);

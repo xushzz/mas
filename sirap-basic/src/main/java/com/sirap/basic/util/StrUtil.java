@@ -27,6 +27,10 @@ public class StrUtil {
 		return m.matches();
 	}
 	
+	public static boolean isDigit(char ch) {
+		return ch >= '0' && ch <= '9';
+	}
+	
 	public static boolean containsNoneOfAplhanumeric(String source) {
 		if(source == null) return true;
 		
@@ -274,6 +278,15 @@ public class StrUtil {
 			}
 		}
 		
+		return false;
+	}
+	
+	public static boolean isIn(String target, List<String> items) {
+		for(String item : items) {
+			if(equals(item, target)) {
+				return true;
+			}
+		}
 		return false;
 	}
 	

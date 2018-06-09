@@ -57,7 +57,7 @@ public class CommandEmail extends CommandBase {
 		if(solo != null) {
 			if(target instanceof TargetConsole) {
 				if(isEmailEnabled()) {
-					target = TargetAnalyzer.createTargetEmail(EmailCenter.DEF_RECEIVER, command);
+					target = TargetAnalyzer.createTargetEmail(EmailCenter.DEFAULT_RECEIVER, command);
 				} else {
 					C.pl2("Email currently disabled.");
 					return true;

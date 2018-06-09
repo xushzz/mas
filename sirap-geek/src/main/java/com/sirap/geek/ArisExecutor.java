@@ -283,7 +283,7 @@ public class ArisExecutor {
 	}
 	
 	private String saveSourceCode(List<String> sourceCode) {
-		String folderName = DateUtil.timestamp() + "_" + RandomUtil.letters(1, true) + RandomUtil.digits(2);
+		String folderName = DateUtil.timestamp() + "_" + RandomUtil.LETTERS(1) + RandomUtil.digits(2);
 		whereToGenerate = FileUtil.bySeparator(arisPlace, "aris", folderName);
 		File target = new File(whereToGenerate);
 		target.mkdirs();

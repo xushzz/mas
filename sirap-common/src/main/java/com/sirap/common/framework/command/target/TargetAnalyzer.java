@@ -3,251 +3,320 @@ package com.sirap.common.framework.command.target;
 import java.io.File;
 import java.util.List;
 
-import com.sirap.basic.component.Konstants;
 import com.sirap.basic.email.EmailCenter;
-import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
+import com.sirap.basic.util.HttpUtil;
+import com.sirap.basic.util.MiscUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.XXXUtil;
+import com.sirap.common.framework.SimpleKonfig;
 
 public abstract class TargetAnalyzer {
-
-	public static final String KEY_CREATE_FOLDER = "=";
-	public static final String KEY_TO_EXPORT_FOLDER = ".";
-	public static final String KEY_EXPORT_INFO_TO_TEXTFILE = "(\\*|)(.*?)";
-	public static final String KEY_EXPORT_INFO_TO_PDF = ".*\\.pdf$";
-	public static final String KEY_EXPORT_INFO_TO_HTML = ".*\\.htm$";
-	public static final String KEY_EXPORT_INFO_TO_EXCEL = ".*\\.xlsx?$";
-	public static final String KEY_EXPORT_FILE_TO_FOLDER = "\\$(.*?)";
 	
-	public Target parse(String command, String target) {
-		return parse(command, target, false);
+	public Target parse(String command, String targetstr) {
+		XXXUtil.nullOrEmptyCheck(targetstr);
+
+		Target tweb = createTargetWeb(targetstr, command);
+		if(tweb != null) {
+			return tweb;			
+		}
+
+		Target temail = createTargetEmail(targetstr, command);
+		if(temail != null) {
+			if(SimpleKonfig.g().isEmailEnabled()) {
+				return temail;
+			} else {
+				XXXUtil.alert("Email currently unavailable.");
+			}
+		}
+
+		Target tfolder = createTargetFolder(targetstr, command);
+		if(tfolder != null) {
+			return tfolder;
+		}
+
+		Target tfile = createTargetFile(targetstr, command);
+		if(tfile != null) {
+			return tfile;
+		}
+		
+		String def = "." + FileUtil.EXTENSIONS_TEXT.get(0);
+		tfile = createTargetFile(targetstr + def, command);
+		if(tfile != null) {
+			return tfile;
+		}
+		
+		return null; 
+	}
+
+	/****
+	 * [.html]
+	 * [.txt]
+	 * [E:/cake/abc.txt]
+	 * [E:/cake/.txt]
+	 * [E:/cake/abc]
+	 * @param targetstr
+	 * @param command
+	 * @return
+	 */
+	private TargetFile targetOf(String current) {
+		if(StrUtil.isIn(current, FileUtil.EXTENSIONS_EXCEL)) {
+			return new TargetExcel();
+		}
+		
+		if(StrUtil.isIn(current, FileUtil.EXTENSIONS_PDF)) {
+			return new TargetPdf();
+		}
+		
+		if(StrUtil.isIn(current, FileUtil.EXTENSIONS_TEXT)) {
+			return new TargetText();
+		}
+		
+		if(StrUtil.isIn(current, FileUtil.EXTENSIONS_HTML)) {
+			return new TargetHtml();
+		}
+		
+		if(StrUtil.isIn(current, FileUtil.EXTENSIONS_SIRAP)) {
+			return new TargetSirap();
+		}
+		
+		return null;		
 	}
 	
-	public Target parse(String command, String targetStr, boolean isEmailEnabled) {
+	private TargetFile createTargetFile(String targetstr, String command) {
+		XXXUtil.nullOrEmptyCheck(targetstr);
+		
+		String defaultFolder = getDefaultExportFolder();
+		String commandConverted = FileUtil.generateLegalFileName(command);
 
-		if(EmptyUtil.isNullOrEmpty(targetStr)) {
-			Target target = new TargetConsole(true);
-			return target;
-		}
-		
-		Target target = null;
-		
-		boolean isEmailCase = targetStr.indexOf('@') >= 0;
-		if(isEmailCase) {
-			if(!isEmailEnabled) {
-				C.pl2("Email currently disabled.");
-				return null;
+		String typeSecret = "." + FileUtil.EXTENSIONS_SIRAP.get(0);
+		String sirapfile = StrUtil.parseParam("\\*(.*)", targetstr);
+		if(sirapfile != null) {
+			if(sirapfile.isEmpty()) {
+				String filename = commandConverted + typeSecret;
+				return new TargetSirap(defaultFolder, filename);
 			}
-			
-			return createTargetEmail(targetStr, command);
-		}
-		
-		String singleParam = StrUtil.parseParam(KEY_EXPORT_FILE_TO_FOLDER, targetStr);
-		if(singleParam != null) {
-			target = createTargetFolder(singleParam, command);
-			target.setFileRelated(true);
-			
-			return target;
-		}
-		
-		if(StrUtil.isRegexMatched(KEY_EXPORT_INFO_TO_PDF, targetStr)) {
-			String destInfo = targetStr.trim();
-			target = createTargetPDF(destInfo, command);
-
-			return target;
-		}
-		
-		if(StrUtil.isRegexMatched(KEY_EXPORT_INFO_TO_HTML, targetStr)) {
-			String destInfo = targetStr.trim();
-			target = createTargetHtml(destInfo, command);
-
-			return target;
-		}
-		
-		if(StrUtil.isRegexMatched(KEY_EXPORT_INFO_TO_EXCEL, targetStr)) {
-			String destInfo = targetStr.trim();
-			target = createTargetExcel(destInfo, command);
-
-			return target;
-		}
-		
-		String[] params = StrUtil.parseParams(KEY_EXPORT_INFO_TO_TEXTFILE, targetStr);
-		if(params != null) {
-			boolean isSirap = !params[0].isEmpty();
-			String destInfo = params[1];
-			TargetTxtFile txtFile = createTargetTxtFile(destInfo, command);
-			if(isSirap) {
-				String fileName = txtFile.getFileName().replaceAll(Konstants.DOT_TXT + "$", Konstants.DOT_SIRAP);
-				txtFile.setFileName(fileName);
+			String tempAK = parseRealFolderPath(sirapfile);
+			if(tempAK != null) {
+//				D.pl(101);
+				String filename = commandConverted + typeSecret;
+				return new TargetText(tempAK, filename);
 			}
+		}
+		
+		String typeText = "." + FileUtil.EXTENSIONS_TEXT.get(0);
+		if(StrUtil.equals(targetstr, ".")) {
+//			D.pl(200);
+			String filename = commandConverted + typeText;
+			return new TargetText(defaultFolder, filename);
+		}
+		
+		String folderpath = parseRealFolderPath(targetstr);
+		if(folderpath != null) {
+//			D.pl(201);
+			String filename = commandConverted + typeText;
+			return new TargetText(folderpath, filename);
+		}
+		
+		String[] arr = FileUtil.filenameAndExtensionOf(targetstr);
+//		D.pla(targetstr, command, arr);
+		if(arr == null) {
+			//[abc.pdfs]
+//			D.pl(203);
+			return null;
+		}
+		
+		String leftoflastdot = arr[0];
+		String extension = arr[1];
+		TargetFile target = targetOf(extension);
+		if(target == null) {
+			return null;
+		}
+		
+		if(leftoflastdot.isEmpty()) {
+			//[.txt]
+			String truefilename = FileUtil.generateLegalFileName(command) + targetstr;
+			target.setFilename(truefilename);
+			target.setFolderpath(getDefaultExportFolder());
 			
-			return txtFile;
+			return target;
 		}
 		
-		return target; 
-	}
-	
-	private Target createTargetFolder(String destInfo, String command) {
-		String[] params = StrUtil.parseParams("(.*?)(=|)", destInfo);
-		String dest = params[0];
-		boolean toCreateFolder = !params[1].isEmpty();
-		String newFolderName = "";
-		if(toCreateFolder) {
-			newFolderName = FileUtil.generateLegalFileName(command) + File.separator;
+		//[E:]
+		File folder = FileUtil.getIfNormalFolder(targetstr);
+		if(folder != null) {
+			String truefilename = FileUtil.generateLegalFileName(command);
+			target.setFilename(truefilename);
+			target.setFolderpath(getDefaultExportFolder());
+			
+			return target;
 		}
 		
-		if(dest.isEmpty()) {
-			return new TargetFolder(getDefaultExportFolder() + newFolderName);			
-		}
-		
-		String folderPath = parseRealFolderPath(dest);
-		if(folderPath != null) {
-			return new TargetFolder(folderPath + newFolderName);	
+		arr = FileUtil.splitByLastFileSeparator(targetstr);
+//		D.pla(arr);
+		String parentfolder = arr[0];
+		String filenameinfo = arr[1];
+		String[] arr2 = FileUtil.filenameAndExtensionOf(filenameinfo);
+//		D.pla(parentfolder, arr2[0], arr2[1]);
+		String shortname;
+		if(arr2[0].isEmpty()) {
+			shortname = FileUtil.generateLegalFileName(command) + filenameinfo;
 		} else {
-			newFolderName = FileUtil.generateLegalFileName(dest) + File.separator;
-			return new TargetFolder(getDefaultExportFolder() + newFolderName);
-		}
-	}
-	
-	private TargetTxtFile createTargetTxtFile(String destInfo, String command) {
-		String commandConvertedFileName = FileUtil.generateLegalFileName(command) + Konstants.DOT_TXT;
-		if(destInfo.isEmpty() || destInfo.equalsIgnoreCase(KEY_TO_EXPORT_FOLDER)) {
-			return new TargetTxtFile(getDefaultExportFolder(), commandConvertedFileName);			
+			shortname = FileUtil.generateLegalFileName(filenameinfo);
 		}
 		
-		String folderPath = parseRealFolderPath(destInfo);
-		if(folderPath != null) {
-			return new TargetTxtFile(folderPath, commandConvertedFileName);
-		}
-		
-		String[] folderAndFile = FileUtil.splitFolderAndFile(destInfo);
-		if(!EmptyUtil.isNullOrEmptyOrBlank(folderAndFile[0])) {
-			folderPath = parseRealFolderPath(folderAndFile[0]);
-			if(folderPath != null) {
-				String newFileName = FileUtil.generateLegalFileName(folderAndFile[1]);
-				if(needToAddExtensionTxt(newFileName)) {
-					newFileName += Konstants.DOT_TXT;
-				}
-				
-				return new TargetTxtFile(folderPath, newFileName);
-			}
-		}
-
-		String newFileName = FileUtil.generateLegalFileName(destInfo);
-		if(needToAddExtensionTxt(newFileName)) {
-			newFileName += Konstants.DOT_TXT;
-		}
-		
-		return new TargetTxtFile(getDefaultExportFolder(), newFileName);
-	}
-	
-	private boolean needToAddExtensionTxt(String origin) {
-		String solidExtensions = "txt,md,js";
-		for(String item : StrUtil.split(solidExtensions)) {
-			if(StrUtil.endsWith(origin, "." + item)) {
-				return false;
+		if(EmptyUtil.isNullOrEmpty(parentfolder)) {
+//			D.pl(100);
+			//[abc.txt]
+			//use def exp
+			target.setFolderpath(getDefaultExportFolder());
+			target.setFilename(shortname);
+		} else {
+//			D.pl(200);
+			//[E:/exist/abc.txt]
+			//[E:/nonexist/abc.txt]
+			String tempA = parseRealFolderPath(parentfolder);
+			if(tempA != null) {
+//				D.pl(201);
+				//[E:/exist/abc.txt]
+				target.setFolderpath(tempA);
+				target.setFilename(shortname);
+			} else {
+//				D.pl(202);
+				//[E:/nonexist/abc.txt]
+				//use def exp
+				shortname = FileUtil.generateLegalFileName(targetstr);
+				target.setFolderpath(getDefaultExportFolder());
+				target.setFilename(shortname);
 			}
 		}
 		
-		return true;
+		return target;
 	}
 	
-	private TargetPDF createTargetPDF(String destInfo, String command) {
-		String commandConvertedFileName = FileUtil.generateLegalFileName(command) + Konstants.DOT_PDF;
-		if(destInfo.equalsIgnoreCase(Konstants.DOT_PDF)) {
-			return new TargetPDF(getDefaultExportFolder(), commandConvertedFileName);			
+	public Target createTargetFolder(String origin, String command) {
+		String defaultFolder = getDefaultExportFolder();
+		
+		String targetstr = StrUtil.parseParam("#(.*)", origin);
+		if(targetstr == null) {
+			return null;
 		}
 		
-		String[] folderAndFile = FileUtil.splitFolderAndFile(destInfo);
-		if(!EmptyUtil.isNullOrEmptyOrBlank(folderAndFile[0])) {
-			String folderPath = parseRealFolderPath(folderAndFile[0]);
-			if(folderPath != null) {
-				String newFileName = folderAndFile[1];
-				if(newFileName.equalsIgnoreCase(Konstants.DOT_PDF)) {
-					newFileName = commandConvertedFileName;
-				}
-			
-				return new TargetPDF(folderPath, newFileName);
+		if(targetstr.isEmpty()) {
+			return new TargetFolder(defaultFolder);
+		}
+		
+		String folderpath = parseRealFolderPath(targetstr);
+//		D.pla("createTargetFolder", targetstr, command, folderpath);
+		if(folderpath != null) {
+			return new TargetFolder(folderpath);
+		}
+		
+		String[] arr = FileUtil.splitByLastFileSeparator(targetstr);
+//		D.pla(arr);
+		if(arr[0] != null) {
+			//[E:/exists/jack]
+			//[E:/nonexists/jack]
+//			D.pl(100);
+			String parentfolderpath = parseRealFolderPath(arr[0]);
+			if(parentfolderpath != null) {
+				//[E:/exists/jack]
+//				D.pl(101);
+				//create new folder
+				String newfolderpath = StrUtil.useSeparator(parentfolderpath, arr[1]);
+				(new File(newfolderpath)).mkdirs();
+				return new TargetFolder(newfolderpath);
+			} else {
+				//[E:/nonexists/jack]
+//				D.pl(102);
+				String legalfoldername = FileUtil.generateLegalFileName(targetstr);
+				String newfolderpath = StrUtil.useSeparator(getDefaultExportFolder(), legalfoldername);
+				(new File(newfolderpath)).mkdirs();
+				return new TargetFolder(newfolderpath);	
 			}
+		} else {
+			//nicejacket
+//			D.pl(200);
+			String legalfoldername = FileUtil.generateLegalFileName(targetstr);
+			String newfolderpath = StrUtil.useSeparator(getDefaultExportFolder(), legalfoldername);
+			(new File(newfolderpath)).mkdirs();
+			return new TargetFolder(newfolderpath);	
 		}
-
-		String newFileName = FileUtil.generateLegalFileName(destInfo);
-		
-		return new TargetPDF(getDefaultExportFolder(), newFileName);
 	}
 	
-	private TargetHtml createTargetHtml(String destInfo, String command) {
-		String commandConvertedFileName = FileUtil.generateLegalFileName(command) + Konstants.DOT_HTM;
-		if(destInfo.equalsIgnoreCase(Konstants.DOT_HTM)) {
-			return new TargetHtml(getDefaultExportFolder(), commandConvertedFileName);			
-		}
-		
-		String[] folderAndFile = FileUtil.splitFolderAndFile(destInfo);
-		if(!EmptyUtil.isNullOrEmptyOrBlank(folderAndFile[0])) {
-			String folderPath = parseRealFolderPath(folderAndFile[0]);
-			if(folderPath != null) {
-				String newFileName = folderAndFile[1];
-				if(newFileName.equalsIgnoreCase(Konstants.DOT_HTM)) {
-					newFileName = commandConvertedFileName;
-				}
-			
-				return new TargetHtml(folderPath, newFileName);
-			}
-		}
-
-		String newFileName = FileUtil.generateLegalFileName(destInfo);
-		
-		return new TargetHtml(getDefaultExportFolder(), newFileName);
-	}
-	
-	private TargetExcel createTargetExcel(String destInfo, String command) {
-		String extension = FileUtil.isExcel(destInfo) ? Konstants.DOT_EXCEL : Konstants.DOT_EXCEL_X;
-		String commandConvertedFileName = FileUtil.generateLegalFileName(command) + extension;
-		if(StrUtil.equals(destInfo, Konstants.DOT_EXCEL) || StrUtil.equals(destInfo, Konstants.DOT_EXCEL_X)) {
-			return new TargetExcel(getDefaultExportFolder(), commandConvertedFileName);			
-		}
-		
-		String[] folderAndFile = FileUtil.splitFolderAndFile(destInfo);
-		if(!EmptyUtil.isNullOrEmptyOrBlank(folderAndFile[0])) {
-			String folderPath = parseRealFolderPath(folderAndFile[0]);
-			if(folderPath != null) {
-				String newFileName = folderAndFile[1];
-				if(StrUtil.equals(newFileName, Konstants.DOT_EXCEL) || StrUtil.equals(newFileName, Konstants.DOT_EXCEL_X)) {
-					newFileName = commandConvertedFileName;
-				}
-			
-				return new TargetExcel(folderPath, newFileName);
-			}
-		}
-
-		String newFileName = FileUtil.generateLegalFileName(destInfo);
-		
-		return new TargetExcel(getDefaultExportFolder(), newFileName);
-	}
-	
-	public static Target createTargetEmail(String targetStr, String command) {
-		String[] params = StrUtil.parseParams("(\\$|)(.*?)", targetStr);
-		boolean fileRelated = !params[0].isEmpty();
-		String temp = params[1];
-		String mixedAddresses = temp;
-		String subject = command;
-		int idxComma = temp.indexOf(",");
+	/*****
+	 * 
+	 * @param targetStr
+	 * [@]
+	 * [aol007@163.com]
+	 * [aol007@163.com, lovely basketball]
+	 * [john@163.com;jack@173.com, lovely basketball]
+	 * @param command
+	 * @return
+	 */
+	public static Target createTargetEmail(String targetstr, String command) {
+		String mixedAddresses;
+		String subject;
+		int idxComma = targetstr.indexOf(",");
 		if(idxComma > 0) {
-			mixedAddresses = temp.substring(0, idxComma).trim();
-			subject = temp.substring(idxComma + 1).trim();
+			mixedAddresses = targetstr.substring(0, idxComma).trim();
+			subject = targetstr.substring(idxComma + 1).trim();
+		} else {
+			mixedAddresses = targetstr;
+			subject = command;
 		}
 		
 		List<String> toList = EmailCenter.parseLegalAddresses(mixedAddresses);
-		if(!EmptyUtil.isNullOrEmpty(toList)) {
+		if(!toList.isEmpty()) {
 			Target email = new TargetEmail(subject, toList);
-			email.setFileRelated(fileRelated);
 			return email;
 		}
 		
 		return null;
 	}
 	
+	/***
+	 * 
+	 * @param targetstr
+	 * [#]
+	 * [http://remote.com/upload]
+	 * @param command
+	 * @return
+	 */
+	public static Target createTargetWeb(String targetstr, String command) {
+		String remoteurl;
+		String subject;
+		int idxComma = targetstr.indexOf(",");
+		if(idxComma > 0) {
+			remoteurl = targetstr.substring(0, idxComma).trim();
+			subject = targetstr.substring(idxComma + 1).trim();
+		} else {
+			remoteurl = targetstr;
+			String commandConverted = FileUtil.generateLegalFileNameBySpace(command);
+			subject = commandConverted;
+		}
+		
+		String site = StrUtil.parseParam(":(.*)", remoteurl);
+		if(site != null) {
+			if(site.isEmpty()) {
+				remoteurl = HttpUtil.URL_AKA10_REPO;
+			} else {
+				remoteurl = SimpleKonfig.g().getUserValueOf(site);
+				String msg = ":No user config for website key: " + site;
+				XXXUtil.nullOrEmptyCheck(remoteurl, msg);
+			}
+		}
+		
+		if(MiscUtil.isHttp(remoteurl)) {
+			Target tweb = new TargetWeb(subject, remoteurl);
+			return tweb;
+		}
+		
+		return null;
+	}
+	
 	public abstract String getDefaultExportFolder();
+	
 	public abstract String parseRealFolderPath(String pseudoFolderpath);
 }

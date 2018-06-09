@@ -32,7 +32,7 @@ import com.sirap.common.domain.LoginRecord;
 import com.sirap.common.extractor.RemoteSecurityExtractor;
 import com.sirap.common.framework.Konfig;
 import com.sirap.common.framework.SimpleKonfig;
-import com.sirap.common.framework.command.target.TargetPDF;
+import com.sirap.common.framework.command.target.TargetPdf;
 import com.sirap.common.manager.CommandHistoryManager;
 import com.sirap.common.manager.LoginHistoryManager;
 
@@ -202,7 +202,7 @@ public class CommandMonitor extends CommandBase {
 			solo = parseParam(KEY_LOGIN_HISTORY + "\\s(.+?)");
 			if(solo != null) {
 				List<LoginRecord> records = LoginHistoryManager.g().search(solo);
-				if(target instanceof TargetPDF) {
+				if(target instanceof TargetPdf) {
 					target.setParams(LH_PDF_PARAMS);
 					List<List<String>> items = CollUtil.items2PDFRecords(records);
 					export(items);
@@ -216,7 +216,7 @@ public class CommandMonitor extends CommandBase {
 			if(params != null) {
 				int count = MathUtil.toInteger(params[0], 20);
 				List<LoginRecord> records = LoginHistoryManager.g().getLoginRecords(count);
-				if(target instanceof TargetPDF) {
+				if(target instanceof TargetPdf) {
 					target.setParams(LH_PDF_PARAMS);
 					List<List<String>> items = CollUtil.items2PDFRecords(records);
 					export(items);
@@ -229,7 +229,7 @@ public class CommandMonitor extends CommandBase {
 			
 			if (is(KEY_LOGIN_HISTORY + KEY_2DOTS)) {
 				List<LoginRecord> records = LoginHistoryManager.g().getAllInputRecords();
-				if(target instanceof TargetPDF) {
+				if(target instanceof TargetPdf) {
 					target.setParams(LH_PDF_PARAMS);
 					List<List<String>> items = CollUtil.items2PDFRecords(records);
 					export(items);
@@ -257,7 +257,7 @@ public class CommandMonitor extends CommandBase {
 					}
 				}
 				
-				if(target instanceof TargetPDF) {
+				if(target instanceof TargetPdf) {
 					target.setParams(CH_PDF_PARAMS);
 					List<List<String>> items = CollUtil.items2PDFRecords(records);
 					export(items);

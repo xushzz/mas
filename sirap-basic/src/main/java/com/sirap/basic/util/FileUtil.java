@@ -12,7 +12,9 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,6 +46,12 @@ public class FileUtil {
 	public static final String SUFFIX_MEX = "mex";
 	public static final String SUFFIX_SIRAP = "sirap";
 	public static final String SUFFIXES_OTHERS = "jar;apk;zip";
+	
+	public static final List<String> EXTENSIONS_TEXT = StrUtil.split("txt,properties,java,js,json,css,xml,pom,bat,cpp,sh,py,sql,cmd,md,ini");
+	public static final List<String> EXTENSIONS_PDF = StrUtil.split("pdf");
+	public static final List<String> EXTENSIONS_EXCEL = StrUtil.split("xls,xlsx");
+	public static final List<String> EXTENSIONS_HTML = StrUtil.split("htm,html");
+	public static final List<String> EXTENSIONS_SIRAP = StrUtil.split("sir,aka");
 
 	public static final char[] BAD_CHARS_FOR_FILENAME_WINDOWS = {'/','\\',':','\"','*','?','|','>','<'};
 	public static final char[] BAD_CHARS_FOR_FILENAME_MAC = {'/','?','~','^','&','*'};
@@ -289,6 +297,31 @@ public class FileUtil {
 
 		return fileName;
 	}
+	public static String generateLegalFileNameBySpace(String source) {
+		if(source == null) {
+			return null;
+		}
+		
+		String badChars = new String(BAD_CHARS_FOR_FILENAME_WINDOWS);
+		if(PanaceaBox.isMacOrLinuxOrUnix()) {
+			badChars = new String(BAD_CHARS_FOR_FILENAME_MAC);
+		}
+		
+		StringBuffer sb = new StringBuffer();
+		for(int i = 0; i < source.length(); i++) {
+			char key = source.charAt(i);
+			if(badChars.indexOf(key) >= 0) {
+				sb.append(" ");
+			} else {
+				sb.append(key);
+			}
+		}
+		
+		String fileName = sb.toString(); 
+		fileName = fileName.replace("\t", " ");
+
+		return fileName;
+	}
 	
 	public static String escapeChars(String source, char[] charsToEscape) {
 		String temp = new String(charsToEscape);
@@ -359,6 +392,26 @@ public class FileUtil {
 		return records;
 	}
 	
+	public static List<Map> listShortnames(String dir) {
+		File file = new File(dir);
+		final List<Map> fileitems = Lists.newArrayList();
+		file.listFiles(new FileFilter() {
+			@Override
+			public boolean accept(File current) {
+				if(current.isFile()) {
+					Map fileitem = new LinkedHashMap<>();
+					fileitem.put("name", current.getName());
+					fileitem.put("size", FileUtil.formatSize(current.length()));
+					fileitems.add(fileitem);
+				}
+
+				return true;
+			}
+		});
+		
+		return fileitems;
+	}
+	
 	public static String generateFilenameByUrl(String httpUrl) {
 		return generateFilenameByUrl(httpUrl, null);
 	}
@@ -410,7 +463,7 @@ public class FileUtil {
 	public static File parseFolder(String param, String defaultFolder) {
 		boolean isBad = StrUtil.isRegexMatched("[\\\\/\\.]{1,}", param);
 		if(isBad) {
-//			C.pl2("Not nice, I personally hate this style, pls do away with " + param);
+//			XXXUtil.alert("Not nice, I personally hate this style, pls do away with " + param);
 			return null;
 		}
 		
@@ -441,19 +494,28 @@ public class FileUtil {
 		return null;
 	}
 	
-	public static String[] splitFolderAndFile(String filepath) {
-		String temp = filepath.replaceAll("/", "\\\\");
-		filepath = temp;
-		int idxOfLastSeparator = filepath.lastIndexOf("\\");
+	public static String[] splitByLastFileSeparator(String info) {
+		String unix = unixSeparator(info);
+		int idxOfLastSeparator = unix.lastIndexOf("/");
 		
 		if(idxOfLastSeparator < 0) {
-			return new String[] {null, filepath};
+			return new String[] {null, info.trim()};
 		}
 		
-		String folder = filepath.substring(0, idxOfLastSeparator);
-		String filename = filepath.substring(idxOfLastSeparator + 1);
+		String left = info.substring(0, idxOfLastSeparator).trim();
+		String right = info.substring(idxOfLastSeparator + 1).trim();
 		
-		return new String[] {folder, filename};
+		return new String[] {left, right};
+	}
+	
+	public static String extensionOf(String filename) {
+		String regex = "\\.([^\\.]*)$";
+		return StrUtil.findFirstMatchedItem(regex, filename);
+	}
+	
+	public static String[] filenameAndExtensionOf(String filename) {
+		String regex = "(.*)\\.([^\\.]*)$";
+		return StrUtil.parseParams(regex, filename);
 	}
 
 	public static String extractFilenameWithoutExtension(String filepath) {

@@ -36,7 +36,7 @@ public class D {
 	public static void pl(Object obj) {
 		String simple = simpleClassNameDotMethodOf(current());
 		StackTraceElement parent = parent();
-		String temp = DEBUG + " {0} > {1} {2}     #by {3}";
+		String temp = DEBUG + " {0} > [{1}] {2}     #by {3}";
 		String type = ObjectUtil.simpleNameOfInstance(obj);
 		println(StrUtil.occupy(temp, simple, type, StrUtil.of(obj), parent));
 	}
@@ -45,6 +45,7 @@ public class D {
 	 * print array with timestamp info, another solid response
 	 * @param objs
 	 */
+	@SafeVarargs
 	public static <T> void pla(T... objs) {
 		String simple = simpleClassNameDotMethodOf(current());
 		String random = mark();
@@ -57,7 +58,17 @@ public class D {
 	 * print Array, nothing else
 	 * @param objs
 	 */
+	@SafeVarargs
 	public static <T> void printArray(T... objs) {
+		if(objs == null) {
+			String simple = simpleClassNameDotMethodOf(current());
+			StackTraceElement parent = parent();
+			String temp = DEBUG + " {0} > [{1}] {2}     #by {3}";
+			String type = ObjectUtil.simpleNameOfInstance(objs);
+			println(StrUtil.occupy(temp, simple, type, StrUtil.of(objs), parent));
+			return;
+		}
+		
 		int maxLen = 0;
 		for(Object obj : objs) {
 			String name = ObjectUtil.simpleNameOfInstance(obj);
@@ -107,6 +118,11 @@ public class D {
 		return temp;
 	}
 	
+	public static String jst(Object obj) {
+		String temp = JsonConvertManager.g().toJsonByFields(obj, obj.getClass());
+		return temp;
+	}
+	
 	/**
 	 * print obj as pretty json format, p means pretty, while js means json
 	 * @param obj
@@ -147,36 +163,37 @@ public class D {
 	 * @return
 	 */
 	public static String mark() {
-		return RandomUtil.letters(2, true);
+		return RandomUtil.LETTERS(2);
 	}
 
 	private static String METHOD_INFO = DEBUG + " {0} {1} {2} {3}     #by {4}";
 	
 	//[DEBUG] D.pla => SL 2018-06-02_10:49:12.359 com.sirap.basic.tool.D.pla(D.java:53)
 	public static void printStart(String simpleClassNameDotMethod, String random, StackTraceElement stackInfo) {
+		println(StrUtil.occupy(METHOD_INFO, simpleClassNameDotMethod, "=>", random, now(), stackInfo));
+	}
+	
+	public static String now() {
 		String timestamp = DateUtil.displayDate(new Date(), DateUtil.DATE_TIME_FULL);
-		println(StrUtil.occupy(METHOD_INFO, simpleClassNameDotMethod, "=>", random, timestamp, stackInfo));
+		return timestamp;
 	}
 	
 	public static void printEnd(String simpleClassNameDotMethod, String random, StackTraceElement stackInfo) {
-		String timestamp = DateUtil.displayDate(new Date(), DateUtil.DATE_TIME_FULL);
-		println(StrUtil.occupy(METHOD_INFO, simpleClassNameDotMethod, "<=", random, timestamp, stackInfo));
+		println(StrUtil.occupy(METHOD_INFO, simpleClassNameDotMethod, "<=", random, now(), stackInfo));
 	}
 	
 	public static void ts() {
-		String timestamp = DateUtil.displayDate(new Date(), DateUtil.DATE_TIME_FULL);
 		StackTraceElement parent = parent();
 		String temp = DEBUG + " {0} >      #by {1}";
-		println(StrUtil.occupy(temp, timestamp, parent));
+		println(StrUtil.occupy(temp, now(), parent));
 	}
 	
 	//[DEBUG] 2018
 	public static void ts(Object obj) {
-		String timestamp = DateUtil.displayDate(new Date(), DateUtil.DATE_TIME_FULL);
 		StackTraceElement parent = parent();
 		String temp = DEBUG + " {0} > {1} {2}     #by {3}";
 		String type = ObjectUtil.simpleNameOfInstance(obj);
-		println(StrUtil.occupy(temp, timestamp, type, StrUtil.of(obj), parent));
+		println(StrUtil.occupy(temp, now(), type, StrUtil.of(obj), parent));
 	}
 
 	/***
@@ -241,6 +258,20 @@ public class D {
 	public static void trace() {
 		StackTraceElement[] items = Thread.currentThread().getStackTrace();
 		printArray(items);
+	}
+	
+	/***
+	 * com.sirap.common.command.CommandBase.process(CommandBase.java:110)
+	 * c.s.c.c.Command.process
+	 * @param item
+	 * @return
+	 */
+	public static String acronymTrace(StackTraceElement item) {
+		String temp = "{0}.{1}({2}:{3})";
+		String nice = ObjectUtil.acronymNameOf(item.getClassName());
+		String msg = StrUtil.occupy(temp, nice, item.getMethodName(), item.getFileName(), item.getLineNumber());
+		
+		return msg;
 	}
 	
 	public static StackTraceElement current() {

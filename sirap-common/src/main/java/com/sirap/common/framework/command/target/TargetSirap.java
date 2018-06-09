@@ -2,42 +2,40 @@ package com.sirap.common.framework.command.target;
 
 import java.util.List;
 
-import com.sirap.basic.output.ExcelParams;
+import com.google.common.collect.Lists;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
+import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.TrumpUtil;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.framework.SimpleKonfig;
 
-public class TargetExcel extends TargetFile {
+public class TargetSirap extends TargetFile {
 	
-	@Override
-	public ExcelParams getParams() {
-		if(params instanceof ExcelParams) {
-			return (ExcelParams)params;
-		} else {
-			params = new ExcelParams();
-			return (ExcelParams)params;
-		}
+	public TargetSirap() {}
+	
+	public TargetSirap(String folderpath, String filename) {
+		this.folderpath = folderpath;
+		this.filename = filename;
 	}
 	
 	@Override
 	public void export(List records, String options, boolean withTimestamp) {
+		String charset = SimpleKonfig.g().getCharsetInUse();
 		String filePath = withTimestamp ? getTimestampPath() : getFilePath();
-		ExcelParams params = getParams();
+		String content = StrUtil.connectWithLineSeparator(records);
+		String passcode = SimpleKonfig.g().getSecurityPasscode();
+		String encoded = TrumpUtil.encodeBySIRAP(content, passcode);
 		
-		String topInfo = getCommand();
-		if(records != null && records.size() > 5) {
-			topInfo = "(" + records.size() + ") " + topInfo;
-		}
-		
-		params.setTopInfo(topInfo);
-		
-		IOUtil.saveAsExcel(records, filePath, params);
+		List<String> list = Lists.newArrayList(encoded);
+		IOUtil.saveAsTxtWithCharset(list, filePath, charset);
+
 		C.pl2("Exported => " + FileUtil.canonicalPathOf(filePath));
 		if(SimpleKonfig.g().isGeneratedFileAutoOpen()) {
 			FileOpener.open(filePath);
-		}	}
+		}
+	}
 	
 	@Override
 	public String toString() {

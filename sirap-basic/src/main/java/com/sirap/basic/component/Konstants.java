@@ -12,6 +12,10 @@ public class Konstants {
     public static final int MILLI_PER_HOUR   = TIME_STEP * MILLI_PER_MINUTE;
     public static final int MILLI_PER_DAY    = 24 * MILLI_PER_HOUR;
     
+	public static final int SECONDS_PER_MINUTE = TIME_STEP * 1;
+    public static final int SECONDS_PER_HOUR   = TIME_STEP * SECONDS_PER_MINUTE;
+    public static final int SECONDS_PER_DAY    = 24 * SECONDS_PER_HOUR;
+    
     public static final int FILE_SIZE_STEP = 1024;
 	public static final String FILE_SIZE_UNIT = "BKMGTPE";
 	public static final String REGEX_FLOAT = "(\\d+|\\d+\\.\\d*|\\d*\\.\\d+)";

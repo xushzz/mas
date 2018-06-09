@@ -23,8 +23,8 @@ public class RandomUtil {
 		return result;
 	}
 
-	public static String letters(int countOfChars, boolean uppercase) {
-		String result = chars(countOfChars, uppercase ? StrUtil.LETTERS_UPPERCASED : StrUtil.LETTERS);
+	public static String LETTERS(int countOfChars) {
+		String result = chars(countOfChars, StrUtil.LETTERS_UPPERCASED);
 		
 		return result;
 	}

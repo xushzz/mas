@@ -2,6 +2,10 @@ ah A,B,C,D         split by comma and print as list
 ah A-B-C-D $s=-    split by - and print as list, option s=SPLITTER
 ah A,B,C $+s       split, sort and print list
 maven              display home, repository and location of super POM for Maven
+repo               display maven repository, depth 
+repo .             list out file items in repository till given depth, default 2
+repo . criteria    list out file items matching given criteria
+repo . $d=4        list out file items in repository till depth 4
 deps               display all depended jars in project that user.dir indicates
 deps $p=D:\pom.xml display all depended jars in project that pom.xml rests
 deps $p=D:\project display all depended jars in given project
@@ -23,4 +27,4 @@ E:\abc.jar a&b     list out what is inside a jar with criteria, $+full,+size,+ca
 E:\abc.jar!/a.txt  list out the content of given entry in given zip file, entry better be ascii file
 https              list all http status codes
 https 404          get detail explain of given http response code
-ver=3/28/2018, III  GEEK-DEV1.0.32-MESOS
+ver=6/9/2018, VI  GEEK-DEV1.0.33-GREEN

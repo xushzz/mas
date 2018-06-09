@@ -26,7 +26,7 @@ import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.domain.WeatherRecord;
-import com.sirap.common.framework.command.target.TargetPDF;
+import com.sirap.common.framework.command.target.TargetPdf;
 import com.sirap.extractor.domain.ZhihuRecord;
 import com.sirap.extractor.impl.EnglishDictionaryExtractor;
 import com.sirap.extractor.impl.FindJarExtractor;
@@ -172,7 +172,7 @@ public class CommandCollect extends CommandBase {
 			String currencies = params[2];
 			Double bd = MathUtil.toDouble(amount);
 			if(bd != null) {
-				if(target instanceof TargetPDF) {
+				if(target instanceof TargetPdf) {
 					int[] cellsWidth = {1, 4, 2};
 					int[] cellsAlign = {1, 0, 2};
 					PDFParams pdfParams = new PDFParams(cellsWidth, cellsAlign);

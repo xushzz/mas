@@ -12,6 +12,7 @@ import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.MexUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.PanaceaBox;
+import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.TrumpUtil;
 import com.sirap.common.framework.SimpleKonfig;
 
@@ -128,18 +129,22 @@ public class FileOpener {
 		return flag;
 	}
 	
-	public static boolean isTextFile(String fileName) {
-		boolean flag = isAcceptableFormat(fileName, FileUtil.SUFFIXES_TEXT, KEY_TEXT);
+	public static boolean isTextFile(String filename) {
+		String extension = FileUtil.extensionOf(filename);
+		//boolean flag = isAcceptableFormat(fileName, FileUtil.SUFFIXES_TEXT, KEY_TEXT);
+		boolean flag = FileUtil.EXTENSIONS_TEXT.contains(extension);
 		if(flag) {
 			return true;
 		}
 		
-		flag = FileUtil.isAnyTypeOf(fileName, FileUtil.SUFFIX_MEX);
+//		flag = FileUtil.isAnyTypeOf(fileName, FileUtil.SUFFIX_MEX);
+		flag = FileUtil.EXTENSIONS_HTML.contains(extension);
 		if(flag) {
 			return true;
 		}
 		
-		flag = FileUtil.isAnyTypeOf(fileName, FileUtil.SUFFIX_SIRAP);
+//		flag = FileUtil.isAnyTypeOf(fileName, FileUtil.SUFFIX_SIRAP);
+		flag = FileUtil.EXTENSIONS_SIRAP.contains(extension);
 		if(flag) {
 			return true;
 		}
@@ -157,7 +162,7 @@ public class FileOpener {
 	}
 	
 	public static List<String> readTextContent(String filePath, boolean readAsTextAnyway, String charset) {
-		
+		String extension = FileUtil.extensionOf(filePath);
 		List<String> records = new ArrayList<String>();
 		if(FileUtil.isAnyTypeOf(filePath, FileUtil.SUFFIX_MEX)) {
 			MexedList mlist = MexUtil.readMexedList(filePath);
@@ -167,7 +172,7 @@ public class FileOpener {
 					records.addAll(temp);
 				}
 			}
-		} else if(FileUtil.isAnyTypeOf(filePath, FileUtil.SUFFIX_SIRAP)) {
+		} else if(StrUtil.isIn(extension, FileUtil.EXTENSIONS_SIRAP)) {
 			String temp = IOUtil.readString(filePath);
 			String passcode = SimpleKonfig.g().getSecurityPasscode();
 			String content = TrumpUtil.decodeBySIRAP(temp, passcode);

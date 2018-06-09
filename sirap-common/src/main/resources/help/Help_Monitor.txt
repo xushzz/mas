@@ -4,11 +4,12 @@ echo $+u,+i,-e,-s  list 3) user configuration and 4) user inner
 echo $+a           list all of them 1) properties 2) variables and 3) user config 4) user inner 
 echo $-t           list entries without type info
 echo path          list specific entry path, and split the value by file pathSeparator in lines format
-echo home		   list entries whose key contains keyword home
+echo home          list entries whose key contains keyword home
 echo :jdk          list entries whose value contains keyword jdk
 echo #inner        list entries whose type contains keyword inner
-echo $+L           list entries and split its value in sorted lines format, if containing more than one item
-echo $+L,-sort     list entries and split its value in lines format, if containing more than one item
+echo keyword       list entries and split if there is only one entry matching given search, $-L as origin
+echo $+L           list entries and respectively split its value in sorted lines format, $-L as origin
+echo $+L,-sort     list entries and respectively split its value in original lines format, $-L as origin
 ;                  display previous N records of commands with backward slash, currently default N=20
 ; $+all            display all history commands, options for \, $+n,+all         
 ;fire              display all inputs matching given criteria(s), month info will be translated
@@ -28,4 +29,4 @@ jiami-xy E:/a.txt  encode content specified by path with sirap algorithm
 jiemi-xy FEA96D3DF20AD5B622C2F99800F59FC7   decode content with sirap algorithm
 jiemi-xy nice**FEA96D3DF20AD5B622C2F99800F59FC7**ok   decode mix content with sirap algorithm
 jiemi-xy E:/a.txt  decode content specified by path with sirap algorithm
-n..                list all available command nodes
+n..                list all available command nodes in sorted manner

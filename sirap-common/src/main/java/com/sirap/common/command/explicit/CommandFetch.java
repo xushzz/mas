@@ -20,7 +20,7 @@ import com.sirap.common.domain.TZRecord;
 import com.sirap.common.extractor.CommonExtractors;
 import com.sirap.common.extractor.WorldTimeBJTimeOrgExtractor;
 import com.sirap.common.framework.command.target.TargetConsole;
-import com.sirap.common.framework.command.target.TargetPDF;
+import com.sirap.common.framework.command.target.TargetPdf;
 import com.sirap.common.manager.TimeZoneManager;
 	
 public class CommandFetch extends CommandBase {
@@ -141,7 +141,7 @@ public class CommandFetch extends CommandBase {
 		solo = parseParam(KEY_DATETIME_TIMEZONE);
 		if(solo != null) {
 			List<TZRecord> records = TimeZoneManager.g().getTimeZones(solo, g().getLocale());
-			if(target instanceof TargetPDF) {
+			if(target instanceof TargetPdf) {
 				int[] cellsWidth = {5, 1, 5};
 				int[] cellsAlign = {0, 1, 2};
 				PDFParams pdfParams = new PDFParams(cellsWidth, cellsAlign);

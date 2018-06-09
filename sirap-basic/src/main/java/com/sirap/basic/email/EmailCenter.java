@@ -5,15 +5,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.thirdparty.email.EmailService;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.MiscUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.XXXUtil;
 
 public class EmailCenter {
 	
-	public static final String DEF_RECEIVER = "@";
+	public static final String DEFAULT_RECEIVER = "@";
 	private static final String TEMPLATE_EMAILINFO = "account:{0}, password:{1}, default receiver:{2}"; 
 
 	private static EmailCenter instance;
@@ -72,7 +74,7 @@ public class EmailCenter {
 	}
 
 	public void sendEmail(List<Object> items, List<String> toList, String subject, boolean wait2complete) {
-		if(toList.size() == 1 && DEF_RECEIVER.equals(toList.get(0))) {
+		if(toList.size() == 1 && DEFAULT_RECEIVER.equals(toList.get(0))) {
 			if(EmptyUtil.isNullOrEmpty(defReceivers)) {
 				C.pl("Wrong, default receivers not yet configured");
 				return;
@@ -143,25 +145,26 @@ public class EmailCenter {
 	
 	public static List<String> parseLegalAddresses(String mixedAddresses) {
 		String temp = mixedAddresses.trim();
-		List<String> list = new ArrayList<String>();
-		
-		if(DEF_RECEIVER.equals(mixedAddresses)) {
-			temp = g().defReceivers;
-		}
+		List<String> goodlist = new ArrayList<String>();
 		
 		List<String>  items = StrUtil.split(temp, ";");
-		
-		for(String item:items) {
-			if(MiscUtil.isEmail(item)) {
-				list.add(item.trim());
+
+		List<String> badlist = Lists.newArrayList();
+		for(String item : items) {
+			String current = item.trim();
+			if(StrUtil.equals(item, DEFAULT_RECEIVER) || MiscUtil.isEmail(current)) {
+				goodlist.add(current);
+			} else {
+				badlist.add(item);
 			}
 		}
 		
-		if(EmptyUtil.isNullOrEmpty(list)) {
-			//C.pl2("Email, receivers["+ temp + "] kind of totally illeagl.");
+		if(!goodlist.isEmpty() && !badlist.isEmpty()) {
+			String plural = badlist.size() > 1 ? "es" : "";
+			XXXUtil.alert("Illegal email address{0} : {1}", plural, badlist);
 		}
 		
-		return list;
+		return goodlist;
 	}
 	
 	private String display(String item) {

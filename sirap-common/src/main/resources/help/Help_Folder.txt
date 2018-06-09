@@ -8,6 +8,7 @@ F:\folderA $+max   list the names of folder or file at the deepest level
 E:\Fly mp3&fire    display the files/folders whose name contains 'mp3' and 'fire' in the folder 
 E:\Fly txt|kid     display the files/folders which name contains 'txt' or 'kid' in the folder
 F:\fire 3          recursively list the stuff in the folder and its subs till layer 3, !3 escape layer, $+case
+F:\fire 3 $+tree   recursively list the stuff in the folder in tree style
 F:\fire 3 txt      recursively list the txt files in the folder and its subs till layer three
 F:\Lon Don, 3 txt  this will recursively list the txt files in the folder and its subs till layer three
 F:\fly.txt fi&wa   conduct search in given text file with given criteria and print out, $+order,+line,+case

@@ -15,30 +15,30 @@ options            must be separated by space or greater than symbol > with othe
 options            use \\s and \\c to express space and comma respectively, $K=A\\cB\\sC, means name is "A,B C"
 suck               enable to suck options, default enabled
 nosuck             disable to suck options
-quit               ${guest.quits}
+quit               ${guest.quits}, ,!> escape export, !$ escape options
 ABC $+new          any operation could be performed in a new thread, options: $+new
-ABC>$              the yielded files will be copied to folder export,!> escape export, !$ escape options
-ABC>$E:            export escaper is ${guest.escaper}, the yielded files will be copied to E:
-ABC>$E:=           the yielded files will be copied to E:\ABC
-ABC>$max           the yielded files will be copied to export\max, say max is not a folder in storage
-ABC>$max=          the yielded files will be copied to export\max
+ABC $+FF>target    $+ff to parse internal objects to normal files, treat them as files it possible
+ABC>:              : to copy strings to a remote web location, default to be http://www.aka10.com/finals
+ABC>:              :http://www.nba.com/finals to copy files or strings to www.nba.com, for instance
+ABC $+FF>:         : to copy files to a remote web location, default to be http://www.aka10.com/finals
+ABC>:siteA         siteA should be defined in user config file, copy to the location it stands for
+ABC>#              # to copy files to given location, in this case the yielded files will be copied to folder export
+ABC>#E:            the yielded files will be copied to E:
+ABC>#E:\nonexist   the yielded files will be copied to E:\nonexist, folder nonexist will be created on the fly
+ABC>#misc          the yielded files will be copied to folder storage\misc, misc is a folder in storage
+ABC>#nonexist      the yielded files will be copied to export\nonexist
+ABC>#E:\na\nb      the yielded files will be copied to export\na\nb, suppose na is not a directory of E:
 ABC>.              the yielded content will be exported as text to file export\ABC.txt
 ABC>*              the yielded content will be sirap-encoded and exported to file export\ABC.sirap
-ABC>E:             the yielded content will be exported as text to file E:\ABC.txt
-ABC>E:\\max        the yielded content will be exported as text to file E:\max.txt
-ABC>E:\\max.txt    the yielded content will be exported as text to file E:\max.txt
-ABC>max            the yielded content will be exported as text to file export\max.txt
-ABC>max.md         the yielded content will be exported to text file export\max.md
 ABC>*E:            the yielded content will be sirap-encoded and exported to file E:\ABC.sirap
-ABC>.pdf           the yielded content will be exported to pdf file export\ABC.pdf
-ABC>E:\\.pdf       the yielded content will be exported to pdf file E:\ABC.pdf
-ABC>E:\\max.pdf    the yielded content will be exported to pdf file E:\max.pdf
-ABC>max.pdf        the yielded content will be exported to pdf file export\max.pdf
-ABC>.htm           the yielded content will be exported to html file export\ABC.htm
-ABC>E:\\.htm       the yielded content will be exported to html file E:\ABC.htm
-ABC>E:\\max.htm    the yielded content will be exported to html file E:\max.htm
-ABC>max.htm        the yielded content will be exported to html file export\max.htm
-ABC>.xls           the yielded content will be exported to html file export\ABC.xls
-ABC>E:\\.xls       the yielded content will be exported to html file E:\ABC.xls
-ABC>E:\\max.xls    the yielded content will be exported to html file E:\max.xls
-ABC>max.xls        the yielded content will be exported to html file export\max.xls
+ABC>E:             the yielded content will be exported as text to file E:\ABC.txt
+ABC>E:\nonexist    the yielded content will be exported as text to file E:\nonexist.txt
+ABC>E:\non.txt     the yielded content will be exported as text to file E:\non.txt
+ABC>E:\non.java    the yielded content will be exported as text to file E:\non.java
+ABC>E:\non.[txt]   text types are: txt,properties,java,js,json,css,xml,pom,bat,cpp,sh,py,sql,cmd,md,sirap,ini
+ABC>E:\non.pdf     the yielded content will be exported as text to file E:\non.pdf
+ABC>E:\non.xls     the yielded content will be exported as text to file E:\non.xls
+ABC>E:\non.xlsx    the yielded content will be exported as text to file E:\non.xlsx
+ABC>E:\non.htm     the yielded content will be exported as text to file E:\non.htm
+ABC>E:\non.html    the yielded content will be exported as text to file E:\non.html
+ABC>E:\non.sirap   the yielded content will be exported as text to file E:\non.sirap

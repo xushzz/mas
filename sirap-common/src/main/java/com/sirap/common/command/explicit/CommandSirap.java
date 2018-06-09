@@ -47,7 +47,7 @@ public class CommandSirap extends CommandBase {
 	{
 		helpMeanings.put("image.formats", Konstants.IMG_FORMATS);
 		helpMeanings.put("guest.quits", KEY_EXIT);
-		helpMeanings.put("guest.escaper", InputAnalyzer.EXPORT_ESACPE);
+		helpMeanings.put("guest.escaper", InputAnalyzer.ESACPE);
 	}
 	
 	@Override

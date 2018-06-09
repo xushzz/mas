@@ -43,7 +43,7 @@ public class BatisTest {
     public void testLangDao() {
 		 LangDao dao = kim.getMapper(LangDao.class);
 		 Lang king = new Lang();
-		 king.setName(RandomUtil.letters(2, true));
+		 king.setName(RandomUtil.LETTERS(2));
 		 int id = RandomUtil.number(20);
 //		 D.list(dao.findAllLangs());
 		 //D.pl(dao.insertLang(king));
