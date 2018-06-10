@@ -14,6 +14,7 @@ import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.domain.PaymentItem;
+import com.sirap.basic.thirdparty.qrcode.QRCodeHelper;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.DateUtil;
@@ -24,7 +25,6 @@ import com.sirap.basic.util.ImageUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.PaymentUtil;
-import com.sirap.basic.util.QRCodeUtil;
 import com.sirap.basic.util.RandomUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XCodeUtil;
@@ -209,7 +209,7 @@ public class CommandImage extends CommandBase {
 			String filepath = filenameAndFormat[0];
 			String format = filenameAndFormat[1];
 			
-			String filePath = QRCodeUtil.createImage(content, filepath, format, 200, 200);
+			String filePath = QRCodeHelper.createImage(content, filepath, format, 200, 200);
 			if (filePath != null) {
 				String info = "";
 				if(OptionUtil.readBooleanPRI(options, "d", false)) {
@@ -228,7 +228,7 @@ public class CommandImage extends CommandBase {
 			File file = parseFile(param);
 			if(file != null) {
 				String filePath = file.getAbsolutePath();
-				String content = QRCodeUtil.decodeImage(filePath);
+				String content = QRCodeHelper.decodeImage(filePath);
 				export(content);
 				
 				return true;
@@ -304,7 +304,7 @@ public class CommandImage extends CommandBase {
 				String filepath = filenameAndFormat[0];
 				String format = filenameAndFormat[1];
 				
-				String filePath = QRCodeUtil.createImage(payinfo.getUrl(), filepath, format, 400, 400);
+				String filePath = QRCodeHelper.createImage(payinfo.getUrl(), filepath, format, 400, 400);
 				if (filePath != null) {
 					String info = "";
 					if(OptionUtil.readBooleanPRI(options, "d", false)) {

@@ -11,6 +11,7 @@ import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.domain.TypedKeyValueItem;
 import com.sirap.basic.output.PDFParams;
+import com.sirap.basic.thirdparty.TrumpHelper;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.DateUtil;
@@ -21,7 +22,6 @@ import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.SatoUtil;
 import com.sirap.basic.util.StrUtil;
-import com.sirap.basic.util.TrumpUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
@@ -144,18 +144,18 @@ public class CommandMonitor extends CommandBase {
 				String filePath = file.getAbsolutePath();
 				if(FileOpener.isTextFile(filePath)) {
 					String content = IOUtil.readString(filePath, charset(), Konstants.NEWLINE);
-					String text = TrumpUtil.encodeBySIRAP(content, passcode);
+					String text = TrumpHelper.encodeBySIRAP(content, passcode);
 					C.pl("File, SIRAP generates " + text.length() + " chars. ");
 					export(text);
 				} else {
-					String text = TrumpUtil.encodeBySIRAP(param, passcode);
+					String text = TrumpHelper.encodeBySIRAP(param, passcode);
 					C.pl("SIRAP generates " + text.length() + " chars. ");
 					export(text);
 				}
 				
 				return true;
 			} else {
-				String text = TrumpUtil.encodeBySIRAP(param, passcode);
+				String text = TrumpHelper.encodeBySIRAP(param, passcode);
 				C.pl("SIRAP generates " + text.length() + " chars. ");
 				export(text);
 			}
@@ -177,7 +177,7 @@ public class CommandMonitor extends CommandBase {
 				String filePath = file.getAbsolutePath();
 				if(FileOpener.isTextFile(filePath)) {
 					String content = IOUtil.readString(filePath);
-					String text = TrumpUtil.decodeBySIRAP(content, passcode, true);
+					String text = TrumpHelper.decodeBySIRAP(content, passcode, true);
 					List<String> items = StrUtil.split(text, '\n');
 					export(items);
 				} else {
@@ -186,9 +186,9 @@ public class CommandMonitor extends CommandBase {
 				
 				return true;
 			} else {
-				String text = TrumpUtil.decodeMixedTextBySIRAP(param, passcode, true);
+				String text = TrumpHelper.decodeMixedTextBySIRAP(param, passcode, true);
 				if(StrUtil.equals(param, text)) {
-					text = TrumpUtil.decodeBySIRAP(param, passcode, true);
+					text = TrumpHelper.decodeBySIRAP(param, passcode, true);
 				} 
 
 				List<String> items = StrUtil.split(text, '\n');

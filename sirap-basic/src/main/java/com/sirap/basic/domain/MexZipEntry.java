@@ -8,7 +8,7 @@ import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 
 @SuppressWarnings("serial")
-public class MexZipEntry extends MexItem {
+public class MexZipEntry extends MexItem implements Comparable<MexZipEntry> {
 
 	protected String jarName;
 	protected ZipEntry entry;
@@ -83,5 +83,10 @@ public class MexZipEntry extends MexItem {
 		}
 		
 		return sb.toString();
+	}
+
+	@Override
+	public int compareTo(MexZipEntry another) {
+		return getName().compareTo(another.getName());
 	}
 }

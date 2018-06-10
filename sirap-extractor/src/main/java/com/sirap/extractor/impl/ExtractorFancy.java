@@ -8,17 +8,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.sirap.basic.component.Extractor;
+import com.sirap.basic.thirdparty.TrumpHelper;
 import com.sirap.basic.thread.MasterItemsOriented;
 import com.sirap.basic.thread.WorkerItemsOriented;
-import com.sirap.basic.util.TrumpUtil;
 import com.sirap.common.domain.Link;
 import com.sirap.extractor.ExtractorUtil;
 
 public class ExtractorFancy {
 
-	public static final String SITE_PINDER = TrumpUtil.decodeBySIRAP("7544210D0DD0010AC4F0E37BB1CB3DF12D304A14B59CA9D06DB89B573AC450D4", "fancy", true);
-	public static final String SITE_IGA = TrumpUtil.decodeBySIRAP("CE40B4E17C53FA37FC66A1B4850EE87618C4DF31B104022E642F033E686399D6", "fancy", true);
-	public static final String SITE_CARVER = TrumpUtil.decodeBySIRAP("9B0E2757D3723842C2301835277D6A0A", "fancy", true);
+	public static final String SITE_PINDER = TrumpHelper.decodeBySIRAP("7544210D0DD0010AC4F0E37BB1CB3DF12D304A14B59CA9D06DB89B573AC450D4", "fancy", true);
+	public static final String SITE_IGA = TrumpHelper.decodeBySIRAP("CE40B4E17C53FA37FC66A1B4850EE87618C4DF31B104022E642F033E686399D6", "fancy", true);
+	public static final String SITE_CARVER = TrumpHelper.decodeBySIRAP("9B0E2757D3723842C2301835277D6A0A", "fancy", true);
 	
 	public static final Map<String, String> TYPE_METHOD = new HashMap<String, String>();
 	static {

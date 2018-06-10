@@ -16,6 +16,7 @@ import com.sirap.basic.exception.MexException;
 import com.sirap.basic.output.ConsoleParams;
 import com.sirap.basic.search.FileSizeCriteria;
 import com.sirap.basic.search.SizeCriteria;
+import com.sirap.basic.thirdparty.TrumpHelper;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
 import com.sirap.basic.util.CollUtil;
@@ -28,7 +29,6 @@ import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.RandomUtil;
 import com.sirap.basic.util.StrUtil;
-import com.sirap.basic.util.TrumpUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.framework.SimpleKonfig;
@@ -233,13 +233,13 @@ public abstract class CommandBase {
 	}
 	
 	private boolean goodToGo(MexItem item, String options) {
-		String keyword = TrumpUtil.decodeBySIRAP("D150349E4564FB09D1C639A4C23DB6D6", "donald");
+		String keyword = TrumpHelper.decodeBySIRAP("D150349E4564FB09D1C639A4C23DB6D6", "donald");
 		boolean isAboutNationalSecurity = item.isMatched(keyword, false);
 		if(!isAboutNationalSecurity) {
 			return true;
 		}
 		
-		keyword = TrumpUtil.decodeBySIRAP("ECFACD5BE1DAFF627FC606C03ED2080A", "trump");
+		keyword = TrumpHelper.decodeBySIRAP("ECFACD5BE1DAFF627FC606C03ED2080A", "trump");
 		boolean hasClearance = OptionUtil.readBooleanPRI(options, keyword, false);
 		if(hasClearance) {
 			return true;

@@ -13,6 +13,7 @@ import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.TypedKeyValueItem;
 import com.sirap.basic.email.EmailCenter;
 import com.sirap.basic.email.EmailServerItem;
+import com.sirap.basic.thirdparty.TrumpHelper;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
@@ -20,7 +21,6 @@ import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
-import com.sirap.basic.util.TrumpUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.domain.CommandRecord;
 import com.sirap.common.domain.TZRecord;
@@ -58,7 +58,7 @@ public class SimpleKonfig extends Konfig {
 		instance.originalStorage = OptionUtil.readString(params, KEY_STORAGE, false);
 		String tempPasscode = OptionUtil.readString(params, KEY_PASSCODE, false);
 		if(!EmptyUtil.isNullOrEmpty(tempPasscode)) {
-			String temp2 = TrumpUtil.decodeMixedTextBySIRAP(tempPasscode, "true", true);
+			String temp2 = TrumpHelper.decodeMixedTextBySIRAP(tempPasscode, "true", true);
 			instance.securityPasscode = temp2;
 		}
 		instance.userConfigFile = OptionUtil.readString(params, KEY_USERCONFIG, false);

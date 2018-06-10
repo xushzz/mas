@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.sirap.basic.util.TrumpUtil;
+import com.sirap.basic.thirdparty.TrumpHelper;
 
 public class BibleData {
 	static final Map<Integer, int[]> CHAPTERS_OLD_NEW_ALL = new HashMap<>();
@@ -85,7 +85,7 @@ public class BibleData {
 		BOOKS.add(new BibleBook(66, "Revelation", 22));
 	}
 
-	public static final String HOMEPAGE = TrumpUtil.decodeBySIRAP("263A2C2C1959252B4942A1EAD51F1FF11A44D72D594157FA1FD35A89376AE669", "ezra", true);
+	public static final String HOMEPAGE = TrumpHelper.decodeBySIRAP("263A2C2C1959252B4942A1EAD51F1FF11A44D72D594157FA1FD35A89376AE669", "ezra", true);
 	public static final List<BibleVersion> VERSIONS = new ArrayList<>();
 	static {
 		VERSIONS.add(new BibleVersion("asv", "ASV", "American Standard Version"));

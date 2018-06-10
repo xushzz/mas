@@ -4,9 +4,9 @@ import java.io.File;
 import java.util.List;
 
 import com.sirap.basic.email.EmailCenter;
+import com.sirap.basic.thirdparty.http.HttpHelper;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
-import com.sirap.basic.util.HttpUtil;
 import com.sirap.basic.util.MiscUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
@@ -300,7 +300,7 @@ public abstract class TargetAnalyzer {
 		String site = StrUtil.parseParam(":(.*)", remoteurl);
 		if(site != null) {
 			if(site.isEmpty()) {
-				remoteurl = HttpUtil.URL_AKA10_REPO;
+				remoteurl = HttpHelper.URL_AKA10_REPO;
 			} else {
 				remoteurl = SimpleKonfig.g().getUserValueOf(site);
 				String msg = ":No user config for website key: " + site;

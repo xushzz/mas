@@ -1,6 +1,10 @@
 package com.sirap.basic.util;
 
+import java.util.List;
 import java.util.Random;
+
+import com.google.common.collect.Lists;
+import com.sirap.basic.data.NameData;
 
 public class RandomUtil {
 
@@ -60,5 +64,56 @@ public class RandomUtil {
 		int result = xian.nextInt(maxValue);
 		
 		return result;
+	}
+	
+	public static String name() {
+		return names(1).get(0);
+	}
+	
+	public static List<String> names(int size) {
+		Random xian = new Random();
+		List<String> sample = Lists.newArrayList(NameData.EGGS.values());
+		int samplesize = sample.size();
+		List<String> items = Lists.newArrayList();
+		if(samplesize == 0) {
+			return items;
+		}
+		while(items.size() < size) {
+			int index = xian.nextInt(samplesize);
+			items.add(sample.get(index));
+		}
+		
+		return items;
+	}
+	
+	public static List<String> names(int size, char criteria) {
+		String cstr = criteria + "";
+		if(!StrUtil.isRegexMatched("[a-z]", cstr)) {
+			XXXUtil.alert("Letter from a to z only, not [{0}]", cstr);
+		}
+		
+		Random xian = new Random();
+		List<String> sample = Lists.newArrayList(NameData.EGGS.values());
+		int samplesize = sample.size();
+		List<String> items = Lists.newArrayList();
+		if(samplesize == 0) {
+			return items;
+		}
+		int maxAttemps = 99999;
+		int count = 0;
+		while(items.size() < size) {
+			int index = xian.nextInt(samplesize);
+			String temp = sample.get(index);
+			if(StrUtil.isRegexFound(cstr, temp)) {
+				items.add(sample.get(index));
+			}
+			count++;
+			if(count > maxAttemps) {
+				XXXUtil.info("Reach max attemps of {0} for [{1}], quit.", maxAttemps, cstr);
+				break;
+			}
+		}
+		
+		return items;
 	}
 }

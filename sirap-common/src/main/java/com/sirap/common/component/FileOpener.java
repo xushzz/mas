@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.sirap.basic.component.MexedList;
 import com.sirap.basic.exception.MexException;
+import com.sirap.basic.thirdparty.TrumpHelper;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
@@ -13,7 +14,6 @@ import com.sirap.basic.util.MexUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.StrUtil;
-import com.sirap.basic.util.TrumpUtil;
 import com.sirap.common.framework.SimpleKonfig;
 
 public class FileOpener {
@@ -175,7 +175,7 @@ public class FileOpener {
 		} else if(StrUtil.isIn(extension, FileUtil.EXTENSIONS_SIRAP)) {
 			String temp = IOUtil.readString(filePath);
 			String passcode = SimpleKonfig.g().getSecurityPasscode();
-			String content = TrumpUtil.decodeBySIRAP(temp, passcode);
+			String content = TrumpHelper.decodeBySIRAP(temp, passcode);
 			if(content != null) {
 				records.add(content);
 			}

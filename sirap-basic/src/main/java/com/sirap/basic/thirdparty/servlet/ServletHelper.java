@@ -1,9 +1,5 @@
-package com.sirap.basic.util;
+package com.sirap.basic.thirdparty.servlet;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -14,116 +10,13 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.NameValuePair;
-import org.apache.http.ParseException;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.utils.HttpClientUtils;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.HTTP;
-import org.apache.http.util.EntityUtils;
-
 import com.google.common.collect.Lists;
-import com.sirap.basic.component.Konstants;
-import com.sirap.basic.domain.MexFile;
-import com.sirap.basic.exception.MexException;
 import com.sirap.basic.tool.D;
+import com.sirap.basic.util.DateUtil;
+import com.sirap.basic.util.ObjectUtil;
+import com.sirap.basic.util.StrUtil;
 
-public class HttpUtil {
-	public static final String URL_AKA10_REPO = "http://www.aka10.com/finals";
-	public static final String KEY_BALL = "ball";
-	public static final String KEY_TITLE = "title";
-
-	public static String postToAka10(String content) {
-		return doPost(URL_AKA10_REPO, "ball", content);
-	}
-	public static String postToAka10(List<Object> items) {
-		return null;
-	}
-	public static String sendTafs(List<?> items) {
-		return sendTafs(items, URL_AKA10_REPO, null);
-	}
-	
-	public static String sendTafs(List<?> items, String url, String title) {
-        CloseableHttpClient httpclient = HttpClients.createDefault();
-        CloseableHttpResponse response = null;
-        String result = null;
-        try {
-    		ContentType contentType = ContentType.create(HTTP.PLAIN_TEXT_TYPE, HTTP.UTF_8);
-            HttpPost httpPost = new HttpPost(url);
-            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-            builder.setCharset(Charset.forName("utf-8"));
-            builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);  
-            D.list(items);
-            for(Object obj : items) {
-            	if(obj instanceof File) {
-            		File file = (File)obj;
-            		builder.addBinaryBody(file.getName(), file);
-            	} else if(obj instanceof MexFile) {
-            		File file = ((MexFile)obj).getFile();
-            		builder.addBinaryBody(file.getName(), file);
-            	} else {
-            		builder.addTextBody(KEY_BALL, obj + "", contentType);
-            	}
-            }
-            
-            builder.addTextBody("title", title, contentType);
-            
-            httpPost.setEntity(builder.build());
-            response = httpclient.execute(httpPost);
-            return EntityUtils.toString(response.getEntity());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            HttpClientUtils.closeQuietly(httpclient);
-            HttpClientUtils.closeQuietly(response);
-        }
-        return result;
-    }
-	
-	public static String doPost(String url, String key, String value) {  
-        String result = "";
-        // 创建HttpPost对象  
-        HttpPost perry = new HttpPost(url);  
-  
-        List<NameValuePair> params = new ArrayList<NameValuePair>();  
-        params.add(new BasicNameValuePair(key, value));  
-        CloseableHttpResponse httpResponse = null;  
-          
-        try {  
-        	perry.setEntity(new UrlEncodedFormEntity(params, Konstants.CODE_UTF8));  
-            CloseableHttpClient httpclient = HttpClients.createDefault();  
-            httpResponse = httpclient.execute(perry);  
-            D.pl(httpResponse);
-            if (httpResponse.getStatusLine().getStatusCode() == 200) {  
-                HttpEntity httpEntity = httpResponse.getEntity();  
-                result = EntityUtils.toString(httpEntity);
-            }  
-        } catch (Exception ex) {  
-            throw new MexException(ex);
-        } finally{  
-        	try {
-				httpResponse.close();
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
-        }
-        
-        return result;
-    }
-	
-	public void doPost(String url, List<Object> items) {
-		
-	}
+public class ServletHelper {
 
 	public static String getHomeUrl(HttpServletRequest request) {
 		String servlet = request.getServletPath();
@@ -254,7 +147,7 @@ public class HttpUtil {
 		for(String met : mets) {
 			if(StrUtil.isRegexFound("^[a-z]", met)) {
 				Class[] clazzArr = {HttpServletRequest.class};
-				Object obj = ObjectUtil.execute(HttpUtil.class, met, clazzArr, request);
+				Object obj = ObjectUtil.execute(ServletHelper.class, met, clazzArr, request);
 				methodAndResult.put(met, obj);
 			} else {
 				methodAndResult.put(met, "");

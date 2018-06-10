@@ -5,10 +5,10 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.sirap.basic.domain.MexFile;
+import com.sirap.basic.thirdparty.http.HttpHelper;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
 import com.sirap.basic.util.FileUtil;
-import com.sirap.basic.util.HttpUtil;
 import com.sirap.basic.util.StrUtil;
 
 public class TargetWeb extends Target {
@@ -55,7 +55,7 @@ public class TargetWeb extends Target {
 			}
 		}
 		
-		String temp = HttpUtil.sendTafs(records, url, subject);
+		String temp = HttpHelper.sendStringsAndFiles(records, url, subject);
 		String msg = StrUtil.occupy("Sent to {0} :\n {1}", url, temp);
 		C.pl2(msg);
 	}

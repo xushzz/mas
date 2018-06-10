@@ -78,7 +78,7 @@ public class D {
 			}
 		}
 
-		String temp = "#{0} {1} {2}";
+		String temp = "#{0} [{1}] {2}";
 		int count = 0;
 		for(Object obj : objs) {
 			count++;

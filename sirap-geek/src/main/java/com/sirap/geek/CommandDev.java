@@ -325,10 +325,12 @@ public class CommandDev extends CommandBase {
 			}
 			
 			if(KEY_2DOTS.equals(criteria)) {
+				Collections.sort(allItems);
 				export(allItems, tempOptions);
 			} else {
 				MexFilter<MexZipEntry> filter = new MexFilter<MexZipEntry>(criteria, allItems, isCaseSensitive(tempOptions));
 				List<MexZipEntry> result = filter.process();
+				Collections.sort(result);
 				export(result, tempOptions);
 			}
 			

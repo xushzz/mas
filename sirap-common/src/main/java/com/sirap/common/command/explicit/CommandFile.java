@@ -2,6 +2,7 @@ package com.sirap.common.command.explicit;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -84,6 +85,7 @@ public class CommandFile extends CommandBase {
 			
 			if(FileOpener.isZipFile(filePath)) {
 				List<MexZipEntry> items = ArisUtil.parseZipEntries(filePath);
+				Collections.sort(items);
 				export(items);
 				return true;
 			}

@@ -16,7 +16,7 @@ import com.sirap.basic.exception.MexException;
 import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.StrUtil;
 
-public class MediaFileUtil {
+public class MediaFileHelper {
 	
 	public static int readMp3DurationInSeconds(String filepath) throws MexException {
 		AbstractDataType.logger.setLevel(Level.SEVERE);

@@ -4,4 +4,5 @@ pla                DebugUtil, D, print array of Objects
 list               DebugUtil, D, print list of Objects
 ts                 DebugUtil, D, print object with timestamp
 sleepK             DebugUtil, D, sleep given seconds
-ver=6/2/2018, VI  Basic3.6.12-JRSMITH
+names              RandomUtil.names(K)
+ver=6/10/2018, VII  Basic3.6.13-JRSMITH

@@ -1,4 +1,4 @@
-package com.sirap.basic.util;
+package com.sirap.basic.thirdparty.qrcode;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -23,7 +23,7 @@ import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.sirap.basic.component.Konstants;
 
-public class QRCodeUtil {
+public class QRCodeHelper {
 	
 	public static String createImage(String codeText, String filepath, String format, int width, int height) {
 		try {

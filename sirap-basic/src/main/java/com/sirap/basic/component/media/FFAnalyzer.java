@@ -2,7 +2,7 @@ package com.sirap.basic.component.media;
 
 import java.util.List;
 
-import com.sirap.basic.thirdparty.media.MediaFileUtil;
+import com.sirap.basic.thirdparty.media.MediaFileHelper;
 
 public class FFAnalyzer extends MediaFileAnalyzer {
 	
@@ -12,7 +12,7 @@ public class FFAnalyzer extends MediaFileAnalyzer {
 	
 	@Override
 	public List<String> getDetail() {
-		List<String> items = MediaFileUtil.detailWithFF(filepath);
+		List<String> items = MediaFileHelper.detailWithFF(filepath);
 		
 		return items;
 	}

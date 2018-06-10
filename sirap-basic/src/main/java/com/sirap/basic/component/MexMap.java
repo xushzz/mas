@@ -11,13 +11,13 @@ import java.util.TreeMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.sirap.basic.domain.TypedKeyValueItem;
+import com.sirap.basic.thirdparty.TrumpHelper;
 import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.SatoUtil;
 import com.sirap.basic.util.StrUtil;
-import com.sirap.basic.util.TrumpUtil;
 import com.sirap.basic.util.XXXUtil;
 
 public class MexMap {
@@ -83,7 +83,7 @@ public class MexMap {
 		while(it.hasNext()) {
 			String key = it.next();
 			String origin = getIgnorecase(key);
-			String temp = TrumpUtil.decodeMixedTextBySIRAP(origin, passcode);
+			String temp = TrumpHelper.decodeMixedTextBySIRAP(origin, passcode);
 			String finale = SatoUtil.occupyCoins(temp, satos);
 			container.put(key, finale);
 		}

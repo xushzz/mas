@@ -1,7 +1,7 @@
 package com.sirap.common.framework;
 
+import com.sirap.basic.thirdparty.TrumpHelper;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.TrumpUtil;
 import com.sirap.basic.util.XXXUtil;
 	
 public class JanitorSIRAP extends Janitor {
@@ -27,7 +27,7 @@ public class JanitorSIRAP extends Janitor {
 			return false;
     	}
     	
-    	String password = TrumpUtil.decodeBySIRAP(temp, passcode);
+    	String password = TrumpHelper.decodeBySIRAP(temp, passcode);
     	if(password == null) {
 			C.pl("Illegal encrypted password [" + temp + "]");
 			return false;

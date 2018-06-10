@@ -1,4 +1,4 @@
-package com.sirap.basic.util;
+package com.sirap.basic.thirdparty;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 import com.sirap.basic.exception.MexException;
 import com.sirap.security.MrTrump;
 
-public class TrumpUtil {
+public class TrumpHelper {
 	
 	public static String encodeBySIRAP(String plainText, String passcode) {
 		MrTrump pres = new MrTrump();

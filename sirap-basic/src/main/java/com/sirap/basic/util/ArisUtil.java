@@ -152,7 +152,7 @@ public class ArisUtil {
 			    	items.add(xiu);
 		    	}
 		    }
-		    
+
 		    return items;
 		} catch (Exception ex) {
 			throw new MexException(ex.getMessage());

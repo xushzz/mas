@@ -11,6 +11,7 @@ import org.apache.poi.xssf.model.SharedStringsTable;
 import org.apache.poi.xssf.model.StylesTable;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
+import org.apache.xerces.parsers.SAXParser;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -77,13 +78,13 @@ public class ExcelXReader {
 	}
 
 	/**
-	 * 获取解析器
+	 * 获取解析器  org.apache.xerces.parsers.SAXParser
 	 * @param sst
 	 * @return
 	 * @throws SAXException
 	 */
 	public static XMLReader fetchSheetParser(SharedStringsTable sst, List<List<String>> rowData, StylesTable stylesTableX) throws SAXException {
-		String reader = "org.apache.xerces.parsers.SAXParser";
+		String reader =  SAXParser.class.getName();
 		XMLReader parser = XMLReaderFactory.createXMLReader(reader);
 		SheetHandler handler = new SheetHandler(sst, rowData, stylesTableX);
 		parser.setContentHandler(handler);
