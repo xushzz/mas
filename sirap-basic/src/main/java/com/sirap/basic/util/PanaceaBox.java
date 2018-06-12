@@ -203,4 +203,14 @@ public class PanaceaBox {
 
 		return flag;
 	}
+	
+	public static void addShutdownHook(Object instanceOrClazz, String methodName) {
+		Thread t1 = new Thread(new Runnable(){
+			@Override
+			public void run() {
+				ObjectUtil.execute(instanceOrClazz, methodName);
+			}
+		});
+		Runtime.getRuntime().addShutdownHook(t1);
+	}
 }

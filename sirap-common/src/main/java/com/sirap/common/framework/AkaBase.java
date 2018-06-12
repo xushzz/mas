@@ -122,6 +122,7 @@ public abstract class AkaBase extends MexedTimer {
     	AlarmManager.g().cancelAlarms(false, null);
     	LoginHistoryManager.g().exitGracefully();
     	RemoteCommandManager.g().cancelTimer();
+    	System.exit(0);
     	
     	byebye();
     }

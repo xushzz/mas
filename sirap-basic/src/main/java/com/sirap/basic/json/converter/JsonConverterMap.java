@@ -46,7 +46,7 @@ public class JsonConverterMap extends JsonConverter<Map> {
 			Object value = mike.get(key);
 			sb.append(dent);
 			sb.append(JsonUtil.quote(key));
-			sb.append(":");
+			sb.append(": ");
 			boolean isNotLastElement = count != ant.size() - 1;
 			sb.append(JsonConvertManager.g(true).toJson(value, depth + 1));
 			if(isNotLastElement) {

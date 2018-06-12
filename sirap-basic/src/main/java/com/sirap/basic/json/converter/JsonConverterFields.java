@@ -55,7 +55,7 @@ public class JsonConverterFields extends JsonConverter<Object> {
 			}
 			sb.append(dent);
 			sb.append(JsonUtil.quote(key));
-			sb.append(":");
+			sb.append(": ");
 			boolean isNotLastElement = count != fields.length - 1;
 			sb.append(JsonConvertManager.g(true).toJson(value, depth + 1));
 			if(isNotLastElement) {

@@ -110,8 +110,38 @@ public class XCodeUtil {
 		
 		return temp;
 	}
-	
 
+	/***
+	 * Commonly found on Unix server Chinese chars shown on some client
+	 * #\345\233\276\347\211\207
+	 * #tupian
+	 * #picture
+	 * @param source
+	 * @param code
+	 * @return
+	 */
+	public static String ofOctalUtf8Chars(String source) {
+		XXXUtil.nullCheck(source, "source");
+		
+		String temp = source;
+		String regex = StrUtil.repeat("\\\\([0-7]{3})", 3);
+		Matcher mc = StrUtil.createMatcher(regex, source);
+		while(mc.find()) {
+			byte[] bytes = new byte[3];
+			String word = mc.group(0);
+			bytes[0] = (byte)Integer.parseInt(mc.group(1), 8);
+			bytes[1] = (byte)Integer.parseInt(mc.group(2), 8);
+			bytes[2] = (byte)Integer.parseInt(mc.group(3), 8);
+			try {
+				String value = new String(bytes, Konstants.CODE_UTF8);
+				temp = temp.replace(word, value);
+			} catch(Exception ex) {
+				throw new MexException(ex);
+			}
+		}
+		
+		return temp;
+	}
 
 	/***
 	 * RFC2045: The encoded output stream must be represented in lines of no more than 76 characters each
