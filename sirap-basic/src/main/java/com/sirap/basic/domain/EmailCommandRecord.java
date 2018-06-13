@@ -113,7 +113,7 @@ public class EmailCommandRecord extends MexItem implements Comparable<EmailComma
 		String regex = "(\\d{8}_\\d{6})_([a-z]{1,10})_\\[(.+?)\\]\\[(.+?)\\]\\[(.+?)\\]";
 		String[] params = StrUtil.parseParams(regex, source);
 		if(params != null) {
-			sentDate = DateUtil.parse(DateUtil.DATETIME_SPACE_TIGHT, params[0]);
+			sentDate = DateUtil.parse(DateUtil.DATETIME_UNDERLINE_TIGHT, params[0]);
 			status = params[1];
 			subject = params[2];
 			msgFrom = new HashSet<String>(StrUtil.split(params[3], ";"));
@@ -160,7 +160,7 @@ public class EmailCommandRecord extends MexItem implements Comparable<EmailComma
 	@Override
 	public String toString() {
 		String template = "{0}_{1}_[{2}][{3}][{4}]";
-    	String dateStr = DateUtil.displayDate(sentDate, DateUtil.DATETIME_SPACE_TIGHT);
+    	String dateStr = DateUtil.displayDate(sentDate, DateUtil.DATETIME_UNDERLINE_TIGHT);
     	String msgFromStr = getMsgFromString(); 
     	String msgToStr = getMsgToString();
     	String record = StrUtil.occupy(template, dateStr, status, subject, msgFromStr, msgToStr);

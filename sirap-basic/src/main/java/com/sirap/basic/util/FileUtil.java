@@ -533,6 +533,38 @@ public class FileUtil {
 		return filename;
 	}
 	
+	public static String filenameWithExtensionOf(String filepath) {
+		XXXUtil.nullOrEmptyCheck(filepath, "filepath");
+		int ia = filepath.lastIndexOf('\\');
+		int ib = filepath.lastIndexOf('/');
+		int index = Math.max(ia, ib);
+		if(index >= 0) {
+			return filepath.substring(index + 1);
+		} else {
+			return filepath;
+		}
+	}
+
+	/***
+	 * [abc/n/in\\ja.doc] => [ja.doc]
+	 * @param filepath
+	 * @return
+	 */
+	public static String[] folderpathAndFilenameOf(String filepath) {
+		XXXUtil.nullOrEmptyCheck(filepath, "filepath");
+
+		int ia = filepath.lastIndexOf('\\');
+		int ib = filepath.lastIndexOf('/');
+		int index = Math.max(ia, ib);
+		
+		if(ib >= 0) {
+			String[] arr = {filepath.substring(0, index), filepath.substring(index + 1)};
+			return arr;
+		} else {
+			return new String[]{".", filepath};
+		}
+	}
+	
 	/***
 	 * 
 	 * @return C:

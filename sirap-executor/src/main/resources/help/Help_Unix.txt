@@ -1,13 +1,16 @@
 ssh                try to generate some SSH connection by user configuration with key ssh.info
 ssh $h=192.168.142.128,u=root,p=myprecious   generate some SSH connection by given parameters
-ssh.d              display date time on target SSH server
+ssh.d              display date time on target linux server
 ssh.off            close current ssh session if exists
 ssh ll $-a         $+a means to use local alias in SshUtil
-ssh ll             list items in lengthy mode on target SSH server
+ssh ll             list items, with alias 'ls -alhtr --time-style '+%Y/%m/%d %H:%M:%S'
 ssh ll $-p         $+p means to show in pretty manner, aka to recover octal UTF8 chars and space
-ssh la             list all items, hidden included, in lengthy mode on target SSH server
+ssh la             list all items, hidden included, in lengthy mode on target linux server
 ssh myCommand      execute command remotely and display the result, such as ls, cat a.txt, cat /etc/profile 
+sftp /root/docker.sh  fetch given file from target linux server and download to exp folder
+sftp /root/docker.sh>E:  fetch given file from target linux server and download to E:
+sftp E:/docker.sh $t=/home/celineyu
 haproxy::add       display input parameters for recipe add from cookbook haproxy on given chef repository
 =haproxy::add      display ruby script for recipe add from cookbook haproxy on given chef repository
 !haproxy::add      execute chef-client and display result, like in SSH with "chef-client -r haproxy::add"
-ver=6/12/2016, II  EXECUTOR1.0.4-KEVINLOVE
+ver=6/13/2018, III  EXECUTOR1.0.5-KEVINLOVE

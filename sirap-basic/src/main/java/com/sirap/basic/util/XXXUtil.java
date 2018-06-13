@@ -141,6 +141,10 @@ public class XXXUtil {
 		throw new MexException("These violent delights have violent ends.");
 	}
 
+	public static void alert(Exception ex) {
+		throw new MexException(ex);
+	}
+
 	public static void info(String msg) {
 		C.pl(msg);
 	}

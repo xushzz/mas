@@ -117,18 +117,18 @@ public abstract class CommandBase {
 			if(isDebug()) {
 				if(ex.getOrigin() != null) {
 					stv.append(XXXUtil.getStackTrace(ex.getOrigin()));
-					D.pl("isdebug, has origin");
+//					D.pl("isdebug, has origin");
 				} else {
 					stv.append(XXXUtil.getStackTrace(ex));
-					D.pl("isdebug, no origin");
+//					D.pl("isdebug, no origin");
 				}
 			} else {
 				if(ex.getOrigin() != null) {
 					stv.append(ex.getOrigin());
-					D.pl("no debug, has origin");
+//					D.pl("no debug, has origin");
 				} else {
 					stv.append(ex);
-					D.pl("no debug, no origin");
+//					D.pl("no debug, no origin");
 				}
 			}
 			export(stv);

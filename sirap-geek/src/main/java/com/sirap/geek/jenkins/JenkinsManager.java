@@ -139,7 +139,7 @@ public class JenkinsManager {
 		item.setStatus(status);
 		
 		Date date = DateUtil.parseLongStr(map.get(KEY_TIMESTAMP));
-		String dateStr = DateUtil.displayDate(date, DateUtil.DATETIME_SPACE_TIGHT);
+		String dateStr = DateUtil.displayDate(date, DateUtil.DATETIME_UNDERLINE_TIGHT);
 		item.setDateStr(dateStr);
 		
 		String value = map.get(KEY_DURATION) + "";

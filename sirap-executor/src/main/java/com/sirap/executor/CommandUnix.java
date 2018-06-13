@@ -1,12 +1,14 @@
 package com.sirap.executor;
 
-import java.util.Date;
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.jcraft.jsch.Session;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
 import com.sirap.basic.util.DateUtil;
+import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
@@ -19,11 +21,42 @@ public class CommandUnix extends CommandBase {
 	private static final String KEY_SSH = "ssh";
 	private static final String KEY_CHEF_CLIENT_EXECUTE = "!";
 	private static final String KEY_CHEF_RECIPE_DISPLAY = "=";
-	private static final String KEY_SSH_DATE= "ssh.d";
-	private static final String KEY_SSH_OFF = "ssh.off";
+	private static final String KEY_SSH_DATE= KEY_SSH + ".d";
+	private static final String KEY_SSH_OFF = KEY_SSH + ".off";
+	private static final String KEY_SSH_FTP = "sftp";
 	
 	@Override
 	public boolean handle() {
+		solo = parseParam(KEY_SSH_FTP + "\\s(.+?)");
+		if(solo != null) {
+			String uploadTo = OptionUtil.readString(options, "t");
+			if(uploadTo != null) {
+				//upload
+				File file = parseFile(solo);
+				if(file == null) {
+					C.pl2("File doesn't exist: " + solo);
+				} else {
+					String filepath = file.getAbsolutePath();
+					String filename = FileUtil.filenameWithExtensionOf(filepath);
+					String result = SshCommandExecutor.g().uploadFile(filepath, uploadTo, filename);
+					export(result);
+				}
+			} else {
+				//download
+				String location = getSshDownloadLocation();
+				String[] arr = FileUtil.folderpathAndFilenameOf(solo);
+				String filename = arr[1];
+				if(g().isExportWithTimestampEnabled(options)) {
+					filename = DateUtil.timestamp() + "_" + filename;
+				}
+				String newfilepath = StrUtil.useSeparator(location, filename);
+				SshCommandExecutor.g().downloadFile(arr[0], arr[1], newfilepath);
+				export(newfilepath);
+			}
+			
+			return true;
+		}
+		
 		if(is(KEY_SSH)) {
 			SshConfigItem config = SshConfigItem.of(options);
 			if(config != null) {
@@ -53,8 +86,13 @@ public class CommandUnix extends CommandBase {
 		
 		if(is(KEY_SSH_DATE)) {
 			String result = SshCommandExecutor.g().getMilliSecondsFrom1970(isPretty());
-			Date date = new Date(Long.parseLong(result));
-			export(DateUtil.displayDate(date, DateUtil.HOUR_Min_Sec_AM_WEEK_DATE));
+			long milliSecondsSince1970 = Long.parseLong(result);
+			List<String> items = new ArrayList<>();
+			items.add(DateUtil.convertLongToDateStr(milliSecondsSince1970, DateUtil.HOUR_Min_Sec_Milli_AM_WEEK_DATE));
+			items.add(DateUtil.convertLongToDateStr(milliSecondsSince1970, DateUtil.DATETIME_ALL_TIGHT));
+			items.add(DateUtil.convertLongToDateStr(milliSecondsSince1970, DateUtil.DATETIME));
+
+			export(items);
 			
 			return true;
 		}
@@ -98,5 +136,12 @@ public class CommandUnix extends CommandBase {
 		boolean pretty = OptionUtil.readBooleanPRI(options, "p", true);
 		
 		return pretty;
+	}
+	
+	protected String getSshDownloadLocation() {
+		String dir = pathOf("storage.ssh", "ftp");
+		dir = getTargetLocation(dir);
+		
+		return dir;
 	}
 }

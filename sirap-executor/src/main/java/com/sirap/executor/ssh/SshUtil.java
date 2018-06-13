@@ -9,8 +9,8 @@ import com.sirap.basic.util.StrUtil;
 public class SshUtil {
 	public static final Map<String, String> ALIASES = Maps.newConcurrentMap();
 	static {
-		ALIASES.put("ll", "ls -l --time-style '+%Y/%m/%d %H:%M:%S'");
-		ALIASES.put("la", "ls -al --time-style '+%Y/%m/%d %H:%M:%S'");
+		ALIASES.put("ll", "ls -lhtr --time-style '+%Y/%m/%d %H:%M:%S'");
+		ALIASES.put("la", "ls -alhtr --time-style '+%Y/%m/%d %H:%M:%S'");
 	}
 
 	public static String useAlias(String command) {

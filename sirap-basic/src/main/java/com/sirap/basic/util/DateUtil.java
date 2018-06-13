@@ -30,7 +30,7 @@ public class DateUtil {
 	public static final String DATETIME_F5TXT = "HH:mm yyyy/MM/dd";
 	public static final String DATETIME_TIGHT = "yyyyMMddHHmmss";
 	public static final String DATETIME_ALL_TIGHT = "yyyyMMddHHmmssSSS";
-	public static final String DATETIME_SPACE_TIGHT = "yyyyMMdd_HHmmss";
+	public static final String DATETIME_UNDERLINE_TIGHT = "yyyyMMdd_HHmmss";
 	public static final String DATE_TIME_FULL = "yyyy-MM-dd_HH:mm:ss.SSS";
 	public static final String DATE_ONLY = "yyyy-MM-dd";
 	public static final String DATE_ONLY_COMMA = "yyyy.MM.dd";
@@ -256,7 +256,7 @@ public class DateUtil {
 	}
 	
 	public static String timestamp() {
-		SimpleDateFormat sdf = new SimpleDateFormat(DATETIME_SPACE_TIGHT);
+		SimpleDateFormat sdf = new SimpleDateFormat(DATETIME_UNDERLINE_TIGHT);
 		return sdf.format(new Date());
 	}
 

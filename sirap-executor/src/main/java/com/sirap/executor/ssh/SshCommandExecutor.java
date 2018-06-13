@@ -1,14 +1,18 @@
 package com.sirap.executor.ssh;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 import com.sirap.basic.component.Konstants;
@@ -114,24 +118,21 @@ public class SshCommandExecutor {
     }
     
     public Session getSession() {
-        JSch jsch = new JSch();  
-        MyUserInfo userInfo = new MyUserInfo();  
-  
-        try {
-        	if(session == null || !session.isConnected()) {
-                session = jsch.getSession(config.getUsername(), config.getHost(), config.getPort());  
+    	if(session == null || !session.isConnected()) {
+    		try {
+                session = (new JSch()).getSession(config.getUsername(), config.getHost(), config.getPort());  
                 session.setPassword(config.getPassword());  
-                session.setUserInfo(userInfo);
+                session.setUserInfo(new MyUserInfo());
                 long start = System.currentTimeMillis();
-                C.pl("SSH session creating... to " + config.getHost());
+                C.pl(StrUtil.occupy("SSH session creating... of {0}@{1}:{2}", config.getUsername(), config.getHost(), config.getPort()));
                 session.connect();
                 PanaceaBox.addShutdownHook(SshCommandExecutor.g(), "closeSession");
                 long end = System.currentTimeMillis();
                 String timespent = "timespent: " + (end - start)/1000.0 + " seconds.";
                 C.pl2("SSH session created, " + timespent);
+        	} catch(Exception ex) {
+        		throw new MexException(ex);
         	}
-        } catch(Exception ex) {
-            throw new MexException(ex);  
         }
         
         return session;
@@ -160,17 +161,50 @@ public class SshCommandExecutor {
             
             input = new BufferedReader(new InputStreamReader(error, Konstants.CODE_UTF8));
             while ((line = input.readLine()) != null) {  
-            	lines.add("ERROR: " + line);  
+            	lines.add(line);  
             }
             input.close();
   
             channel.disconnect();  
-//            session.disconnect();  
         } catch (Exception ex) {
         	String msg = ex.getMessage() + ", info: " + this;
             throw new MexException(msg);  
         }  
         
         return lines;  
+    }
+  
+    public String downloadFile(String unixfolder, String unixfilename, String newfilepath) throws MexException {
+        try(OutputStream output = new FileOutputStream(newfilepath)) {
+        	Session temp = getSession();
+        	C.pl(StrUtil.occupy("Fetching... [{0}/{1}] by {2}@{3}:{4}", unixfolder, unixfilename, config.getUsername(), config.getHost(), config.getPort()));
+        	ChannelSftp channel = (ChannelSftp)temp.openChannel("sftp");
+            channel.connect();
+        	channel.cd(unixfolder);
+            channel.get(unixfilename, output);
+  
+            channel.disconnect();  
+        } catch (Exception ex) {
+        	XXXUtil.alert(ex);
+        }  
+        
+        return newfilepath;  
+    }
+  
+    public String uploadFile(String localfilepath, String unixfolder, String unixfilename) throws MexException {
+        try(InputStream input = new FileInputStream(localfilepath)) {
+        	Session temp = getSession();
+        	C.pl(StrUtil.occupy("Uploading... [{0}] to {1}/{2} by {3}@{4}:{5}", localfilepath, unixfolder, unixfilename, config.getUsername(), config.getHost(), config.getPort()));
+        	ChannelSftp channel = (ChannelSftp)temp.openChannel("sftp");
+            channel.connect();
+        	channel.cd(unixfolder);
+            channel.put(input, unixfilename);
+  
+            channel.disconnect();  
+        } catch (Exception ex) {
+        	XXXUtil.alert(ex);
+        }  
+        
+        return unixfolder + "/" + unixfilename;  
     }
 }
