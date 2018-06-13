@@ -25,7 +25,6 @@ mm..               display all memory entries
 mm fire            search and display memory entries matching criteria
 ko                 kick off, create a new text file in ko location defined in user config ko.location
 ko juicy stuff     kick off, craete a new text file with given text "juicy stuff" in ko location
-rename F:\fire F:\nice.txt rename files in given folder according to file containing nice names
 hex F:\a.class     print hex-style bytes of given normal file, such as 25 50 44 46 2d ... 31, k = 16 per line
 hex string stuff   print hex-style bytes of given string, 16 elements per line, $+k default, or $k=32
 xeh hex-bytes      convert hex-style bytes to given string, split by [,\\s]+

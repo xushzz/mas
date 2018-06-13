@@ -17,6 +17,8 @@ import com.sirap.basic.output.ConsoleParams;
 import com.sirap.basic.search.FileSizeCriteria;
 import com.sirap.basic.search.SizeCriteria;
 import com.sirap.basic.thirdparty.TrumpHelper;
+import com.sirap.basic.thread.Master;
+import com.sirap.basic.thread.Worker;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
 import com.sirap.basic.util.CollUtil;
@@ -31,6 +33,7 @@ import com.sirap.basic.util.RandomUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.component.FileOpener;
+import com.sirap.common.framework.Janitor;
 import com.sirap.common.framework.SimpleKonfig;
 import com.sirap.common.framework.Stash;
 import com.sirap.common.framework.command.target.Target;
@@ -49,6 +52,7 @@ public abstract class CommandBase {
 	public static final String KEY_OPEN_FOLDER = "<";
 	public static final String KEY_SHOW_DETAIL = "-";
 	public static final String KEY_FILE_REMOVE = "remove";
+	public static final String KEY_RENAME = "rename";
 	
 	public Map<String, Object> helpMeanings = new HashMap<>();
 	
@@ -744,5 +748,41 @@ public abstract class CommandBase {
 		}
 		
 		return value;
+	}
+	
+	protected void executeActions(List<String> actions) {
+		if(g().isYes("task.sync")) {
+			executeSequentially(actions);
+		} else {
+			executeConcurrently(actions);
+		}
+	}
+
+	protected void executeSequentially(List<String> actions) {
+		for(int i = 0; i < actions.size(); i++) {
+			String action = actions.get(i);
+			C.pl("********** begin of action " + (i + 1) + "/" + actions.size() + ": " + action + " **********");
+			if(EmptyUtil.isNullOrEmpty(action)) {
+				C.pl("Empty action: " + action);
+			} else {
+				Janitor.g().process(action.trim());
+			}
+			C.pl("********** end of action " + (i + 1) + "/" + actions.size() + ": " + action + " **********");
+		}
+	}
+	
+	protected void executeConcurrently(List<String> actions) {
+		Master<String> george = new Master<String>(actions, new Worker<String>() {
+			@Override
+			public void process(String action) {
+				int count = queue.size() + 1;
+				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "async dealing...", action);
+				Janitor.g().process(action.trim());
+				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "async done", action);
+			}
+			
+		});
+		
+		george.sitAndWait();
 	}
 }

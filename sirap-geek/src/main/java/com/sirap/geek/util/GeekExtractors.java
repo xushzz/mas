@@ -86,17 +86,21 @@ public class GeekExtractors {
 			}
 			
 			private List<String> episodeTitles(String drama, String season, String table) {
-				String regexTR = "<td>(\\d{1,2})</td>\\s*(<td .*?</td>)";
-				Matcher ma = createMatcher(regexTR, table);
+				String temptable = table.replaceAll("<hr\\s*/>", ",");
+				String regexTR = "<td>([\\d,]+)</td>\\s*(<td .*?</td>)";
+				Matcher ma = createMatcher(regexTR, temptable);
 				List<String> items = new ArrayList<>();
 
 				while(ma.find()) {
-					String temp = StrUtil.padLeft(ma.group(1), 2, "0");
-					String title = getPrettyText(ma.group(2)).replaceAll("^\"", "").replaceAll("\"(\\[.+?\\]|)$", "");
-					title = title.replace("?", "");
-					String episode = StrUtil.occupy("S{0}E{1}", season, temp);
-					String name = StrUtil.occupy("{0}.{1}.{2}", drama, episode, title);
-					items.add(name);
+					List<String> epises = StrUtil.split(ma.group(1));
+					for(String va : epises) {
+						String temp = StrUtil.padLeft(va, 2, "0");
+						String title = getPrettyText(ma.group(2)).replaceAll("^\"", "").replaceAll("\"(\\[.+?\\]|)$", "");
+						title = title.replace("?", "");
+						String episode = StrUtil.occupy("S{0}E{1}", season, temp);
+						String name = StrUtil.occupy("{0}.{1}.{2}", drama, episode, title);
+						items.add(name);
+					}
 				}
 				
 				return items;

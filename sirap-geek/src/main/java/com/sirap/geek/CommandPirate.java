@@ -16,12 +16,14 @@ import com.sirap.basic.exception.MexException;
 import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.thirdparty.msoffice.MsExcelHelper;
 import com.sirap.basic.tool.C;
+import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IDCardUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.MathUtil;
+import com.sirap.basic.util.MiscUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.ThreadUtil;
@@ -31,6 +33,7 @@ import com.sirap.common.component.FileOpener;
 import com.sirap.geek.domain.CaroItem;
 import com.sirap.geek.manager.FiveOManager;
 import com.sirap.geek.manager.HiredDaysCalculator;
+import com.sirap.geek.util.GeekExtractors;
 
 public class CommandPirate extends CommandBase {
 	
@@ -228,6 +231,63 @@ public class CommandPirate extends CommandBase {
 			return true;
 		}
 		
+		solo = parseParam(KEY_RENAME + " (.+?)");
+		if(solo != null) {
+			List<String> items = StrUtil.split(solo);
+			boolean isGood = isValidFolderAndSource(items);
+			if(!isGood) {
+				items = StrUtil.split(solo, " ");
+				isGood = isValidFolderAndSource(items);
+			}
+			
+			if(isGood) {
+				String folderstr = items.get(0);
+				String source = items.get(1);
+				List<String> tasks = Lists.newArrayList();
+				List<String> epis = IOUtil.readLines(source);
+				if(MiscUtil.isHttp(source)) {
+					epis = GeekExtractors.wikiEpisodes(source);
+				} else {
+					epis = IOUtil.readLines(source);
+				}
+				File folder = new File(folderstr);
+				File[] files = folder.listFiles();
+				if(files != null) {
+					for(File fileItem : files) {
+						String originShortName = fileItem.getName();
+						String epi = MiscUtil.seasonAndEpisode(originShortName);
+						if(epi == null) {
+							C.pl("Not found sAAeBB for: " + originShortName);
+							continue;
+						}
+						String mexCriteria = folder.getName() + "." + epi;
+						Object title = CollUtil.findFirst(epis, mexCriteria, false);
+						if(title == null) {
+							C.pl("Not found niceName for: " + mexCriteria);
+							continue;
+						}
+						String extension = StrUtil.findFirstMatchedItem("(\\.[^\\.]+$)", originShortName);
+						String nicename = title + "" + extension;
+						boolean same = StrUtil.equals(nicename, originShortName);
+						if(same) {
+							C.pl("Already niceName: " + originShortName);
+							continue;
+						}
+						String cmd = StrUtil.occupy("c.rename \"{0}\" \"{1}\"", fileItem.getAbsolutePath(), nicename);
+						tasks.add(cmd);
+					}
+				}
+				
+				boolean todo = OptionUtil.readBooleanPRI(options, "do", false);
+				export(tasks);
+				if(todo) {
+					executeSequentially(tasks);
+				}
+			}
+			
+			return true;
+		}
+		
 		return false;
 	}
 	
@@ -343,7 +403,7 @@ public class CommandPirate extends CommandBase {
 		return JsonUtil.getPrettyTextInLines(json);
 	}
 	
-	public List<String> sqlDataOfMates(List<List<String>> data, boolean askForDonation, String type) {
+	private List<String> sqlDataOfMates(List<List<String>> data, boolean askForDonation, String type) {
 		String digao = "108.037172,24.686088";
 		List<String> newLines = Lists.newArrayList();
 		String template = "insert into fish_item values(null, '{0}', '{1}', '{2}', '{3}', '{4}', '{5}', now());";
@@ -373,5 +433,22 @@ public class CommandPirate extends CommandBase {
 		}
 		
 		return newLines;
+	}
+	
+	private boolean isValidFolderAndSource(List<String> items) {
+		if(items.size() != 2) {
+			return false;
+		}
+		
+		if(FileUtil.getIfNormalFolder(items.get(0)) == null) {
+			return false;
+		}
+		
+		String source = items.get(1);
+		if(MiscUtil.isHttp(source) || FileUtil.getIfNormalFile(source) != null) {
+			return true;
+		}
+		
+		return true;
 	}
 }
