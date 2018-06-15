@@ -12,6 +12,7 @@ import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
+import com.sirap.common.component.FileOpener;
 import com.sirap.executor.ssh.SshCommandExecutor;
 import com.sirap.executor.ssh.SshConfigItem;
 import com.sirap.executor.ssh.SshUtil;
@@ -19,6 +20,7 @@ import com.sirap.executor.ssh.SshUtil;
 public class CommandUnix extends CommandBase {
 
 	private static final String KEY_SSH = "ssh";
+	private static final String KEY_SSH_TOPS = "docker|hadoop";
 	private static final String KEY_CHEF_CLIENT_EXECUTE = "!";
 	private static final String KEY_CHEF_RECIPE_DISPLAY = "=";
 	private static final String KEY_SSH_DATE= KEY_SSH + ".d";
@@ -51,7 +53,22 @@ public class CommandUnix extends CommandBase {
 				}
 				String newfilepath = StrUtil.useSeparator(location, filename);
 				SshCommandExecutor.g().downloadFile(arr[0], arr[1], newfilepath);
-				export(newfilepath);
+				
+				if(newfilepath != null) {
+					String info = newfilepath;
+					if(OptionUtil.readBooleanPRI(options, "d", true)) {
+						info += " " + FileUtil.formatSize(newfilepath);
+					}
+					C.pl2("Saved => " + info);
+
+					if(g().isGeneratedFileAutoOpen()) {
+						FileOpener.open(newfilepath);
+					}
+					
+					if(target.isFileRelated()) {
+						export(FileUtil.getIfNormalFile(newfilepath));
+					}
+				}
 			}
 			
 			return true;
@@ -70,14 +87,16 @@ public class CommandUnix extends CommandBase {
 			return true;
 		}
 		
-		solo = parseParam(KEY_SSH + "\\s(.{1,})");
-		if(solo != null) {
-			String sshCommand = solo;
+		regex = StrUtil.occupy("({0}|{1})\\s+(.+)", KEY_SSH_TOPS, KEY_SSH);
+		params = parseParams(regex);
+		if(params != null) {
+			String type = params[0];
+			String usercommand = StrUtil.equals(type, KEY_SSH) ? params[1] : command;
 			boolean useAlias = OptionUtil.readBooleanPRI(options, "a", true);
 			if(useAlias) {
-				sshCommand = SshUtil.useAlias(sshCommand);
+				usercommand = SshUtil.useAlias(usercommand);
 			}
-			List<String> items = SshCommandExecutor.g().execute(sshCommand, isPretty());
+			List<String> items = SshCommandExecutor.g().execute(usercommand, isPretty());
 			
 			export(items);
 			

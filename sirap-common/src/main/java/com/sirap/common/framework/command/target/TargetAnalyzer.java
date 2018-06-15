@@ -22,6 +22,12 @@ public abstract class TargetAnalyzer {
 			return tweb;			
 		}
 
+		Target tunix = createTargetUnix(targetstr, command);
+		if(tunix != null) {
+			tunix.setFileRelated(true);
+			return tunix;			
+		}
+
 		Target temail = createTargetEmail(targetstr, command);
 		if(temail != null) {
 			if(SimpleKonfig.g().isEmailEnabled()) {
@@ -271,6 +277,16 @@ public abstract class TargetAnalyzer {
 		if(!toList.isEmpty()) {
 			Target email = new TargetEmail(subject, toList);
 			return email;
+		}
+		
+		return null;
+	}
+	
+	public static Target createTargetUnix(String targetstr, String command) {
+		XXXUtil.nullOrEmptyCheck(targetstr);
+		
+		if(targetstr.startsWith("/")) {
+			return new TargetUnix(targetstr);
 		}
 		
 		return null;

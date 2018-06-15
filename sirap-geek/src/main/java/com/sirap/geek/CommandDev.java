@@ -30,6 +30,7 @@ import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.ImageUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.OptionUtil;
+import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
@@ -60,8 +61,23 @@ public class CommandDev extends CommandBase {
 	private static final String KEY_UUID = "uuid";
 	private static final String KEY_SIZE = "size";
 	private static final String KEY_HTTP_STATUS_CODES = "https";
+	private static final String KEY_HOSTS = "hosts";
 	
 	public boolean handle() {
+		
+		if(is(KEY_HOSTS)) {
+			if(PanaceaBox.isWindows()) {
+				//C:/WINDOWS
+				String windir = System.getenv("windir");
+				String temp = StrUtil.occupy("{0}/system32/drivers/etc/hosts", windir);
+				List<String> items = IOUtil.readLines(temp);
+				items.add(0, "Location => " + temp);
+				
+				export(items);
+			}
+			
+			return true;
+		}
 
 		solo = parseParam(KEY_AH_SPLIT + "\\s(.+)");
 		if(solo != null) {

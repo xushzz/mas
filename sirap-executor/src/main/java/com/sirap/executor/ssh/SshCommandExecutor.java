@@ -18,6 +18,7 @@ import com.jcraft.jsch.Session;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.tool.C;
+import com.sirap.basic.tool.D;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.StrUtil;
@@ -131,6 +132,7 @@ public class SshCommandExecutor {
                 String timespent = "timespent: " + (end - start)/1000.0 + " seconds.";
                 C.pl2("SSH session created, " + timespent);
         	} catch(Exception ex) {
+        		D.pl(ex.getMessage());
         		throw new MexException(ex);
         	}
         }
@@ -185,6 +187,7 @@ public class SshCommandExecutor {
   
             channel.disconnect();  
         } catch (Exception ex) {
+        	D.pla(unixfolder, unixfilename);
         	XXXUtil.alert(ex);
         }  
         
@@ -202,6 +205,7 @@ public class SshCommandExecutor {
   
             channel.disconnect();  
         } catch (Exception ex) {
+        	D.pla(localfilepath, unixfolder, unixfilename);
         	XXXUtil.alert(ex);
         }  
         

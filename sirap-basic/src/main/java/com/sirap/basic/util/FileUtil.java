@@ -947,4 +947,17 @@ public class FileUtil {
 		
 		return sb.toString();
 	}
+	
+	public static File of(Object obj) {
+		if(obj instanceof File) {
+			return (File)obj;
+		} else if(obj instanceof MexFile) {
+			return ((MexFile)obj).getFile();
+		} else if(obj instanceof String) {
+			String filestr = (String)obj;
+			return getIfNormalFile(filestr);
+		}
+		
+		return null;
+	}
 }

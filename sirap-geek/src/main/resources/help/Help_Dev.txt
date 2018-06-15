@@ -27,4 +27,5 @@ E:\abc.jar a&b     list out what is inside a jar with criteria, $+full,+size,+ca
 E:\abc.jar!/a.txt  list out the content of given entry in given zip file, entry better be ascii file
 https              list all http status codes
 https 404          get detail explain of given http response code
+hosts              display content of hosts file from C:\WINDOWS\system32\drivers\etc\hosts, Windows only
 ver=6/9/2018, VI  GEEK-DEV1.0.33-GREEN

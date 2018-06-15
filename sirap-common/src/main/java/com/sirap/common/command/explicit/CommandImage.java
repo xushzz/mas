@@ -14,7 +14,7 @@ import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.domain.PaymentItem;
-import com.sirap.basic.thirdparty.qrcode.QRCodeHelper;
+import com.sirap.basic.thirdparty.image.qrcode.QRCodeHelper;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.DateUtil;
