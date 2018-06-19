@@ -125,12 +125,14 @@ public class SshCommandExecutor {
                 session.setPassword(config.getPassword());  
                 session.setUserInfo(new MyUserInfo());
                 long start = System.currentTimeMillis();
-                C.pl(StrUtil.occupy("SSH session creating... of {0}@{1}:{2}", config.getUsername(), config.getHost(), config.getPort()));
+                //Connecting to 192.168.142.128:22...
+                //SSH session creating... of root@192.168.142.128:22
+                C.pl(StrUtil.occupy("Connecting to {0}@{1}:{2} ...", config.getUsername(), config.getHost(), config.getPort()));
                 session.connect();
                 PanaceaBox.addShutdownHook(SshCommandExecutor.g(), "closeSession");
                 long end = System.currentTimeMillis();
                 String timespent = "timespent: " + (end - start)/1000.0 + " seconds.";
-                C.pl2("SSH session created, " + timespent);
+                C.pl2("Connection established, " + timespent);
         	} catch(Exception ex) {
         		D.pl(ex.getMessage());
         		throw new MexException(ex);

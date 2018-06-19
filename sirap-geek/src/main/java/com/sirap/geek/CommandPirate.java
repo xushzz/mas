@@ -30,6 +30,7 @@ import com.sirap.basic.util.ThreadUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
+import com.sirap.geek.data.AtvData;
 import com.sirap.geek.domain.CaroItem;
 import com.sirap.geek.manager.FiveOManager;
 import com.sirap.geek.manager.HiredDaysCalculator;
@@ -44,8 +45,95 @@ public class CommandPirate extends CommandBase {
 	private static final String KEY_CARO = "caro";
 	private static final String KEY_MATE_JSON = "mate";
 	private static final String KEY_51job = "51job";
+	private static final String KEY_ATV = "atv";
 
 	public boolean handle() {
+		
+		if(is(KEY_ATV)) {
+			export(AtvData.eggs());
+			
+			return true;
+		}
+		
+		solo = parseParam(KEY_ATV + "\\s+(.+?)");
+		if(solo != null) {
+			String link = solo;
+			if(AtvData.EGGS.containsKey(solo)) {
+				link = AtvData.EGGS.get(solo);
+			}
+			
+			if(!MiscUtil.isHttp(link)) {
+				C.pl2("Not a valid link: {0}", link);
+			} else {
+				List<String> items = GeekExtractors.wikiEpisodes(link);
+				export(items);
+			}
+			
+			return true;
+		}
+		
+		solo = parseParam(KEY_RENAME + " (.+?)");
+		if(solo != null) {
+			List<String> items = StrUtil.split(solo);
+			boolean isGood = isValidFolderAndSource(items);
+			if(!isGood) {
+				items = StrUtil.split(solo, " ");
+				isGood = isValidFolderAndSource(items);
+			}
+			
+			if(isGood) {
+				String folderstr = items.get(0);
+				String source = items.get(1);
+				if(AtvData.EGGS.containsKey(source)) {
+					source = AtvData.EGGS.get(source);
+				}
+				List<String> epis;
+				if(MiscUtil.isHttp(source)) {
+					epis = GeekExtractors.wikiEpisodes(source);
+				} else {
+					epis = IOUtil.readLines(source);
+				}
+				File folder = new File(folderstr);
+				File[] files = folder.listFiles();
+				if(files != null) {
+					boolean todo = OptionUtil.readBooleanPRI(options, "do", false);
+					for(File fileItem : files) {
+						String originShortName = fileItem.getName();
+						String epi = MiscUtil.seasonAndEpisode(originShortName);
+						if(epi == null) {
+							C.pl("Not found format s01e02 for: " + originShortName);
+							continue;
+						}
+						String mexCriteria = folder.getName() + "." + epi;
+						Object title = CollUtil.findFirst(epis, mexCriteria, false);
+						if(title == null) {
+							C.pl("Not found niceName for: " + mexCriteria);
+							continue;
+						}
+						String extension = StrUtil.findFirstMatchedItem("(\\.[^\\.]+$)", originShortName);
+						String nicename = title + "" + extension;
+						boolean same = StrUtil.equals(nicename, originShortName);
+						if(same) {
+							C.pl("Already a niceName: " + originShortName);
+							continue;
+						}
+						nicename = FileUtil.generateLegalFileName(nicename);
+						File newFile = new File(fileItem.getParentFile(), nicename);
+						if(todo) {
+							boolean flag = fileItem.renameTo(newFile);
+							String prefix = flag ? "RENAMED" : "FAILURE";
+							C.msg("[0] {1} => {2}", prefix, fileItem.getName(), nicename);
+						} else {
+							C.msg("{0} => {1}", fileItem.getName(), nicename);
+						}
+					}
+				}
+			}
+			
+			C.pl();
+			
+			return true;
+		}
 		
 		params = parseParams(KEY_HIRED + " (.+?)");
 		if(params != null) {
@@ -231,63 +319,6 @@ public class CommandPirate extends CommandBase {
 			return true;
 		}
 		
-		solo = parseParam(KEY_RENAME + " (.+?)");
-		if(solo != null) {
-			List<String> items = StrUtil.split(solo);
-			boolean isGood = isValidFolderAndSource(items);
-			if(!isGood) {
-				items = StrUtil.split(solo, " ");
-				isGood = isValidFolderAndSource(items);
-			}
-			
-			if(isGood) {
-				String folderstr = items.get(0);
-				String source = items.get(1);
-				List<String> tasks = Lists.newArrayList();
-				List<String> epis = IOUtil.readLines(source);
-				if(MiscUtil.isHttp(source)) {
-					epis = GeekExtractors.wikiEpisodes(source);
-				} else {
-					epis = IOUtil.readLines(source);
-				}
-				File folder = new File(folderstr);
-				File[] files = folder.listFiles();
-				if(files != null) {
-					for(File fileItem : files) {
-						String originShortName = fileItem.getName();
-						String epi = MiscUtil.seasonAndEpisode(originShortName);
-						if(epi == null) {
-							C.pl("Not found sAAeBB for: " + originShortName);
-							continue;
-						}
-						String mexCriteria = folder.getName() + "." + epi;
-						Object title = CollUtil.findFirst(epis, mexCriteria, false);
-						if(title == null) {
-							C.pl("Not found niceName for: " + mexCriteria);
-							continue;
-						}
-						String extension = StrUtil.findFirstMatchedItem("(\\.[^\\.]+$)", originShortName);
-						String nicename = title + "" + extension;
-						boolean same = StrUtil.equals(nicename, originShortName);
-						if(same) {
-							C.pl("Already niceName: " + originShortName);
-							continue;
-						}
-						String cmd = StrUtil.occupy("c.rename \"{0}\" \"{1}\"", fileItem.getAbsolutePath(), nicename);
-						tasks.add(cmd);
-					}
-				}
-				
-				boolean todo = OptionUtil.readBooleanPRI(options, "do", false);
-				export(tasks);
-				if(todo) {
-					executeSequentially(tasks);
-				}
-			}
-			
-			return true;
-		}
-		
 		return false;
 	}
 	
@@ -442,11 +473,6 @@ public class CommandPirate extends CommandBase {
 		
 		if(FileUtil.getIfNormalFolder(items.get(0)) == null) {
 			return false;
-		}
-		
-		String source = items.get(1);
-		if(MiscUtil.isHttp(source) || FileUtil.getIfNormalFile(source) != null) {
-			return true;
 		}
 		
 		return true;

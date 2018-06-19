@@ -20,12 +20,21 @@ public class C {
 		System.out.println(obj);
 	}
 
+	public static void msg(String temp, Object... values) {
+		System.out.println(StrUtil.occupy(temp, values));
+	}
+
 	public static void pl() {
 		System.out.println();
 	}
 
 	public static void pl2(Object obj) {
 		System.out.println(obj);
+		System.out.println();
+	}
+
+	public static void pl2(String temp, Object... values) {
+		System.out.println(StrUtil.occupy(temp, values));
 		System.out.println();
 	}
 	

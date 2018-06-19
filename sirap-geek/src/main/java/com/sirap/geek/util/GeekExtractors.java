@@ -1,9 +1,6 @@
 package com.sirap.geek.util;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 
 import com.google.common.collect.Lists;
@@ -12,6 +9,7 @@ import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.HtmlUtil;
+import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.StrUtil;
 
 public class GeekExtractors {
@@ -45,65 +43,62 @@ public class GeekExtractors {
 		return neymar.process().getItems();	
 	}
 	
-	public static List<String> wikiEpisodes() {
-		List<String> list = Lists.newArrayList();
-//		list.add("https://en.wikipedia.org/wiki/List_of_Arrow_episodes");
-		list.add("https://en.wikipedia.org/wiki/List_of_Boardwalk_Empire_episodes");
-//		list.add("https://en.wikipedia.org/wiki/List_of_Breaking_Bad_episodes");
-//		list.add("https://en.wikipedia.org/wiki/List_of_Friends_episodes");
-//		list.add("https://en.wikipedia.org/wiki/List_of_Game_of_Thrones_episodes");
-//		list.add("https://en.wikipedia.org/wiki/List_of_Homeland_episodes");
-//		list.add("https://en.wikipedia.org/wiki/List_of_The_Sopranos_episodes");
-//		list.add("https://en.wikipedia.org/wiki/List_of_24_episodes");
-		List<String> items = Lists.newArrayList();
-		for(String url : list) {
-			items.addAll(wikiEpisodes(url));
-		}
-		return items;
-	}
-	
 	public static List<String> wikiEpisodes(String url) {
 		Extractor<String> neymar = new Extractor<String>() {
 			
 			@Override
 			public String getUrl() {
+				showFetching();
+				
 				return url;
 			}
 
 			@Override
 			protected void parse() {
-				String regexDrama = "List of <i>(.+?)</i> episodes";
-				String drama = StrUtil.findFirstMatchedItem(regexDrama, source);
-				String regex = "<h3><span id=\"Season_(\\d+)_.+?</h3>.*?(<table .*?</table>)";
+				StringBuffer sb = StrUtil.sb();
+				sb.append("<th scope=\"row\"[^<>]+?>.+?</th>");
+				sb.append("\\s*<td>(.+?)</td>");
+				sb.append("\\s*<td class=\"summary\".*?>(.+?)</td>");
+				String regex = sb.toString();
 				Matcher ma = createMatcher(regex);
-				Set<String> one = new LinkedHashSet<>();
+				int season = 1;
+				int lastepi = 0;
+				String tvname = tvname();
+				String template = "{0}.S{1}E{2}.{3}";
 				while(ma.find()) {
-					String season = StrUtil.padLeft(ma.group(1), 2, "0");
-					String table = ma.group(2);
-					one.addAll(episodeTitles(drama, season, table));
-				}
-				mexItems.addAll(one);
-			}
-			
-			private List<String> episodeTitles(String drama, String season, String table) {
-				String temptable = table.replaceAll("<hr\\s*/>", ",");
-				String regexTR = "<td>([\\d,]+)</td>\\s*(<td .*?</td>)";
-				Matcher ma = createMatcher(regexTR, temptable);
-				List<String> items = new ArrayList<>();
+					String title = getPrettyText(ma.group(2)).replaceAll("^\"", "").replaceAll("\"(\\[.+?\\]|)$", "");
+					String regexEpis = "<hr\\s*/>";
+					List<String> epis = StrUtil.splitByRegex(ma.group(1), regexEpis);
+					for(String episode : epis) {
+						Integer epiInt = MathUtil.toInteger(episode, 1);
 
-				while(ma.find()) {
-					List<String> epises = StrUtil.split(ma.group(1));
-					for(String va : epises) {
-						String temp = StrUtil.padLeft(va, 2, "0");
-						String title = getPrettyText(ma.group(2)).replaceAll("^\"", "").replaceAll("\"(\\[.+?\\]|)$", "");
-						title = title.replace("?", "");
-						String episode = StrUtil.occupy("S{0}E{1}", season, temp);
-						String name = StrUtil.occupy("{0}.{1}.{2}", drama, episode, title);
-						items.add(name);
+						if(epiInt < lastepi) {
+							season++;
+						}
+						
+						lastepi = epiInt;
+						String niceseason = StrUtil.padLeft(season + "", 2, "0");
+						String niceepis= StrUtil.padLeft(episode + "", 2, "0");
+						String nicename = StrUtil.occupy(template, tvname, niceseason, niceepis, title);
+						mexItems.add(nicename);
 					}
 				}
+			}
+			
+			private String tvname() {
+				String regex = ">([^<>]+)</a></div>\\s*<table class=\"wikitable plainrowheaders wikiepisodetable\"";
+				String fullname = StrUtil.findFirstMatchedItem(regex, source);
+				String name = StrUtil.findFirstMatchedItem("([^\\(]+)", fullname);
+				if(name == null) {
+					regex = "<th colspan=\"2\" class=\"summary\"[^<>]+>([^<>]+)</th>";
+					name = StrUtil.findFirstMatchedItem(regex, source);
+				}
 				
-				return items;
+				if(name != null) {
+					name = name.trim();
+				}
+				
+				return name;
 			}
 		};
 		

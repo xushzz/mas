@@ -26,7 +26,6 @@ import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.ImageUtil;
 import com.sirap.basic.util.MathUtil;
-import com.sirap.basic.util.MiscUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XCodeUtil;

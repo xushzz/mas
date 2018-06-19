@@ -27,67 +27,57 @@ public class FileOpener {
 	public static final String KEY_TXT_ULTRA_EDITOR = "ue";
 	public static final String KEY_TXT_NOTEPAD = "np";
 	
-	public static boolean open(String filePath) {
-		return open(filePath, null);
+	public static void open(String filePath) {
+		open(filePath, null);
 	}
 	
-	public static boolean open(String filePath, String options) {
+	public static void open(String filePath, String options) {
 		filePath = FileUtil.windowsSeparator(filePath);
 		
-		if(isAcceptableFormat(filePath, FileUtil.SUFFIXES_AUDIO, KEY_AUDIO)) {
+		if(OptionUtil.readBooleanPRI(options, KEY_TXT_ULTRA_EDITOR, false)) {
+			C.pl2("Open by ultraedit: " + filePath);
+			playThing(filePath, "txt.ue");
+		} else if(OptionUtil.readBooleanPRI(options, KEY_TXT_NOTEPAD, false)) {
+			C.pl2("Open by notepad: " + filePath);
+			playThingByAppName(filePath, "notepad");
+		} else if(OptionUtil.readBooleanPRI(options, "p", false)) {
+			C.pl2("Open by mspaint: " + filePath);
+			playThingByAppName(filePath, "mspaint");
+		} else if(isAcceptableFormat(filePath, FileUtil.SUFFIXES_AUDIO, KEY_AUDIO)) {
 			C.pl2("Play audio");
 			playThing(filePath, "audio.player");
-			return true;
 		} else if(isAcceptableFormat(filePath, FileUtil.SUFFIXES_VIDEO, KEY_VIDEO)) {
 			C.pl2("Play video");
 			playThing(filePath, "video.player");
-			return true;
 		} else if(isAcceptableFormat(filePath, FileUtil.SUFFIXES_EXECUTABLE, KEY_EXECUTABLE)) {
 			C.pl2("Run application");
 			PanaceaBox.execute(filePath);
-			return true;
 		} else if(isAcceptableFormat(filePath, FileUtil.SUFFIXES_IMAGE, KEY_IMAGE)) {
-			if(OptionUtil.readBooleanPRI(options, "p", false)) {
-				C.pl2("Open by mspaint: " + filePath);
-				playThingByAppName(filePath, "mspaint");
-			} else {
-				C.pl2("View photo");
-				playThing(filePath, "image.viewer");
-			}
-			return true;
+			C.pl2("View photo");
+			playThing(filePath, "image.viewer");
 		} else if(FileUtil.isAnyTypeOf(filePath, FileUtil.SUFFIXES_PDF)) {
 			C.pl2("View pdf");
 			playThing(filePath, "pdf.viewer");
-			return true;
 		} else if(FileUtil.isAnyTypeOf(filePath, FileUtil.SUFFIXES_WORD)) {
 			C.pl2("View word document");
 			playThing(filePath, "word.viewer");
-			return true;
 		} else if(FileUtil.isAnyTypeOf(filePath, FileUtil.SUFFIXES_EXCEL)) {
 			C.pl2("View excel document");
 			playThing(filePath, "excel.viewer");
-			return true;
 		} else if(FileUtil.isAnyTypeOf(filePath, FileUtil.SUFFIXES_HTML)) {
 			C.pl2("View html document");
 			playThing(filePath, "page.viewer");
-			return true;
 		} else if(isAcceptableFormat(filePath, FileUtil.SUFFIXES_TEXT, KEY_TEXT)) {
-			if(OptionUtil.readBooleanPRI(options, KEY_TXT_ULTRA_EDITOR, false)) {
-				C.pl2("Open by ultraedit: " + filePath);
-				playThing(filePath, "txt.ue");
-			} else if(OptionUtil.readBooleanPRI(options, KEY_TXT_NOTEPAD, false)) {
+			if(FileUtil.isAnyTypeOf(filePath, "bat")) {
 				C.pl2("Open by notepad: " + filePath);
-				playThingByAppName(filePath, "notepad");
+				playThingByAppName(filePath, "notepad");	
 			} else {
 				C.pl2("View text file.");
 				PanaceaBox.openFile(filePath);
 			}
-			
-			return true;
 		} else {
 			PanaceaBox.openFile(filePath);
 			C.pl2("Might not be able to deal with [" + filePath + "].");
-			return false;
 		}
 	}
 	

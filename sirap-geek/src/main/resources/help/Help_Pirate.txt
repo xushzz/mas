@@ -10,7 +10,10 @@ caro D:\caroline   generate markup text for daughter, starts from 2017/12/4, $ba
 caro D:\caroline   options: $+new, newest comes first, $wiki=caro, designate given wiki folder name
 mate D:\a.xlsx     export mates data, excel file only, $-ask, will ask no donation
 mate D:\           convert file names in given folder to JSON style, var items = ["fileA", "fileB"];, options: $k=A&B,n=variableName
-rename F:\friends F:\nice.txt rename files in given folder according to file containing nice episode names
-rename F:\friends http://a.url rename files in given folder according to url containing nice episode names 
+rename F:\friends F:\nice.txt  rename files in given folder according to file containing nice episode names if $+do is true
+rename F:\friends http://a.url rename files in given folder according to url containing nice episode names if $+do is true
 rename F:\tv\friends https://en.wikipedia.org/wiki/List_of_Friends_episodes, this is a very good example
-ver=6/13/2018, III  GEEK-PIRATE1.0.7-CELINE
+atv                list some top American TV names and wiki links, actually some synonyms and links
+atv ww             list episodes of TV west world, since ww is a synonym defined in AtvData
+atv https://en.wikipedia.org/wiki/List_of_Friends_episodes   list episodes this link indicates
+ver=6/19/2018, II   GEEK-PIRATE1.0.8-CELINE
