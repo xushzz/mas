@@ -87,13 +87,23 @@ public class GeekExtractors {
 			
 			private String tvname() {
 				String regex = ">([^<>]+)</a></div>\\s*<table class=\"wikitable plainrowheaders wikiepisodetable\"";
-				String fullname = StrUtil.findFirstMatchedItem(regex, source);
-				String name = StrUtil.findFirstMatchedItem("([^\\(]+)", fullname);
+				String name = StrUtil.findFirstMatchedItem(regex, source);
 				if(name == null) {
 					regex = "<th colspan=\"2\" class=\"summary\"[^<>]+>([^<>]+)</th>";
 					name = StrUtil.findFirstMatchedItem(regex, source);
 				}
 				
+				if(name == null) {
+					String regexListOf = "List_of_(.+?)_episodes";
+					name = StrUtil.findFirstMatchedItem(regexListOf, getUrl());
+					if(name == null) {
+						String regexUrl = "/([^/(]+)";
+						name = StrUtil.findFirstMatchedItem(regexUrl, getUrl());
+					}
+					name = name.replace('_', ' ');
+				}
+				
+				name = StrUtil.findFirstMatchedItem("([^\\(]+)", name);
 				if(name != null) {
 					name = name.trim();
 				}

@@ -46,7 +46,7 @@ public class AtvData {
 		EGGS.put("cards", "https://en.wikipedia.org/wiki/List_of_House_of_Cards_episodes");
 		EGGS.put("saul", "https://en.wikipedia.org/wiki/List_of_Better_Call_Saul_episodes");
 		EGGS.put("modern", "https://en.wikipedia.org/wiki/List_of_Modern_Family_episodes");
-		EGGS.put("", "");
+		EGGS.put("lost", "https://en.wikipedia.org/wiki/List_of_Lost_episodes");
 	}
 	
 	public static List<String> eggs() {
