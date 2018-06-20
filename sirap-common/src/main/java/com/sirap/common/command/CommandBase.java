@@ -34,6 +34,7 @@ import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.framework.Janitor;
+import com.sirap.common.framework.QueryItem;
 import com.sirap.common.framework.SimpleKonfig;
 import com.sirap.common.framework.Stash;
 import com.sirap.common.framework.command.target.Target;
@@ -44,6 +45,7 @@ import com.sirap.common.framework.command.target.TargetFolder;
 public abstract class CommandBase {
 
 	public static final String KEY_2DOTS = "..";
+	public static final String KEY_DOT_CLS = ".cls";
 	public static final String KEY_LOAD = "load";
 	public static final String KEY_EQUALS = "=";
 	public static final String KEY_REFRESH = "r";
@@ -277,6 +279,10 @@ public abstract class CommandBase {
 				newList.add(0, "$ " + input);
 			}
 //			Exporter.exportList(input, newList, where, finalOptions);
+			boolean fromLastList = OptionUtil.readBooleanPRI(finalOptions, Stash.KEY_GETSTASH, false);
+			if(!fromLastList) {
+				Stash.g().setLastQuery(new QueryItem(input, newList));
+			}
 			where.export(newList, finalOptions, g().isExportWithTimestampEnabled(finalOptions));
 		}
 	}

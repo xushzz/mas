@@ -39,7 +39,7 @@ import com.sirap.common.framework.command.target.TargetFolder;
 public class CommandImage extends CommandBase {
 	private static final String KEY_CAPTURE_CURRENT_WINDOW = "c";
 	private static final String KEY_CAPTURE_ENTIRE_SCREEN = "s";
-	private static final String KEY_CAPTURE_LAST = "ll";
+	private static final String KEY_LAST_MODIFIED = "lm";
 	private static final String KEY_CAPTURE_SOUND_ONOFF_SWITCH = "sx";
 	private static final String KEY_SWAP = "swap";
 	private static final String KEY_QRCODE_ENCODE = "qrc";
@@ -93,7 +93,7 @@ public class CommandImage extends CommandBase {
 			return true;
 		}
 		
-		params = parseParams(KEY_CAPTURE_LAST + "(|\\s+(.*?))");
+		params = parseParams(KEY_LAST_MODIFIED + "(|\\s+(.*?))");
 		if(params != null) {
 			String llPath = g().getUserValueOf("ll.folder");
 			String folderPath = llPath != null ? llPath : screenShotPath();

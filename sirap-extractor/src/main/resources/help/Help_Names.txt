@@ -5,4 +5,8 @@ bbb jo             list male names matching given criteria, options: $+r order b
 bbb #12            list male name ranked 12, same for ggg
 bbb 12             list male names before and after #12 two names respectively, #12 included, same for ggg
 bbb 12 5           list male names before and after #12 five names respectively, #12 included, same for ggg
-ver=2/3/2018, VI  EXTRACTOR-NAMES1.0.0
+name               get a random name by RandomUtil.name
+name8              get 8 random names
+name k             get a random name containing letter k
+name8 k            get 8 random names containing letter k
+ver=6/20/2018, III  EXTRACTOR-NAMES1.0.1

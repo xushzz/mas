@@ -43,6 +43,7 @@ public class CommandSirap extends CommandBase {
 	private static final String KEY_TILDE_USER_HOME = "~";
 	private static final String KEY_ALL_DISKS_ONE_COLON = ":";
 	private static final String KEY_CHANGE_FILESEPARATOR = "sw";
+	private static final String KEY_LASTLIST = "ll";
 	
 	{
 		helpMeanings.put("image.formats", Konstants.IMG_FORMATS);
@@ -52,6 +53,29 @@ public class CommandSirap extends CommandBase {
 	
 	@Override
 	public boolean handle() {
+		
+		if(is(KEY_LASTLIST + KEY_DOT_CLS)) {
+			Stash.g().clearQuery();
+			C.pl2("Stashed query has been cleared.");
+			
+			return true;
+		}
+		
+		if(is(KEY_LASTLIST + KEY_2DOTS)) {
+			String finalOptions = OptionUtil.mergeOptions(options, "+" + Stash.KEY_GETSTASH);
+			export(Stash.g().getQueryNames(), finalOptions);
+			
+			return true;
+		}
+		
+		solo = parseParam(KEY_LASTLIST + "(|\\d{1,3})");
+		if(solo != null) {
+			String finalOptions = OptionUtil.mergeOptions(options, "+" + Stash.KEY_GETSTASH);
+			int k = solo.isEmpty() ? 1 : Integer.parseInt(solo);
+			export(Stash.g().getLastKQuery(k), finalOptions);
+			
+			return true;
+		}
 		
 		if(is(KEY_GENERATEDFILE_AUTOOPEN_ONOFF_SWITCH)) {
 			boolean flag = !g().isGeneratedFileAutoOpen();

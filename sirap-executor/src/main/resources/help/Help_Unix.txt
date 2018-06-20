@@ -11,7 +11,7 @@ sftp /root/docker.sh  fetch given file from target linux server and download to 
 sftp /root/docker.sh>E:  fetch given file from target linux server and download to E:
 sftp E:/docker.sh $t=/home/celineyu
 docker images      execute docker command, same as ssh docker images, also for hadoop commands
-hdfs dfs -ls       execute hadoop command, same as ssh hdfs dfs –ls
+hdfs dfs -ls       execute hadoop command, same as ssh hdfs dfs -ls
 haproxy::add       display input parameters for recipe add from cookbook haproxy on given chef repository
 =haproxy::add      display ruby script for recipe add from cookbook haproxy on given chef repository
 !haproxy::add      execute chef-client and display result, like in SSH with "chef-client -r haproxy::add"

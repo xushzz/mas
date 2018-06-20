@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.sirap.basic.util.OptionUtil;
+import com.sirap.basic.util.RandomUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.extractor.domain.NameRankItem;
@@ -13,11 +14,24 @@ import com.sirap.extractor.manager.Extractors;
 public class CommandNames extends CommandBase {
 
 	private static final String KEY_JAPANESE_NAME = "ono";
-	private static final String KEY_NAME_MALE = "bbb";
-	private static final String KEY_NAME_FEMALE = "ggg";
+	private static final String KEY_NAME_BOY = "bbb";
+	private static final String KEY_NAME_GIRL = "ggg";
+	private static final String KEY_NAME_RANDOM = "name";
 
 	@Override
 	public boolean handle() throws Exception {
+		
+		params = parseParams(KEY_NAME_RANDOM + "(|\\d{1,3})(|\\s[a-z])");
+		if(params != null) {
+			int size = params[0].isEmpty() ? 1 : Integer.parseInt(params[0]);
+			if(params[1].isEmpty()) {
+				export(RandomUtil.names(size));
+			} else {
+				export(RandomUtil.names(size, params[1].charAt(0)));
+			}
+			
+			return true;
+		}
 
 		solo = parseParam(KEY_JAPANESE_NAME + "\\s(.+)");
 		if(solo != null) {
@@ -26,7 +40,7 @@ public class CommandNames extends CommandBase {
 			return true;
 		}
 		
-		params = parseParams("(" + KEY_NAME_MALE + "|" + KEY_NAME_FEMALE + ")(|\\s.+)");
+		params = parseParams("(" + KEY_NAME_BOY + "|" + KEY_NAME_GIRL + ")(|\\s.+)");
 		if(params != null) {
 			Boolean byRank = OptionUtil.readBoolean(options, "r");
 			String criteria = params[1];
@@ -45,7 +59,7 @@ public class CommandNames extends CommandBase {
 				criteria = StrUtil.connect(ranks, "|");
 			}
 			
-			boolean isMale = StrUtil.equals(KEY_NAME_MALE, params[0]);
+			boolean isMale = StrUtil.equals(KEY_NAME_BOY, params[0]);
 			List<NameRankItem> list = Extractors.fetchEnglishNames(isMale, criteria);
 			if(byRank != null) {
 				Collections.sort(list);

@@ -7,8 +7,8 @@ s3                 capture screen with three-second delay, options:$+d, show det
 s3 fire            capture screen and save it with a special suffix, such as 20191003_234224_fire.jpg
 s+9                capture screen in consecutive mode, repeat nine times with one second interval 
 s>D:\fire          capture screen and save in folder D:\fire
-ll                 open last modified file in ll.folder, which is defaulted to be screen shot folder
-ll fire            open last modified file matching criteria in ll. folder
+lm                 open last modified file in ll.folder, which is defaulted to be screen shot folder
+lm fire            open last modified file matching criteria in ll. folder
 sx                 sound on/off switch when capturing screen
 swap               generate random captcha, aka verification code
 qrc ABC            generate QRCode for text ABC, the image will be saved in "shot"

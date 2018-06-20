@@ -1,3 +1,9 @@
+ll                 ll, last list, get the lastest query result from stash if exists, else alert
+ll8                get the last 8th query result from stash if exists, provides current size is 10
+ll88               alert before list stashed query info, provides current size is 10
+ll0                list stashed query info, such as number, size and command
+ll  ..             list stashed query info, such as number, size and command
+ll.cls             clear the stashed query result
 ox                 photo auto-open on/off switch after captured
 tx                 export with or without time stamp switch, options:$+ts,-ts
 ver                version of this product, plus copyright and author information
