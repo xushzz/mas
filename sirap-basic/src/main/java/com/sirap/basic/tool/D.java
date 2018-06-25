@@ -36,8 +36,11 @@ public class D {
 	public static void pl(Object obj) {
 		String simple = simpleClassNameDotMethodOf(current());
 		StackTraceElement parent = parent();
-		String temp = DEBUG + " {0} > [{1}] {2}     #by {3}";
+		String temp = DEBUG + " {0} > ({1}) {2}     #by {3}";
 		String type = ObjectUtil.simpleNameOfInstance(obj);
+		if(type.isEmpty()) {
+			type = obj.getClass().getName();
+		}
 		println(StrUtil.occupy(temp, simple, type, StrUtil.of(obj), parent));
 	}
 	
@@ -63,7 +66,7 @@ public class D {
 		if(objs == null) {
 			String simple = simpleClassNameDotMethodOf(current());
 			StackTraceElement parent = parent();
-			String temp = DEBUG + " {0} > [{1}] {2}     #by {3}";
+			String temp = DEBUG + " {0} > ({1}) {2}     #by {3}";
 			String type = ObjectUtil.simpleNameOfInstance(objs);
 			println(StrUtil.occupy(temp, simple, type, StrUtil.of(objs), parent));
 			return;
@@ -78,7 +81,7 @@ public class D {
 			}
 		}
 
-		String temp = "#{0} [{1}] {2}";
+		String temp = "#{0} ({1}) {2}";
 		int count = 0;
 		for(Object obj : objs) {
 			count++;

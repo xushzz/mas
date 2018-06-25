@@ -219,7 +219,7 @@ public class StrUtil {
 		XXXUtil.nullCheck(delimiter, "delimiter");
 		
 		if(source.isEmpty()) {
-			return Collections.EMPTY_LIST;
+			return Lists.newArrayList();
 		}
 		
 		if(delimiter.isEmpty()) {

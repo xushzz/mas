@@ -103,6 +103,40 @@ public class NetworkUtil {
 		return neymar.process().getItem();
 	}
 	
+	public static List<String> ipDetail(String ipOrDomainname, boolean showUrl) {
+		Extractor<String> neymar = new Extractor<String>() {
+
+			public String getUrl() {
+				if(showUrl) {
+					showFetching();
+				}
+				useGBK().setPrintExceptionIfNeeded(true);
+				String url = "http://www.ip138.com/ips1388.asp?ip={0}&action=2";
+				return StrUtil.occupy(url, ipOrDomainname);
+			}
+			
+			@Override
+			protected void parse() {
+				String regexDomain = "<h1><font color=\"blue\">(.+?)</font></h1></td>";
+				String domain = StrUtil.findFirstMatchedItem(regexDomain, source);
+				if(domain != null) {
+					mexItems.add(domain);
+				}
+				String regexLi = "<ul class=\"ul1\">(.+?)</ul></td>";
+				String section = StrUtil.findFirstMatchedItem(regexLi, source);
+				if(section == null) {
+					return;
+				}
+				String benzhan = XCodeUtil.urlDecodeUTF8("%E6%9C%AC%E7%AB%99");
+				section = section.replace(benzhan, "IP138");
+				List<String> items = StrUtil.findAllMatchedItems("<li>(.+?)</li>", section, 1);
+				mexItems.addAll(items);
+			}
+		};
+		
+		return neymar.process().getItems();
+	}
+	
 	public static String getLocalhostName() {
 		try {
 			InetAddress addr = InetAddress.getLocalHost();

@@ -16,6 +16,9 @@ public abstract class TargetAnalyzer {
 	
 	public Target parse(String command, String targetstr) {
 		XXXUtil.nullOrEmptyCheck(targetstr);
+		if(EmptyUtil.isNullOrEmpty(targetstr)) {
+			return new TargetConsole(true);
+		}
 
 		Target tweb = createTargetWeb(targetstr, command);
 		if(tweb != null) {

@@ -146,17 +146,25 @@ public class CommandSirap extends CommandBase {
 		if(handleHttpRequest(command)) {
 			return true;
 		}
-		
-		
+
 		if(is(KEY_IP)) {
 			List<String> items = Lists.newArrayList();
-			items.add("Private IP: " + NetworkUtil.getLocalhostIp());
-			items.add("Public IP:  " + NetworkUtil.getPublicIp(OptionUtil.readBooleanPRI(options, "u", false)));
+			items.add("Local  IP: " + NetworkUtil.getLocalhostIp());
+			items.add("Public IP: " + NetworkUtil.getPublicIp(OptionUtil.readBooleanPRI(options, "url", false)));
+			items.add("Aliyun IP: " + "120.79.195.133");
 			export(items);
 			return true;
 		}
-		
-		solo = parseParam(KEY_IP + "\\s([\\d\\.]+)");
+
+		solo = parseParam(KEY_IP + "\\s+(.+)");
+		if(solo != null) {
+			List<String> items = NetworkUtil.ipDetail(solo, OptionUtil.readBooleanPRI(options, "url", false));
+			export(items);
+			
+			return true;
+		}
+
+		solo = parseParam(KEY_IP + "=\\s*([\\d\\.]+)L?");
 		if(solo != null) {
 			String item;
 			if(StrUtil.isDigitsOnly(solo)) {

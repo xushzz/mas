@@ -47,6 +47,10 @@ public class SecurityUtil {
 		}
 	}
 	
+	public static String sha1(String source) {
+		return digest(source, "SHA1");
+	}
+	
 	public static String md5(String source) {
 		return digest(source, "MD5");
 	}

@@ -9,8 +9,10 @@ import java.util.List;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.ParseException;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.HttpClientUtils;
 import org.apache.http.entity.ContentType;
@@ -25,6 +27,7 @@ import org.apache.http.util.EntityUtils;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.exception.MexException;
+import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
 
@@ -82,6 +85,22 @@ public class HttpHelper {
         }
         return result;
     }
+	
+	public static String doGet(String url) {  
+		HttpGet perry = new HttpGet(url);
+		CloseableHttpClient donald = HttpClients.createDefault();  
+		try {
+			CloseableHttpResponse james = donald.execute(perry);
+			HttpEntity httpEntity = james.getEntity();  
+            String result = EntityUtils.toString(httpEntity);
+
+            return result;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} 
+		
+		return null;
+	}
 	
 	public static String doPost(String url, String key, String value) {  
         String result = "";

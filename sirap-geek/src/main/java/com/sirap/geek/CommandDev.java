@@ -220,7 +220,7 @@ public class CommandDev extends CommandBase {
 			return true;
 		}
 		
-		solo = parseParam(KEY_JSON + " " + KEY_HTTP_WWW);
+		solo = parseParam(KEY_JSON + "\\s+" + KEY_HTTP_WWW);
 		if(solo != null) {
 			String source = IOUtil.readString(solo, g().getCharsetInUse());
 			if(OptionUtil.readBooleanPRI(options, "r", false)) {
@@ -245,7 +245,7 @@ public class CommandDev extends CommandBase {
 			}
 		}
 		
-		solo = parseParam(KEY_JSON + " (.+?)");
+		solo = parseParam(KEY_JSON + "\\s+(.+?)");
 		if(solo != null) {
 			File file = parseFile(solo);
 			if(file != null) {
@@ -273,7 +273,7 @@ public class CommandDev extends CommandBase {
 			return true;
 		}
 		
-		solo = parseParam(KEY_PAIR_KEY_VALUE + "\\s(.+)");
+		solo = parseParam(KEY_PAIR_KEY_VALUE + "\\s+(.+)");
 		if(solo != null) {
 			List<String> pairs = StrUtil.parseUrlParams(solo);
 			if(OptionUtil.readBooleanPRI(options, "s", false)) {

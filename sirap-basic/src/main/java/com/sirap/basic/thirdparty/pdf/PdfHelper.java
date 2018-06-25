@@ -61,10 +61,8 @@ public class PdfHelper {
 			}
 			insertTable(document, objList, params);
 			document.close();
-		} catch (DocumentException e) {
-			e.printStackTrace();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+		} catch (Exception ex) {
+			throw new MexException(ex);
 		}
 
 		return true;
