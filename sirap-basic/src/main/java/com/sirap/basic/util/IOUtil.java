@@ -534,7 +534,7 @@ public class IOUtil {
 		InternetFileFetcher dinesh = new InternetFileFetcher(storage, suffixWhenObscure);
 		dinesh.setUseUniqueFilename(useUniqueFilename);
 		
-		MasterItemOriented<String> master = new MasterItemOriented<String>(links, dinesh){
+		MasterItemOriented<String, String> master = new MasterItemOriented<String, String>(links, dinesh){
 			@Override
 			protected int countOfThread() {
 				int temp = threads <= 0 ? super.countOfThread() : threads;

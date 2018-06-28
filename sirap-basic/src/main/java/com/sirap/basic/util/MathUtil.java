@@ -15,6 +15,22 @@ import com.sirap.basic.tool.C;
 
 public class MathUtil {
 	
+	public static final Map<String, Double> TIME_DURATION = new LinkedHashMap<>();
+	static {
+		TIME_DURATION.put("year", 1.0);
+		TIME_DURATION.put("month", 12.0);
+		TIME_DURATION.put("week", 52.0);
+		TIME_DURATION.put("day", 365.0);
+		TIME_DURATION.put("hour", 365 * 24.0);
+		TIME_DURATION.put("min", 365 * 24 * 60.0);
+		TIME_DURATION.put("minute", 365 * 24 * 60.0);
+		TIME_DURATION.put("sec", 365 * 24 * 60 * 60.0);
+		TIME_DURATION.put("second", 365 * 24 * 60 * 60.0);
+		TIME_DURATION.put("msec", 365 * 24 * 60 * 60 * 1000.0);
+		TIME_DURATION.put("millis", 365 * 24 * 60 * 60 * 1000.0);
+		TIME_DURATION.put("milliseconds", 365 * 24 * 60 * 60 * 1000.0);
+	}
+	
 	public static String setDoubleScale(double a, int scale) {
 		BigDecimal bd = toBigDecimal(a);
 		BigDecimal newBd = bd.setScale(scale, BigDecimal.ROUND_HALF_UP);
@@ -376,4 +392,29 @@ public class MathUtil {
 		
 		return values;
 	}
+
+	public static List<String> timeDuration(double value, String unit, int scale) {
+		XXXUtil.checkRange(scale, 0, 99);
+		Map<String, Double> map = TIME_DURATION;
+		
+		List<String> keys = Lists.newArrayList(map.keySet());
+
+		String paramKey = unit.toLowerCase();
+		Double paramFactor = map.get(paramKey);
+		if(paramFactor == null) {
+			XXXUtil.alert("Illegal unit {0}, should be one of {1}.", unit, keys);
+		}
+
+		List<String> values = Lists.newArrayList();
+		for(int i = 0; i < keys.size(); i++) {
+			String currentKey = keys.get(i);
+			Double currentFactor = map.get(currentKey);
+			Double king = currentFactor * value / paramFactor;
+			String va = setDoubleScale(king, scale);
+			values.add(StrUtil.removePointZeroes(va) + " " + currentKey);
+		}
+		
+		return values;
+	}
+
 }

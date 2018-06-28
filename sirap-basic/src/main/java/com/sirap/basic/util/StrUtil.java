@@ -149,6 +149,11 @@ public class StrUtil {
 		return sb.toString();
 	}
 	
+	public static String regexOfKeys(Map<String, ?> map) {
+		List<String> keys = Lists.newArrayList(map.keySet());
+		return connect(keys, "|");
+	}
+	
 	/***
 	 * default with regular expression ",|;"
 	 * @param source
@@ -571,7 +576,7 @@ public class StrUtil {
 		return sb.toString();
 	}
 	
-	public static String signValue(int value) {
+	public static String signValue(double value) {
 		String sign = value >= 0 ? "+" : "";
 		return sign + value;
 	}
@@ -1043,5 +1048,16 @@ public class StrUtil {
 		}
 		
 		return items;
+	}
+	
+	
+	public static String addHttpProtoclIfNeeded(String url) {
+		String temp = url;
+		String key = "http";
+		if(!StrUtil.startsWith(url, "http")) {
+			temp = key + "://" + url;
+		}
+		
+		return temp;
 	}
 }

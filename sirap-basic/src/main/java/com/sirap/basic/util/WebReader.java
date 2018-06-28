@@ -6,26 +6,31 @@ import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.collect.Lists;
+import com.sirap.basic.component.Konstants;
 import com.sirap.basic.exception.MexException;
+import com.sirap.basic.tool.C;
+import com.sirap.basic.tool.D;
 
 public class WebReader {
 	
-	private String url;
+	private String urlstring;
 	private String charset;
 	private String serverCharset;
 	private boolean isMethodPost;
 
 	public WebReader(String url) {
-		this.url = url;
+		this.urlstring = url;
 	}
 	
 	public WebReader(String url, String charset) {
-		this.url = url;
+		this.urlstring = url;
 		this.charset = charset;
 	}
 	
@@ -63,17 +68,38 @@ public class WebReader {
 			sb.setLength(0);
 			br.close();
 		} catch (Exception ex) {
-			String explain = XXXUtil.explainResponseException(ex.getMessage());
-			String template = "{0}\n\turl => {1}\n\tlocation => {2}.readIntoString";
-			if(explain != null) {
-				template += "\n\tstatus code => {3}";
-			}
-			
-			String msg = StrUtil.occupy(template, ex, url, getClass().getName(), explain);
-			throw new MexException(msg);
+			throw new MexException(ex);
 		}
 
 		return content;
+	}
+	
+	public List<String> readHeaders() {
+		List<String> items = Lists.newArrayList();
+		try {
+			URL url = new URL(urlstring);
+			URLConnection conn = url.openConnection();
+			Map<String, List<String>> map = conn.getHeaderFields();
+			if(EmptyUtil.isNullOrEmpty(map)) {
+				throw new MexException("Unavailable url: " + urlstring);
+			}
+			Iterator<String> it = map.keySet().iterator();
+			while(it.hasNext()) {
+				String key = it.next();
+				String value = StrUtil.connect(map.get(key));
+				if(StrUtil.equals(Konstants.KEY_CONTENT_LENGTH, key)) {
+					value = value + " (" + FileUtil.formatSize(Long.parseLong(value)) + ")";
+				}
+				if(key == null) {
+					key = "AA-Status";
+				}
+				items.add(key + ": " + value);
+			}
+		} catch (Exception ex) {
+			throw new MexException(ex);
+		}
+		
+		return CollUtil.sortIgnoreCase(items);
 	}
 	
 	public List<String> readIntoList() {
@@ -91,29 +117,34 @@ public class WebReader {
 
 			br.close();
 		} catch (Exception ex) {
-			String explain = XXXUtil.explainResponseException(ex.getMessage());
-			String template = "{0}\n\turl => {1}\n\tlocation => {2}.readIntoList";
-			if(explain != null) {
-				template += "\n\tstatus code => {3}";
-			}
-			
-			String msg = StrUtil.occupy(template, ex, url, getClass().getName(), explain);
-			throw new MexException(msg);
+//			ex.printStackTrace();
+			throw new MexException(ex);
 		}
 
 		return records;
 	}
 	
-	private BufferedReader createReader() throws Exception {
-		URLConnection conn = new URL(url).openConnection();
-		equip(conn);
-		String charsetInHeader = parseWebCharsetByHeader(conn);
-		if(charsetInHeader != null) {
-			charset = charsetInHeader;
-			serverCharset = charsetInHeader;
+	private BufferedReader createReader() {
+		BufferedReader br = null;
+		try {
+			URLConnection conn = new URL(urlstring).openConnection();
+			equip(conn);
+			String charsetInHeader = parseWebCharsetByHeader(conn);
+			if(charsetInHeader != null) {
+				charset = charsetInHeader;
+				serverCharset = charsetInHeader;
+			}
+			InputStreamReader isr = new InputStreamReader(conn.getInputStream(), charset);
+			br = new BufferedReader(isr);
+		} catch (Exception ex) {
+			String explain = XXXUtil.explainResponseException(ex.getMessage());
+			String msg = ex.toString() + "\n\t url => " + urlstring;
+			if(explain != null) {
+				msg += "\n\tstatus code => " + explain;
+			}
+			
+			throw new MexException(msg);
 		}
-		InputStreamReader isr = new InputStreamReader(conn.getInputStream(), charset);
-		BufferedReader br = new BufferedReader(isr);
 		
 		return br;
 	}
@@ -155,8 +186,30 @@ public class WebReader {
 			conn.setDoOutput(true);
 			conn.setDoInput(true);
 			PrintWriter out = new PrintWriter(conn.getOutputStream());
-	        out.print(StrUtil.getUrlParams(url));
+	        out.print(StrUtil.getUrlParams(urlstring));
 	        out.flush();
 		}
+	}
+	
+	public static Date dateOfWebsite(String webUrl) {
+		String site = StrUtil.addHttpProtoclIfNeeded(webUrl);
+		try {
+			if(!MiscUtil.isHttp(site)) {
+				XXXUtil.alert("Not a valid web site [{0}]", webUrl);
+			}
+			long start = System.currentTimeMillis();
+			C.pl("Fetching " + site);
+            URL url = new URL(site);
+            URLConnection conn = url.openConnection();
+            conn.connect();
+            long end = System.currentTimeMillis();
+            C.pl(StrUtil.occupy("Done {0} {1}", StrUtil.secondsCost(start, end), webUrl));
+            return DateUtil.dateOf(conn.getDate());
+        } catch (Exception ex) {
+        	D.pl(ex.getMessage() + " url: " + site);
+            ex.printStackTrace();
+        }
+		
+		return null;
 	}
 }

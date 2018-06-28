@@ -87,7 +87,8 @@ public abstract class Checker {
     	Date serverTimeNow = new Date();
     	Date worldTimeWhenLogin = (Date)wrappedWorldTimeWhenLogin.getObj();
     	if(worldTimeWhenLogin == null) {
-    		return DateUtil.hourDiff(serverTimeNow, -1 * DateUtil.TIMEZONE_JVM);
+    		//to be fixed, tobefixed, 0:54 2018/6/28
+//    		return DateUtil.hourDiff(serverTimeNow, -1 * DateUtil.TIMEZONE_JVM);
     	}
 
     	long diff = serverTimeNow.getTime() - serverTimeWhenLogin.getTime();

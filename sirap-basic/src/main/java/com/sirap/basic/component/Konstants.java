@@ -27,6 +27,7 @@ public class Konstants {
 		REGEX_IP = StrUtil.repeat(digit + "\\.", 3) + digit;	
 	}
 
+	public static final String KEY_CONTENT_LENGTH = "Content-Length";
 	public static final String FOLDER_EXPORT = "exp";
 	public static final String FOLDER_IMG = "img";
 	public static final String FOLDER_SOGOU = "sogou";

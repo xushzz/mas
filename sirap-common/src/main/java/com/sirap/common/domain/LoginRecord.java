@@ -92,10 +92,10 @@ public class LoginRecord extends MexItem {
 			String dateExit = info[2];
 			setDatetimeExit(dateExit);
 		} else {
-			Date login = DateUtil.parse(DateUtil.DATETIME, datetimeLogin, false);
+			Date login = DateUtil.parse(DateUtil.DATE_TIME, datetimeLogin, false);
 			if(login != null) {
 				Date exit = DateUtil.add(login, Calendar.MINUTE, mins);
-				datetimeExit = DateUtil.displayDate(exit, DateUtil.DATETIME);
+				datetimeExit = DateUtil.displayDate(exit, DateUtil.DATE_TIME);
 			}
 		}
 		

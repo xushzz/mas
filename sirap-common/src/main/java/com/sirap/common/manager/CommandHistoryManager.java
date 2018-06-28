@@ -71,7 +71,7 @@ public class CommandHistoryManager {
 	}
 	
 	public synchronized void collect(String input) {
-		String moment = DateUtil.displayNow(DateUtil.DATETIME);
+		String moment = DateUtil.displayNow(DateUtil.DATE_TIME);
 		CURRENT_RECORDS.add(new InputRecord(moment, input));
 		if(isEnabled && filePath != null) {
 			MexUtil.saveAsNew(CURRENT_RECORDS, filePath);

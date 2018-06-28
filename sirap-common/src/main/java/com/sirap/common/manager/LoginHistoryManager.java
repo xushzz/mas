@@ -25,7 +25,7 @@ public class LoginHistoryManager extends MexedTimer {
 	private static LoginHistoryManager instance;
 	private List<LoginRecord> ALL_RECORDS = new ArrayList<>();
 	
-	private LoginRecord currentLogin = new LoginRecord(DateUtil.displayNow(DateUtil.DATETIME));
+	private LoginRecord currentLogin = new LoginRecord(DateUtil.displayNow(DateUtil.DATE_TIME));
 	private String filePath;
 	
 	public static LoginHistoryManager g() {
@@ -170,7 +170,7 @@ public class LoginHistoryManager extends MexedTimer {
 	public void exitGracefully() {
 		cancelTimer();
 		if(currentLogin != null) {
-			currentLogin.setDatetimeExit(DateUtil.displayNow(DateUtil.DATETIME));
+			currentLogin.setDatetimeExit(DateUtil.displayNow(DateUtil.DATE_TIME));
 			MexUtil.saveAsNew(ALL_RECORDS, filePath);
 		}
 	}

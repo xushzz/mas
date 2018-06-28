@@ -20,9 +20,12 @@ g Vincent          search 'Vincent' via Google
 w Vincent          search 'Vincent' via Wiki
 http://aol.com     open the web page with configured explorer
 www.google.com     open the web page with configured explorer with http://www.google.com
-ip                 show local ip address and public ip address
-ip 120.79.195.133  convert ip address to number style, like function inet_aton in mysql
-ip 2018493317      parse ip address from number style, like function inet_ntoa in mysql
+ip                 show local ip address, public ip address and some aliyun ip address
+ip $+url           show some ip address plus url info, so is for ip=120.79.195.133
+ip=120.79.195.133  convert ip address to number style, like function inet_aton in mysql
+ip=2018493317      parse ip address from number style, like function inet_ntoa in mysql
+ip 120.79.195.133  fetch ip detail like location, provider of given ip
+ip www.aka10.com   fetch ip detail like location, provider of given domain name
 host               display localhost name, IP address, and macAddress 
 host..             dusolay localhost name, IP address, and macAddress and mac info
 host name          display target host name and IP address if exists

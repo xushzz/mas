@@ -127,7 +127,7 @@ public class ServletHelper {
 				Class[] clazzArr = {HttpSession.class};
 				Object obj = ObjectUtil.execute(request.getSession(), met);
 				if(StrUtil.contains(met, "time") && StrUtil.isDigitsOnly(obj + "")) {
-					String timestr = DateUtil.convertLongToDateStr(Long.parseLong(obj + ""), DateUtil.HOUR_Min_Sec_Milli_AM_WEEK_DATE);
+					String timestr = DateUtil.strOf(Long.parseLong(obj + ""), DateUtil.GMT2);
 					methodAndResult.put(met, obj + " " + timestr);
 				} else {
 					methodAndResult.put(met, obj);

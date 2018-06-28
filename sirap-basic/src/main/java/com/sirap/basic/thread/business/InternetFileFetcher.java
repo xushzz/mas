@@ -5,7 +5,7 @@ import com.sirap.basic.thread.WorkerItemOriented;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 
-public class InternetFileFetcher extends WorkerItemOriented<String> {
+public class InternetFileFetcher extends WorkerItemOriented<String, String> {
 	private String storage;
 	private String suffixWhenObscure;
 	private boolean useUniqueFilename;
@@ -28,7 +28,7 @@ public class InternetFileFetcher extends WorkerItemOriented<String> {
 	}
 
 	@Override
-	public Object process(String url) {
+	public String process(String url) {
 		if(url == null) {
 			return null;
 		}

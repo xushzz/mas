@@ -19,17 +19,21 @@ import com.sirap.basic.exception.MexException;
 
 public class DateUtil {
 
-	public static final int TIMEZONE_JVM = DateUtil.getDefaultTimeZone();
+	//https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html
 	public static final String WEEK_DATE = "EEEE MM/dd/yyyy";
 	public static final String WEEK_DATE_TIME = "EEEE MM/dd/yyyy HH:mm:ss";
 	public static final String HOUR_Min_Sec_AM_DATE = "hh:mm:ss aa, MMM dd, yyyy";
 	public static final String HOUR_Min_Sec_AM_WEEK_DATE = "hh:mm:ss aa, EEEE, MMM dd, yyyy";
 	public static final String HOUR_Min_Sec_Milli_AM_WEEK_DATE = "hh:mm:ss.SSS aa, EEEE, MMM dd, yyyy";
 	public static final String HOUR_Min_AM_WEEK_DATE = "hh:mm aa, EEEE, MMM dd, yyyy";
-	public static final String DATETIME = "yyyy-MM-dd HH:mm:ss";
-	public static final String DATETIME_F5TXT = "HH:mm yyyy/MM/dd";
-	public static final String DATETIME_TIGHT = "yyyyMMddHHmmss";
-	public static final String DATETIME_ALL_TIGHT = "yyyyMMddHHmmssSSS";
+	public static final String DATE_TIME = "yyyy-MM-dd HH:mm:ss";
+	public static final String HTTP_STYLE = "EEE, MMM dd HH:mm:ss z yyyy";
+	public static final String F5TXT = "HH:mm yyyy/MM/dd";
+	public static final String MAVEN = "yyyy-MM-dd'T'HH:mm:ssXXX";
+	public static final String GMT = "yyyy-MM-dd HH:mm:ss 'GMT'XXX EEEE";
+	public static final String GMT2 = "yyyy-MM-dd HH:mm:ss.SSS 'GMT'XXX EEEE";
+	public static final String TIGHT17 = "yyyyMMddHHmmssSSS";
+	public static final String TIGHT17_SAMPLE = "19700101" + "HHmmssSSS".replaceAll(".", "0");
 	public static final String DATETIME_UNDERLINE_TIGHT = "yyyyMMdd_HHmmss";
 	public static final String DATE_TIME_FULL = "yyyy-MM-dd_HH:mm:ss.SSS";
 	public static final String DATE_ONLY = "yyyy-MM-dd";
@@ -42,6 +46,7 @@ public class DateUtil {
 	public static final List<String> WEEK_DAY_NUMBERS = StrUtil.split("Mon,Tue,Wed,Thu,Fri,Sat,Sun");
 	public static final int[] MAX_DAY_IN_MONTH_LEAP_YEAR = {31,29,31,30,31,30,31,31,30,31,30,31};
 	public static final int[] MAX_DAY_IN_MONTH = {31,28,31,30,31,30,31,31,30,31,30,31};
+	public static final String NTP_SITE = "http://www.ntsc.ac.cn";
 
 	public static Date calendarToDate(Calendar cal) {
 		if(cal == null) {
@@ -145,7 +150,7 @@ public class DateUtil {
 	 * @param source , such as 1457894561642.
 	 * @return
 	 */
-	public static Date parseLongStr(Object source) {
+	public static Date parseLongStrX(Object source) {
 		XXXUtil.nullOrEmptyCheck(source, "source");
 		Long milliSecondsSince1970 = Long.parseLong(source + "");
 		
@@ -167,21 +172,6 @@ public class DateUtil {
 		String value = current.substring(0, len) + source;
 		
 		return value;
-	}
-	
-	private static String wrapZero(String datetimeItems) {
-		int len = DATETIME_ALL_TIGHT.length() - datetimeItems.length();
-		StringBuffer sb = new StringBuffer();
-		sb.append(datetimeItems);
-		if(len > 0) {
-			for(int i = 0; i < len; i++) {
-				sb.append("0");
-			}
-		}
-		
-		String dateStr = sb.toString();
-		
-		return dateStr;
 	}
 	
 	public static String displayDateCompact(Date date) {
@@ -276,25 +266,26 @@ public class DateUtil {
 		return displayDate(date, format, null);
 	}
 	
-	public static Long convertDateStrToLong(String datetimeItems) {
-		Date date = null;
-		if(EmptyUtil.isNullOrEmpty(datetimeItems)) {
-			date = new Date();			
-		} else {
-			String dateStr = wrapZero(datetimeItems);
-			DateFormat df = new SimpleDateFormat(DATETIME_ALL_TIGHT, Locale.US);
-			try {
-				date = df.parse(dateStr);
-			} catch (Exception ex) {
-				throw new MexException(ex.getMessage());
-			}
-		}
-
-		long now = date.getTime();
-		long milli1970 = DateUtil.parse(DATETIME_ALL_TIGHT, "19700101000000000").getTime();
-		long diff = now - milli1970;
+	/***
+	 * 2017
+	 * 20160104
+	 * 2013122112
+	 * 20120903130934
+	 * 20120903130934698
+	 * @param datetimeItems
+	 * @return
+	 */
+	public static Date dateOfTight17(String datetimeItems, Object timezone) {
+		return dateOf(tight17Of(datetimeItems), TIGHT17, timezone, null);
+	}
+	
+	public static String tight17Of(String datetimeItems) {
+		int len = datetimeItems.length();
+		XXXUtil.checkRange(len, 4, TIGHT17.length(), datetimeItems);
 		
-		return diff;
+		String full = TIGHT17_SAMPLE.replaceAll("^.{" + len + "}", datetimeItems);
+		
+		return full;
 	}
 	
 	/***
@@ -302,35 +293,28 @@ public class DateUtil {
 	 * @param source
 	 * @return
 	 */
-	public static String convertLongToDateStr(long milliSecondsSince1970, String dateFormat) {
+	public static String convertLongToDateStrX(long milliSecondsSince1970, String dateFormat) {
 		DateFormat df = new SimpleDateFormat(dateFormat, Locale.US);
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
 		String value = df.format(milliSecondsSince1970);
 		
 		return value;
 	}
-
-	public static String displayDateWithGMT(Date date, String format) {
-		String dateStr = displayDate(date, format, null);
-		String gmt = " GMT" + StrUtil.signValue(TIMEZONE_JVM);
-		
-		return dateStr + gmt;
-	}
 	
 	public static String displayDate(String format, Locale locale) {
 		return displayDate(new Date(), format, locale);
 	}
-	
-	public static String displayDateWithGMT(Date date, String format, Locale locale) {
-		return displayDateWithGMT(date, format, locale, TIMEZONE_JVM);
-	}
-	
-	public static String displayDateWithGMT(Date date, String format, Locale locale, int tz) {
-		String dateStr = displayDate(date, format, locale);
-		String gmt = " GMT" + StrUtil.signValue(tz);
-		
-		return dateStr + gmt;
-	}
+//	
+//	public static String displayDateWithGMT(Date date, String format, Locale locale) {
+//		return displayDateWithGMT(date, format, locale, TIMEZONE_JVM);
+//	}
+//	
+//	public static String displayDateWithGMT(Date date, String format, Locale locale, int tz) {
+//		String dateStr = displayDate(date, format, locale);
+//		String gmt = " GMT" + StrUtil.signValue(tz);
+//		
+//		return dateStr + gmt;
+//	}
 	
 	public static String displayDate(Date date, String format, Locale locale) {
 		XXXUtil.nullCheck(date, "Date date");
@@ -394,18 +378,14 @@ public class DateUtil {
 		return null;
 	}
 		
-	public static Date hourDiff(Date date, int hourDiff) {
+	public static Date hourDiff(Date date, double hourDiff) {
 		XXXUtil.nullCheck(date, "Date date");
 		
-		Date newDate = add(date, Calendar.HOUR_OF_DAY, hourDiff);
+		Date newDate = add(date, Calendar.MINUTE, (int)(hourDiff * 60));
 		return newDate;
 	}
 	
-	public static int getDefaultTimeZone() {
-		return getTimeZoneDiff(null);
-	}
-	
-	public static int getTimeZoneDiff(String tzID) {
+	public static String tzoneOffsetInHour(String tzID) {
 		TimeZone tz = TimeZone.getDefault();
 		
 		if(tzID != null) {
@@ -414,9 +394,13 @@ public class DateUtil {
 		
 		int offSetInMilli = tz.getOffset(new Date().getTime());
 		
-		int diff = offSetInMilli / Konstants.MILLI_PER_HOUR;
+		double diff = offSetInMilli / (Konstants.MILLI_PER_HOUR + 0.0);
+		String value = StrUtil.removePointZeroes(diff + "");
+		if(diff > 0) {
+			value = "+" + value;
+		}
 		
-		return diff;
+		return value;
 	}
 	
 	public static Locale parseLocale(String localeStr) {
@@ -542,28 +526,22 @@ public class DateUtil {
 		return false;
 	}
 	
-	public static Date getTZRelatedDate(int targetTimezone, Date localDate) {
-		int diffBetweenAppAndLocal = targetTimezone - TIMEZONE_JVM;
-		Date areaDate = DateUtil.hourDiff(localDate, diffBetweenAppAndLocal);
-		return areaDate;
-	}
-	
-	public static String displaySirapFullDate() {
-		return displaySirapFullDate(new Date());
-	}
-	
-	public static String displaySirapFullDate(Date date) {
-		StringBuffer sb = new StringBuffer();
-		sb.append(displayDate(date, "hh:mm:ss aa"));
-		sb.append(", GMT" + StrUtil.signValue(TIMEZONE_JVM) + ", ");
-		sb.append(displayDate(date, "MM/dd/yyyy"));
-		
-		Calendar cal = dateToCalendar(date);
-		int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
-		sb.append(", " + ROMAN_NUMBERS[dayOfWeek - 1]);
-		
-		return sb.toString();
-	}
+//	public static String displaySirapFullDate() {
+//		return displaySirapFullDateX(new Date());
+//	}
+//	
+//	public static String displaySirapFullDate(Date date, Locale lot) {
+//		StringBuffer sb = new StringBuffer();
+//		sb.append(displayDate(date, "hh:mm:ss aa"));
+//		sb.append(", GMT" + StrUtil.signValue(TIMEZONE_JVM) + ", ");
+//		sb.append(displayDate(date, "MM/dd/yyyy"));
+//		
+//		Calendar cal = dateToCalendar(date);
+//		int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+//		sb.append(", " + ROMAN_NUMBERS[dayOfWeek - 1]);
+//		
+//		return sb.toString();
+//	}
 	
 	public static String convertSecondsIntoHourMinuteSecond(int totalSeconds) {
 		int hours = totalSeconds / (Konstants.TIME_STEP * Konstants.TIME_STEP);
@@ -617,5 +595,87 @@ public class DateUtil {
 		}
 		
 		return items;
+	}
+	
+	public static Date parse(DateFormat format, String datestr) {
+		try {
+			return format.parse(datestr);
+		} catch (ParseException ex) {
+			throw new MexException(ex);
+		}
+	}
+
+	public static SimpleDateFormat formatOf(String pattern, Object zoneinfo, Locale lot) {
+		if(lot == null) {
+			lot = Locale.ENGLISH;
+		}
+		SimpleDateFormat susan = new SimpleDateFormat(pattern, lot);
+		if(zoneinfo != null) {
+			String zoneid;
+			String temp = zoneinfo + "";
+			Integer ivan = MathUtil.toInteger(temp);
+			if(ivan != null) {
+				String sign = ivan >= 0 ? "+" : "";
+				zoneid = "GMT" + sign + ivan;
+			} else {
+				zoneid = temp;
+			}
+			susan.setTimeZone(TimeZone.getTimeZone(zoneid));
+		}
+		
+		return susan;
+	}
+	
+	public static Date dateOf(String str, String pattern, Object timezone, Locale lot) {
+		SimpleDateFormat susan = formatOf(pattern, timezone, lot);
+		return parse(susan, str);
+	}
+	
+	public static Date dateOf(String str, String pattern) {
+		SimpleDateFormat susan = new SimpleDateFormat(pattern);
+		return parse(susan, str);
+	}
+	
+	public static Date dateOf(long millis) {
+		Date date = new Date(millis);
+		
+		return date;
+	}
+	
+	public static String strOf(long date, String pattern, Object zoneinfo, Locale lot) {
+		SimpleDateFormat susan = formatOf(pattern, zoneinfo, lot);
+		String temp = susan.format(date);
+		temp = temp.replace("Z", "+00:00");
+		
+		return temp;
+	}
+	
+	public static String strOf(long date, String pattern, Locale lot) {
+		return strOf(date, pattern, null, lot);
+	}
+	
+	public static String strOf(long date, String pattern) {
+		return strOf(date, pattern, null, null);
+	}
+	
+	public static String strOf(Date date, String pattern) {
+		return strOf(date.getTime(), pattern, null, null);
+	}
+	
+	public static String strOf(Date date, String pattern, Locale lot) {
+		return strOf(date.getTime(), pattern, null, lot);
+	}
+	
+	public static String strOf(Date date, String pattern, Object zoneinfo, Locale lot) {
+		return strOf(date.getTime(), pattern, zoneinfo, lot);
+	}
+	
+	public static String info(Date date, Locale locale) {
+		String temp = strOf(date.getTime(), GMT2, null, locale);
+		return "** " + temp + " **";
+	}
+	
+	public static String infoNow(Locale locale) {
+		return info(new Date(), locale);
 	}
 }

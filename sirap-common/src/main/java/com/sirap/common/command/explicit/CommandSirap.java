@@ -1,14 +1,12 @@
 package com.sirap.common.command.explicit;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.Extractor;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
@@ -20,8 +18,6 @@ import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.domain.SiteSearchEngine;
-import com.sirap.common.framework.AkaBase;
-import com.sirap.common.framework.Janitor;
 import com.sirap.common.framework.Stash;
 import com.sirap.common.framework.command.InputAnalyzer;
 
@@ -101,13 +97,9 @@ public class CommandSirap extends CommandBase {
 		}
 
 		if(is(KEY_USER_SETTING)) {
-			export(getSystemInfo());
-			return true;
-		}
-		
-		solo = parseParam(KEY_USER_TIMEZONE_SET);
-		if(solo != null) {
-			resetTimeZone(Integer.parseInt(solo));
+			List<List> matrix = g().getUserStatus();
+			exportMatrix(matrix, "c=:#s");
+			
 			return true;
 		}
 		
@@ -315,32 +307,5 @@ public class CommandSirap extends CommandBase {
 		}
 		
 		return false;
-	}
-	
-	protected String getSystemInfo() {
-
-		StringBuffer sb = new StringBuffer();
-		sb.append(AkaBase.USERNAME);
-		sb.append(" ").append(g().getSystemInfo());
-		
-		Date expirationDate = Janitor.g().getExpirationDate();
-		if(expirationDate != null) {
-			String expDateStr = DateUtil.displayDate(Janitor.g().getExpirationDate(), "yyyyMMdd");
-			sb.append(" expire@").append(expDateStr);
-		}
-
-		return sb.toString();
-	}
-	
-	protected boolean resetTimeZone(Integer value) {
-		int currentTZ = g().getTimeZoneUser();
-		boolean isChanged = currentTZ != value;
-		
-		if(isChanged) {
-			g().setTimeZoneUser(value);
-			C.pl2("TimeZone reset as GMT" + StrUtil.signValue(value));
-		}
-		
-		return isChanged;
 	}
 }

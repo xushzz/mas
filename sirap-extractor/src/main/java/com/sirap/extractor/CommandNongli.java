@@ -149,7 +149,7 @@ public class CommandNongli extends CommandBase {
 	 * @return
 	 */
 	private List<String> fetchAllChinaCalendarDays(List<String> regularDays) {
-		MasterItemOriented<String> george = new MasterItemOriented<>(regularDays, new WorkerItemOriented<String>() {
+		MasterItemOriented<String, String> george = new MasterItemOriented<>(regularDays, new WorkerItemOriented<String, String>() {
 
 			@Override
 			public String process(String yyyyMMdd) {

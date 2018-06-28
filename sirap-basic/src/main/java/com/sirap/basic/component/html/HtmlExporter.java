@@ -1,6 +1,7 @@
 package com.sirap.basic.component.html;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.sirap.basic.output.HtmlParams;
@@ -47,7 +48,8 @@ public class HtmlExporter {
 				String temp = targets[index];
 				if(item.contains(temp)) {
 					hasBeenHandled[index] = true;
-					String newItem = item.replace(temp, DateUtil.displaySirapFullDate());
+					String header = DateUtil.strOf(new Date(), DateUtil.GMT);
+					String newItem = item.replace(temp, header);
 					items.add(newItem);
 					continue;
 				}

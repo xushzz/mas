@@ -282,12 +282,14 @@ public class CollUtil {
 		return list;
 	}
 	
-	public static void sort(List<String> items, boolean sensitive) {
+	public static List<String> sort(List<String> items, boolean sensitive) {
 		Collections.sort(items, new StringSenseComparator(sensitive));
+		return items;
 	}
 	
-	public static void sortIgnoreCase(List<String> items) {
+	public static List<String> sortIgnoreCase(List<String> items) {
 		Collections.sort(items, new StringSenseComparator());
+		return items;
 	}
 	
 	public static List lineNumber(List<String> records, boolean align) {

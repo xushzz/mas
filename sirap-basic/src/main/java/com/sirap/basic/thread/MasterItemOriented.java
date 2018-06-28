@@ -7,22 +7,22 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.sirap.basic.component.Konstants;
 
-public class MasterItemOriented<PARAM extends Object> extends MasterBase<PARAM> {
+public class MasterItemOriented<PARAM extends Object, RETURN extends Object> extends MasterBase<PARAM> {
 
-	private Map<PARAM, Object> results = new ConcurrentHashMap<PARAM, Object>();
+	private Map<PARAM, RETURN> results = new ConcurrentHashMap<PARAM, RETURN>();
 	
-	public MasterItemOriented(List<PARAM> tasks, WorkerItemOriented<PARAM> w) {
+	public MasterItemOriented(List<PARAM> tasks, WorkerItemOriented<PARAM, RETURN> w) {
 		setTasks(tasks);
 		init(w);
 		startWorking();
 	}
 	
-	protected void init(WorkerItemOriented<PARAM> w) {
+	protected void init(WorkerItemOriented<PARAM, RETURN> w) {
 		super.init(w);
 		w.setResults(results);
 	}
 	
-	public Map<PARAM, Object> getResults() {
+	public Map<PARAM, RETURN> getResults() {
 		sitAndWait();
 		
 		return results;

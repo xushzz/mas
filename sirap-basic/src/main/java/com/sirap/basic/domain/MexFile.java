@@ -187,7 +187,7 @@ public class MexFile extends MexItem implements Comparable<MexFile> {
 		if(showDate) {
 			sb.append("  ");
 			Date lastmodified = new Date(file.lastModified());
-			sb.append(DateUtil.displayDate(lastmodified, DateUtil.DATETIME));
+			sb.append(DateUtil.displayDate(lastmodified, DateUtil.DATE_TIME));
 		}
 		
 		return sb.toString();

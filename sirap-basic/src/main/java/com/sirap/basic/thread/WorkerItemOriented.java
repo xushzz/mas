@@ -3,14 +3,19 @@ package com.sirap.basic.thread;
 import java.util.Map;
 
 import com.sirap.basic.component.Konstants;
+import com.sirap.basic.tool.D;
 
-public abstract class WorkerItemOriented<PARAM extends Object> extends WorkerBase<PARAM> {
+public abstract class WorkerItemOriented<PARAM extends Object, RETURN extends Object> extends WorkerBase<PARAM> {
 
-	protected Map<PARAM, Object> results;
+	protected Map<PARAM, RETURN> results;
+
+	public abstract RETURN process(PARAM obj);
 	
-	public abstract Object process(PARAM obj);
+	public RETURN whenNull() {
+		return (RETURN)Konstants.SHITED_FACE;
+	}
 	
-	public void setResults(Map<PARAM, Object> results) {
+	public void setResults(Map<PARAM, RETURN> results) {
 		this.results = results;
 	}
 
@@ -26,11 +31,12 @@ public abstract class WorkerItemOriented<PARAM extends Object> extends WorkerBas
 				break;
 			}
 			
-			Object result = process(job);
-			if(result == null) {
-				result = Konstants.SHITED_FACE;
+			RETURN result = process(job);
+			if(result != null) {
+				results.put(job, result);
+			} else {
+				D.pl("The result is null by job " + job);
 			}
-			results.put(job, result);
 		}
 		
 		latch.countDown();

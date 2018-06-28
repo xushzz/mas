@@ -113,6 +113,6 @@ public abstract class Konfig {
 	}
 	
 	public String getDisplayEnableSign(boolean flag) {
-		return flag ? "+":"-";
+		return flag ? "on" : "off";
 	}
 }

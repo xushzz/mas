@@ -138,7 +138,8 @@ public class JenkinsManager {
 		item.setNumber(buildNumber);
 		item.setStatus(status);
 		
-		Date date = DateUtil.parseLongStr(map.get(KEY_TIMESTAMP));
+		
+		Date date = DateUtil.dateOf(Long.parseLong(map.get(KEY_TIMESTAMP) + ""));
 		String dateStr = DateUtil.displayDate(date, DateUtil.DATETIME_UNDERLINE_TIGHT);
 		item.setDateStr(dateStr);
 		

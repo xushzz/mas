@@ -2,13 +2,10 @@ package com.sirap.common.command.explicit;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import com.sirap.basic.output.PDFParams;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.CollUtil;
-import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.OptionUtil;
@@ -16,24 +13,13 @@ import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.WebReader;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
-import com.sirap.common.domain.TZRecord;
-import com.sirap.common.extractor.CommonExtractors;
-import com.sirap.common.extractor.WorldTimeBJTimeOrgExtractor;
 import com.sirap.common.framework.command.target.TargetConsole;
-import com.sirap.common.framework.command.target.TargetPdf;
-import com.sirap.common.manager.TimeZoneManager;
 	
 public class CommandFetch extends CommandBase {
 
 	private static final String KEY_FETCH = "f";
 	private static final String KEY_WEB_CONTENT_PRINT = "(={1,2})";
-	private static final String KEY_DATETIME_GMT = "d.";
-	private static final String KEY_DATETIME_TIMEZONE = "d\\.(.{1,20})";
 
-	{
-		helpMeanings.put("timeserver.bjtimes", WorldTimeBJTimeOrgExtractor.URL_TIME);
-	}
-	
 	@Override
 	public boolean handle() {
 		
@@ -107,51 +93,31 @@ public class CommandFetch extends CommandBase {
 			boolean isPretty = params[0].length() == 1;
 			String pageUrl = equiHttpProtoclIfNeeded(params[1]);
 			WebReader xiu = new WebReader(pageUrl, g().getCharsetInUse());
-			xiu.setMethodPost(OptionUtil.readBooleanPRI(options, "post", false));
-			String tag;
-			if(isPretty) {
-				List<String> items = xiu.readIntoList();
-				tag = "lines: " + items.size();
-				export(items);
+			if(OptionUtil.readBooleanPRI(options, "h", false)) {
+				List<String> headers = xiu.readHeaders();
+				export(headers);
 			} else {
-				String content = xiu.readIntoString();
-				tag = "chars: " + content.length();
-				export(content);
-			}
-			String charsetInUse = xiu.getCharset();
-			String serverCharset = xiu.getServerCharset();
-			if(serverCharset == null) {
-				serverCharset = "unclear";
-			}
-			String template = "{0}, charset: {1}, server: {2}.";
-			C.pl2(StrUtil.occupy(template, tag, charsetInUse, serverCharset));
-		}
-		
-		if(is(KEY_DATETIME_GMT)) {
-			Date date = CommonExtractors.getWorldTime();
-			if(date != null) {
-				export(DateUtil.displayDateWithGMT(date, DateUtil.HOUR_Min_Sec_AM_WEEK_DATE, g().getLocale(), 0));
-			} else {
-				export("UTC unavailable.");
+				xiu.setMethodPost(OptionUtil.readBooleanPRI(options, "post", false));
+				String tag;
+				if(isPretty) {
+					List<String> items = xiu.readIntoList();
+					tag = "lines: " + items.size();
+					export(items);
+				} else {
+					String content = xiu.readIntoString();
+					tag = "chars: " + content.length();
+					export(content);
+				}
+				String charsetInUse = xiu.getCharset();
+				String serverCharset = xiu.getServerCharset();
+				if(serverCharset == null) {
+					serverCharset = "unclear";
+				}
+				String template = "{0}, charset: {1}, server: {2}.";
+				C.pl2(StrUtil.occupy(template, tag, charsetInUse, serverCharset));
 			}
 			
-    		return true;
-		}
-		
-		solo = parseParam(KEY_DATETIME_TIMEZONE);
-		if(solo != null) {
-			List<TZRecord> records = TimeZoneManager.g().getTimeZones(solo, g().getLocale());
-			if(target instanceof TargetPdf) {
-				int[] cellsWidth = {5, 1, 5};
-				int[] cellsAlign = {0, 1, 2};
-				PDFParams pdfParams = new PDFParams(cellsWidth, cellsAlign);
-				target.setParams(pdfParams);
-				export(CollUtil.items2PDFRecords(records));
-			} else {
-				export(CollUtil.items2PrintRecords(records));					
-			}
-
-    		return true;
+			return true;
 		}
 		
 		return false;

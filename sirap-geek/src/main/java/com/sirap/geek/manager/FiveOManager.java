@@ -65,7 +65,7 @@ public class FiveOManager {
 		Object nextPageObj = vi.getByIndex(1);
 		String nextPage = (String)nextPageObj;
 		
-		MasterItemOriented<String> george = new MasterItemOriented<>(jobIds, new WorkerItemOriented<String>() {
+		MasterItemOriented<String, String> george = new MasterItemOriented<>(jobIds, new WorkerItemOriented<String, String>() {
 			@Override
 			public String process(String jobid) {
 				JobLocationItem item = getJobItemById(jobid);

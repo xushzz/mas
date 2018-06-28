@@ -1,35 +1,37 @@
 package com.sirap.common.command.explicit;
 
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.component.MatrixCalendar;
 import com.sirap.basic.component.RioCalendar;
-import com.sirap.basic.output.PDFParams;
-import com.sirap.basic.util.CollUtil;
+import com.sirap.basic.tool.C;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.MathUtil;
+import com.sirap.basic.util.NetworkUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.TzoneUtil;
+import com.sirap.basic.util.WebReader;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
-import com.sirap.common.domain.TZRecord;
-import com.sirap.common.framework.command.target.TargetPdf;
-import com.sirap.common.manager.TimeZoneManager;
+import com.sirap.common.extractor.CommonExtractors;
 
 public class CommandTime extends CommandBase {
-	//group text search
-	//text file search
 	private static final String KEY_CALENDAR = "ca";
-	private static final String KEY_DATETIME_SERVER = "d,now";
-	private static final String KEY_DATETIME_USER = "du";
-	private static final String KEY_TIMEZONE_DISPLAY = "z\\.(.{1,20})";
+	private static final String KEY_DATETIME = "d";
+	private static final String KEY_TIMEZONE = "z";
 	private static final String KEY_TO_DATE = "td";
 	private static final String KEY_TO_LONG = "tl";
-	
+
 	public boolean handle() {
 		
 		if(is(KEY_CALENDAR)) {
@@ -132,43 +134,88 @@ public class CommandTime extends CommandBase {
 			return true;
 		}
 		
-		if(isIn(KEY_DATETIME_SERVER)) {
-			export(DateUtil.displayDateWithGMT(new Date(), DateUtil.HOUR_Min_Sec_AM_WEEK_DATE, g().getLocale()));
+		if(is(KEY_DATETIME)) {
+			export(DateUtil.strOf(new Date(), DateUtil.GMT2, null, g().getLocale()));
 			
     		return true;
 		}
 
-		if(is(KEY_DATETIME_USER)) {
-			Date dateUser = DateUtil.getTZRelatedDate(g().getTimeZoneUser(), new Date());
-			export(DateUtil.displayDateWithGMT(dateUser, DateUtil.HOUR_Min_Sec_AM_WEEK_DATE, g().getLocale(), g().getTimeZoneUser()));
+		if(is(KEY_DATETIME + "u")) {
+			String tzone = g().getUserValueOf("user.timezone");
+			if(tzone == null) {
+				C.pl2("User timezone unavailable, please check key: " + "user.timezone");
+			} else {
+				export(DateUtil.strOf(new Date(), DateUtil.GMT2, tzone, g().getLocale()));
+			}
     		
 			return true;
 		}
 		
-		solo = parseParam(KEY_TIMEZONE_DISPLAY);
+		if(is(KEY_DATETIME + KEY_DOT)) {
+			String site = g().getUserValueOf("time.site.top", DateUtil.NTP_SITE);
+			dealwithInternetTime(site);
+			
+			return true;
+		}
+		
+		solo = parseParam(KEY_DATETIME + "\\s+(.+)");
 		if(solo != null) {
-			List<TZRecord> records = TimeZoneManager.g().getTimeZones(solo, g().getLocale(), false);
-			if(target instanceof TargetPdf) {
-				int[] cellsWidth = {1, 1};
-				int[] cellsAlign = {0, 0};
-				PDFParams pdfParams = new PDFParams(cellsWidth, cellsAlign);
-				target.setParams(pdfParams);
-				List<List<String>> items = CollUtil.items2PDFRecords(records);
-				export(items);
-			} else {
-				export(records);	
-			}
+			dealwithInternetTime(solo);
 			
     		return true;
 		}
 		
+		if(is(KEY_DATETIME + KEY_2DOTS)) {
+			Date now = new Date();
+			List<String> sites = g().getUserValuesByKeyword("time.site.");
+			Map<String, Date> dates = CommonExtractors.internetTimes(sites);
+			dates.put("localhost " + NetworkUtil.getLocalhostIp(), now);
+			Iterator<String> it = dates.keySet().iterator();
+			List<String> items = Lists.newArrayList();
+			while(it.hasNext()) {
+				String key = it.next();
+				String datestr = DateUtil.strOf(dates.get(key), DateUtil.GMT, 0, g().getLocale());
+				items.add(datestr + " => " + key);
+			}
+
+			Collections.sort(items);
+			export(items);
+			
+			return true;
+		}
+		
+		if(is(KEY_TIMEZONE + KEY_2DOTS)) {
+			dealwithTimezone("");
+			
+			return true;
+		}
+		
+		solo = parseParam(KEY_TIMEZONE + "\\s+(.+?)");
+		if(solo != null) {
+			dealwithTimezone(solo);
+
+			return true;
+		}
+		
 		solo = parseParam(KEY_TO_DATE + "\\.(-?\\d{1,14})");
 		if(solo != null) {
-			Long milliSecondsSince1970 = Long.parseLong(solo);
-			
+			Long millis = Long.parseLong(solo);
 			List<String> items = new ArrayList<>();
-			items.add(DateUtil.convertLongToDateStr(milliSecondsSince1970, DateUtil.HOUR_Min_Sec_Milli_AM_WEEK_DATE));
-			items.add(DateUtil.convertLongToDateStr(milliSecondsSince1970, DateUtil.DATETIME_ALL_TIGHT));
+			String timezone = OptionUtil.readString(options, "tz");
+			Object[] zones;
+			if(timezone != null) {
+				zones = new Object[]{timezone};
+			} else {
+				zones = new Object[]{ZoneId.systemDefault().toString(), "GMT"};
+			}
+
+			for(Object zone : zones) {
+				String x2 = DateUtil.strOf(millis, DateUtil.GMT2, zone, g().getLocale());
+				String t17 = DateUtil.strOf(millis, DateUtil.TIGHT17, zone, g().getLocale());
+				t17 += " $tz=" + zone;
+				items.add(x2 + " #tl." + t17);
+			}
+			items.add(DateUtil.infoNow(g().getLocale()));
 			
 			export(items);
 			
@@ -176,16 +223,36 @@ public class CommandTime extends CommandBase {
 		}
 		
 		if(is(KEY_TO_LONG)) {
-			long value = DateUtil.convertDateStrToLong(null);
-			export(value);
+			List<String> items = Lists.newArrayList();
+			Date now = new Date();
+			String template = "{0} milliseconds";
+			items.add(StrUtil.occupy(template, now.getTime()));
+			items.add(DateUtil.info(now, g().getLocale()));
+			export(items);
 			
 			return true;
 		}
 		
-		solo = parseParam(KEY_TO_LONG + "\\.(\\d{8,17})");
+		solo = parseParam(KEY_TO_LONG + "\\.(\\d{4,17})");
 		if(solo != null) {
-			long value = DateUtil.convertDateStrToLong(solo);
-			export(value);
+			List<Object> items = Lists.newArrayList();
+			String timezone = OptionUtil.readString(options, "tz");
+			Object[] zones;
+			if(timezone != null) {
+				zones = new Object[]{timezone};
+			} else {
+				zones = new Object[]{ZoneId.systemDefault().toString(), "GMT"};
+			}
+			
+			for(Object zone : zones) {
+				Date date = DateUtil.dateOfTight17(solo, zone);
+				String msec = date.getTime() + " milliseconds $tz=" + zone;
+				items.add(msec);
+			}
+			
+			items.add(DateUtil.infoNow(g().getLocale()));
+
+			export(items);
 			
 			return true;
 		}
@@ -217,5 +284,28 @@ public class CommandTime extends CommandBase {
 		List<String> results = jamie.getResults();
 		
 		return results;
+	}
+	
+	private void dealwithTimezone(String criteria) {
+		boolean showOffset = OptionUtil.readBooleanPRI(options, "o", true);
+		boolean showDatetime = OptionUtil.readBooleanPRI(options, "d", false);
+		String locales = OptionUtil.readString(options, "l");
+		List<List> data = TzoneUtil.namesAndMore(criteria, locales, showOffset, showDatetime);
+		exportMatrix(data, "c=#s");
+	}
+	
+	private void dealwithInternetTime(String site) {
+		Date now = new Date();
+		List<List> data = Lists.newArrayList();
+		Date date = WebReader.dateOfWebsite(site);
+		
+		data.add(Lists.newArrayList("Internet time", DateUtil.strOf(date, DateUtil.GMT2, 0, locale())));
+		
+		String tzone = g().getUserValueOf("user.timezone");
+		if(tzone != null) {
+			data.add(Lists.newArrayList("User time", DateUtil.strOf(now, DateUtil.GMT2, tzone, locale())));
+		}
+		data.add(Lists.newArrayList("Local time", DateUtil.strOf(now, DateUtil.GMT2, null, locale())));
+		exportMatrix(data, "c=:#s");
 	}
 }

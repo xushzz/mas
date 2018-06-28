@@ -196,6 +196,15 @@ public class CommandMath extends CommandBase {
 			return true;
 		}
 		
+		String mapkeys = StrUtil.regexOfKeys(MathUtil.TIME_DURATION);
+		params = parseParams(Konstants.REGEX_FLOAT + "\\s*(" + mapkeys + ")");
+		if(params != null) {
+			Double value = Double.parseDouble(params[0]);
+			export(MathUtil.timeDuration(value, params[1], OptionUtil.readIntegerPRI(options, "s", 3)));
+			
+			return true;
+		}
+		
 		params = parseParams(Konstants.REGEX_FLOAT + "\\s*(Mile|Km|nmi)");
 		if(params != null) {
 			Double value = Double.parseDouble(params[0]);

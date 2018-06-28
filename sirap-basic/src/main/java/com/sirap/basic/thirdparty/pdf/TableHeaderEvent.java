@@ -1,5 +1,7 @@
 package com.sirap.basic.thirdparty.pdf;
 
+import java.util.Date;
+
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
@@ -46,7 +48,7 @@ public class TableHeaderEvent extends PdfPageEventHelper {
             table.setLockedWidth(true);
             table.getDefaultCell().setFixedHeight(20);
             table.getDefaultCell().setBorder(Rectangle.BOTTOM);
-            String header = DateUtil.displaySirapFullDate();
+            String header = DateUtil.strOf(new Date(), DateUtil.GMT);
             table.addCell(header);
             table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_RIGHT);
             table.addCell(String.format("%d /", writer.getPageNumber()));

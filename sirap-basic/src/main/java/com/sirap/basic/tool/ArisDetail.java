@@ -149,8 +149,11 @@ public class ArisDetail {
 		try {
 			Object value = item.get(glass);
 			return JsonConvertManager.g(true).toJson(value, 2);
+		} catch(IllegalArgumentException ex) {
+			return Konstants.SHITED_FACE;
 		} catch(Exception ex) {
 			if(printException) {
+//				ex.printStackTrace();
 				String msg = "Exception when accessing {0} {1} of {2}, {3}";
 				C.pl2(StrUtil.occupy(msg, type.getSimpleName(), item.getName(), glass, ex));
 			}

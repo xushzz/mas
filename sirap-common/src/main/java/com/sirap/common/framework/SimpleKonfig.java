@@ -1,30 +1,30 @@
 package com.sirap.common.framework;
 
 import java.io.File;
+import java.nio.charset.Charset;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.TypedKeyValueItem;
 import com.sirap.basic.email.EmailCenter;
 import com.sirap.basic.email.EmailServerItem;
 import com.sirap.basic.thirdparty.TrumpHelper;
-import com.sirap.basic.tool.C;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
-import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.domain.CommandRecord;
-import com.sirap.common.domain.TZRecord;
-import com.sirap.common.manager.TimeZoneManager;
 
 public class SimpleKonfig extends Konfig {
 
@@ -34,7 +34,6 @@ public class SimpleKonfig extends Konfig {
 	private List<CommandRecord> commandNodes;
 	private Locale locale;
 	private String areaZoneUser;
-	private int timeZoneUser = Short.MIN_VALUE;
 	private boolean isEmailEnabled;
 	private boolean isExportWithTimestampEnabled;
 	private boolean isAsianFontWhenPDF;
@@ -200,65 +199,39 @@ public class SimpleKonfig extends Konfig {
 		return locale;
 	}
 	
-	public String getSystemInfo() {
-		StringBuffer sb = new StringBuffer();
-		sb.append(getDisplaySignInt("GMT", getTimeZoneUser()));
-		if(areaZoneUser != null) {
-			sb.append("@").append(areaZoneUser);
-		}
-		sb.append(" " + charsetInUse);
-		//sb.append(" " + getDisplaySignInt("timeout", timeoutMinutes));
-		sb.append(" email" + getDisplayEnableSign(isEmailEnabled));
-		sb.append(" remote" + getDisplayEnableSign(isRemoteEnabled));
-		sb.append(" sound" + getDisplayEnableSign(isCaptureSoundOn));
-		sb.append(" autoOpen" + getDisplayEnableSign(isGeneratedFileAutoOpen));
-		sb.append(" timestamp" + getDisplayEnableSign(isExportWithTimestampEnabled));
-		sb.append(" suck" + getDisplayEnableSign(isSuckOptionsEnabled));
-		//sb.append(" " + getDisplaySignInt("server", DateUtil.TIMEZONE_JVM));
+	public List<List> getUserStatus() {
+		List<List> items = Lists.newArrayList();
+		String serverTZ = ZoneId.systemDefault().toString();
+		String serverDiff = DateUtil.tzoneOffsetInHour(serverTZ);
+		items.add(Lists.newArrayList("Local timezone", StrUtil.occupy("{0} (GMT{1})", serverTZ, serverDiff)));
+		items.add(Lists.newArrayList("Local charset", Charset.defaultCharset()));
+		items.add(Lists.newArrayList("User", AkaBase.USERNAME));
 		
-		return sb.toString();
-	}
-	
-	public int getTimeZoneUser() {
-		if(timeZoneUser == Short.MIN_VALUE) {
-			setUserZoneInfo(getUserValueOf("timezone.user"));
+		String userTZ = getUserValueOf("user.timezone");
+		String userDiff = null;
+		if(EmptyUtil.isNullOrEmpty(userTZ)) {
+			items.add(Lists.newArrayList("User timezone", Konstants.FAKED_EMPTY));
+		} else {
+			userDiff = DateUtil.tzoneOffsetInHour(userTZ);
+			items.add(Lists.newArrayList("User timezone", StrUtil.occupy("{0} (GMT{1})", userTZ, userDiff)));
 		}
 		
-		return timeZoneUser;
-	}
-	
-	public void setUserZoneInfo(String source) {
-		String temp = source;
-		if(EmptyUtil.isNullOrEmpty(temp)) {
-			timeZoneUser = DateUtil.TIMEZONE_JVM;
-			return;
-		}
+		items.add(Lists.newArrayList("User charset", charsetInUse));
+		items.add(Lists.newArrayList("Email", getDisplayEnableSign(isEmailEnabled)));
+		items.add(Lists.newArrayList("Remote control", getDisplayEnableSign(isRemoteEnabled)));
+		items.add(Lists.newArrayList("Capture sound", getDisplayEnableSign(isCaptureSoundOn)));
+		items.add(Lists.newArrayList("Auto open", getDisplayEnableSign(isGeneratedFileAutoOpen)));
+		items.add(Lists.newArrayList("Use timestamp", getDisplayEnableSign(isExportWithTimestampEnabled)));
+		items.add(Lists.newArrayList("Suck option", getDisplayEnableSign(isSuckOptionsEnabled)));
 		
-		Integer timezone = MathUtil.toInteger(temp);
-		if(timezone != null && timezone <=12 && timezone>=-12) {
-			timeZoneUser = timezone;
-			return;
+		String expiry = Konstants.FAKED_EMPTY;
+		Date date = Janitor.g().getExpirationDate();
+		if(date != null) {
+			expiry = DateUtil.strOf(date, DateUtil.GMT, getLocale());
 		}
+		items.add(Lists.newArrayList("Expiration: ", expiry));
 		
-		List<TZRecord> list = TimeZoneManager.g().getTZRecordsById(temp);
-		if(list != null && list.size() == 1) {
-			TZRecord item = list.get(0);
-			timeZoneUser = item.getDiff();
-			areaZoneUser = item.getId();
-			return;
-		}
-
-		timeZoneUser = DateUtil.TIMEZONE_JVM;
-		
-		if(list.size() > 1) {
-			C.pl("Uncanny, multiple timezones matched: ");
-			C.listSome(list, 4);
-		}
-	}
-
-	public void setTimeZoneUser(int timeZone) {
-		areaZoneUser = null;
-		this.timeZoneUser = timeZone;
+		return items;
 	}
 
 	public void setLocale(Locale locale) {

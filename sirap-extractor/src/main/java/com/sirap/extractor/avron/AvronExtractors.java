@@ -48,7 +48,7 @@ public class AvronExtractors {
 //		C.list(names);
 //		C.total(names.size());;
 //		names.clear();
-		MasterItemOriented<String> george = new MasterItemOriented<>(names, new WorkerItemOriented<String>() {
+		MasterItemOriented<String, String> george = new MasterItemOriented<>(names, new WorkerItemOriented<String, String>() {
 
 			@Override
 			public String process(String name) {

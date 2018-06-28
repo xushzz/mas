@@ -107,7 +107,7 @@ public class HtmlUtil {
 			String hostname = NetworkUtil.getLocalhost();
 			String source = "<font face=\"verdana\" size=\"1\" color=\"blue\"><i>source: " + hostname + "</i></font>";
 			sb.append("<br>" + source);
-			String dateStr = DateUtil.displayDateWithGMT(new Date(), DateUtil.HOUR_Min_Sec_AM_WEEK_DATE);
+			String dateStr = DateUtil.strOf(new Date(), DateUtil.GMT);
 			sb.append("<br>" + dateStr);
 		}
 		

@@ -297,7 +297,6 @@ public class CommandXCode extends CommandBase {
 				}
 			}
 			
-			
 			Map mexItemParams = creteaLocaleParams();
 			if(locale != null) {
 				g().setLocale(locale);
@@ -321,7 +320,7 @@ public class CommandXCode extends CommandBase {
 	
 	protected Map<String, Object> creteaLocaleParams() {
 		String multipleLocalesString = g().getUserValueOf("iso.locales");
-		List<Locale> localesInDisplay = LocaleUtil.parseLocales(multipleLocalesString);
+		List<Locale> localesInDisplay = LocaleUtil.ofs(multipleLocalesString);
 		
 		return createMexItemParams("localesInDisplay", localesInDisplay);
 	}

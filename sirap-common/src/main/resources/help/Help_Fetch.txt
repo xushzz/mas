@@ -4,8 +4,5 @@ http://URLxxx.pdf $-web, to download given web page
 f E:\Links.txt     the text file could contain lines of URLs indicating specified resources, parse them
 f E:\Links.txt     and fetch resource one by one
 =http://www.a.cn   display html source code in pretty format, same as cURL
+=http://www.a.cn $+h  get headers for give connection by url
 ==http://www.a.cn  display html source code in raw format, kind of ugly, option: $+post for POST request
-d.                 display standard GMT, courtesy of ${timeserver.bjtimes}
-d.Chicago          want to know the local date & time in Chicago? what about Berlin?
-d.-8               want to know the local date & time in regions with timezone -8?
-d..                display standard GMT, for all listed locations

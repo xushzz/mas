@@ -1,6 +1,7 @@
 package com.sirap.executor;
 
 import java.io.File;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -105,11 +106,16 @@ public class CommandUnix extends CommandBase {
 		
 		if(is(KEY_SSH_DATE)) {
 			String result = SshCommandExecutor.g().getMilliSecondsFrom1970(isPretty());
-			long milliSecondsSince1970 = Long.parseLong(result);
+			long millis = Long.parseLong(result);
 			List<String> items = new ArrayList<>();
-			items.add(DateUtil.convertLongToDateStr(milliSecondsSince1970, DateUtil.HOUR_Min_Sec_Milli_AM_WEEK_DATE));
-			items.add(DateUtil.convertLongToDateStr(milliSecondsSince1970, DateUtil.DATETIME_ALL_TIGHT));
-			items.add(DateUtil.convertLongToDateStr(milliSecondsSince1970, DateUtil.DATETIME));
+			
+			Object[] zones = {ZoneId.systemDefault().toString(), "GMT"};
+			for(Object zone : zones) {
+				String x2 = DateUtil.strOf(millis, DateUtil.GMT2, zone, locale());
+				String t17 = DateUtil.strOf(millis, DateUtil.TIGHT17, zone, locale());
+				t17 += " $tz=" + zone;
+				items.add(x2 + " #tl." + t17);
+			}
 
 			export(items);
 			

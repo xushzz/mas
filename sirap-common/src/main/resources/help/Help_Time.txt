@@ -4,14 +4,30 @@ ca2                display calendar of month February
 ca19992            display calendar of specified February
 ca199902           display calendar of specified February
 ca19990217         display calendar of specified February, mark the day of seventeenth as 17*
-ca1999             display all month ca
-lendars of year 1999 in a 4rowsx3cols matrix form
+ca1999             display all month calendars of year 1999 in a 4rowsx3cols matrix form
 ca1999 $d=17       display all month calendars of year 1999, mark the day of seventeenth in each month
 ca1&12&1999        display month of January, December of current year and the whole year of 1999
-d                  display server date & time
-now                display server date & time
+d                  display local date & time
 du                 display user date & time
+d.                 display GMT Internet time either by http://www.ntsc.ac.cn or [time.site.top]
+d.                 display GMT Internet time with local time and user time, like d and du
+d http://www.aka10.com    same like d., but with specified web site
+d www.aka10.com    same like d., but with specified web site, add protocol http if doesn't exist
+d..                display all Internet time values by web sites configured at [time.site.*]
 z.-7               want to know what kind of regions are in timezone -7? Creston, Dawson!
-z.Chicago          want to know the timezone of Chicago? See what happens with z.America
+z.Chicago          want to know the time zone of Chicago? See what happens with z.America
 z.Chi&g            display time zone info for locations who name matching 'Chi' and 'g'
-z..                display time zone info for for all listed locations
+z..                display all available time zones and time offset in hour
+z.. $-o            display all available time zones, option $+o to display time Offset
+z.. $+d            display all available time zones and time offset in hour, and date time
+z.. $l=zh_TW       display all available time zones, its display name by locale and time offset in hour
+z.. $l=ja_JP+zh_TW   display all available time zones, the locale items can be connected by +
+z Asia             display time zones whose id containing given string, 
+z +11              display time zones whose hour offset containing given string
+td.14412345678     to date, convert the milliseconds to date in current time zone and GMT manner
+td.14412345678 $tz=Europe/Moscow    to date, convert the milliseconds to date in given time zone
+tl                 display milliseconds since January 1st, 1970
+tl.2016            to long, convert the date to milliseconds in current time zone and GMT manner
+tl.19700616222545678 to long, convert the date to milliseconds in current time zone and GMT manner
+tl.201712231234,   to long, the date could be from yyyyMMdd to yyyyMMddhhmmssSSS
+tl.2016 $tz=Europe/Moscow    convert the date to milliseconds in given time zone

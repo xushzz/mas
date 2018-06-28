@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.domain.MexLocale;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.search.MexFilter;
@@ -21,7 +22,7 @@ public class LocaleUtil {
 	static {
 		for(Locale item : AA_LOCALES) {
 			if(EmptyUtil.isNullOrEmpty(item.getLanguage())) {
-				continue;		
+				continue;
 			}
 			
 			if(StrUtil.contains(item.toString(), "#")) {
@@ -32,7 +33,7 @@ public class LocaleUtil {
 		Collections.sort(AAM_LOCALES);
 	}
 
-	public static Locale parseLocale(String localeStr) {
+	public static Locale of(String localeStr) {
 		XXXUtil.nullCheck(localeStr, "localeStr");
 
 		String regex = "([a-z]{2})(_([A-Z]{2})|)";
@@ -53,6 +54,24 @@ public class LocaleUtil {
 		return null;
 	}
 	
+	public static List<Locale> ofs(String multipleLocalesString) {
+		List<Locale> lots = new ArrayList<>();
+		if(EmptyUtil.isNullOrEmpty(multipleLocalesString)) {
+			return lots;
+		}
+		List<String> items = StrUtil.splitByRegex(multipleLocalesString, ",|\\+");
+		for(String item : items) {
+			Locale lot = of(item);
+			if(lot == null) {
+				XXXUtil.alert("Not a valid locale: " + item);
+			}
+			
+			lots.add(lot);
+		}
+		
+		return lots;
+	}
+	
 	public static boolean doesExist(Locale locale) {
 		List<Locale> list = getAvailableLocales();
 		boolean flag = list.indexOf(locale) >= 0;
@@ -71,22 +90,6 @@ public class LocaleUtil {
 		List<Locale> list = Arrays.asList(Locale.getAvailableLocales());
 		
 		return list;
-	}
-	
-	public static List<Locale> parseLocales(String multipleLocalesString) {
-		List<Locale> extraLocales = new ArrayList<>();
-		if(!EmptyUtil.isNullOrEmpty(multipleLocalesString)) {
-			List<String> items = StrUtil.split(multipleLocalesString);
-			for(String item : items) {
-				Locale extraLocale = parseLocale(item);
-				
-				if(extraLocale != null) {
-					extraLocales.add(extraLocale);
-				}
-			}
-		}
-		
-		return extraLocales;
 	}
 	
 	public static String getIso3Header(String extraLocales) {
@@ -120,7 +123,7 @@ public class LocaleUtil {
 	}
 	
 	public static String getIso3CountryInfo(Locale countryLocale, String multipleLocalesString) {
-		List<Locale> extraLocales = parseLocales(multipleLocalesString);
+		List<Locale> extraLocales = ofs(multipleLocalesString);
 		
 		StringBuffer sb = new StringBuffer();
 		Locale temp = countryLocale;
@@ -159,7 +162,7 @@ public class LocaleUtil {
 	public static List<MexObject> getAllCurrencies(String multipleLocalesString) {
 		List<Currency> items = new ArrayList<>(Currency.getAvailableCurrencies());
 		List<MexObject> records = new ArrayList<>();
-		List<Locale> extraLocales = parseLocales(multipleLocalesString);
+		List<Locale> extraLocales = ofs(multipleLocalesString);
 		Map<String, String> ma = getCurrencyCodeAndSymbol();
 		
 		for(Currency item : items) {

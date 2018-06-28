@@ -126,6 +126,10 @@ public class D {
 		return temp;
 	}
 	
+	public static void pjst(Object obj) {
+		println(jst(obj));
+	}
+	
 	/**
 	 * print obj as pretty json format, p means pretty, while js means json
 	 * @param obj

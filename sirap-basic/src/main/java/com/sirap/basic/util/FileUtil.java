@@ -706,7 +706,7 @@ public class FileUtil {
 				value = formatSize((Long)value);
 			} else if(value instanceof FileTime) {
 				FileTime ft = (FileTime)value;
-				value = DateUtil.displayDate(new Date(ft.toMillis()), DateUtil.DATETIME);
+				value = DateUtil.displayDate(new Date(ft.toMillis()), DateUtil.DATE_TIME);
 			}
 			
 			String temp = key;

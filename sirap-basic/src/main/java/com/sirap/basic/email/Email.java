@@ -129,7 +129,7 @@ public class Email {
 	
 	public void printBasicInfo() {
 		String template = "From[{0}] to[{1}] date[{2}]\nSubject[{3}]";
-		String dateStr = DateUtil.displayDateWithGMT(sendDate, DateUtil.HOUR_Min_Sec_AM_WEEK_DATE);
+		String dateStr = DateUtil.strOf(sendDate, DateUtil.GMT);
 		StringBuffer sb = new StringBuffer();
 		sb.append(StrUtil.occupy(template, mailFrom, mailTo, dateStr, subject));
 		List<File> attatchments = getAttachments();

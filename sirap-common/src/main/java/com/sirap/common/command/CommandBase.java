@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import com.google.common.collect.Lists;
@@ -44,6 +45,7 @@ import com.sirap.common.framework.command.target.TargetFolder;
 
 public abstract class CommandBase {
 
+	public static final String KEY_DOT = ".";
 	public static final String KEY_2DOTS = "..";
 	public static final String KEY_DOT_CLS = ".cls";
 	public static final String KEY_LOAD = "load";
@@ -98,6 +100,10 @@ public abstract class CommandBase {
 	
 	public boolean handle() throws Exception {
 		return false;
+	}
+	
+	public Locale locale() {
+		return g().getLocale();
 	}
 	
 	public boolean process() {
@@ -175,8 +181,20 @@ public abstract class CommandBase {
 		export(list, options);
 	}
 	
+	public void useOptions(String highPriority) {
+		options = OptionUtil.mergeOptions(highPriority, options);
+	}
+	
 	@SuppressWarnings({ "rawtypes"})
 	public void exportMatrix(List<List> matrix) {
+		exportMatrix(matrix, "");
+	}
+	
+	@SuppressWarnings({ "rawtypes"})
+	public void exportMatrix(List<List> matrix, String highPriority) {
+		if(!EmptyUtil.isNullOrEmpty(highPriority)) {
+			useOptions(highPriority);
+		}
 		boolean pretty = OptionUtil.readBooleanPRI(options, "p", true);
 		String connector = OptionUtil.readString(options, "c", " , ");
 		if(pretty) {
