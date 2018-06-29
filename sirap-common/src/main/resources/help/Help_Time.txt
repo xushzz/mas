@@ -14,16 +14,13 @@ d.                 display GMT Internet time with local time and user time, like
 d http://www.aka10.com    same like d., but with specified web site
 d www.aka10.com    same like d., but with specified web site, add protocol http if doesn't exist
 d..                display all Internet time values by web sites configured at [time.site.*]
-z.-7               want to know what kind of regions are in timezone -7? Creston, Dawson!
-z.Chicago          want to know the time zone of Chicago? See what happens with z.America
-z.Chi&g            display time zone info for locations who name matching 'Chi' and 'g'
 z..                display all available time zones and time offset in hour
 z.. $-o            display all available time zones, option $+o to display time Offset
 z.. $+d            display all available time zones and time offset in hour, and date time
 z.. $l=zh_TW       display all available time zones, its display name by locale and time offset in hour
 z.. $l=ja_JP+zh_TW   display all available time zones, the locale items can be connected by +
-z Asia             display time zones whose id containing given string, 
-z +11              display time zones whose hour offset containing given string
+z Asia&K           display time zones whose id matching given criteria
+z +11              display time zones whose hour offset matching given criteria
 td.14412345678     to date, convert the milliseconds to date in current time zone and GMT manner
 td.14412345678 $tz=Europe/Moscow    to date, convert the milliseconds to date in given time zone
 tl                 display milliseconds since January 1st, 1970

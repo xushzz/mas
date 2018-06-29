@@ -24,7 +24,6 @@ import com.sirap.common.framework.command.InputAnalyzer;
 public class CommandSirap extends CommandBase {
 	
 	private static final String KEY_VERSION = "ver";
-	private static final String KEY_USER_TIMEZONE_SET = "u([+-](1[0-2]|[0-9]))";
 	private static final String KEY_USER_SETTING = "u";
 	private static final String KEY_CONFIGURATION = "c";
 	private static final String KEY_USER_CONFIGURATION = "/";

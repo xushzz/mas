@@ -14,7 +14,8 @@ geo 130,-39        for those locations outside China, call Tencent API service t
 geo X,Y $d=X2+Y2   calculate distance between two given locations, d means distance
 geo X,Y $r=100     convert given longitude and latitude to given formatted address, option: r=range, means radius, measured by meter
 geo ABC $+j        convert address to location or vice versa, display in json format, other wise list format
-geo ABC $+w        convert address to location or vice versa, generate a picker.html, open it with given address and coordination, as in location
+geo ABC $+w        convert address to location or vice versa, open web site with given address and coordination, as in location
+geo ABC $+ww       convert address to location or vice versa, generate a picker.html, open it with given address and coordination, as in location
 gip                get the city info where current HTTP request comes from
 gip 120.79.195.133 get the city info where given IP address comes from
-ver=5/11/2018, V  GEEK-GAODE1.0.4-Maiyue
+ver=6/29/2018, V  GEEK-GAODE1.0.5-Mark

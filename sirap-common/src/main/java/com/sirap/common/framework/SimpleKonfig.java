@@ -33,7 +33,6 @@ public class SimpleKonfig extends Konfig {
 	private String storage;
 	private List<CommandRecord> commandNodes;
 	private Locale locale;
-	private String areaZoneUser;
 	private boolean isEmailEnabled;
 	private boolean isExportWithTimestampEnabled;
 	private boolean isAsianFontWhenPDF;
@@ -205,6 +204,7 @@ public class SimpleKonfig extends Konfig {
 		String serverDiff = DateUtil.tzoneOffsetInHour(serverTZ);
 		items.add(Lists.newArrayList("Local timezone", StrUtil.occupy("{0} (GMT{1})", serverTZ, serverDiff)));
 		items.add(Lists.newArrayList("Local charset", Charset.defaultCharset()));
+		items.add(Lists.newArrayList("Local locale", Locale.getDefault()));
 		items.add(Lists.newArrayList("User", AkaBase.USERNAME));
 		
 		String userTZ = getUserValueOf("user.timezone");
@@ -217,6 +217,7 @@ public class SimpleKonfig extends Konfig {
 		}
 		
 		items.add(Lists.newArrayList("User charset", charsetInUse));
+		items.add(Lists.newArrayList("User locale", locale));
 		items.add(Lists.newArrayList("Email", getDisplayEnableSign(isEmailEnabled)));
 		items.add(Lists.newArrayList("Remote control", getDisplayEnableSign(isRemoteEnabled)));
 		items.add(Lists.newArrayList("Capture sound", getDisplayEnableSign(isCaptureSoundOn)));

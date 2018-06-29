@@ -94,12 +94,16 @@ public class RandomUtil {
 		
 		Random xian = new Random();
 		List<String> sample = Lists.newArrayList(NameData.EGGS.values());
+		if(!StrUtil.isRegexFound(criteria + "", StrUtil.connect(sample))) {
+			XXXUtil.alert("Sample data contains no letter [{0}] at all", cstr);
+		}
+		
 		int samplesize = sample.size();
 		List<String> items = Lists.newArrayList();
 		if(samplesize == 0) {
 			return items;
 		}
-		int maxAttemps = 99999;
+		int maxAttempts = Short.MAX_VALUE;
 		int count = 0;
 		while(items.size() < size) {
 			int index = xian.nextInt(samplesize);
@@ -108,8 +112,8 @@ public class RandomUtil {
 				items.add(sample.get(index));
 			}
 			count++;
-			if(count > maxAttemps) {
-				XXXUtil.info("Reach max attemps of {0} for [{1}], quit.", maxAttemps, cstr);
+			if(count > maxAttempts) {
+				XXXUtil.info("Reach max attemps of {0} for [{1}], quit.", maxAttempts, cstr);
 				break;
 			}
 		}

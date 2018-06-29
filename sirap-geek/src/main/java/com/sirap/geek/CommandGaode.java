@@ -9,6 +9,7 @@ import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.domain.ValuesItem;
+import com.sirap.basic.thirdparty.http.HttpHelper;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.CollUtil;
 import com.sirap.basic.util.DateUtil;
@@ -16,6 +17,7 @@ import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.XCodeUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
@@ -176,9 +178,15 @@ public class CommandGaode extends CommandBase {
 			}
 			
 			export(lines);
-			if(OptionUtil.readBooleanPRI(options, "w", false)) {
+			if(OptionUtil.readBooleanPRI(options, "ww", false)) {
 				String variables = generateVariables(lines);
 				generatePicker(variables);
+			} 
+			if(OptionUtil.readBooleanPRI(options, "w", false)) {
+				String requestParams = generateParams(lines);
+				String site = g().getUserValueOf("picker.site", HttpHelper.URL_AKA10_GEO_LOCATION);
+				String pickerUrl = site + requestParams;
+				viewPage(pickerUrl);
 			} 
 			
 			return true;
@@ -200,6 +208,24 @@ public class CommandGaode extends CommandBase {
 		}
 		
 		return false;
+	}
+	
+	private String generateParams(List<String> lines) {
+		String regexTemp = "\"{0}\"\\s*:\\s*\"([^\"]+)\"";
+		String[] keys = {"formatted_address", "location"};
+		String regexA = StrUtil.occupy(regexTemp, keys[0]);
+		String regexB = StrUtil.occupy(regexTemp, keys[1]);
+		String oneline = StrUtil.connect(lines);
+		String address = StrUtil.findFirstMatchedItem(regexA, oneline);
+		String location = StrUtil.findFirstMatchedItem(regexB, oneline);
+		if(EmptyUtil.isNullOrEmpty(address) || EmptyUtil.isNullOrEmpty(location)) {
+			XXXUtil.alert("Result contains no valid {0} and {1}", keys[0], keys[1]);
+		}
+		
+		String temp = "?location={0}&address={1}";
+		String params = StrUtil.occupy(temp, location, XCodeUtil.urlEncodeUTF8(address));
+		
+		return params;
 	}
 	
 	private String generateVariables(List<String> lines) {
