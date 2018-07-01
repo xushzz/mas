@@ -99,7 +99,7 @@ public class WebReader {
 			throw new MexException(ex);
 		}
 		
-		return CollUtil.sortIgnoreCase(items);
+		return Colls.sortIgnoreCase(items);
 	}
 	
 	public List<String> readIntoList() {

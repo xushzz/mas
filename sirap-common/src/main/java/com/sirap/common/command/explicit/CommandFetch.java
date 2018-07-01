@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.CollUtil;
+import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.OptionUtil;
@@ -77,7 +77,7 @@ public class CommandFetch extends CommandBase {
 			}
 			
 			if(target.isFileRelated()) {
-				export(CollUtil.toFileList(pathList));
+				export(Colls.toFileList(pathList));
 			} else {
 				export(pathList);
 			}

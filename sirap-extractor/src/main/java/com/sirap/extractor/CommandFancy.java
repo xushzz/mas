@@ -7,7 +7,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 import com.sirap.basic.domain.MexObject;
-import com.sirap.basic.util.CollUtil;
+import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
@@ -49,7 +49,7 @@ public class CommandFancy extends CommandBase {
 				items.addAll(MeituManager.g().getImageLinks(morePages));
 			} else {
 				int sample = g().getUserNumberValueOf("mei.some", 7);
-				items = CollUtil.top(items, sample);
+				items = Colls.top(items, sample);
 			}
 			
 			export(items);

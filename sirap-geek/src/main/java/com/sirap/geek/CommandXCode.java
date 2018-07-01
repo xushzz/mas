@@ -11,7 +11,7 @@ import com.sirap.basic.domain.MexLocale;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.search.MexFilter;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.CollUtil;
+import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.LocaleUtil;
 import com.sirap.basic.util.SecurityUtil;
@@ -70,7 +70,7 @@ public class CommandXCode extends CommandBase {
 		
 		solo = parseParam(KEY_ASCII_SHORT + "\\s(.+?)");
 		if(solo != null) {
-			List<MexItem> items = CollUtil.filter(GeekManager.g().asciiAll(), solo, isCaseSensitive(), isStayCriteria());
+			List<MexItem> items = Colls.filter(GeekManager.g().asciiAll(), solo, isCaseSensitive(), isStayCriteria());
 			
 			if(!EmptyUtil.isNullOrEmpty(items)) {
 				items.add(0, new MexObject((AsciiRecord.getHeader())));
@@ -261,7 +261,7 @@ public class CommandXCode extends CommandBase {
 			List<MexLocale> records = LocaleUtil.AAM_LOCALES;
 			C.pl(LocaleUtil.getIso3Header(extraLocales));
 			
-			export(CollUtil.items2PrintRecords(records, creteaLocaleParams()));
+			export(Colls.items2PrintRecords(records, creteaLocaleParams()));
 			
 			return true;
 		}
@@ -276,7 +276,7 @@ public class CommandXCode extends CommandBase {
 				C.pl(LocaleUtil.getIso3Header(extraLocales));
 			}
 
-			export(CollUtil.items2PrintRecords(items, creteaLocaleParams()));
+			export(Colls.items2PrintRecords(items, creteaLocaleParams()));
 			
 			return true;
 		}
@@ -305,9 +305,9 @@ public class CommandXCode extends CommandBase {
 			} else {
 				C.pl("[" + solo + "] is not a valid locale, did you mean one of these?");
 				if(EmptyUtil.isNullOrEmpty(items)) {
-					C.listSome(CollUtil.items2PrintRecords(LocaleUtil.AAM_LOCALES, mexItemParams), 10);
+					C.listSome(Colls.items2PrintRecords(LocaleUtil.AAM_LOCALES, mexItemParams), 10);
 				} else {
-					C.list(CollUtil.items2PrintRecords(items, mexItemParams));
+					C.list(Colls.items2PrintRecords(items, mexItemParams));
 					C.pl();
 				}
 			}

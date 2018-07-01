@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.sirap.basic.output.ConsoleParams;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.CollUtil;
+import com.sirap.basic.util.Colls;
 import com.sirap.common.framework.Stash;
 
 public class TargetConsole extends Target {
@@ -56,7 +56,7 @@ public class TargetConsole extends Target {
 		
 		if(params.isToSplit()) {
 			for(Object record:records) {
-				List<String> splittedRecords = CollUtil.splitIntoRecords(record + "", params.getCharsPerLineWhenSplit());
+				List<String> splittedRecords = Colls.splitIntoRecords(record + "", params.getCharsPerLineWhenSplit());
 				C.listWithoutTotal(splittedRecords);
 			}
 			

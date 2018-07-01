@@ -16,7 +16,7 @@ import com.sirap.basic.exception.MexException;
 import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.thirdparty.msoffice.MsExcelHelper;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.CollUtil;
+import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
@@ -105,7 +105,7 @@ public class CommandPirate extends CommandBase {
 							continue;
 						}
 						String mexCriteria = folder.getName() + "." + epi;
-						Object title = CollUtil.findFirst(epis, mexCriteria, false);
+						Object title = Colls.findFirst(epis, mexCriteria, false);
 						if(title == null) {
 							C.pl("Not found niceName for: " + mexCriteria);
 							continue;

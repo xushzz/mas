@@ -16,7 +16,7 @@ import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.domain.PaymentItem;
 import com.sirap.basic.thirdparty.image.qrcode.QRCodeHelper;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.CollUtil;
+import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
@@ -461,7 +461,7 @@ public class CommandImage extends CommandBase {
 				}
 			}
 		} else {
-			List<MexObject> filePaths = CollUtil.filter(new ArrayList<MexObject>(mapLastModified.values()), criteria, isCaseSensitive(), isStayCriteria());
+			List<MexObject> filePaths = Colls.filter(new ArrayList<MexObject>(mapLastModified.values()), criteria, isCaseSensitive(), isStayCriteria());
 			
 			int size = filePaths.size();
 			if(size == 1) {

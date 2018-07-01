@@ -1,10 +1,9 @@
 package com.sirap.basic.domain;
 
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.google.common.collect.Lists;
+import com.sirap.basic.component.map.AlinkMap;
 import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
@@ -12,7 +11,7 @@ import com.sirap.basic.util.StrUtil;
 @SuppressWarnings("serial")
 public class KeyValuesItem extends MexItem {
 	
-	protected Map<String, Object> box = new LinkedHashMap<String, Object>();
+	protected AlinkMap<String, Object> box = new AlinkMap<String, Object>();
 	
 	public KeyValuesItem() {
 

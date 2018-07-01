@@ -23,7 +23,7 @@ import com.sirap.basic.search.MexFilter;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.ScreenCaptor;
 import com.sirap.basic.util.ArisUtil;
-import com.sirap.basic.util.CollUtil;
+import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
@@ -88,7 +88,7 @@ public class CommandDev extends CommandBase {
 			}
 			List<String> items = StrUtil.split(solo, sep);
 			if(OptionUtil.readBooleanPRI(options, "s", false)) {
-				CollUtil.sortIgnoreCase(items);
+				Colls.sortIgnoreCase(items);
 			}
 			
 			export(items);
@@ -105,7 +105,7 @@ public class CommandDev extends CommandBase {
 			int depth = OptionUtil.readIntegerPRI(options, "d", 2);
 			List<MexFile> items = FileUtil.scanSingleFolder(full, depth, true);
 			if(!EmptyUtil.isNullOrEmpty(criteria)) {
-				items = CollUtil.filter(items, criteria, isCaseSensitive(), isStayCriteria());
+				items = Colls.filter(items, criteria, isCaseSensitive(), isStayCriteria());
 			}
 			
 			if(EmptyUtil.isNullOrEmpty(items)) {
@@ -164,7 +164,7 @@ public class CommandDev extends CommandBase {
 			}
 			List<String> items = MavenManager.g().getDependencies(mvnCommand);
 			if(target.isFileRelated()) {
-				export(CollUtil.toFileList(items));
+				export(Colls.toFileList(items));
 			} else {
 				export(items);
 			}
@@ -277,7 +277,7 @@ public class CommandDev extends CommandBase {
 		if(solo != null) {
 			List<String> pairs = StrUtil.parseUrlParams(solo);
 			if(OptionUtil.readBooleanPRI(options, "s", false)) {
-				CollUtil.sortIgnoreCase(pairs);
+				Colls.sortIgnoreCase(pairs);
 			}
 			export(pairs);
 			
@@ -389,7 +389,7 @@ public class CommandDev extends CommandBase {
 		
 		solo = parseParam(KEY_HTTP_STATUS_CODES + "\\s(.+?)");
 		if(solo != null) {
-			List<ValuesItem> items = CollUtil.filter(GeekExtractors.fetchHttpResponseCodes(), solo);
+			List<ValuesItem> items = Colls.filter(GeekExtractors.fetchHttpResponseCodes(), solo);
 			String concise = HttpData.EGGS.get(solo);
 			if(concise != null) {
 				items.add(new ValuesItem(concise));

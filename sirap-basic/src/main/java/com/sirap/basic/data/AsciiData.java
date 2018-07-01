@@ -1,13 +1,12 @@
 package com.sirap.basic.data;
 
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
-import com.sirap.basic.util.CollUtil;
+import com.sirap.basic.component.map.AlinkMap;
+import com.sirap.basic.util.Amaps;
 
 public class AsciiData {
-	public static Map<Integer, String> EGGS = new LinkedHashMap<Integer, String>();
+	public static final AlinkMap<Integer, String> EGGS = Amaps.newLinkHashMap();
 	static {
 		EGGS.put(0, "NUL(null)");
 		EGGS.put(1, "SOH(start of headling)");
@@ -98,6 +97,6 @@ public class AsciiData {
 	}
 
 	public static List<String> eggs() {
-		return CollUtil.mapToList(EGGS, ", ");
+		return Amaps.listOf(EGGS);
 	}
 }

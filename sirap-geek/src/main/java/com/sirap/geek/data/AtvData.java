@@ -1,14 +1,13 @@
 package com.sirap.geek.data;
 
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
-import com.sirap.basic.util.CollUtil;
+import com.sirap.basic.component.map.AlinkMap;
+import com.sirap.basic.util.Amaps;
 
 public class AtvData {
 
-	public static final Map<String, String> EGGS = new TreeMap<>();
+	public static final AlinkMap<String, String> EGGS = Amaps.newLinkHashMap();
 	static {
 		EGGS.put("arrow", "https://en.wikipedia.org/wiki/List_of_Arrow_episodes");
 		EGGS.put("empire", "https://en.wikipedia.org/wiki/List_of_Boardwalk_Empire_episodes");
@@ -50,6 +49,6 @@ public class AtvData {
 	}
 	
 	public static List<String> eggs() {
-		return CollUtil.mapToList(EGGS, ", ");
+		return Amaps.listOf(EGGS);
 	}
 }

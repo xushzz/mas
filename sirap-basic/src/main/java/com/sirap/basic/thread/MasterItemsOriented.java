@@ -3,11 +3,12 @@ package com.sirap.basic.thread;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+
+import com.sirap.basic.component.map.AconcMap;
 
 public class MasterItemsOriented<PARAM extends Object, RETURN extends Object> extends MasterBase<PARAM> {
 
-	private Map<PARAM, List<RETURN>> result = new ConcurrentHashMap<PARAM, List<RETURN>>();
+	private Map<PARAM, List<RETURN>> result = new AconcMap<PARAM, List<RETURN>>();
 	
 	public MasterItemsOriented(List<PARAM> tasks, WorkerItemsOriented<PARAM, RETURN> w) {
 		setTasks(tasks);

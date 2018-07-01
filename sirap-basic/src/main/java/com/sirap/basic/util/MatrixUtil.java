@@ -158,7 +158,7 @@ public class MatrixUtil {
 		List<List> goodMatrix = Lists.newArrayList();
 		for(T row : matrix) {
 			k++;
-			List items = CollUtil.listOf(row);
+			List items = Colls.listOf(row);
 			
 			if(lastRow == null) {
 				lastRow = items;

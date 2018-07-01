@@ -11,7 +11,7 @@ import java.util.regex.Matcher;
 
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
-import com.sirap.basic.util.CollUtil;
+import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.IOUtil;
@@ -77,11 +77,11 @@ public class CommandHelp extends CommandBase {
 					continue;
 				}
 				String prefix = StrUtil.padRight(key, maxLen + 2);
-				lines.addAll(occupyDollarKeys(CollUtil.addPrefix(IOUtil.readLines(fileName), prefix), allHelpMeanings));
+				lines.addAll(occupyDollarKeys(Colls.addPrefix(IOUtil.readLines(fileName), prefix), allHelpMeanings));
 			}
 
 			if(!solo.isEmpty()) {
-				lines = CollUtil.filterMix(lines, solo, isCaseSensitive());
+				lines = Colls.filterMix(lines, solo, isCaseSensitive());
 				sortByVersionDateInfo(lines);
 			}
 			if(!EmptyUtil.isNullOrEmpty(lines)) {

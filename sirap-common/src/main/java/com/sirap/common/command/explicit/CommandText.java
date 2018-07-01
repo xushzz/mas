@@ -12,7 +12,7 @@ import com.sirap.basic.domain.MexTextLine;
 import com.sirap.basic.search.TextSearcher;
 import com.sirap.basic.thirdparty.msoffice.MsExcelHelper;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.CollUtil;
+import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.MathUtil;
@@ -36,8 +36,8 @@ public class CommandText extends CommandBase {
 			
 			if(FileOpener.isTextFile(filePath)) {
 				List<MexObject> all = readFileIntoList(filePath);
-				List<MexObject> items = CollUtil.filter(all, criteria, isCaseSensitive(), isStayCriteria());
-				export(CollUtil.items2PrintRecords(items, options));
+				List<MexObject> items = Colls.filter(all, criteria, isCaseSensitive(), isStayCriteria());
+				export(Colls.items2PrintRecords(items, options));
 				
 				return true;
 			} else if(FileUtil.isAnyTypeOf(filePath, FileUtil.SUFFIXES_EXCEL)) {

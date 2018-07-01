@@ -42,7 +42,7 @@ public class DBUtil {
 	
 	public static List<String> readSqlFile(String filepath, String charset, boolean reduce) {
 		List<String> lines = IOUtil.readLines(filepath, charset);
-		lines = CollUtil.filterSome(lines, Konstants.COMMENTS_START_WITH);
+		lines = Colls.filterSome(lines, Konstants.COMMENTS_START_WITH);
 		String oneline = HtmlUtil.removeBlockComment(StrUtil.connectWithSpace(lines));
 		return readSqls(StrUtil.split(oneline, ";"), reduce);
 	}

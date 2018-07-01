@@ -13,7 +13,7 @@ import com.sirap.basic.domain.TypedKeyValueItem;
 import com.sirap.basic.output.PDFParams;
 import com.sirap.basic.thirdparty.TrumpHelper;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.CollUtil;
+import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
@@ -71,28 +71,28 @@ public class CommandMonitor extends CommandBase {
 			if(showAll || OptionUtil.readBooleanPRI(options, "s", true)) {
 				List<TypedKeyValueItem> sato = SatoUtil.SYSTEM_PROPERTIES;
 				if(!EmptyUtil.isNullOrEmpty(solo)) {
-					sato = CollUtil.filter(sato, solo);
+					sato = Colls.filter(sato, solo);
 				}
 				items.addAll(sato);
 			}
 			if(showAll || OptionUtil.readBooleanPRI(options, "e", true)) {
 				List<TypedKeyValueItem> sato = SatoUtil.ENVIRONMENT_VARIABLES;
 				if(!EmptyUtil.isNullOrEmpty(solo)) {
-					sato = CollUtil.filter(sato, solo);
+					sato = Colls.filter(sato, solo);
 				}
 				items.addAll(sato);
 			}
 			if(showAll || OptionUtil.readBooleanPRI(options, "u", false)) {
 				List<TypedKeyValueItem> sato = g().getUserProps().listOf();
 				if(!EmptyUtil.isNullOrEmpty(solo)) {
-					sato = CollUtil.filter(sato, solo);
+					sato = Colls.filter(sato, solo);
 				}
 				items.addAll(sato);
 			}
 			if(showAll || OptionUtil.readBooleanPRI(options, "i", false)) {
 				List<TypedKeyValueItem> sato = g().getInnerProps().listOf();
 				if(!EmptyUtil.isNullOrEmpty(solo)) {
-					sato = CollUtil.filter(sato, solo);
+					sato = Colls.filter(sato, solo);
 				}
 				items.addAll(sato);
 			}
@@ -113,7 +113,7 @@ public class CommandMonitor extends CommandBase {
 					List<String> sons = item.valueItemInLines(sep);
 					if(sons.size() > 1) {
 						if(OptionUtil.readBooleanPRI(options, "sort", true)) {
-							CollUtil.sortIgnoreCase(sons);
+							Colls.sortIgnoreCase(sons);
 						}
 						gras.add(item.toPrint(OptionUtil.mergeOptions("-v", options)));
 						gras.addAll(sons);
@@ -204,10 +204,10 @@ public class CommandMonitor extends CommandBase {
 				List<LoginRecord> records = LoginHistoryManager.g().search(solo);
 				if(target instanceof TargetPdf) {
 					target.setParams(LH_PDF_PARAMS);
-					List<List<String>> items = CollUtil.items2PDFRecords(records);
+					List<List<String>> items = Colls.items2PDFRecords(records);
 					export(items);
 				} else {
-					export(CollUtil.items2PrintRecords(records));
+					export(Colls.items2PrintRecords(records));
 				}
 				return true;
 			}
@@ -218,10 +218,10 @@ public class CommandMonitor extends CommandBase {
 				List<LoginRecord> records = LoginHistoryManager.g().getLoginRecords(count);
 				if(target instanceof TargetPdf) {
 					target.setParams(LH_PDF_PARAMS);
-					List<List<String>> items = CollUtil.items2PDFRecords(records);
+					List<List<String>> items = Colls.items2PDFRecords(records);
 					export(items);
 				} else {
-					export(CollUtil.items2PrintRecords(records));
+					export(Colls.items2PrintRecords(records));
 				}
 				
 				return true;
@@ -231,10 +231,10 @@ public class CommandMonitor extends CommandBase {
 				List<LoginRecord> records = LoginHistoryManager.g().getAllInputRecords();
 				if(target instanceof TargetPdf) {
 					target.setParams(LH_PDF_PARAMS);
-					List<List<String>> items = CollUtil.items2PDFRecords(records);
+					List<List<String>> items = Colls.items2PDFRecords(records);
 					export(items);
 				} else {
-					export(CollUtil.items2PrintRecords(records));
+					export(Colls.items2PrintRecords(records));
 				}
 				
 				return true;
@@ -250,7 +250,7 @@ public class CommandMonitor extends CommandBase {
 					} else {
 						if(OptionUtil.readBooleanPRI(options, "n", false)) {
 							int count = MathUtil.toInteger(solo, 20);
-							records = CollUtil.last(records, count);
+							records = Colls.last(records, count);
 						} else {
 							records = CommandHistoryManager.g().search(solo);
 						}
@@ -259,10 +259,10 @@ public class CommandMonitor extends CommandBase {
 				
 				if(target instanceof TargetPdf) {
 					target.setParams(CH_PDF_PARAMS);
-					List<List<String>> items = CollUtil.items2PDFRecords(records);
+					List<List<String>> items = Colls.items2PDFRecords(records);
 					export(items);
 				} else {
-					export(CollUtil.items2PrintRecords(records));
+					export(Colls.items2PrintRecords(records));
 				}
 				
 				return true;
@@ -302,7 +302,7 @@ public class CommandMonitor extends CommandBase {
 			String criteria = params[1];
 			List<String> list = IOUtil.readLines(Konfig.KEYS_FILE);
 			
-			export(CollUtil.filterMix(list, criteria, isCaseSensitive()));
+			export(Colls.filterMix(list, criteria, isCaseSensitive()));
 			
 			return true;
 		}
@@ -311,7 +311,7 @@ public class CommandMonitor extends CommandBase {
 		if(params != null) {
 			String criteria = params[1];
 			List<String> list = IOUtil.readLines(SimpleKonfig.KONFIG_FILE);
-			export(CollUtil.filterMix(list, criteria, isCaseSensitive()));
+			export(Colls.filterMix(list, criteria, isCaseSensitive()));
 			
 			return true;
 		}

@@ -7,7 +7,7 @@ import com.google.common.collect.Lists;
 import com.sirap.basic.component.Extractor;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexObject;
-import com.sirap.basic.util.CollUtil;
+import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
@@ -92,7 +92,7 @@ public class ChinaCalendarTextExtractor extends Extractor<MexItem> {
 			}
 		}
 		
-		mexItems = CollUtil.filter(tempItems, createMexCriteria());
+		mexItems = Colls.filter(tempItems, createMexCriteria());
 	}
 
 	@SuppressWarnings("serial")

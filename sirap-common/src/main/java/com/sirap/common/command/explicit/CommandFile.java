@@ -19,7 +19,7 @@ import com.sirap.basic.thirdparty.pdf.PdfHelper;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.MexFactory;
 import com.sirap.basic.util.ArisUtil;
-import com.sirap.basic.util.CollUtil;
+import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
@@ -109,11 +109,11 @@ public class CommandFile extends CommandBase {
 				} else {
 					boolean sensitive = isCaseSensitive();
 					if(OptionUtil.readBooleanPRI(options, "sort", false)) {
-						CollUtil.sort(records, sensitive);
+						Colls.sort(records, sensitive);
 					}
 
 					if(OptionUtil.readBooleanPRI(options, "mark", false)) {
-						records = CollUtil.sortAndMarkOccurrence(records, sensitive);
+						records = Colls.sortAndMarkOccurrence(records, sensitive);
 					}
 
 					if(OptionUtil.readBooleanPRI(options, "uniq", false)) {
@@ -136,7 +136,7 @@ public class CommandFile extends CommandBase {
 					}
 
 					if(OptionUtil.readBooleanPRI(options, "line", false)) {
-						records = CollUtil.lineNumber(records, true);
+						records = Colls.lineNumber(records, true);
 					}
 
 					export(records);	
@@ -209,7 +209,7 @@ public class CommandFile extends CommandBase {
 				} else if(StrUtil.equals(KEY_PRINT_TXT, type)) {
 					List<String> records = FileOpener.readTextContent(filePath, true, cat);
 					if(OptionUtil.readBooleanPRI(options, "line", false)) {
-						export(CollUtil.lineNumber(records, true));
+						export(Colls.lineNumber(records, true));
 					} else {
 						export(records);
 					}
@@ -493,7 +493,7 @@ public class CommandFile extends CommandBase {
 			}
 			
 			List<MemoryRecord> records = readRecords();
-			export(CollUtil.items2PrintRecords(records));
+			export(Colls.items2PrintRecords(records));
 			
 			return true;
 		}

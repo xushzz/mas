@@ -10,7 +10,7 @@ import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.thread.MasterItemOriented;
 import com.sirap.basic.thread.WorkerItemOriented;
-import com.sirap.basic.util.CollUtil;
+import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.OptionUtil;
@@ -134,7 +134,7 @@ public class CommandNongli extends CommandBase {
 				export(items);
 			} else {
 				String criteria = EmptyUtil.isNullOrEmpty(params[0]) ? DateUtil.displayNow("MM/") : params[1];
-				export(CollUtil.filter(items, criteria));
+				export(Colls.filter(items, criteria));
 			}
 			
 			return true;

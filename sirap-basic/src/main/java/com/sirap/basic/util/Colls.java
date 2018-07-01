@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +15,7 @@ import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.search.MexFilter;
 
-public class CollUtil {
+public class Colls {
 
 	public static List reverse(List list) {
 		XXXUtil.nullCheck(list, "list");
@@ -265,21 +264,6 @@ public class CollUtil {
 		}
 		
 		return items;
-	}
-	
-	public static List<String> mapToList(Map map) {
-		return mapToList(map, "=");
-	}
-	
-	public static List<String> mapToList(Map map, String connector) {
-		List<String> list = new ArrayList<>();
-		Iterator it = map.keySet().iterator();
-		while(it.hasNext()) {
-			Object key = it.next();
-			list.add(key + connector + map.get(key));
-		}
-
-		return list;
 	}
 	
 	public static List<String> sort(List<String> items, boolean sensitive) {

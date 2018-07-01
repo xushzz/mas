@@ -7,7 +7,7 @@ import java.util.List;
 
 import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.CollUtil;
+import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.StrUtil;
@@ -97,7 +97,7 @@ public class VFileManager {
 	public List<MexFile> getFileRecordsByName(String criteria, boolean caseSensitive) {
 		showTipIfNeeded();
 		List<MexFile> files = getAllRecords(false);
-		List<MexFile> items = CollUtil.filter(files, criteria, caseSensitive);
+		List<MexFile> items = Colls.filter(files, criteria, caseSensitive);
 
 		return items;
 	}

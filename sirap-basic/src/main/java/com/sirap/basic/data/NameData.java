@@ -1,10 +1,9 @@
 package com.sirap.basic.data;
 
-import java.util.HashMap;
 import java.util.List;
 
-import com.google.common.collect.Maps;
-import com.sirap.basic.util.CollUtil;
+import com.sirap.basic.component.map.AlinkMap;
+import com.sirap.basic.util.Amaps;
 
 public class NameData {
 
@@ -14,7 +13,7 @@ public class NameData {
 	ABDUL, 831
 	 * 
 	 */
-	public static final HashMap<String, String> EGGS = Maps.newHashMap();
+	public static final AlinkMap<String, String> EGGS = Amaps.newLinkHashMap();
 	static {
 		EGGS.put("m1", "James");
 		EGGS.put("m2", "John");
@@ -219,6 +218,6 @@ public class NameData {
 	}
 	
 	public static List<String> eggs() {
-		return CollUtil.mapToList(EGGS, ", ");
+		return Amaps.listOf(EGGS);
 	}
 }

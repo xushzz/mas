@@ -267,7 +267,7 @@ public class FileUtil {
 		if(EmptyUtil.isNullOrEmpty(fileCriteria)) {
 			return allFiles;
 		} else {
-			List<MexFile> items = CollUtil.filter(allFiles, fileCriteria);
+			List<MexFile> items = Colls.filter(allFiles, fileCriteria);
 			return items;
 		}
 	}

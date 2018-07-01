@@ -12,7 +12,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.sirap.basic.domain.TypedKeyValueItem;
 import com.sirap.basic.thirdparty.TrumpHelper;
-import com.sirap.basic.util.CollUtil;
+import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.MathUtil;
@@ -101,7 +101,7 @@ public class MexMap {
 	
 	public TypedKeyValueItem getTypedItem(String key) {
 		String criteria = "^" + key + "$";
-		List<TypedKeyValueItem> sato = CollUtil.filter(listOf(), criteria);
+		List<TypedKeyValueItem> sato = Colls.filter(listOf(), criteria);
 		if(EmptyUtil.isNullOrEmpty(sato)) {
 			return null;
 		}
@@ -124,7 +124,7 @@ public class MexMap {
 	
 	public TypedKeyValueItem getEntryIgnorecase(String key) {
 		String criteria = "^" + key + "$";
-		List<TypedKeyValueItem> sato = CollUtil.filter(listOf(), criteria);
+		List<TypedKeyValueItem> sato = Colls.filter(listOf(), criteria);
 		if(EmptyUtil.isNullOrEmpty(sato)) {
 			return null;
 		}

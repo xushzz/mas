@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.domain.MexTextLine;
-import com.sirap.basic.util.CollUtil;
+import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.StrUtil;
@@ -37,7 +37,7 @@ public class TextSearcher {
 	
 	public static List<MexTextLine> search(List<String> folders, String fileNameCriteria, String criteria) {
 		TextSearcher wang = new TextSearcher(folders, fileNameCriteria);
-		List<MexTextLine> result = CollUtil.filter(wang.allItems, criteria);
+		List<MexTextLine> result = Colls.filter(wang.allItems, criteria);
 		
 		return result;
 	}

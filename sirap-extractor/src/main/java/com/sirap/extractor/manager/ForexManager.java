@@ -8,7 +8,7 @@ import java.util.Set;
 
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.search.MexFilter;
-import com.sirap.basic.util.CollUtil;
+import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.domain.ForexRateRecord;
@@ -64,7 +64,7 @@ public class ForexManager {
 	
 	public List<List<String>> convert4PDF(String baseCurrency, String amount, String criteria) {
 		List<ForexRateRecord> mexItems = fetchItems(baseCurrency, amount, criteria); 
-		return CollUtil.items2PDFRecords(mexItems);
+		return Colls.items2PDFRecords(mexItems);
 	}
 	
 	public List<String> convert(String baseCurrency, String amount, String criteria) {
@@ -76,7 +76,7 @@ public class ForexManager {
 		sb.append(",");
 		sb.append("maxLenOfAmount=").append(maxArr[1]);
 		
-		return CollUtil.items2PrintRecords(mexItems, sb.toString());
+		return Colls.items2PrintRecords(mexItems, sb.toString());
 	}
 	
 	@SuppressWarnings("unchecked")

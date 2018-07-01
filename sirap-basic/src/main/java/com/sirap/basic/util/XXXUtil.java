@@ -7,6 +7,7 @@ import java.util.GregorianCalendar;
 import java.util.Map;
 
 import com.sirap.basic.data.HttpData;
+import com.sirap.basic.exception.DuplicationException;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.exception.NullArgumentException;
 import com.sirap.basic.tool.C;
@@ -181,4 +182,11 @@ public class XXXUtil {
 		
 		return code + " " + explanation;
 	}
+	
+	public static <K, V> void checkDuplication(Map<K, V> map, K key) {
+		if(map.containsKey(key)) {
+			XXXUtil.alert("Map already contains key [{0}] with value [{1}]", key, map.get(key));
+		}
+	}
+
 }

@@ -22,7 +22,7 @@ import com.sirap.basic.thread.Master;
 import com.sirap.basic.thread.Worker;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
-import com.sirap.basic.util.CollUtil;
+import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
@@ -206,7 +206,7 @@ public abstract class CommandBase {
 	
 	@SuppressWarnings("rawtypes")
 	public void export2(List list, String criteria) {
-		List list2 = CollUtil.filterMix(list, criteria, isCaseSensitive());
+		List list2 = Colls.filterMix(list, criteria, isCaseSensitive());
 		export(list2, options);
 	}
 	
@@ -224,7 +224,7 @@ public abstract class CommandBase {
 			}
 		}
 
-		List<MexItem> after = CollUtil.filter(mexItems, mexCriteria, isCaseSensitive, stay);
+		List<MexItem> after = Colls.filter(mexItems, mexCriteria, isCaseSensitive, stay);
 		
 		nonItems.addAll(after);
 		
@@ -291,7 +291,7 @@ public abstract class CommandBase {
 			exportEmptyMsg();
 		} else {
 			if(OptionUtil.readBooleanPRI(options, "sort", false)) {
-				CollUtil.sortIgnoreCase(newList);
+				Colls.sortIgnoreCase(newList);
 			}
 			if(OptionUtil.readBooleanPRI(finalOptions, "self", false)) {
 				newList.add(0, "$ " + input);

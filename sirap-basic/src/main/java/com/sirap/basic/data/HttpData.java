@@ -1,14 +1,13 @@
 package com.sirap.basic.data;
 
-import java.util.HashMap;
 import java.util.List;
 
-import com.google.common.collect.Maps;
-import com.sirap.basic.util.CollUtil;
+import com.sirap.basic.component.map.AlinkMap;
+import com.sirap.basic.util.Amaps;
 
 public class HttpData {
 
-	public static final HashMap<String, String> EGGS = Maps.newHashMap();
+	public static final AlinkMap<String, String> EGGS = Amaps.newLinkHashMap();
 	static {
 		EGGS.put("100", "Informational, Continue");
 		EGGS.put("101", "Informational, Switching Protocols");
@@ -82,6 +81,6 @@ public class HttpData {
 	}
 	
 	public static List<String> eggs() {
-		return CollUtil.mapToList(EGGS, ", ");
+		return Amaps.listOf(EGGS);
 	}
 }

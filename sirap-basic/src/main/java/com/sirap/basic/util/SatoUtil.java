@@ -68,7 +68,7 @@ public class SatoUtil {
 			String whole = ma.group(0);
 			String key = ma.group(1);
 			String criteria = "^" + key + "$";
-			List<TypedKeyValueItem> sato = CollUtil.filter(items, criteria);
+			List<TypedKeyValueItem> sato = Colls.filter(items, criteria);
 			if(EmptyUtil.isNullOrEmpty(sato)) {
 				XXXUtil.info("No matched item for '{0}'.", key);
 				continue;
@@ -100,7 +100,7 @@ public class SatoUtil {
 		String path = System.getProperty(propertyName);
 		List<String> items = StrUtil.split(path, File.pathSeparator);
 //		D.list(items);
-		List<MexItem> desire = CollUtil.filterMix(items, keyword, false);
+		List<MexItem> desire = Colls.filterMix(items, keyword, false);
 		if(desire.isEmpty()) {
 			C.list(items);
 			XXXUtil.info("None of entries of {0} contains {1}.", propertyName, keyword);

@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.sirap.basic.component.Extractor;
 import com.sirap.basic.domain.MexObject;
-import com.sirap.basic.util.CollUtil;
+import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
@@ -88,7 +88,7 @@ public class CommandTV extends CommandBase {
 			
 			List<MeijuRateItem> list = Extractors.fetchTopMeijus();
 			if(!solo.isEmpty()) {
-				list = CollUtil.filter(list, solo);
+				list = Colls.filter(list, solo);
 			}
 
 			Boolean byRate = OptionUtil.readBoolean(options, "r");

@@ -11,7 +11,7 @@ import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.thirdparty.http.HttpHelper;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.CollUtil;
+import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.IOUtil;
@@ -64,7 +64,7 @@ public class CommandGaode extends CommandBase {
 				nextKLevel = 1;
 			}
 			List<DistrictItem> items = GaodeManager.g().getAllDistricts(toRefresh);
-			List<DistrictItem> list2 = CollUtil.filter(items, solo, isCaseSensitive());
+			List<DistrictItem> list2 = Colls.filter(items, solo, isCaseSensitive());
 			List<MexItem> finals = Lists.newArrayList();
 			if(showUpperLevels | nextKLevel != null) {
 				boolean theFirstItem = true;

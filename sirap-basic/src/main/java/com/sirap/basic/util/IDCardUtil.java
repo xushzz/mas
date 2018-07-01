@@ -77,7 +77,7 @@ public class IDCardUtil {
 	}
 	
 	public static String getAreaInfo(String areaCode, List<String> allAreas) {
-		List items = CollUtil.filterMix(allAreas, areaCode, false);
+		List items = Colls.filterMix(allAreas, areaCode, false);
 		if(items.isEmpty()) {
 			return areaCode;
 		} else if(items.size() == 1) {

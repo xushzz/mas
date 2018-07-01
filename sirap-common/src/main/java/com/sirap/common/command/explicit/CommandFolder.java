@@ -10,7 +10,7 @@ import com.sirap.basic.component.comparator.MexFileComparator;
 import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.FileDeeper;
-import com.sirap.basic.util.CollUtil;
+import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.MathUtil;
@@ -152,7 +152,7 @@ public class CommandFolder extends CommandBase {
 				if(EmptyUtil.isNullOrEmpty(nameCriteria)) {
 					allMexedFiles.addAll(allFiles);
 				} else {
-					List<MexFile> items = CollUtil.filter(allFiles, nameCriteria, isCaseSensitive(), isStayCriteria());
+					List<MexFile> items = Colls.filter(allFiles, nameCriteria, isCaseSensitive(), isStayCriteria());
 					allMexedFiles.addAll(items);
 				}
 			}
@@ -216,7 +216,7 @@ public class CommandFolder extends CommandBase {
 			}
 			if(target.isFileRelated()) {
 				Collections.sort(records);
-				export(CollUtil.toFileList(records));
+				export(Colls.toFileList(records));
 			} else {
 				boolean orderByNameAsc = OptionUtil.readBooleanPRI(options, "byname", true);
 				MexFileComparator cesc = new MexFileComparator(orderByNameAsc); 
@@ -240,7 +240,7 @@ public class CommandFolder extends CommandBase {
 			Collections.sort(records, cesc);
 
 			if(target.isFileRelated()) {
-				export(CollUtil.toFileList(records));
+				export(Colls.toFileList(records));
 			} else {
 				export(records);
 			}
@@ -338,7 +338,7 @@ public class CommandFolder extends CommandBase {
 		}
 		
 		if(target.isFileRelated()) {
-			export(CollUtil.toFileList(allFiles));
+			export(Colls.toFileList(allFiles));
 			return;
 		}
 		

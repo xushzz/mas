@@ -13,7 +13,7 @@ import com.sirap.basic.output.PDFParams;
 import com.sirap.basic.thread.Master;
 import com.sirap.basic.thread.Worker;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.CollUtil;
+import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
@@ -81,7 +81,7 @@ public class CommandCollect extends CommandBase {
 		solo = parseParam(KEY_CAR + "\\s+(.+)");
 		if(solo != null) {
 			List<MexItem> items = Extractors.fetchCarList();
-			export(CollUtil.filter(items, solo, isCaseSensitive(), isStayCriteria()));
+			export(Colls.filter(items, solo, isCaseSensitive(), isStayCriteria()));
 			
 			return true;
 		}
@@ -96,7 +96,7 @@ public class CommandCollect extends CommandBase {
 		solo = parseParam(KEY_CARNO + "\\s(.+)");
 		if(solo != null) {
 			List<MexObject> items = Extractors.fetchCarNoList();
-			export(CollUtil.filter(items, solo, isCaseSensitive(), isStayCriteria()));
+			export(Colls.filter(items, solo, isCaseSensitive(), isStayCriteria()));
 			
 			return true;
 		}
@@ -229,7 +229,7 @@ public class CommandCollect extends CommandBase {
 		if(is(KEY_RSS)) {
 			Object result = ObjectUtil.execute(sourceOfRss(), "readAllRss", new Class[0], new Object[0]);
 			List<MexObject> items = (List<MexObject>)result;
-			export(CollUtil.reverse(items));
+			export(Colls.reverse(items));
 			
 			return true;
 		}
@@ -238,7 +238,7 @@ public class CommandCollect extends CommandBase {
 		if(solo != null) {
 			Object result = ObjectUtil.execute(sourceOfRss(), "readAllRss", new Class[0], new Object[0]);
 			List<MexObject> items = (List<MexObject>)result;
-			export(CollUtil.reverse(CollUtil.filter(items, solo)));
+			export(Colls.reverse(Colls.filter(items, solo)));
 			
 			return true;
 		}
@@ -247,7 +247,7 @@ public class CommandCollect extends CommandBase {
 		solo = parseParam(regex);
 		if(solo != null) {
 			Object result = ObjectUtil.execute(sourceOfRss(), "fetchRssByType", new Class[]{String.class}, new Object[]{solo});
-			export(CollUtil.reverse((List<MexObject>)result));
+			export(Colls.reverse((List<MexObject>)result));
 			
 			return true;
 		}

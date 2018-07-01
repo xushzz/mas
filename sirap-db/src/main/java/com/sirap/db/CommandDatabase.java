@@ -8,7 +8,7 @@ import com.google.common.collect.Lists;
 import com.sirap.basic.component.DBKonstants;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.CollUtil;
+import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.DBUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.OptionUtil;
@@ -102,7 +102,7 @@ public class CommandDatabase extends CommandBase {
 							rotate.add(arr[0].trim());
 							List<String> cols = StrUtil.split(arr[1].trim());
 							if(sort) {
-								CollUtil.sortIgnoreCase(cols);
+								Colls.sortIgnoreCase(cols);
 							}
 							rotate.addAll(cols);
 							export(rotate);
@@ -116,7 +116,7 @@ public class CommandDatabase extends CommandBase {
 							String schemaAndTable = arr[0].trim();
 							List<String> cols = StrUtil.split(arr[1].trim());
 							if(sort) {
-								CollUtil.sortIgnoreCase(cols);
+								Colls.sortIgnoreCase(cols);
 							}
 							String newSql = StrUtil.occupy("select {0} from {1} {2}", StrUtil.connectWithCommaSpace(cols), schemaAndTable, remain);
 							lines.add(newSql);
@@ -365,12 +365,12 @@ public class CommandDatabase extends CommandBase {
 		ming.setPrintColumnName(false);
 		List<String> items = ming.exportLiteralStrings();
 		String smaCriteria = "^" + tempSchema + "$";
-		List<MexItem> tempA = CollUtil.filterMix(items, smaCriteria, false);
+		List<MexItem> tempA = Colls.filterMix(items, smaCriteria, false);
 		if(tempA.size() == 1) {
 			actualSchema = tempSchema;
 		} else {
 			smaCriteria = tempSchema;
-			tempA = CollUtil.filterMix(items, smaCriteria, false);
+			tempA = Colls.filterMix(items, smaCriteria, false);
 			if(tempA.size() == 1) {
 				actualSchema = tempA.get(0).toString();
 			} else if(tempA.size() > 1) {
@@ -385,7 +385,7 @@ public class CommandDatabase extends CommandBase {
 			C.pl2("currently active schema: " + actualSchema + "");
 		} else if(tempA.isEmpty()) {
 			C.pl("Not found schema [" + tempSchema + "], available schemas:");
-			CollUtil.sortIgnoreCase(items);
+			Colls.sortIgnoreCase(items);
 			C.list(items);
 			C.pl();
 		}

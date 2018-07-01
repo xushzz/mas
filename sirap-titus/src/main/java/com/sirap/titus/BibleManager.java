@@ -10,7 +10,7 @@ import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.thread.Master;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.CollUtil;
+import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.RandomUtil;
@@ -139,12 +139,12 @@ public class BibleManager {
 	
 	public BibleBook searchByName(String name, int chapter, boolean caseSensitive) {
 		String wholeWord = "^" + name + "$";
-		List<BibleBook> items = CollUtil.filter(BibleData.BOOKS, wholeWord, caseSensitive);
+		List<BibleBook> items = Colls.filter(BibleData.BOOKS, wholeWord, caseSensitive);
 		BibleBook theBook = null;
 		if(items.size() == 1) {
 			theBook = items.get(0);
 		} else {
-			items = CollUtil.filter(BibleData.BOOKS, name, caseSensitive);
+			items = Colls.filter(BibleData.BOOKS, name, caseSensitive);
 			
 			if(items.size() == 0) {
 				return null;
@@ -271,7 +271,7 @@ public class BibleManager {
 	}
 	
 	public BibleVersion getVersion(String mexCriteria) {
-		List<BibleVersion> items = CollUtil.filter(BibleData.VERSIONS, mexCriteria);
+		List<BibleVersion> items = Colls.filter(BibleData.VERSIONS, mexCriteria);
 		if(items.isEmpty()) {
 			throw new MexException("Version '{0}' not found.", mexCriteria);
 		} else if(items.size() == 1) {

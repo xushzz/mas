@@ -2,15 +2,15 @@ package com.sirap.basic.data;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
-import com.google.common.collect.Maps;
+import com.sirap.basic.component.map.AlinkMap;
 import com.sirap.basic.domain.HtmlEntity;
+import com.sirap.basic.util.Amaps;
 
 public class HtmlData {
 	
-	public static final HashMap<String, HtmlEntity> EGGS = Maps.newHashMap();
+	public static final AlinkMap<String, HtmlEntity> EGGS = Amaps.newLinkHashMap();
 	static {
 		EGGS.put("quot", new HtmlEntity("quot", 34, "quotation mark"));
 		EGGS.put("apos", new HtmlEntity("apos", 39, "apostrophe&nbsp;"));
@@ -250,7 +250,7 @@ public class HtmlData {
 	
 	public static List<HtmlEntity> eggs() {
 		List<HtmlEntity> list = new ArrayList<>(HtmlData.EGGS.values()); 
-		Collections.sort(list); 
+		Collections.sort(list);
 		
 		return list;
 	}

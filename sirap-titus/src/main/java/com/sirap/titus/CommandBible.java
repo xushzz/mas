@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.util.CollUtil;
+import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
@@ -60,14 +60,14 @@ public class CommandBible extends CommandBase {
 		
 		solo = parseParam(KEY_BIBLE_SHORT + "\\s(.*?)");
 		if(solo != null) {
-			export(CollUtil.filter(BibleData.BOOKS, solo, isCaseSensitive()));
+			export(Colls.filter(BibleData.BOOKS, solo, isCaseSensitive()));
 			
 			return true;
 		}
 
 		solo = parseParam(KEY_ALL_VERSIONS + "\\s(.*?)");
 		if(solo != null) {
-			export(CollUtil.filter(BibleData.VERSIONS, solo, isCaseSensitive()));
+			export(Colls.filter(BibleData.VERSIONS, solo, isCaseSensitive()));
 			
 			return true;
 		}
