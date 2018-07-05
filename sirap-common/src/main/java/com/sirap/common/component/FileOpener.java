@@ -2,17 +2,21 @@ package com.sirap.common.component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.sirap.basic.component.MexedList;
 import com.sirap.basic.exception.MexException;
+import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.thirdparty.TrumpHelper;
 import com.sirap.basic.tool.C;
+import com.sirap.basic.util.Amaps;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.MexUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.PanaceaBox;
+import com.sirap.basic.util.SatoUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.framework.SimpleKonfig;
 
@@ -202,6 +206,40 @@ public class FileOpener {
 	}
 	
 	public static boolean playThing(String filePath, String playerKey, boolean mandatory) {
+		if(StrUtil.equals(playerKey, "page.viewer")) {
+			String value = SimpleKonfig.g().getUserValueOf(playerKey);
+			if(FileUtil.exists(value)) {
+				C.pl("Use => " + value);
+				C.pl("Site => " + filePath);
+				playThingByAppName(filePath, value);
+				
+				return true;
+			}
+			
+			Map<String, String> explorers = SatoUtil.allExplorers();
+			if(!explorers.isEmpty()) {
+				String explorerpath = null;
+				if(value != null) {
+					String keyword = StrUtil.parseParam("\\$(.+?)", value);
+					if(keyword != null) {
+						explorerpath = explorers.get(keyword);
+						if(explorerpath == null) {
+							C.pl("Not a valid key : " + keyword);
+							C.pl("Available explorers:\n" + JsonUtil.toPrettyJson(explorers));
+						}
+					}
+				}
+				
+				if(explorerpath == null) {
+					explorerpath = Amaps.getFirst(explorers);
+				}
+				C.pl("Select => " + explorerpath);
+				C.pl("Site => " + filePath);
+				playThingByAppName(filePath, explorerpath);
+				return true;
+			}
+		}
+		
 		String appDir = SimpleKonfig.g().getUserValueOf(playerKey);
 		if(mandatory) {
 			if(EmptyUtil.isNullOrEmpty(appDir)) {

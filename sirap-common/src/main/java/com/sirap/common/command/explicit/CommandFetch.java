@@ -18,7 +18,7 @@ import com.sirap.common.framework.command.target.TargetConsole;
 public class CommandFetch extends CommandBase {
 
 	private static final String KEY_FETCH = "f";
-	private static final String KEY_WEB_CONTENT_PRINT = "(={1,2})";
+	private static final String KEY_WEB_ACCESS = "(={1,3})";
 
 	@Override
 	public boolean handle() {
@@ -88,18 +88,19 @@ public class CommandFetch extends CommandBase {
 			return true;
 		}
 		
-		params = parseParams(KEY_WEB_CONTENT_PRINT + KEY_HTTP_WWW);
+		params = parseParams(KEY_WEB_ACCESS + KEY_HTTP_WWW);
 		if(params != null) {
-			boolean isPretty = params[0].length() == 1;
+			int len = params[0].length();
 			String pageUrl = equiHttpProtoclIfNeeded(params[1]);
 			WebReader xiu = new WebReader(pageUrl, g().getCharsetInUse());
-			if(OptionUtil.readBooleanPRI(options, "h", false)) {
+			
+			if(len == 1) {
 				List<String> headers = xiu.readHeaders();
 				export(headers);
 			} else {
 				xiu.setMethodPost(OptionUtil.readBooleanPRI(options, "post", false));
 				String tag;
-				if(isPretty) {
+				if(len == 2) {
 					List<String> items = xiu.readIntoList();
 					tag = "lines: " + items.size();
 					export(items);

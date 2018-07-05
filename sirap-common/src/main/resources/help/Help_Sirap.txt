@@ -18,7 +18,9 @@ a Vincent          search 'Vincent' via AOL
 b Vincent          search 'Vincent' via Baidu
 g Vincent          search 'Vincent' via Google
 w Vincent          search 'Vincent' via Wiki
-http://aol.com     open the web page with configured explorer
+http://aol.com     open the web page with default page viewer if no page.viewer in user config
+http://aol.com     open the web page with firefox if page.viewer=Mozilla Firefox\\firefox.exe
+http://aol.com     open the web page with chrome if page.viewer=$chrome and chrome exists
 www.google.com     open the web page with configured explorer with http://www.google.com
 ip                 show local ip address, public ip address and some aliyun ip address
 ip $+url           show some ip address plus url info, so is for ip=120.79.195.133
@@ -40,3 +42,4 @@ pwd<               open Windows resource manager at present working directory, a
 ~<                 open Windows resource manager at user home, aka user.home
 :                  list out all available disks in detail manner, $+size,+date,+bydate,+bysize,-byname,+bytype
 sw F:\a\b\c/de     replace / with \, replace \ with /, then print these two records if any different
+pvs                list all available explorers, as in page viewers, like Chrome, IE, Maxthon and Firefox

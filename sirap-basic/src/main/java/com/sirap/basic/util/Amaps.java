@@ -5,6 +5,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.TreeMultimap;
 import com.sirap.basic.component.map.AconcMap;
 import com.sirap.basic.component.map.AhashMap;
 import com.sirap.basic.component.map.AlinkMap;
@@ -56,5 +60,43 @@ public class Amaps {
 		}
 		
 		return null;
+	}
+
+	public static <K, V> V getFirst(Map<K, V> map) {
+		Iterator<K> it = map.keySet().iterator();
+		while(it.hasNext()) {
+			K key = it.next();
+			V value = map.get(key);
+			return value;
+		}
+		
+		return null;
+	}
+	
+	public static <K, V> Map<String, V> fromMultiMap(Multimap<K, V> mmap) {
+		Iterator<K> it = mmap.keySet().iterator();
+		Map<String, V> map = null;
+		if(LinkedListMultimap.class.isInstance(mmap)) {
+			map = newLinkHashMap();
+		} else if(TreeMultimap.class.isInstance(mmap)) {
+			map = newTreeMap();
+		} else {
+			map = newHashMap();
+		}
+		while(it.hasNext()) {
+			K key = it.next();
+			List<V> vs = Lists.newArrayList(mmap.get(key));
+			int count = 1;
+			for(V value : vs) {
+				if(count == 1) {
+					map.put(key.toString(), value);
+				} else {
+					map.put(key.toString() + count, value);
+				}
+				count++;
+			}
+		}
+		
+		return map;
 	}
 }

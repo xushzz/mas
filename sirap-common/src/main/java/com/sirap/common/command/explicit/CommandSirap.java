@@ -6,6 +6,7 @@ import java.util.List;
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.Extractor;
 import com.sirap.basic.component.Konstants;
+import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
@@ -14,6 +15,7 @@ import com.sirap.basic.util.MexUtil;
 import com.sirap.basic.util.NetworkUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.PanaceaBox;
+import com.sirap.basic.util.SatoUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
@@ -39,6 +41,7 @@ public class CommandSirap extends CommandBase {
 	private static final String KEY_ALL_DISKS_ONE_COLON = ":";
 	private static final String KEY_CHANGE_FILESEPARATOR = "sw";
 	private static final String KEY_LASTLIST = "ll";
+	private static final String KEY_PAGE_VIEWERS = "pvs";
 	
 	{
 		helpMeanings.put("image.formats", Konstants.IMG_FORMATS);
@@ -264,6 +267,12 @@ public class CommandSirap extends CommandBase {
 			
 			items.add(FileUtil.shellStyle(unixStyle));
 			export(items);
+			
+			return true;
+		}
+		
+		if(is(KEY_PAGE_VIEWERS)) {
+			export(JsonUtil.toPrettyJson(SatoUtil.allExplorers()));
 			
 			return true;
 		}

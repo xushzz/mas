@@ -3,6 +3,7 @@ package com.sirap.common.command.explicit;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -412,7 +413,7 @@ public class CommandFile extends CommandBase {
 		solo = parseParam(KEY_KICK_OFF + "(|\\s+.+)");
 		if(solo != null) {
 			List<String> lines = Lists.newArrayList();
-			lines.add("#" + DateUtil.displayNow(DateUtil.HOUR_Min_Sec_AM_WEEK_DATE));
+			lines.add("#" + DateUtil.strOf(new Date(), DateUtil.GMT2));
 			if(!EmptyUtil.isNullOrEmpty(solo)) {
 				lines.add(solo);
 			}
