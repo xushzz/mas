@@ -28,4 +28,5 @@ E:\abc.jar!/a.txt  list out the content of given entry in given zip file, entry 
 https              list all http status codes
 https 404          get detail explain of given http response code
 hosts              display content of hosts file from C:\WINDOWS\system32\drivers\etc\hosts, Windows only
-ver=6/9/2018, VI  GEEK-DEV1.0.33-GREEN
+pvs                list all available explorers, as in page viewers, like Chrome, IE, Maxthon and Firefox
+ver=7/6/2018, V  GEEK-DEV1.0.34-KLAY

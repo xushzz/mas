@@ -41,7 +41,6 @@ public class CommandSirap extends CommandBase {
 	private static final String KEY_ALL_DISKS_ONE_COLON = ":";
 	private static final String KEY_CHANGE_FILESEPARATOR = "sw";
 	private static final String KEY_LASTLIST = "ll";
-	private static final String KEY_PAGE_VIEWERS = "pvs";
 	
 	{
 		helpMeanings.put("image.formats", Konstants.IMG_FORMATS);
@@ -267,12 +266,6 @@ public class CommandSirap extends CommandBase {
 			
 			items.add(FileUtil.shellStyle(unixStyle));
 			export(items);
-			
-			return true;
-		}
-		
-		if(is(KEY_PAGE_VIEWERS)) {
-			export(JsonUtil.toPrettyJson(SatoUtil.allExplorers()));
 			
 			return true;
 		}

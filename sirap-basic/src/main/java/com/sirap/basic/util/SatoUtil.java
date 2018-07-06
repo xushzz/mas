@@ -15,7 +15,6 @@ import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.TypedKeyValueItem;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.tool.D;
 
 public class SatoUtil {
 	
@@ -128,10 +127,9 @@ public class SatoUtil {
 		String maxthon = "{0}\\Maxthon5\\Bin\\Maxthon.exe";
 		String[] files = {chrome, firefox, ie, maxthon};
 		Multimap<String, String> mmap = LinkedListMultimap.create();
-		for(String folder : folders) {
-			for(String file : files) {
+		for(String file : files) {
+			for(String folder : folders) {
 				String path = StrUtil.occupy(file, folder);
-				D.pl(path);
 				if(FileUtil.exists(path)) {
 					String exe = FileUtil.extractFilenameWithoutExtension(path);
 					if(StrUtil.equals("iexplore", exe)) {

@@ -31,6 +31,7 @@ import com.sirap.basic.util.ImageUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.PanaceaBox;
+import com.sirap.basic.util.SatoUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
@@ -62,6 +63,7 @@ public class CommandDev extends CommandBase {
 	private static final String KEY_SIZE = "size";
 	private static final String KEY_HTTP_STATUS_CODES = "https";
 	private static final String KEY_HOSTS = "hosts";
+	private static final String KEY_PAGE_VIEWERS = "pvs";
 	
 	public boolean handle() {
 		
@@ -400,6 +402,11 @@ public class CommandDev extends CommandBase {
 		
 		if(is(KEY_HTTP_STATUS_CODES)) {
 			export(GeekExtractors.fetchHttpResponseCodes());
+			return true;
+		}
+		
+		if(is(KEY_PAGE_VIEWERS)) {
+			export(JsonUtil.toPrettyJson(SatoUtil.allExplorers()));
 			return true;
 		}
 		
