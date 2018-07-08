@@ -3,14 +3,14 @@ package com.sirap.common.framework.command.target;
 import java.io.File;
 import java.util.List;
 
-import com.sirap.basic.email.EmailCenter;
-import com.sirap.basic.thirdparty.http.HttpHelper;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.MiscUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.framework.SimpleKonfig;
+import com.sirap.third.email.base.EmailCenter;
+import com.sirap.third.http.HttpHelper;
 
 public abstract class TargetAnalyzer {
 	

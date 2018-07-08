@@ -7,9 +7,7 @@ import java.util.List;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.component.MexedTimer;
 import com.sirap.basic.domain.EmailCommandRecord;
-import com.sirap.basic.email.EmailCenter;
 import com.sirap.basic.search.CriteriaFilter;
-import com.sirap.basic.thirdparty.email.EmailFetcher;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
@@ -17,6 +15,8 @@ import com.sirap.basic.util.MexUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.framework.Janitor;
 import com.sirap.common.framework.SimpleKonfig;
+import com.sirap.third.email.EmailFetcher;
+import com.sirap.third.email.base.EmailCenter;
 
 public class RemoteCommandManager extends MexedTimer {
 

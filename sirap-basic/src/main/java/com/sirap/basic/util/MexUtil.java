@@ -19,8 +19,6 @@ import java.util.regex.Pattern;
 import com.sirap.basic.component.MexedList;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexObject;
-import com.sirap.basic.email.EmailCenter;
-import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
 
 public class MexUtil {
@@ -307,46 +305,6 @@ public class MexUtil {
 		}
 		
 		return input;
-	}
-	
-	public static void setupEmailCenter(EmailCenter baoan, String securityPasscode) {
-		
-		String TEMPLATE_CHNAGE = "Change {0}({1}): ";
-		String TEMPLATE_SET = "Set {0}: ";
-
-		String hint;
-		if(baoan.getUsername() != null) {
-			hint = StrUtil.occupy(TEMPLATE_CHNAGE, "account", baoan.getUsername());
-		} else {
-			hint = StrUtil.occupy(TEMPLATE_SET, "account");
-		}
-		String temp = MexUtil.askForInput(hint);
-		if(!EmptyUtil.isNullOrEmptyOrBlank(temp)) {
-			baoan.setUsername(temp);
-		}
-		
-		if(baoan.getPassword() != null) {
-			hint = StrUtil.occupy(TEMPLATE_CHNAGE, "password", baoan.display(baoan.getPassword(), true));
-		} else {
-			hint = StrUtil.occupy(TEMPLATE_SET, "password");
-		}
-		temp = MexUtil.askForHiddenInput(hint);
-		if(!EmptyUtil.isNullOrEmptyOrBlank(temp)) {
-//			String password = SecurityUtil.encrypt(temp, securityPasscode);
-			baoan.setPassword(temp);
-		}
-		
-		if(baoan.getDefReceivers() != null) {
-			hint = StrUtil.occupy(TEMPLATE_CHNAGE, "receiver", baoan.getDefReceivers());
-		} else {
-			hint = StrUtil.occupy(TEMPLATE_SET, "receiver");
-		}
-		temp = MexUtil.askForInput(hint);
-		if(!EmptyUtil.isNullOrEmptyOrBlank(temp)) {
-			baoan.setDefReceivers(temp);
-		}
-
-		C.pl2("Currently, " + baoan.getEmailInfo());
 	}
 	
 	public static boolean isAllTrue(boolean[] flags) {

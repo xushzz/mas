@@ -2,10 +2,10 @@ package com.sirap.common.framework.command.target;
 
 import java.util.List;
 
-import com.sirap.basic.email.EmailCenter;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
 import com.sirap.common.framework.SimpleKonfig;
+import com.sirap.third.email.base.EmailCenter;
 
 public class TargetEmail extends Target {
 

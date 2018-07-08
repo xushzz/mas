@@ -14,7 +14,6 @@ import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.domain.PaymentItem;
-import com.sirap.basic.thirdparty.image.qrcode.QRCodeHelper;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.DateUtil;
@@ -35,6 +34,8 @@ import com.sirap.common.framework.SimpleKonfig;
 import com.sirap.common.framework.command.target.TargetConsole;
 import com.sirap.common.framework.command.target.TargetEmail;
 import com.sirap.common.framework.command.target.TargetFolder;
+import com.sirap.third.image.ImageHelper;
+import com.sirap.third.image.qrcode.QRCodeHelper;
 
 public class CommandImage extends CommandBase {
 	private static final String KEY_CAPTURE_CURRENT_WINDOW = "c";
@@ -336,9 +337,9 @@ public class CommandImage extends CommandBase {
 		String finalFilename = null;
 		//handle single image file.
 		if(toSameFolder) {
-			finalFilename = ImageUtil.compressImageToSameFolder(filePath, fileSizeWithUnit, withTimestamp);
+			finalFilename = ImageHelper.compressImageToSameFolder(filePath, fileSizeWithUnit, withTimestamp);
 		} else {
-			finalFilename = ImageUtil.compressImageToTargetFolder(filePath, whereToSave, fileSizeWithUnit, withTimestamp);
+			finalFilename = ImageHelper.compressImageToTargetFolder(filePath, whereToSave, fileSizeWithUnit, withTimestamp);
 		}
 		
 		if(finalFilename != null) {

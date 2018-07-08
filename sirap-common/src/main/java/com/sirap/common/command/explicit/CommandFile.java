@@ -11,14 +11,9 @@ import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
-import com.sirap.basic.component.media.MediaFileAnalyzer;
 import com.sirap.basic.domain.MexZipEntry;
 import com.sirap.basic.exception.MexException;
-import com.sirap.basic.thirdparty.msoffice.MsExcelHelper;
-import com.sirap.basic.thirdparty.msoffice.MsWordHelper;
-import com.sirap.basic.thirdparty.pdf.PdfHelper;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.tool.MexFactory;
 import com.sirap.basic.util.ArisUtil;
 import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.DateUtil;
@@ -37,6 +32,11 @@ import com.sirap.common.domain.MemoryRecord;
 import com.sirap.common.framework.SimpleKonfig;
 import com.sirap.common.framework.command.InputAnalyzer;
 import com.sirap.common.manager.MemorableDayManager;
+import com.sirap.excel.MsExcelHelper;
+import com.sirap.excel.MsWordHelper;
+import com.sirap.third.media.MediaFileAnalyzer;
+import com.sirap.third.media.MediaHelper;
+import com.sirap.third.msoffice.PdfHelper;
 
 public class CommandFile extends CommandBase {
 
@@ -186,7 +186,7 @@ public class CommandFile extends CommandBase {
 						}
 						
 					} else {
-						MediaFileAnalyzer mario = MexFactory.getMediaFileAnalyzer(filePath);
+						MediaFileAnalyzer mario = MediaHelper.getMediaFileAnalyzer(filePath);
 						if(mario != null) {
 							List<String> detail = mario.getDetail();
 							items.addAll(detail);

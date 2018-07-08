@@ -18,6 +18,21 @@
 		  	<artifactId>sirap-basic</artifactId>
 		  	<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>${project.parent.groupId}</groupId>
+		  	<artifactId>sirap-third</artifactId>
+		  	<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.parent.groupId}</groupId>
+			<artifactId>sirap-excel</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.parent.groupId}</groupId>
+			<artifactId>sirap-pdf</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
 	</dependencies>
   
 </project>

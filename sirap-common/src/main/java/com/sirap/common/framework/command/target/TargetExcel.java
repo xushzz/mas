@@ -5,9 +5,9 @@ import java.util.List;
 import com.sirap.basic.output.ExcelParams;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.FileUtil;
-import com.sirap.basic.util.IOUtil;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.framework.SimpleKonfig;
+import com.sirap.excel.MsExcelHelper;
 
 public class TargetExcel extends TargetFile {
 	
@@ -33,7 +33,7 @@ public class TargetExcel extends TargetFile {
 		
 		params.setTopInfo(topInfo);
 		
-		IOUtil.saveAsExcel(records, filePath, params);
+		MsExcelHelper.export(records, filePath, params);
 		C.pl2("Exported => " + FileUtil.canonicalPathOf(filePath));
 		if(SimpleKonfig.g().isGeneratedFileAutoOpen()) {
 			FileOpener.open(filePath);

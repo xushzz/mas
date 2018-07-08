@@ -5,11 +5,11 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.sirap.basic.domain.MexFile;
-import com.sirap.basic.thirdparty.http.HttpHelper;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.third.http.HttpHelper;
 
 public class TargetWeb extends Target {
 

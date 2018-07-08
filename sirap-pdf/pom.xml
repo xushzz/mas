@@ -1,0 +1,64 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.sirap</groupId>
+		<artifactId>sirap-parent</artifactId>
+		<version>3.5-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<artifactId>sirap-pdf</artifactId>
+	<name>sirap-pdf</name>
+
+	<dependencies>
+	
+		<dependency>
+			<groupId>${project.parent.groupId}</groupId>
+		  	<artifactId>sirap-basic</artifactId>
+		  	<version>${project.version}</version>
+		</dependency>	
+		
+		<!-- com.itextpdf.itextpdf
+			com.sirap.basic.thirdparty.pdf.PdfHelper
+			import com.itextpdf.text.pdf.PdfPTable;
+		 -->
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>itextpdf</artifactId>
+			<version>5.5.8</version>
+		</dependency>
+		
+		<!-- com.itextpdf.itextpdf
+			com.sirap.basic.thirdparty.pdf.PdfHelper
+			BaseFont.createFont
+		 -->
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>itext-asian</artifactId>
+			<version>5.2.0</version>
+		</dependency>
+		
+		<!-- org.apache.pdfbox.pdfbox
+			com.sirap.basic.thirdparty.pdf.PdfHelper
+			import org.apache.pdfbox.pdmodel.PDDocument;
+		 -->
+		<dependency>
+		    <groupId>org.apache.pdfbox</groupId>
+		    <artifactId>pdfbox</artifactId>
+		    <version>2.0.3</version>
+		</dependency>
+		
+		<!-- org.bouncycastle.bcprov-jdk15on
+		you need this while dealing with PDF encrypted files. 
+		 -->
+		<dependency>
+		    <groupId>org.bouncycastle</groupId>
+		    <artifactId>bcprov-jdk15on</artifactId>
+		    <version>1.55</version>
+		</dependency>	
+		
+	</dependencies>
+
+</project>

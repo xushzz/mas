@@ -17,55 +17,12 @@
 		    <groupId>com.google.guava</groupId>
 		    <artifactId>guava</artifactId>
 		    <version>23.0</version>
-		</dependency>
-		
-		<!-- javax.mail
-			com.sirap.basic.thirdparty.email.EmailService
-			import javax.mail.AuthenticationFailedException;
-		 -->
-		<dependency>
-			<groupId>javax.mail</groupId>
-			<artifactId>mail</artifactId>
-			<version>1.4</version>
-		</dependency>
-		
-		<!-- com.itextpdf.itextpdf
-			com.sirap.basic.thirdparty.pdf.PdfHelper
-			import com.itextpdf.text.pdf.PdfPTable;
-		 -->
-		<dependency>
-			<groupId>com.itextpdf</groupId>
-			<artifactId>itextpdf</artifactId>
-			<version>5.5.8</version>
-		</dependency>
-		
-		<!-- com.itextpdf.itextpdf
-			com.sirap.basic.thirdparty.pdf.PdfHelper
-			BaseFont.createFont
-		 -->
-		<dependency>
-			<groupId>com.itextpdf</groupId>
-			<artifactId>itext-asian</artifactId>
-			<version>5.2.0</version>
-		</dependency>
-		
-		<!-- org.apache.pdfbox.pdfbox
-			com.sirap.basic.thirdparty.pdf.PdfHelper
-			import org.apache.pdfbox.pdmodel.PDDocument;
-		 -->
-		<dependency>
-		    <groupId>org.apache.pdfbox</groupId>
-		    <artifactId>pdfbox</artifactId>
-		    <version>2.0.3</version>
-		</dependency>
-		
-		<!-- org.bouncycastle.bcprov-jdk15on
-		you need this while dealing with PDF encrypted files. 
-		 -->
-		<dependency>
-		    <groupId>org.bouncycastle</groupId>
-		    <artifactId>bcprov-jdk15on</artifactId>
-		    <version>1.55</version>
+		    <exclusions>
+		    	<exclusion>
+		    		<groupId>*</groupId>
+		    		<artifactId>*</artifactId>
+		    	</exclusion>
+		    </exclusions>
 		</dependency>
 		
 		<!-- com.sirap.sirap-security
@@ -78,106 +35,6 @@
 			<version>1.0</version>
 		</dependency>
 		
-		<!-- org.jaudiotagger
-			com.sirap.basic.thirdparty.media.MediaFileHelper
-			import org.jaudiotagger.audio.mp3.MP3File;
-		 -->
-		<dependency>
-		    <groupId>org</groupId>
-		    <artifactId>jaudiotagger</artifactId>
-		    <version>2.0.3</version>
-		</dependency>
-		
-		<!-- org.apache.poi.poi
-			com.sirap.basic.thirdparty.msoffice.MsExcelHelper
-			import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-		 -->
-		<dependency>
-		    <groupId>org.apache.poi</groupId>
-		    <artifactId>poi</artifactId>
-		    <version>3.10-FINAL</version>
-		</dependency>
-		
-		<!-- org.apache.poi.poi-ooxml
-			com.sirap.basic.thirdparty.msoffice.MsExcelHelper
-			import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-		 -->
-		<dependency>
-		    <groupId>org.apache.poi</groupId>
-		    <artifactId>poi-ooxml</artifactId>
-		    <version>3.10-FINAL</version>
-		</dependency>
-			
-		<!-- xerces.xercesImpl
-			com.sirap.basic.thirdparty.msoffice.ExcelXReader
-			import org.apache.xerces.parsers.SAXParser;
-		 -->
-		<dependency>
-		    <groupId>xerces</groupId>
-		    <artifactId>xercesImpl</artifactId>
-		    <version>2.9.1</version>
-		</dependency>
-		
-		<!-- net.coobird.thumbnailator
-			com.sirap.basic.thirdparty.image.ImageFixer
-			import net.coobird.thumbnailator.Thumbnails;
-		 -->
-		<dependency>
-			<groupId>net.coobird</groupId>
-		 	<artifactId>thumbnailator</artifactId>
-		 	<version>0.4.8</version>
-		</dependency>
-		
-		<!-- com.google.zxing.core
-			com.sirap.basic.thirdparty.qrcode.QRCodeHelper
-			import com.google.zxing.BarcodeFormat
-		 -->
-		<dependency>
-			<groupId>com.google.zxing</groupId>
-			<artifactId>core</artifactId>
-			<version>3.2.1</version>
-		</dependency>
-
-		<!-- com.google.zxing.javase
-			com.sirap.basic.thirdparty.qrcode.QRCodeHelper
-			import com.google.zxing.client.j2se.BufferedImageLuminanceSource
-		 -->
-		<dependency>
-			<groupId>com.google.zxing</groupId>
-			<artifactId>javase</artifactId>
-			<version>2.2</version>
-		</dependency>	
-		
-		<!-- org.apache.httpcomponents.httpclient
-			com.sirap.basic.thirdparty.http.HttpHelper
-			import org.apache.http.client.entity.UrlEncodedFormEntity
-		 -->
-		<dependency>  
-		    <groupId>org.apache.httpcomponents</groupId>  
-		    <artifactId>httpclient</artifactId>  
-		    <version>4.5.5</version>  
-		</dependency>
-		
-		<!-- org.apache.httpcomponents.httpcore
-			com.sirap.basic.thirdparty.http.HttpHelper
-			import org.apache.http.HttpEntity
-		 -->
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-	        <artifactId>httpcore</artifactId>
-	        <version>4.4.9</version>
-		</dependency>
-		
-		<!-- org.apache.httpcomponents.httpmime
-			com.sirap.basic.thirdparty.http.HttpHelper
-			import org.apache.http.entity.mime.MultipartEntityBuilder
-		 -->
-		<dependency>
-		    <groupId>org.apache.httpcomponents</groupId>
-		    <artifactId>httpmime</artifactId>
-		    <version>4.5.5</version>
-		</dependency>
-		
 		<!-- org.apache.httpcomponents.httpmime
 			com.sirap.basic.thirdparty.servlet.ServletHelper
 			import javax.servlet.http.HttpServletRequest;
@@ -188,6 +45,7 @@
 			 <version>2.5</version>
 			 <scope>provided</scope>
 		</dependency>
+		
 	</dependencies>
 
 </project>

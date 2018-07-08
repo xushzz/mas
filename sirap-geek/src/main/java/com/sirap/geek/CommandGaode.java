@@ -9,7 +9,6 @@ import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.domain.ValuesItem;
-import com.sirap.basic.thirdparty.http.HttpHelper;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.DateUtil;
@@ -26,6 +25,7 @@ import com.sirap.geek.domain.DistrictItem;
 import com.sirap.geek.manager.GaodeManager;
 import com.sirap.geek.manager.GaodeUtils;
 import com.sirap.geek.manager.TencentUtils;
+import com.sirap.third.http.HttpHelper;
 
 public class CommandGaode extends CommandBase {
 	private static final String KEY_GAODE = "gao";

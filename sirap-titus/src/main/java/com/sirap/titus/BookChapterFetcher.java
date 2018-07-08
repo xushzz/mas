@@ -12,6 +12,7 @@ import com.sirap.basic.tool.C;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.third.msoffice.PdfHelper;
 import com.sirap.titus.extractor.BibleChapterExtractor;
 
 public class BookChapterFetcher extends Worker<ChapterSense> {
@@ -47,7 +48,8 @@ public class BookChapterFetcher extends Worker<ChapterSense> {
 		if(StrUtil.equals(Konstants.DOT_TXT, fileType)) {
 			IOUtil.saveAsTxt(items, fullFileName);
 		} else if(StrUtil.equals(Konstants.DOT_PDF, fileType)) {
-			IOUtil.saveAsPDF(items, fullFileName, new PDFParams());
+//			FileHelper.saveAsPDF(items, fullFileName, new PDFParams());
+			PdfHelper.export(items, fullFileName, new PDFParams());
 		}
 
 		status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "Downloaded", fullFileName);

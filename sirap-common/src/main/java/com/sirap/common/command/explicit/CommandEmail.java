@@ -5,7 +5,6 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sirap.basic.email.EmailCenter;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
@@ -18,6 +17,7 @@ import com.sirap.common.component.FileOpener;
 import com.sirap.common.framework.SimpleKonfig;
 import com.sirap.common.framework.command.target.TargetAnalyzer;
 import com.sirap.common.framework.command.target.TargetConsole;
+import com.sirap.third.email.base.EmailCenter;
 
 public class CommandEmail extends CommandBase {
 	private static final String KEY_SEND_EMAIL = "x";
@@ -38,7 +38,7 @@ public class CommandEmail extends CommandBase {
 				C.pl2("Email should be enabled to perform email setup.");
 			} else {
 				String passcode = SimpleKonfig.g().getSecurityPasscode();
-				MexUtil.setupEmailCenter(EmailCenter.g(), passcode);
+				setupEmailCenter(EmailCenter.g(), passcode);
 			}
 			return true;
 		}
@@ -136,5 +136,45 @@ public class CommandEmail extends CommandBase {
 		}
 		
 		return false;
+	}
+	
+	public void setupEmailCenter(EmailCenter baoan, String securityPasscode) {
+		
+		String TEMPLATE_CHNAGE = "Change {0}({1}): ";
+		String TEMPLATE_SET = "Set {0}: ";
+
+		String hint;
+		if(baoan.getUsername() != null) {
+			hint = StrUtil.occupy(TEMPLATE_CHNAGE, "account", baoan.getUsername());
+		} else {
+			hint = StrUtil.occupy(TEMPLATE_SET, "account");
+		}
+		String temp = MexUtil.askForInput(hint);
+		if(!EmptyUtil.isNullOrEmptyOrBlank(temp)) {
+			baoan.setUsername(temp);
+		}
+		
+		if(baoan.getPassword() != null) {
+			hint = StrUtil.occupy(TEMPLATE_CHNAGE, "password", baoan.display(baoan.getPassword(), true));
+		} else {
+			hint = StrUtil.occupy(TEMPLATE_SET, "password");
+		}
+		temp = MexUtil.askForHiddenInput(hint);
+		if(!EmptyUtil.isNullOrEmptyOrBlank(temp)) {
+//			String password = SecurityUtil.encrypt(temp, securityPasscode);
+			baoan.setPassword(temp);
+		}
+		
+		if(baoan.getDefReceivers() != null) {
+			hint = StrUtil.occupy(TEMPLATE_CHNAGE, "receiver", baoan.getDefReceivers());
+		} else {
+			hint = StrUtil.occupy(TEMPLATE_SET, "receiver");
+		}
+		temp = MexUtil.askForInput(hint);
+		if(!EmptyUtil.isNullOrEmptyOrBlank(temp)) {
+			baoan.setDefReceivers(temp);
+		}
+
+		C.pl2("Currently, " + baoan.getEmailInfo());
 	}
 }

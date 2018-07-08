@@ -10,7 +10,6 @@ import java.util.List;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.domain.MexTextLine;
 import com.sirap.basic.search.TextSearcher;
-import com.sirap.basic.thirdparty.msoffice.MsExcelHelper;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.FileUtil;
@@ -20,6 +19,7 @@ import com.sirap.basic.util.OptionUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.domain.TextSearchEngine;
+import com.sirap.excel.MsExcelHelper;
 
 public class CommandText extends CommandBase {
 	//group text search

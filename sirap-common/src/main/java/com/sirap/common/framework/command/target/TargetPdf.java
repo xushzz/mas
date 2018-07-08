@@ -5,9 +5,9 @@ import java.util.List;
 import com.sirap.basic.output.PDFParams;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.FileUtil;
-import com.sirap.basic.util.IOUtil;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.framework.SimpleKonfig;
+import com.sirap.third.msoffice.PdfHelper;
 
 public class TargetPdf extends TargetFile {
 	
@@ -43,7 +43,7 @@ public class TargetPdf extends TargetFile {
 		
 		params.setTopInfo(topInfo);
 		
-		IOUtil.saveAsPDF(records, filePath, params);
+		PdfHelper.export(records, filePath, params);
 		C.pl2("Exported => " + FileUtil.canonicalPathOf(filePath));
 		if(SimpleKonfig.g().isGeneratedFileAutoOpen()) {
 			FileOpener.open(filePath);

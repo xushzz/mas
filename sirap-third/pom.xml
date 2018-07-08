@@ -1,0 +1,145 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.sirap</groupId>
+		<artifactId>sirap-parent</artifactId>
+		<version>3.5-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+	
+	<artifactId>sirap-third</artifactId>
+	<name>sirap-third</name>
+
+	<dependencies>
+		<!-- javax.mail
+			com.sirap.basic.thirdparty.email.EmailService
+			import javax.mail.AuthenticationFailedException;
+		 -->
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4</version>
+		    <exclusions>
+		    	<exclusion>
+		    		<groupId>*</groupId>
+		    		<artifactId>*</artifactId>
+		    	</exclusion>
+		    </exclusions>
+		</dependency>
+		
+		<!-- org.jaudiotagger
+			com.sirap.basic.thirdparty.media.MediaFileHelper
+			import org.jaudiotagger.audio.mp3.MP3File;
+		 -->
+		<dependency>
+		    <groupId>org</groupId>
+		    <artifactId>jaudiotagger</artifactId>
+		    <version>2.0.3</version>
+		</dependency>
+		
+		<!-- org.apache.poi.poi
+			com.sirap.basic.thirdparty.msoffice.MsExcelHelper
+			import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+		 -->
+		<dependency>
+		    <groupId>org.apache.poi</groupId>
+		    <artifactId>poi</artifactId>
+		    <version>3.10-FINAL</version>
+		    <exclusions>
+		    	<exclusion>
+		    		<groupId>*</groupId>
+		    		<artifactId>*</artifactId>
+		    	</exclusion>
+		    </exclusions>
+		</dependency>
+		
+		<!-- org.apache.poi.poi-ooxml
+			com.sirap.basic.thirdparty.msoffice.MsExcelHelper
+			import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+		 -->
+		<dependency>
+		    <groupId>org.apache.poi</groupId>
+		    <artifactId>poi-ooxml</artifactId>
+		    <version>3.10-FINAL</version>
+		</dependency>
+			
+		<!-- xerces.xercesImpl
+			com.sirap.basic.thirdparty.msoffice.ExcelXReader
+			import org.apache.xerces.parsers.SAXParser;
+		 -->
+		<dependency>
+		    <groupId>xerces</groupId>
+		    <artifactId>xercesImpl</artifactId>
+		    <version>2.9.1</version>
+		</dependency>
+		
+		<!-- net.coobird.thumbnailator
+			com.sirap.basic.thirdparty.image.ImageFixer
+			import net.coobird.thumbnailator.Thumbnails;
+		 -->
+		<dependency>
+			<groupId>net.coobird</groupId>
+		 	<artifactId>thumbnailator</artifactId>
+		 	<version>0.4.8</version>
+		</dependency>
+		
+		<!-- com.google.zxing.core
+			com.sirap.basic.thirdparty.qrcode.QRCodeHelper
+			import com.google.zxing.BarcodeFormat
+		 -->
+		<dependency>
+			<groupId>com.google.zxing</groupId>
+			<artifactId>core</artifactId>
+			<version>3.2.1</version>
+		</dependency>
+
+		<!-- com.google.zxing.javase
+			com.sirap.basic.thirdparty.qrcode.QRCodeHelper
+			import com.google.zxing.client.j2se.BufferedImageLuminanceSource
+		 -->
+		<dependency>
+			<groupId>com.google.zxing</groupId>
+			<artifactId>javase</artifactId>
+			<version>2.2</version>
+		</dependency>	
+		
+		<!-- org.apache.httpcomponents.httpclient
+			com.sirap.basic.thirdparty.http.HttpHelper
+			import org.apache.http.client.entity.UrlEncodedFormEntity
+		 -->
+		<dependency>  
+		    <groupId>org.apache.httpcomponents</groupId>  
+		    <artifactId>httpclient</artifactId>  
+		    <version>4.5.5</version>  
+		</dependency>
+		
+		<!-- org.apache.httpcomponents.httpcore
+			com.sirap.basic.thirdparty.http.HttpHelper
+			import org.apache.http.HttpEntity
+		 -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+	        <artifactId>httpcore</artifactId>
+	        <version>4.4.9</version>
+		</dependency>
+		
+		<!-- org.apache.httpcomponents.httpmime
+			com.sirap.basic.thirdparty.http.HttpHelper
+			import org.apache.http.entity.mime.MultipartEntityBuilder
+		 -->
+		<dependency>
+		    <groupId>org.apache.httpcomponents</groupId>
+		    <artifactId>httpmime</artifactId>
+		    <version>4.5.5</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>${project.parent.groupId}</groupId>
+		  	<artifactId>sirap-basic</artifactId>
+		  	<version>${project.version}</version>
+		</dependency>
+	</dependencies>
+  
+</project>

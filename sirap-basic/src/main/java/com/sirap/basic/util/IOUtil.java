@@ -34,10 +34,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.exception.MexException;
-import com.sirap.basic.output.ExcelParams;
-import com.sirap.basic.output.PDFParams;
-import com.sirap.basic.thirdparty.msoffice.MsExcelHelper;
-import com.sirap.basic.thirdparty.pdf.PdfHelper;
 import com.sirap.basic.thread.Master;
 import com.sirap.basic.thread.MasterItemOriented;
 import com.sirap.basic.thread.Worker;
@@ -543,18 +539,6 @@ public class IOUtil {
 		};
 
 		return master.getValidStringResults();
-	}
-	
-	public static boolean saveAsPDF(List objList, String fullFileName, PDFParams params) {
-		return PdfHelper.export(objList, fullFileName, params);
-	}
-	
-	public static boolean saveAsPDF(List objList, String fullFileName) {
-		return PdfHelper.export(objList, fullFileName, new PDFParams());
-	}
-	
-	public static boolean saveAsExcel(List objList, String fullFileName, ExcelParams params) {
-		return MsExcelHelper.export(objList, fullFileName, params);
 	}
 	
 	@SuppressWarnings("resource")

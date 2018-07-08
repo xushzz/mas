@@ -15,8 +15,6 @@ import java.util.Map;
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.TypedKeyValueItem;
-import com.sirap.basic.email.EmailCenter;
-import com.sirap.basic.email.EmailServerItem;
 import com.sirap.basic.thirdparty.TrumpHelper;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
@@ -25,6 +23,8 @@ import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.domain.CommandRecord;
+import com.sirap.third.email.base.EmailCenter;
+import com.sirap.third.email.base.EmailServerItem;
 
 public class SimpleKonfig extends Konfig {
 
