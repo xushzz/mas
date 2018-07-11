@@ -45,6 +45,7 @@ public class SimpleKonfig extends Konfig {
 	private boolean isSuckOptionsEnabled = true;
 	private String securityPasscode = "mike";
 	private String charsetInUse;
+	private boolean isFromWeb;
 	
 	public void refresh() {
 		loadAndSetValues();
@@ -96,6 +97,14 @@ public class SimpleKonfig extends Konfig {
 		XXXUtil.nullCheck(instance, "SimpleKonfig instance");
 		
 		return instance;
+	}
+	
+	public boolean isFromWeb() {
+		return isFromWeb;
+	}
+	
+	public void setFromWeb(boolean flag) {
+		isFromWeb = flag;
 	}
 	
 	public boolean isEmailEnabled() {

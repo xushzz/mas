@@ -42,7 +42,7 @@ import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
 import com.sirap.basic.tool.MexedAudioPlayer;
 
-@SuppressWarnings({"rawtypes","unchecked"})
+@SuppressWarnings({"rawtypes"})
 public class IOUtil {
 	
 	public static String charset() {
@@ -63,6 +63,27 @@ public class IOUtil {
 		return readLines(dynamicLocation, charset());
 	}
 	
+	public static InputStream streamByClassLoader(String path) {
+		InputStream ins = Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
+		
+		return ins;
+	}
+	
+	public static List<String> readLinesFromStream(InputStream ins, String charset) {
+		List<String> lines = Lists.newArrayList();
+		try {
+			BufferedReader br = new BufferedReader(new InputStreamReader(ins, charset));
+			String line;
+			while ((line = br.readLine()) != null) {
+				lines.add(line);
+			}
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+		
+		return lines;
+	}
+	
 	public static List<String> readLines(String dynamicLocation, String charset) {
 		if(MiscUtil.isHttp(dynamicLocation)) {
 			WebReader xiu = new WebReader(dynamicLocation, charset);
@@ -73,16 +94,17 @@ public class IOUtil {
 		
 		try {
 			InputStream ins = null;
-			if(PanaceaBox.isWindows()) {
-				if(dynamicLocation.startsWith("/")) {
-					ins = InputStream.class.getResourceAsStream(dynamicLocation);
-				}
+			String asresource = StrUtil.parseParam("#(.+?)", dynamicLocation);
+
+			if(asresource != null) {
+				ins = Thread.currentThread().getContextClassLoader().getResourceAsStream(asresource);
 			}
 			
 			if(ins == null) {
 				String temp = dynamicLocation.replaceAll("^file:///", "");
 				ins = new FileInputStream(temp);
 			}
+			
 			BufferedReader br = new BufferedReader(new InputStreamReader(ins, charset));
 			String line;
 			while ((line = br.readLine()) != null) {

@@ -1,20 +1,23 @@
 package com.sirap.common.framework;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
+import com.sirap.basic.component.Konstants;
 import com.sirap.basic.component.MexMap;
 import com.sirap.basic.domain.TypedKeyValueItem;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
+import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 
 public abstract class Konfig {
 
-	public static String KONFIG_FILE = "/Konfig.properties";
-	public static String KEYS_FILE = "/Keys.txt";
+	public static String KONFIG_FILE = "Konfig.properties";
+	public static String KEYS_FILE = "Keys.txt";
 	
 	public static final String KEY_STORAGE = "storage";
 	public static final String KEY_USERCONFIG = "userConfig";
@@ -26,8 +29,13 @@ public abstract class Konfig {
 	protected MexMap userProperties = new MexMap();
 
 	protected void loadInnerConfigDetail() {
-		innerProperties = new MexMap(KONFIG_FILE);
+		innerProperties = new MexMap(readAsResource(KONFIG_FILE));
 		innerProperties.setType("Zoo Inner Config");
+	}
+	
+	private List<String> readAsResource(String path) {
+		InputStream ins = IOUtil.streamByClassLoader(path);
+		return IOUtil.readLinesFromStream(ins, Konstants.CODE_UTF8);
 	}
 	
 	protected void loadUserConfigDetail() {
@@ -37,7 +45,7 @@ public abstract class Konfig {
 		} else {
 			File file = FileUtil.getIfNormalFile(userConfigFile);
 			if(file != null) {
-				MexMap mm = new MexMap(file.getAbsolutePath());
+				MexMap mm = new MexMap(IOUtil.readFileIntoList(userConfigFile));
 				List<TypedKeyValueItem> items = mm.detectCircularItems();
 				if(!EmptyUtil.isNullOrEmpty(items)) {
 					String msg = "\n[Configuration] Circular items found in [{0}]:\n" + StrUtil.connectWithLineSeparator(items);

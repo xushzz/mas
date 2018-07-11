@@ -128,7 +128,7 @@ public abstract class AkaBase extends MexedTimer {
     }
     
     protected void welcome() {
-    	List<String> lines = IOUtil.readLines("/welcome.txt", Konstants.CODE_UTF8);
+    	List<String> lines = IOUtil.readLines("#welcome.txt", Konstants.CODE_UTF8);
     	lines.remove(0);
     	C.list(lines, false);
 		String source = "=== hi {0}, welcome to {1}, {2} ===";

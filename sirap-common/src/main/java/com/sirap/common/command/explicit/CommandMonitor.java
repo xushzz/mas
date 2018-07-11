@@ -1,6 +1,7 @@
 package com.sirap.common.command.explicit;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -310,7 +311,8 @@ public class CommandMonitor extends CommandBase {
 		params = parseParams(KEY_SYSTEM_CONFIG + "(|\\s+(.*?))");
 		if(params != null) {
 			String criteria = params[1];
-			List<String> list = IOUtil.readLines(SimpleKonfig.KONFIG_FILE);
+			InputStream ins = IOUtil.streamByClassLoader(Konfig.KONFIG_FILE);
+			List<String> list = IOUtil.readLinesFromStream(ins, Konstants.CODE_UTF8);
 			export(Colls.filterMix(list, criteria, isCaseSensitive()));
 			
 			return true;

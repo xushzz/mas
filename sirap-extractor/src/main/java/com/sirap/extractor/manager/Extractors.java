@@ -189,7 +189,7 @@ public class Extractors {
 			public String getUrl() {
 				useList().showFetching();
 				String template = "https://gitee.com/thewire/stamina/raw/master/names/{0}males.txt";
-				template = "/data/{0}males.txt";
+				template = "#data/{0}males.txt";
 				String key = isMale ? "" : "fe";
 				return StrUtil.occupy(template, key);
 			}

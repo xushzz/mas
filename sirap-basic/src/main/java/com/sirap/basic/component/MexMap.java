@@ -35,10 +35,10 @@ public class MexMap {
 
 	public MexMap() {}
 	
-	public MexMap(String pathname) {
+	public MexMap(List<String> lines) {
 		container.clear();
-		type = pathname;
-		List<String> lines = IOUtil.readLines(pathname, Konstants.CODE_UTF8);
+//		type = pathname;
+//		List<String> lines = IOUtil.readLines(pathname, Konstants.CODE_UTF8);
 		for (String line : lines) {
 			String temp = line.trim();
 			
@@ -148,6 +148,13 @@ public class MexMap {
 			Integer value = MathUtil.toInteger(strValue.trim());
 			return value != null ? value : defaultIfNull;
 		}
+	}
+	
+	public String get(String key) {
+		String value = getIgnorecase(key);
+		XXXUtil.nullCheck(value, "key: " + key);
+		
+		return value;
 	}
 
 	public String get(String key, String defaultIfNull) {

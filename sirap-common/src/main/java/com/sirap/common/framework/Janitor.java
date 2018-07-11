@@ -42,6 +42,9 @@ public class Janitor extends Checker {
 	private static Janitor instance;
 
 	public static Janitor g() {
+		if(instance == null) {
+			instance = new Janitor(SimpleKonfig.g());
+		}
 		return instance;
 	}
 	

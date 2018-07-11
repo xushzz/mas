@@ -286,23 +286,23 @@ public abstract class CommandBase {
 		if(!isExcel) {
 			newList = toPrintIfMex(newList, finalOptions);
 		}
-//		D.list(newList);
+
+		//		D.list(newList);
 		if(EmptyUtil.isNullOrEmpty(newList)) {
-			exportEmptyMsg();
-		} else {
-			if(OptionUtil.readBooleanPRI(options, "sort", false)) {
-				Colls.sortIgnoreCase(newList);
-			}
-			if(OptionUtil.readBooleanPRI(finalOptions, "self", false)) {
-				newList.add(0, "$ " + input);
-			}
-//			Exporter.exportList(input, newList, where, finalOptions);
-			boolean fromLastList = OptionUtil.readBooleanPRI(finalOptions, Stash.KEY_GETSTASH, false);
-			if(!fromLastList) {
-				Stash.g().setLastQuery(new QueryItem(input, newList));
-			}
-			where.export(newList, finalOptions, g().isExportWithTimestampEnabled(finalOptions));
+			newList.add(Konstants.FAKED_EMPTY);
 		}
+		if(OptionUtil.readBooleanPRI(options, "sort", false)) {
+			Colls.sortIgnoreCase(newList);
+		}
+		if(OptionUtil.readBooleanPRI(finalOptions, "self", false)) {
+			newList.add(0, "$ " + input);
+		}
+//		Exporter.exportList(input, newList, where, finalOptions);
+		boolean fromLastList = OptionUtil.readBooleanPRI(finalOptions, Stash.KEY_GETSTASH, false);
+		if(!fromLastList) {
+			Stash.g().setLastQuery(new QueryItem(input, newList));
+		}
+		where.export(newList, finalOptions, g().isExportWithTimestampEnabled(finalOptions));
 	}
 	
 	private Target whereToShot() {
@@ -328,10 +328,7 @@ public abstract class CommandBase {
 	}
 
 	public void exportEmptyMsg() {
-		Target where = whereToShot();
-		List newList = Lists.newArrayList("The result is empty.");
-//		Exporter.exportList(input, Lists.newArrayList("The result is empty."), whereToShot(), options);	
-		where.export(newList, options, g().isExportWithTimestampEnabled(options));
+		export("The result is empty.");
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -667,18 +664,22 @@ public abstract class CommandBase {
 		if(EmptyUtil.isNullOrEmpty(result)) {
 			export("Command [" + conciseCommand + "] executed.");
 		} else {
-			if(target instanceof TargetConsole) {
-				if(printAlong) {
-					if(result.size() > 5) {
-						C.total(result.size());
+			if(g().isFromWeb()) {
+				export(result);
+			} else {
+				if(target instanceof TargetConsole) {
+					if(printAlong) {
+						if(result.size() > 5) {
+							C.total(result.size());
+						}
+						
+						C.pl();
+					} else {
+						export(result);
 					}
-					
-					C.pl();
 				} else {
 					export(result);
 				}
-			} else {
-				export(result);
 			}
 		}
 	}
