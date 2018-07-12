@@ -1050,7 +1050,6 @@ public class StrUtil {
 		return items;
 	}
 	
-	
 	public static String addHttpProtoclIfNeeded(String url) {
 		String temp = url;
 		String key = "http";
@@ -1059,5 +1058,23 @@ public class StrUtil {
 		}
 		
 		return temp;
+	}
+	
+	/***
+	 * james dean => James Dean
+	 * @param source
+	 * @return
+	 */
+	public static String uppercaseInitials(String source) {
+		String regex = "\\s[a-z]|^[a-z]";
+		StringBuffer sb = sb();
+		Matcher ma = createMatcher(regex, source);
+		while(ma.find()) {
+			String stuff = ma.group(0).toUpperCase();
+			ma.appendReplacement(sb, stuff);
+		}
+		ma.appendTail(sb);
+		
+		return sb.toString();
 	}
 }

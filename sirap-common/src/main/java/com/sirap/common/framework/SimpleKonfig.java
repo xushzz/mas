@@ -95,7 +95,6 @@ public class SimpleKonfig extends Konfig {
 
 	public static SimpleKonfig g() {
 		XXXUtil.nullCheck(instance, "SimpleKonfig instance");
-		
 		return instance;
 	}
 	

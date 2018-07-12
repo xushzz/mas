@@ -20,7 +20,7 @@ public class Stash {
 		
 	}
 	
-	public static Stash instanace;
+	private static Stash instanace;
 	
 	private static class Holder {
 		private static Stash instance = new Stash();
@@ -59,10 +59,14 @@ public class Stash {
 		}
 		
 		QueryItem item = queryList.get(kFromOne - 1);
-		List all = Lists.newArrayList(item.getCommand());
+		List all = Lists.newArrayList("$ " + item.getCommand());
 		all.addAll(item.getResult());
 		
 		return all;
+	}
+	
+	public void setLastQuery(String command, List result) {
+		setLastQuery(new QueryItem(command, result));
 	}
 
 	public void setLastQuery(QueryItem query) {

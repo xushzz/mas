@@ -2,6 +2,7 @@ package com.sirap.geek;
 
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -99,29 +100,39 @@ public class CommandGaode extends CommandBase {
 			return true;
 		}
 		
-		solo = parseParam(KEY_GAODE_SEARCH + "\\s+(.+?)");
-		if(solo != null) {
-			String loc = LAKES.get(solo);
-			String ack = loc != null ? loc : solo;
+		params = parseParams(KEY_GAODE_SEARCH + "\\s+(#?)(.+?)");
+		if(params != null) {
+			String city = OptionUtil.readString(options, "c", "");
+			boolean toConvert = !params[0].isEmpty();
+			String placeInfo = params[1];
+			String location = null;
+			if(GaodeUtils.isCoordination(placeInfo)) {
+				location = placeInfo;
+			} else {
+				String loc = LAKES.get(placeInfo);
+				if(loc != null) {
+					location = loc;
+				} else if(toConvert) {
+					location = GaodeUtils.locationOf(placeInfo, city);
+				}
+			}
 			List<String> lines = Lists.newArrayList();
-			if(GaodeUtils.isCoordination(ack)) {
-				String location = ack;
+			if(location != null) {
 				String keywords = OptionUtil.readString(options, "k", "");
 				String types = OptionUtil.readString(options, "t", "");
 				String radius = OptionUtil.readString(options, "r", "");
 				lines = GaodeUtils.searchPlaceAround(location, keywords, types, radius);
 			} else {
-				String keywords = ack, types = "";
+				String keywords = placeInfo, types = "";
 				String kParam = OptionUtil.readString(options, "k", "");
 				if(!kParam.isEmpty()) {
 					keywords = kParam;
-					types = ack;
+					types = placeInfo;
 				}
 				String tParam = OptionUtil.readString(options, "t", "");
 				if(!tParam.isEmpty()) {
 					types = tParam;
 				}
-				String city = OptionUtil.readString(options, "c", "");
 				lines = GaodeUtils.searchPlaceText(keywords, types, city);
 			}
 
@@ -275,11 +286,20 @@ public class CommandGaode extends CommandBase {
 	}
 	
 	private List<String> prettyFormatOf(List<String> lines) {
+		List<String> ignoredKeys = StrUtil.split("status,info,infocode,count");
+		return prettyFormatOf(lines, ignoredKeys);
+	}
+	
+	private List<String> prettyFormatOf(List<String> lines, List<String> ignoredKeys) {
 		List<String> items = Lists.newArrayList();
 		String regex = "\"([^\"]+)\"\\s*:\\s*\"([^\"]+)\"";
 		for(String line : lines) {
-			if(StrUtil.isRegexFound(regex, line)) {
-				items.add(line.trim());
+			Matcher ma = StrUtil.createMatcher(regex, line);
+			if(ma.find()) {
+				String key = ma.group(1);
+				if(!ignoredKeys.contains(key)) {
+					items.add(line.trim());
+				}
 			}
 		}
 		

@@ -134,6 +134,7 @@ public class GaodeUtils {
 				String regex = "<poi>(.+?)</poi>";
 				List<String> keys = StrUtil.split("pname,cityname,adname,name,type,address,tel,location");
 				Matcher ma = createMatcher(regex);
+				List<String> templist = Lists.newArrayList();
 				while(ma.find()) {
 					String xmlText = ma.group(1);
 					List<String> items = Lists.newArrayList();
@@ -144,9 +145,13 @@ public class GaodeUtils {
 						}
 						items.add(value);
 					}
-					mexItems.add(StrUtil.connect(items, " "));
+					templist.add(StrUtil.connect(items, " "));
 				}
-				Collections.sort(mexItems);
+				Collections.sort(templist);
+				int count = 0;
+				for(String item : templist) {
+					mexItems.add((++count) + ") " + item);
+				}
 			}
 		};
 		
@@ -176,9 +181,10 @@ public class GaodeUtils {
 				String regex = "<poi>(.+?)</poi>";
 				List<String> keys = StrUtil.split("pname,cityname,adname,name,type,address,tel,location");
 				Matcher ma = createMatcher(regex);
+				int count = 0;
 				while(ma.find()) {
 					String xmlText = ma.group(1);
-					List<String> items = Lists.newArrayList();
+					List<String> items = Lists.newArrayList((++count) + ")");
 					for(String key : keys) {
 						String value = XmlUtil.readValue(xmlText, key);
 						if(EmptyUtil.isNullOrEmpty(value)) {
@@ -188,7 +194,7 @@ public class GaodeUtils {
 					}
 					String distance = XmlUtil.readValue(xmlText, "distance");
 					int ace = MathUtil.toInteger(distance, 0);
-					items.add(0, StrUtil.insertComma(distance) + "m");
+					items.add(1, StrUtil.insertComma(distance) + "m");
 					ken.put(ace, StrUtil.connect(items, " "));
 				}
 				mexItems.addAll(ken.values());
@@ -297,7 +303,21 @@ public class GaodeUtils {
 		
 		return neymar.process().getItems();
 	}
-	
+
+	public static String locationOf(String address, String city) {
+		List<String> lines = geocodeOf(address, city);
+		String regex = "\"location\"\\s*:\\s*\"([^\"]+)\"";
+		for(String line : lines) {
+			Matcher ma = StrUtil.createMatcher(regex, line);
+			if(ma.find()) {
+				String value = ma.group(1);
+				return value;
+			}
+		}
+
+		return null;
+	}
+
 	public static List<String> geocodeOf(String address, String city) {
 		Extractor<String> neymar = new Extractor<String>() {
 

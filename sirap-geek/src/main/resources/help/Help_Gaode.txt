@@ -5,6 +5,7 @@ gao abc&123        search those items matching given criteria, options $+u,+n,n=
 gao abc&123        search, +u means all upper levels, +n means next immediate level, n=K means next K level, K will be 1 if K is not positive
 gin location       display input tips for given location info, poi, amap, gaode, courtesy of http://restapi.amap.com/v3/assistant/inputtips
 gas abc123         calling Amap webservice, amap/../place/text, $k=A,t=B,c=C for keywords, types and city respectively
+gas #abc123        get location of abc123, then call amap/../place/around, $k=A,t=B,r=C for keywords, types and radius respectively
 gas X,Y            calling Amap webservice, amap/../place/around, $k=A,t=B,r=C for keywords, types and radius respectively
 gas deli           calling amap/../place/around, jia, deli, tam are some predefined locations in CommandGaode, such as 108.392544,22.828986
 geo address        convert given formatted address to specific location, as in longitude and latitude pair, search for the whole nation
@@ -18,4 +19,4 @@ geo ABC $+w        convert address to location or vice versa, open web site with
 geo ABC $+ww       convert address to location or vice versa, generate a picker.html, open it with given address and coordination, as in location
 gip                get the city info where current HTTP request comes from
 gip 120.79.195.133 get the city info where given IP address comes from
-ver=6/29/2018, V  GEEK-GAODE1.0.5-Mark
+ver=7/13/2018, V  GEEK-GAODE1.0.6-CROATIA

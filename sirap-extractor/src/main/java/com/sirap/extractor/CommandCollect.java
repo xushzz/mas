@@ -219,7 +219,8 @@ public class CommandCollect extends CommandBase {
 		
 		solo = parseParam(KEY_WIKI_SUMMARY + "\\s(.+)");
 		if(solo != null) {
-			Extractor<MexObject> mike = new WikiSummaryExtractor(solo);
+			String niceKeyword = StrUtil.uppercaseInitials(solo);
+			Extractor<MexObject> mike = new WikiSummaryExtractor(niceKeyword);
 			mike.process();
 			export(mike.getItems());
 			

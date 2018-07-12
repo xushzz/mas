@@ -107,6 +107,7 @@ public class CommandBible extends CommandBase {
 				}
 				
 				dealWith(book, chapter, params[3]);
+				return true;
 			}
 		}
 		
@@ -122,6 +123,8 @@ public class CommandBible extends CommandBase {
 			FileUtil.makeDirectoriesIfNonExist(targetFolder);
 			BibleManager.g().downloadAllBooks(targetFolder, versionCode, fileType);
 			C.pl2("Done with downloading as " + fileType);
+			
+			return true;
 		}
 		
 		return false;

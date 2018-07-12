@@ -35,7 +35,6 @@ import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.framework.Janitor;
-import com.sirap.common.framework.QueryItem;
 import com.sirap.common.framework.SimpleKonfig;
 import com.sirap.common.framework.Stash;
 import com.sirap.common.framework.command.target.Target;
@@ -271,6 +270,10 @@ public abstract class CommandBase {
 
 		return false;
 	}
+	
+	public void export(String template, Object... params) {
+		export(StrUtil.occupy(template, params));
+	}
 
 	@SuppressWarnings({"rawtypes" })
 	public void export(List list, String finalOptions) {
@@ -300,7 +303,7 @@ public abstract class CommandBase {
 //		Exporter.exportList(input, newList, where, finalOptions);
 		boolean fromLastList = OptionUtil.readBooleanPRI(finalOptions, Stash.KEY_GETSTASH, false);
 		if(!fromLastList) {
-			Stash.g().setLastQuery(new QueryItem(input, newList));
+			Stash.g().setLastQuery(input, newList);
 		}
 		where.export(newList, finalOptions, g().isExportWithTimestampEnabled(finalOptions));
 	}

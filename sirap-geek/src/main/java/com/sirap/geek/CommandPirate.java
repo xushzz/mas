@@ -63,7 +63,7 @@ public class CommandPirate extends CommandBase {
 			}
 			
 			if(!MiscUtil.isHttp(link)) {
-				C.pl2("Not a valid link: {0}", link);
+				export("Not a valid link: {0}", link);
 			} else {
 				List<String> items = GeekExtractors.wikiEpisodes(link);
 				export(items);

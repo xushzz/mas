@@ -115,6 +115,11 @@ public class NameData {
 		EGGS.put("m98", "Earl");
 		EGGS.put("m99", "Jimmy");
 		EGGS.put("m100", "Antonio");
+		EGGS.put("m254", "MAXINE");
+		EGGS.put("m389", "ROXANNE");
+		EGGS.put("m396", "ALEXANDRA");
+		EGGS.put("m457", "ALEXIS");
+		EGGS.put("481", "DIXIE");
 		EGGS.put("f1", "Mary");
 		EGGS.put("f2", "Patricia");
 		EGGS.put("f3", "Linda");
