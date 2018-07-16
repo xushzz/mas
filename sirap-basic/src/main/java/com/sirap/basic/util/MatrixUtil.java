@@ -1,8 +1,11 @@
 package com.sirap.basic.util;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.collect.Lists;
+import com.sirap.basic.domain.ValuesItem;
 
 @SuppressWarnings({ "rawtypes"})
 public class MatrixUtil {
@@ -172,5 +175,26 @@ public class MatrixUtil {
 		return goodMatrix;
 	}
 	
+	public static List<List> matrixOf(Map map) {
+		List<List> matrix = Lists.newArrayList();
+		Iterator it = map.keySet().iterator();
+		while(it.hasNext()) {
+			Object key = it.next();
+			List<String> row = Lists.newArrayList();
+			row.add(key.toString());
+			row.add(map.get(key).toString());
+			matrix.add(row);
+		}
 
+		return matrix;
+	}
+	
+	public static List<List> matrixOf(List<ValuesItem> vis) {
+		List<List> matrix = Lists.newArrayList();
+		for(ValuesItem vi : vis) {
+			matrix.add(vi.getValues());
+		}
+
+		return matrix;
+	}
 }

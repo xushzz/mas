@@ -11,6 +11,7 @@ import com.sirap.basic.search.MexFilter;
 import com.sirap.basic.search.SizeCriteria;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
+import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 
 @SuppressWarnings("serial")
@@ -191,5 +192,9 @@ public abstract class MexItem implements Serializable {
 		} else {
 			return null;
 		}
+	}
+	
+	public boolean showOrder(String options) {
+		return OptionUtil.readBooleanPRI(options, "so", false);
 	}
 }

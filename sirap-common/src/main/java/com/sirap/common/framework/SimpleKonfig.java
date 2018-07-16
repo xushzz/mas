@@ -14,7 +14,6 @@ import java.util.Map;
 
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
-import com.sirap.basic.domain.TypedKeyValueItem;
 import com.sirap.basic.thirdparty.TrumpHelper;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
@@ -22,6 +21,7 @@ import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
+import com.sirap.common.command.CommandBase;
 import com.sirap.common.domain.CommandRecord;
 import com.sirap.third.email.base.EmailCenter;
 import com.sirap.third.email.base.EmailServerItem;
@@ -32,6 +32,7 @@ public class SimpleKonfig extends Konfig {
 	
 	private String storage;
 	private List<CommandRecord> commandNodes;
+	private List<CommandBase> commandInstances;
 	private Locale locale;
 	private boolean isEmailEnabled;
 	private boolean isExportWithTimestampEnabled;
@@ -76,11 +77,6 @@ public class SimpleKonfig extends Konfig {
 	
 	private void decodeUserConfig() {
 		getUserProps().recoverValues(securityPasscode);
-		List<TypedKeyValueItem> items = getUserProps().detectCircularItems();
-		if(!EmptyUtil.isNullOrEmpty(items)) {
-			String msg = "\nCircular items found in [{0}]:\n" + StrUtil.connectWithLineSeparator(items);
-			XXXUtil.alert(msg, instance.userConfigFile);
-		}
 	}
 	
 	private void initEmail() {
@@ -160,6 +156,10 @@ public class SimpleKonfig extends Konfig {
 		FileUtil.makeDirectoriesIfNonExist(storage);
 
 		commandNodes = parseCommandNodes();
+		if(EmptyUtil.isNullOrEmpty(commandNodes)) {
+			XXXUtil.alert("Can't not find any available commands in user config.");
+		}
+		commandInstances = createCommandInstances();
 		
 		locale = DateUtil.parseLocale(getUserValueOf("locale.in_use"));
 		if(locale == null) {
@@ -176,6 +176,7 @@ public class SimpleKonfig extends Konfig {
 		isPrintGreyRowWhenPDF = !isNo("pdf.table.grayrow");
 		isAsianFontWhenPDF = isYes("pdf.font.asian");
 		isExportWithTimestampEnabled = !isNo("timestamp.enabled");
+		isFromWeb = isYes("opertion.fromweb");
 	}
 	
 	public int getTimeoutMinutes() {
@@ -246,6 +247,24 @@ public class SimpleKonfig extends Konfig {
 	public void setLocale(Locale locale) {
 		this.locale = locale;
 	}
+	
+	private List<CommandBase> createCommandInstances() {
+
+		List<CommandBase> commandList = Lists.newArrayList();
+		for(CommandRecord item : commandNodes) {
+			try {
+				Object instance = Class.forName(item.getClassName()).newInstance();
+				if(CommandBase.class.isInstance(instance)) {
+					commandList.add((CommandBase)instance);
+				}
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				XXXUtil.alert("Can't create instance by : " + item);
+			}
+		}
+		
+		return commandList;
+	}
 
 	private List<CommandRecord> parseCommandNodes() {
 		HashMap<String, String> greatMap = getInnerProps().getKeyValuesByPartialKeyword("command.node.");
@@ -287,6 +306,10 @@ public class SimpleKonfig extends Konfig {
 		return items;
 	}
 	
+	public List<CommandBase> getCommandInstances() {
+		return commandInstances;
+	}
+
 	public List<CommandRecord> getCommandNodes() {
 		return commandNodes;
 	}

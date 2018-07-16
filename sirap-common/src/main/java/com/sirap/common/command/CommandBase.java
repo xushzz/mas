@@ -13,6 +13,7 @@ import com.sirap.basic.component.Konstants;
 import com.sirap.basic.component.TimestampIDGenerator;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexObject;
+import com.sirap.basic.exception.MadeException;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.output.ConsoleParams;
 import com.sirap.basic.search.FileSizeCriteria;
@@ -39,6 +40,7 @@ import com.sirap.common.framework.SimpleKonfig;
 import com.sirap.common.framework.Stash;
 import com.sirap.common.framework.command.target.Target;
 import com.sirap.common.framework.command.target.TargetConsole;
+import com.sirap.common.framework.command.target.TargetEmail;
 import com.sirap.common.framework.command.target.TargetExcel;
 import com.sirap.common.framework.command.target.TargetFolder;
 
@@ -134,12 +136,20 @@ public abstract class CommandBase {
 //					D.pl("isdebug, no origin");
 				}
 			} else {
-				if(ex.getOrigin() != null) {
-					stv.append(ex.getOrigin());
-//					D.pl("no debug, has origin");
+				if(MadeException.class.isInstance(ex)) {
+					if(ex.getOrigin() != null) {
+						stv.append(ex.getOrigin().getMessage());
+					} else {
+						stv.append(ex.getMessage());
+					}
 				} else {
-					stv.append(ex);
-//					D.pl("no debug, no origin");
+					if(ex.getOrigin() != null) {
+						stv.append(ex.getOrigin());
+//						D.pl("no debug, has origin");
+					} else {
+						stv.append(ex);
+//						D.pl("no debug, no origin");
+					}
 				}
 			}
 			export(stv);
@@ -180,8 +190,12 @@ public abstract class CommandBase {
 		export(list, options);
 	}
 	
-	public void useOptions(String highPriority) {
+	public void useHighOptions(String highPriority) {
 		options = OptionUtil.mergeOptions(highPriority, options);
+	}
+	
+	public void useLowOptions(String lowPriority) {
+		options = OptionUtil.mergeOptions(options, lowPriority);
 	}
 	
 	@SuppressWarnings({ "rawtypes"})
@@ -192,7 +206,7 @@ public abstract class CommandBase {
 	@SuppressWarnings({ "rawtypes"})
 	public void exportMatrix(List<List> matrix, String highPriority) {
 		if(!EmptyUtil.isNullOrEmpty(highPriority)) {
-			useOptions(highPriority);
+			useHighOptions(highPriority);
 		}
 		boolean pretty = OptionUtil.readBooleanPRI(options, "p", true);
 		String connector = OptionUtil.readString(options, "c", " , ");
@@ -290,7 +304,6 @@ public abstract class CommandBase {
 			newList = toPrintIfMex(newList, finalOptions);
 		}
 
-		//		D.list(newList);
 		if(EmptyUtil.isNullOrEmpty(newList)) {
 			newList.add(Konstants.FAKED_EMPTY);
 		}
@@ -300,10 +313,15 @@ public abstract class CommandBase {
 		if(OptionUtil.readBooleanPRI(finalOptions, "self", false)) {
 			newList.add(0, "$ " + input);
 		}
-//		Exporter.exportList(input, newList, where, finalOptions);
 		boolean fromLastList = OptionUtil.readBooleanPRI(finalOptions, Stash.KEY_GETSTASH, false);
 		if(!fromLastList) {
 			Stash.g().setLastQuery(input, newList);
+		}
+		if(g().isFromWeb()) {
+			if(TargetEmail.class.isInstance(where)) {
+				C.pl2("Forbidden operation: can't send email from outside." );
+				return;
+			}
 		}
 		where.export(newList, finalOptions, g().isExportWithTimestampEnabled(finalOptions));
 	}
@@ -653,40 +671,6 @@ public abstract class CommandBase {
 		return keys;
 	}
 	
-	protected void executeInternalCmd(String conciseCommand) {
-		Boolean printAlong = OptionUtil.readBoolean(options, "ing");
-		String zoo = OptionUtil.readString(options, "z");
-		if(printAlong == null) {
-			printAlong = zoo == null;
-		}
-		String newCommand = "cmd /c " + conciseCommand;
-		if(PanaceaBox.isMac()) {
-			newCommand = conciseCommand;
-		}
-		List<String> result = PanaceaBox.executeAndRead(newCommand, printAlong);
-		if(EmptyUtil.isNullOrEmpty(result)) {
-			export("Command [" + conciseCommand + "] executed.");
-		} else {
-			if(g().isFromWeb()) {
-				export(result);
-			} else {
-				if(target instanceof TargetConsole) {
-					if(printAlong) {
-						if(result.size() > 5) {
-							C.total(result.size());
-						}
-						
-						C.pl();
-					} else {
-						export(result);
-					}
-				} else {
-					export(result);
-				}
-			}
-		}
-	}
-	
 	protected Map<String, Object> createMexItemParams(String key, Object value) {
 		Map<String, Object> params = new HashMap<>();
 		params.put(key, value);
@@ -730,6 +714,9 @@ public abstract class CommandBase {
 	}
 	
 	protected void openFolder(String folderpath) {
+		if(g().isFromWeb()) {
+			XXXUtil.alerto("Forbidden to open folder: {0}", folderpath);
+		}
 		if(PanaceaBox.isMac()) {
 			PanaceaBox.openFile(folderpath);
 			C.pl2("Open Mac Finder at [" + folderpath + "].");

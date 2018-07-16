@@ -63,6 +63,12 @@ public class IOUtil {
 		return readLines(dynamicLocation, charset());
 	}
 	
+	public static List<String> readLinesFromStreamByClassLoader(String path, String charset) {
+		InputStream ins = IOUtil.streamByClassLoader(path);
+		XXXUtil.nullCheck(ins, ":Can't load resource : " + path);
+		return IOUtil.readLinesFromStream(ins, charset);
+	}
+	
 	public static InputStream streamByClassLoader(String path) {
 		InputStream ins = Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
 		

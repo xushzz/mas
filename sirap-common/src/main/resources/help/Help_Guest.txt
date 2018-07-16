@@ -6,6 +6,7 @@
 ?fire|water        display any record containing fire or water
 'rx:\d+            full regular expression matched, aka regex matched, start with rx:whatever
 'fire              the single quote behaves exactly the same as question mark, and i prefer '
+fire               issue the command by using shortcut defined in user configuration
 search             the aforementioned rules apply for any other searching commands
 search             such as 'ch fire', 'F: water' and so on
 any ${user.dir}    replace given expression with values in system props, env vars or user config if whole matched

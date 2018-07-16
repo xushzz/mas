@@ -11,7 +11,7 @@ public class AconcMap<K, V> extends ConcurrentHashMap<K,V> implements Amap<K, V>
 	
 	@Override
 	public V put(K key, V value) {
-		XXXUtil.checkDuplication(this, key);
+		XXXUtil.checkDuplication(this, key, value);
 		return super.put(key, value);
 	}
 	

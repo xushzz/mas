@@ -7,6 +7,7 @@ import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.OptionUtil;
+import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.component.Alarm;
 import com.sirap.common.component.FileOpener;
@@ -20,6 +21,10 @@ public class CommandTask extends CommandBase {
 	
 	@Override
 	public boolean handle() {
+		
+		if(g().isFromWeb()) {
+			return false;
+		}
 		
 		String regex = "al([\\+@#\\d:hms]+)(|\\s.*?)";
 		params = StrUtil.parseParams(regex, input);

@@ -38,6 +38,7 @@ public class ArisExecutor {
 	private boolean isJavaFileStyle;
 	private boolean toPrintCommand;
 	private boolean toKeepGeneratedFiles;
+	private boolean isDebug;
 	
 	public static ArisExecutor g() {
 		return new ArisExecutor();
@@ -56,6 +57,10 @@ public class ArisExecutor {
 		return this;
 	}
 	
+	public void setDebug(boolean isDebug) {
+		this.isDebug = isDebug;
+	}
+
 	public ArisExecutor setToKeepGeneratedFiles(boolean toKeepGeneratedFiles) {
 		this.toKeepGeneratedFiles = toKeepGeneratedFiles;
 		return this;
@@ -92,12 +97,13 @@ public class ArisExecutor {
 			if(arr != null) {
 				int len = arr[0].length();
 				String template;
+				String cd = isDebug ? "D" : "C";
 				if(len == 3) {
-					template = "D.pla({0});";
+					template = cd + ".pla({0});";
 				} else if(len == 2) {
-					template = "D.list({0});";
+					template = cd + ".list({0});";
 				} else {
-					template = "D.pl({0});";
+					template = cd + ".pl({0});";
 				}
 				String expression = arr[1].replaceAll("[,\\.;]+$", "");
 				items.add(StrUtil.occupy(template, expression));

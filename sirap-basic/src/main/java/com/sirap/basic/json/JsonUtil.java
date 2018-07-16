@@ -139,4 +139,9 @@ public class JsonUtil {
 		
 		return master.readObject(path);
 	}
+	
+	public static String createRegexKey(String key) {
+		String temp = "\"{0}\"\\s*:\\s*\"([^\"]+)\"";
+		return StrUtil.occupy(temp, key);
+	}
 }

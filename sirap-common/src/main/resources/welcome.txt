@@ -2,7 +2,7 @@
 ********************************************************************************
 *                                Sirap OS, v3.6                                *
 *                              based on Java 8.0                               *
-*                         织望科技  http://www.aka10.com                       *
+*                         织望科技  http://www.aka10.com/sirap/calc            *
 *                                                                              *
 *        1. Type ' or ? for help                                               *
 *        2. Type c to capture current active window                            *

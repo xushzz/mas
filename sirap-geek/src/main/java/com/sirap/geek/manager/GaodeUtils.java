@@ -3,7 +3,6 @@ package com.sirap.geek.manager;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.TreeMap;
 import java.util.regex.Matcher;
 
 import com.google.common.collect.Lists;
@@ -16,8 +15,10 @@ import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.NetworkUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.XCodeUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.basic.util.XmlUtil;
+import com.sirap.geek.data.LonglatData;
 import com.sirap.geek.domain.DistrictItem;
 
 public class GaodeUtils {
@@ -34,6 +35,8 @@ public class GaodeUtils {
 	public static final String TEMPLATE_DISTANCE = "http://restapi.amap.com/v3/distance?origins={0}&destination={1}&output=xml&key={2}";
 	public static final String TEMPLATE_IP_NOPARAM = "http://restapi.amap.com/v3/ip?key={0}";
 	public static final String TEMPLATE_IP = "http://restapi.amap.com/v3/ip?key={0}&ip={1}";
+	public static final String METER_CHINESE_MI = XCodeUtil.urlDecodeUTF8("%E7%B1%B3");
+	public static final String CHINESE_KILOMETER_GONGLI = XCodeUtil.urlDecodeUTF8("%E5%85%AC%E9%87%8C");
 
 	public static List<DistrictItem> provincesOfChina() {
 		Extractor<DistrictItem> neymar = new Extractor<DistrictItem>() {
@@ -119,8 +122,8 @@ public class GaodeUtils {
 	 * @param level
 	 * @return
 	 */
-	public static List<String> searchPlaceText(String keywords, String types, String city) {
-		Extractor<String> neymar = new Extractor<String>() {
+	public static List<ValuesItem> searchPlaceText(String keywords, String types, String city) {
+		Extractor<ValuesItem> neymar = new Extractor<ValuesItem>() {
 
 			public String getUrl() {
 				showFetching().useUTF8();
@@ -132,7 +135,7 @@ public class GaodeUtils {
 			@Override
 			protected void parse() {
 				String regex = "<poi>(.+?)</poi>";
-				List<String> keys = StrUtil.split("pname,cityname,adname,name,type,address,tel,location");
+				List<String> keys = StrUtil.split("cityname,adname,name,type,address,tel,location");
 				Matcher ma = createMatcher(regex);
 				List<String> templist = Lists.newArrayList();
 				while(ma.find()) {
@@ -143,14 +146,20 @@ public class GaodeUtils {
 						if(EmptyUtil.isNullOrEmpty(value)) {
 							continue;
 						}
-						items.add(value);
+						if(StrUtil.equals(key, "location")) {
+							items.add(tieLocation(value));
+						} else {
+							items.add(value);
+						}
 					}
 					templist.add(StrUtil.connect(items, " "));
 				}
 				Collections.sort(templist);
 				int count = 0;
 				for(String item : templist) {
-					mexItems.add((++count) + ") " + item);
+					ValuesItem vi = new ValuesItem(item);
+					vi.setPseudoOrder(++count);
+					mexItems.add(vi);
 				}
 			}
 		};
@@ -165,8 +174,8 @@ public class GaodeUtils {
 	 * @param level
 	 * @return
 	 */
-	public static List<String> searchPlaceAround(String location, String keywords, String types, String radius) {
-		Extractor<String> neymar = new Extractor<String>() {
+	public static List<ValuesItem> searchPlaceAround(String location, String keywords, String types, String radius) {
+		Extractor<ValuesItem> neymar = new Extractor<ValuesItem>() {
 
 			public String getUrl() {
 				showFetching().useUTF8();
@@ -177,35 +186,45 @@ public class GaodeUtils {
 			
 			@Override
 			protected void parse() {
-				TreeMap<Integer, String> ken = new TreeMap<>();
 				String regex = "<poi>(.+?)</poi>";
-				List<String> keys = StrUtil.split("pname,cityname,adname,name,type,address,tel,location");
+				List<String> keys = StrUtil.split("distance,cityname,adname,name,type,address,tel,location");
 				Matcher ma = createMatcher(regex);
 				int count = 0;
 				while(ma.find()) {
 					String xmlText = ma.group(1);
-					List<String> items = Lists.newArrayList((++count) + ")");
+					ValuesItem vi = new ValuesItem();
+					vi.setPseudoOrder(++count);
+					
 					for(String key : keys) {
 						String value = XmlUtil.readValue(xmlText, key);
 						if(EmptyUtil.isNullOrEmpty(value)) {
 							continue;
 						}
-						items.add(value);
+						if(StrUtil.equals(key, "distance")) {
+							vi.add(niceDistance(MathUtil.toInteger(value, 0)));
+						} else if(StrUtil.equals(key, "location")) {
+							vi.add(tieLocation(value));
+						} else {
+							vi.add(value);
+						}
 					}
-					String distance = XmlUtil.readValue(xmlText, "distance");
-					int ace = MathUtil.toInteger(distance, 0);
-					items.add(1, StrUtil.insertComma(distance) + "m");
-					ken.put(ace, StrUtil.connect(items, " "));
+					
+					mexItems.add(vi);
 				}
-				mexItems.addAll(ken.values());
 			}
 		};
 		
 		return neymar.process().getItems();
 	}
 	
-	public static String distance(String originLocation, String destLocation) {
-		Extractor<String> neymar = new Extractor<String>() {
+	/****
+	 * https://lbs.amap.com/api/webservice/guide/api/direction
+	 * @param originLocation
+	 * @param destLocation
+	 * @return
+	 */
+	public static int[] distanceAndDuration(String originLocation, String destLocation) {
+		Extractor<int[]> neymar = new Extractor<int[]>() {
 
 			public String getUrl() {
 				showFetching().useUTF8();
@@ -215,12 +234,37 @@ public class GaodeUtils {
 			
 			@Override
 			protected void parse() {
-				String distance = XmlUtil.readValue(source, "distance");
-				item = StrUtil.insertComma(distance) + "m";
+				String distanceInMeter = XmlUtil.readValue(source, "distance");
+				Integer distance = MathUtil.toInteger(distanceInMeter);
+				if(distance == null || distance <= 0) {
+					String info = StrUtil.findFirstMatchedItem("<info>([^a-z]+)</info>", source);
+					XXXUtil.alert(info);
+				}
+				
+				String durationInSecond = XmlUtil.readValue(source, "duration");
+				Integer duration = MathUtil.toInteger(durationInSecond, 1);
+				
+				item = new int[]{distance, duration};
 			}
 		};
 		
 		return neymar.process().getItem();
+	}
+	
+	/****
+	 * 1000m
+	 * @param distanceInMeter
+	 * @return
+	 */
+	public static String niceDistance(long distanceInMeter) {
+		if(distanceInMeter < 1000) {
+			return distanceInMeter + METER_CHINESE_MI;
+		} else {
+			String temp = MathUtil.setDoubleScale(distanceInMeter/1000.0, 1);
+			temp = StrUtil.removePointZeroes(temp) + CHINESE_KILOMETER_GONGLI;
+			
+			return temp;
+		}
 	}
 
 	public static List<ValuesItem> allDistricts() {
@@ -424,13 +468,15 @@ public class GaodeUtils {
 		
 		List<ValuesItem> mexItems = new ArrayList<>();
 		Matcher ma = StrUtil.createMatcher(regex, json);
+		int count = 0;
 		while(ma.find()) {
 			ValuesItem item = new ValuesItem();
-			item.add(ma.group(3));
-			item.add(ma.group(4));
+			item.setPseudoOrder(++count);
+//			item.add(ma.group(3));
 			item.add(ma.group(1));
-			item.add(ma.group(2));
 			item.add(ma.group(5));
+			item.add(ma.group(2));
+			item.add(tieLocation(ma.group(4)));
 			
 			mexItems.add(item);
 		}
@@ -438,9 +484,18 @@ public class GaodeUtils {
 		return mexItems;
 	}
 	
-	public static boolean isCoordination(String longAndLat) {
+	public static boolean isLongLat(String longAndLat) {
 		String regex = Konstants.REGEX_SIGN_FLOAT + "\\s*,\\s*" + Konstants.REGEX_SIGN_FLOAT;
 		return StrUtil.isRegexMatched(regex, longAndLat);
+	}
+	
+	public static String getIfLonglat(String longAndLat) {
+		String regex = Konstants.REGEX_SIGN_FLOAT + "\\s*,\\s*" + Konstants.REGEX_SIGN_FLOAT;
+		if(StrUtil.isRegexMatched(regex, longAndLat))  {
+			return longAndLat.replaceAll("\\s+", "");
+		} else {
+			return null;
+		}
 	}
 	
 	public static String reverseLongAndLat(String longAndLat) {
@@ -453,10 +508,63 @@ public class GaodeUtils {
 		return params[1] + "," + params[0]; 
 	}
 	
+	public static String tieLocation(String location) {
+		String value = StrUtil.occupy("[{0}]", location.replaceAll("\\s+", ""));
+		
+		return value;
+	}
+	
 	private static String lax() {
 		String head = "###";
 		String temp = StrUtil.padRight(head, "fetching...".length() + 1);
 
 		return temp;
+	}
+	
+	/****
+	 * #ABC => split the pie
+	 * 108.0737436,22.62314202 => Good
+	 * deli => if in dictionary
+	 * @param placeInfo
+	 * @return
+	 */
+	public static String fetchLonglatx(String placeInfo) {
+		return fetchLonglat(placeInfo, "");
+	}
+
+	public static String fetchLonglat(String placeInfo, String city) {
+		return fetchLonglat(placeInfo, city, false);
+	}
+	
+	public static String fetchLonglat(String placeInfo, String city, boolean mandatory) {
+		String location = GaodeUtils.getIfLonglat(placeInfo);
+		if(location != null) {
+			return location;
+		}
+		
+		String value = LonglatData.getXY(placeInfo);
+		if(value != null) {
+			return value;
+		}
+		
+		String[] params = StrUtil.parseParams("(#?)(.+?)", placeInfo);
+		boolean toConvert = !params[0].isEmpty();
+		String place2 = params[1];
+		location = GaodeUtils.getIfLonglat(place2);
+		if(location != null) {
+			return location;
+		}
+		
+		value = LonglatData.EGGS.getIgnorecase(place2);
+		if(value != null) {
+			return value;
+		}
+		
+		if(toConvert || mandatory) {
+			location = GaodeUtils.locationOf(place2, city);
+			return location;
+		}
+		
+		return null;
 	}
 }

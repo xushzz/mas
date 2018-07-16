@@ -35,9 +35,10 @@ public class CommandAris extends CommandBase {
 			if(!EmptyUtil.isNullOrEmpty(autoPackages)) {
 				instance.setAutoIncludedPackageNames(autoPackages);
 			}
+			instance.setDebug(OptionUtil.readBooleanPRI(options, "d", false));
 			File file = parseFile(solo);
 			if(file != null ) {
-				List<String> javacodes = IOUtil.readFileIntoList(file.getAbsolutePath());
+				List<String> javacodes = IOUtil.readLines(file.getAbsolutePath(), g().getCharsetInUse());
 				instance.setJavaFileStyle(StrUtil.endsWith(solo, Konstants.DOT_JAVA));
 				export(instance.executeTextFileStyle(javacodes, arispathItems));
 			} else {

@@ -10,11 +10,12 @@ import java.util.TreeMap;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.sirap.basic.component.map.AlinkMap;
 import com.sirap.basic.domain.TypedKeyValueItem;
 import com.sirap.basic.thirdparty.TrumpHelper;
+import com.sirap.basic.util.Amaps;
 import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.EmptyUtil;
-import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.SatoUtil;
 import com.sirap.basic.util.StrUtil;
@@ -22,7 +23,7 @@ import com.sirap.basic.util.XXXUtil;
 
 public class MexMap {
 	
-	private Map<String, Object> container = Maps.newConcurrentMap();
+	private AlinkMap<String, Object> container = Amaps.newLinkHashMap();
 	private String type;
 	
 	public String getType() {
@@ -37,30 +38,8 @@ public class MexMap {
 	
 	public MexMap(List<String> lines) {
 		container.clear();
-//		type = pathname;
-//		List<String> lines = IOUtil.readLines(pathname, Konstants.CODE_UTF8);
-		for (String line : lines) {
-			String temp = line.trim();
-			
-			boolean toIgnore = StrUtil.startsWith(temp, "#");
-			if(toIgnore) {
-				continue;
-			}
-			
-			String regex = "([^=]+)=(.+)";
-			String[] params = StrUtil.parseParams(regex, temp);
-			if(params == null) {
-				continue;
-			}
-			
-			String key = params[0].trim();
-			String value = params[1].trim();
-			
-			if(key.isEmpty() || value.isEmpty()) {
-				continue;
-			}
-			container.put(key, value);
-		}
+		AlinkMap<String, String> map = Amaps.ofProperties(lines);
+		container.putAll(map);
 	}
 	
 	public List<TypedKeyValueItem> listOf() {
@@ -80,23 +59,17 @@ public class MexMap {
 	public void recoverValues(String passcode) {
 		Iterator<String> it = container.keySet().iterator();
 		List<TypedKeyValueItem> satos = SatoUtil.systemPropertiesAndEnvironmentVaribables();
+		Map<String, Object> tempMap = Maps.newConcurrentMap();
 		while(it.hasNext()) {
 			String key = it.next();
 			String origin = getIgnorecase(key);
 			String temp = TrumpHelper.decodeMixedTextBySIRAP(origin, passcode);
 			String finale = SatoUtil.occupyCoins(temp, satos);
-			container.put(key, finale);
+			tempMap.put(key, finale);
 		}
-	}
-	
-	public MexMap(Map<String, Object> container) {
-		if(container != null) {
-			this.container = container;
-		}
-	}
-
-	public void put(String key, Object value) {
-		container.put(key, value);
+		
+		container.clear();
+		container.putAll(tempMap);
 	}
 	
 	public TypedKeyValueItem getTypedItem(String key) {
@@ -222,32 +195,6 @@ public class MexMap {
 		
 		Collections.sort(entries);
 		return entries;
-	}
-	
-	public List<TypedKeyValueItem> detectCircularItems() {
-		for(TypedKeyValueItem item : listOf()) {
-			List<TypedKeyValueItem> items = check(item.getKey(), Lists.newArrayList(), Lists.newArrayList());
-			if(!EmptyUtil.isNullOrEmpty(items)) {
-				return items;
-			}
-		}
-		
-		return null;
-	}
-	
-	private List<TypedKeyValueItem> check(String key, List<String> keys, List<TypedKeyValueItem> entries) {
-		if(keys.contains(key.toLowerCase())) {
-			return entries;
-		}
-		TypedKeyValueItem item = getTypedItem(key);
-		if(item == null) {
-			return null;
-		}
-
-//		D.pl(key, keys, item, entries);
-		keys.add(key.toLowerCase());
-		entries.add(item);
-		return check(item.getValueX(), keys, entries);
 	}
 	
 	public boolean isYes(String key) {

@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
+import com.sirap.basic.exception.MadeException;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.math.FormulaCalculator;
 import com.sirap.basic.math.MexColorConverter;
@@ -172,7 +173,8 @@ public class CommandMath extends CommandBase {
 			return true;
 		}
 		
-		params = parseParams(Konstants.REGEX_FLOAT + "\\s*(kg|lb|oz)");
+		String mapkeys = StrUtil.regexOfKeys(MathUtil.WEIGHT_UNITS);
+		params = parseParams(Konstants.REGEX_FLOAT + "\\s*(" + mapkeys + ")");
 		if(params != null) {
 			Double value = Double.parseDouble(params[0]);
 			export(MathUtil.weight(value, params[1], OptionUtil.readIntegerPRI(options, "s", 2)));
@@ -188,24 +190,34 @@ public class CommandMath extends CommandBase {
 			return true;
 		}
 		
-		params = parseParams(Konstants.REGEX_FLOAT + "\\s*(Yard|Chi|Feet|Cun|Inch|Cm)");
-		if(params != null) {
-			Double value = Double.parseDouble(params[0]);
-			export(MathUtil.distance(value, params[1], OptionUtil.readIntegerPRI(options, "s", 6)));
-			
-			return true;
-		}
-		
-		String mapkeys = StrUtil.regexOfKeys(MathUtil.TIME_DURATION);
+		mapkeys = StrUtil.regexOfKeys(MathUtil.SHORT_DISTANCE_UNITS);
 		params = parseParams(Konstants.REGEX_FLOAT + "\\s*(" + mapkeys + ")");
 		if(params != null) {
 			Double value = Double.parseDouble(params[0]);
-			export(MathUtil.timeDuration(value, params[1], OptionUtil.readIntegerPRI(options, "s", 3)));
+			export(MathUtil.shortDistance(value, params[1], OptionUtil.readIntegerPRI(options, "s", 6)));
 			
 			return true;
 		}
 		
-		params = parseParams(Konstants.REGEX_FLOAT + "\\s*(Mile|Km|nmi)");
+		mapkeys = StrUtil.regexOfKeys(MathUtil.TIME_UNITS);
+		params = parseParams(Konstants.REGEX_FLOAT + "\\s*(" + mapkeys + ")");
+		if(params != null) {
+			Double value = Double.parseDouble(params[0]);
+			String unit = params[1];
+			List<String> items = Lists.newArrayList();
+			try {
+				items.add(MathUtil.dhmsStrOfTime(value, unit));
+				items.addAll(MathUtil.timeDuration(value, unit, OptionUtil.readIntegerPRI(options, "s", 3)));
+				export(items);
+			} catch (MadeException ex) {
+				export(StrUtil.occupyKeyValues(ex.getMessage(), "origin", command));
+			}
+			
+			return true;
+		}
+		
+		mapkeys = StrUtil.regexOfKeys(MathUtil.LONG_DISTANCE_UNITS);
+		params = parseParams(Konstants.REGEX_FLOAT + "\\s*(" + mapkeys + ")");
 		if(params != null) {
 			Double value = Double.parseDouble(params[0]);
 			export(MathUtil.longDistance(value, params[1], OptionUtil.readIntegerPRI(options, "s", 6)));

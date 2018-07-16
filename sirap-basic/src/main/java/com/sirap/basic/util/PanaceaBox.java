@@ -108,7 +108,7 @@ public class PanaceaBox {
 		List<String> list = new ArrayList<String>();
 		
 		try {
-			InputStreamReader isr = new InputStreamReader(ins);
+			InputStreamReader isr = new InputStreamReader(ins, Konstants.CODE_GBK);
 			BufferedReader br = new BufferedReader(isr);
 			String record;
 			while ((record = br.readLine()) != null) {

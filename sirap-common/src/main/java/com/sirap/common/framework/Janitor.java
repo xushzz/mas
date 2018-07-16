@@ -1,16 +1,11 @@
 package com.sirap.common.framework;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import com.google.common.collect.Lists;
-import com.sirap.basic.domain.TypedKeyValueItem;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
-import com.sirap.basic.util.ObjectUtil;
 import com.sirap.basic.util.OptionUtil;
-import com.sirap.basic.util.SatoUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.ThreadUtil;
 import com.sirap.common.command.CommandBase;
@@ -48,118 +43,101 @@ public class Janitor extends Checker {
 		return instance;
 	}
 	
-	private List<Class<?>> initCommandList() {
-		List<String> commandNodes = SimpleKonfig.g().getCommandClassNames();
-
-		List<Class<?>> commandList = new ArrayList<Class<?>>();
-		for(String className : commandNodes) {
-			try {
-				Class<?> clazz = Class.forName(className);
-				commandList.add(clazz);
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		return commandList;
-	}
-	
 	public int depth;
-	public void process(String origin) {
-		process(origin, null);
+	
+	public boolean process(String origin) {
+		return process(origin, null);
 	}
 	
-    public void process(String origin, String highOptions) {
-    	String source = origin;
-		try {
-			List<TypedKeyValueItem> items = Lists.newArrayList();
-			items.addAll(SatoUtil.systemPropertiesAndEnvironmentVaribables());
-			items.addAll(konfig.getUserProps().listOf());
-			String after = SatoUtil.occupyCoins(source, items);
-			if(!StrUtil.equals(source, after)) {
-				C.pl(source + " = " + after);
-				source = after;
-			}
-		} catch (MexException me) {
-			C.pl(me.getMessage());
-			return;
-		}
+    public boolean process(String origin, String highOptions) {
+    	boolean fromOutside = SimpleKonfig.g().isFromWeb();
+    	String niceinput = JanitorHelper.findCoinsFromSatos(origin);
+    	InputAnalyzer fara = new InputAnalyzer(niceinput);
+    	fara.setOptions(OptionUtil.mergeOptions(highOptions, fara.getOptions()));
+    	String command = fara.getCommand();
+    	String options = fara.getOptions();
+    	
+    	String alias = JanitorHelper.findAliasFromUserProperties(command);
+    	if(alias != null) {
+    		InputAnalyzer temp = new InputAnalyzer(alias);
+    		
+    		command = temp.getCommand();
+    		options = OptionUtil.mergeOptions(options, temp.getOptions());
+    		niceinput = niceinput.replace(command, alias);
+    	}
 
     	long start = System.currentTimeMillis();
     	Stash.g().place(Stash.KEY_START_IN_MILLIS, start);
-    	if(EmptyUtil.isNullOrEmptyOrBlank(source)) {
-    		return;
+    	if(EmptyUtil.isNullOrEmptyOrBlank(command)) {
+    		return false;
     	}
     	
-    	String input = source.trim();
-    	
-    	CommandBase cmd = new CommandTask();
-    	cmd.setInstructions(input);
-    	if(cmd.process()) {
-    		if(cmd.isToCollect()) {
-    			CommandHistoryManager.g().collect(input);
-    		}
-    		return;
+    	if(!fromOutside) {
+    		CommandBase cmd = new CommandTask();
+        	cmd.setInstructions(command);
+        	if(cmd.process()) {
+        		if(cmd.isToCollect()) {
+        			CommandHistoryManager.g().collect(command);
+        		}
+        		return true;
+        	}
     	}
 
-    	if(StrUtil.equals(input, "suck")) {
+    	if(StrUtil.equals(command, "suck")) {
     		SimpleKonfig.g().setSuckOptionsEnabled(true);
     		C.pl2("Enable to suck options.");
-    	} else if(StrUtil.equals(input, "nosuck")) {
+    	} else if(StrUtil.equals(command, "nosuck")) {
     		SimpleKonfig.g().setSuckOptionsEnabled(false);
     		C.pl2("Disable to suck options.");
     	} 
-    	
-    	InputAnalyzer fara = new InputAnalyzer(input);
-    	fara.setOptions(OptionUtil.mergeOptions(highOptions, fara.getOptions()));
-    	
-    	boolean newThread = OptionUtil.readBooleanPRI(fara.getOptions(), "new", false);
-    	if(newThread) {
+
+    	final String niceinput2 = niceinput;
+    	final String command2 = command;
+    	final String options2 = options;
+    	boolean newThread = OptionUtil.readBooleanPRI(options, "new", false);
+    	if(newThread && !fromOutside) {
     		ThreadUtil.executeInNewThread(new Runnable() {
 				@Override
 				public void run() {
-					executionUnit(input, fara.getCommand(), fara.getOptions(), fara.getTarget());
+					executionUnit(niceinput2, command2, options2, fara.getTarget());
 				}
 			});
+    		return true;
     	} else {
-    		executionUnit(input, fara.getCommand(), fara.getOptions(), fara.getTarget());
+    		return executionUnit(niceinput, command, options, fara.getTarget());
     	}
     }
     
-    private void executionUnit(String input, String command, String options, Target target) {
+    private boolean executionUnit(String input, String command, String options, Target target) {
     	if(EmptyUtil.isNullOrEmpty(command)) {
-    		return;
+    		return false;
     	}
     	
-    	CommandBase cmd = new CommandHelp();
-    	cmd.setInstructions(input, command, options, target);
-    	if(cmd.process()) {
-    		if(cmd.isToCollect()) {
-    			CommandHistoryManager.g().collect(input);
-    		}
-    		return;
-    	}
-    	
-    	List<Class<?>> commandList = initCommandList();
-    	
-		if(EmptyUtil.isNullOrEmpty(commandList)) {
-			C.pl2("Uncanny, no command nodes configured.");
-			return;
-		}
-    	
-    	for(Class<?> classType: commandList) {
-    		cmd = ObjectUtil.createInstanceViaConstructor(classType, CommandBase.class);
-    		cmd.setInstructions(input, command, options, target);
-    		
-    		if(cmd.process()) {
-    			if(cmd.isToCollect()) {
+    	{
+        	CommandBase cmd = new CommandHelp();
+        	cmd.setInstructions(input, command, options, target);
+        	if(cmd.process()) {
+        		if(cmd.isToCollect()) {
         			CommandHistoryManager.g().collect(input);
         		}
-    			return;
+        		return true;
+        	}
+    	}
+    	
+    	List<CommandBase> commandList = SimpleKonfig.g().getCommandInstances();
+    	for(CommandBase handler: commandList) {
+    		handler.setInstructions(input, command, options, target);
+    		
+    		if(handler.process()) {
+    			if(handler.isToCollect()) {
+        			CommandHistoryManager.g().collect(input);
+        		}
+    			return true;
     		}
     	}
     	
     	CommandHistoryManager.g().collect(input);
+    	return false;
     }
 
     protected boolean checkPassword() {

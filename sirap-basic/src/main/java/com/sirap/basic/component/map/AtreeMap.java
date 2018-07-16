@@ -11,7 +11,7 @@ public class AtreeMap<K, V> extends TreeMap<K,V> {
 	
 	@Override
 	public V put(K key, V value) {
-		XXXUtil.checkDuplication(this, key);
+		XXXUtil.checkDuplication(this, key, value);
 		return super.put(key, value);
 	}
 	

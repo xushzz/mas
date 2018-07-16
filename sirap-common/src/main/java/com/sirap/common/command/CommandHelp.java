@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 
-import com.sirap.basic.tool.C;
+import com.sirap.basic.tool.D;
 import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
@@ -28,7 +28,6 @@ public class CommandHelp extends CommandBase {
 	private static final String KEY_EMAIL = "Email";
 	private static final String KEY_TASK = "Task";
 	private static final String TEMPLATE_HELP = "help/Help_{0}.txt";
-	private static final String TEMPLATE_HELP_XX = "help/Help_{0}_{1}.txt";
 	private static final String HELP_WEB_URL = "https://raw.githubusercontent.com/acesfullmike/masrun/master/help.txt";
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -44,44 +43,35 @@ public class CommandHelp extends CommandBase {
 			List<String> allKeys = new ArrayList<>();
 			allKeys.add(KEY_GUEST);
 			
-//			String temp = g().getValueOf("help.keys");
-//			List<String> keys = StrUtil.splitByRegex(temp);
-//			if(keys.isEmpty()) {
-//				keys = getCommandNames();
-//			}
 			List<String> keys = getCommandNames();
 			for(String key : keys) {
 				if(EmptyUtil.isNullOrEmptyOrBlank(key)) {
 					continue;
 				}
 				allKeys.add(key);
-//				String tempName = StrUtil.occupy(TEMPLATE_HELP, key);
-//				String tempName = getHelpFileName(key);
-//				if(tempName != null) {
-//					allKeys.add(key);
-//				} else {
-//					D.pl("Missing help file for " + key);
-//				}
 			}
 			
-			if(isEmailEnabled()) {
-				allKeys.add(KEY_EMAIL);
+			if(!g().isFromWeb()) {
+				if(isEmailEnabled()) {
+					allKeys.add(KEY_EMAIL);
+				}
+				allKeys.add(KEY_TASK);
+				allKeys.add(KEY_BASIC);
  			}
-			allKeys.add(KEY_TASK);
-			allKeys.add(KEY_BASIC);
+			
 			List lines = new ArrayList<>();
 			int maxLen = StrUtil.maxLengthOf(allKeys);
 			Map<String, Object> allHelpMeanings = getAllHelpMeanings();
 			for(String key : allKeys) {
-//				String fileName = getHelpFileName(key);
 				String fileName = StrUtil.occupy(TEMPLATE_HELP, key);
-				if(EmptyUtil.isNullOrEmpty(fileName)) {
-					C.pl(StrUtil.occupy("Help file for [{0}] doesn't exist.", key));
+				InputStream ins = Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName);
+				if(ins == null) {
+					String msg = StrUtil.occupy("Help file for [{0}] doesn't exist.", key);
+					D.pl(msg);
 					continue;
 				}
-				String prefix = StrUtil.padRight(key, maxLen + 2);
-				InputStream ins = Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName);
 				List<String> records = IOUtil.readLinesFromStream(ins, g().getCharsetInUse());
+				String prefix = StrUtil.padRight(key, maxLen + 2);
 				lines.addAll(occupyDollarKeys(Colls.addPrefix(records, prefix), allHelpMeanings));
 			}
 
@@ -109,26 +99,6 @@ public class CommandHelp extends CommandBase {
 		}
 		
 		return items;
-	}
-	
-	private String getHelpFileName(String key) {
-		String lang = g().getLocale().toString();
-		String filePath = null;
-		if(!EmptyUtil.isNullOrEmpty(lang)) {
-			String temp = StrUtil.occupy(TEMPLATE_HELP_XX, key, lang);
-			if(IOUtil.isSourceExist(temp)) {
-				filePath = temp;
-			}
-		}
-		
-		if(filePath == null) {
-			String temp = StrUtil.occupy(TEMPLATE_HELP, key);
-			if(IOUtil.isSourceExist(temp)) {
-				filePath = temp;
-			}
-		}
-		
-		return filePath;
 	}
 	
 	@SuppressWarnings("unchecked")

@@ -1,27 +1,29 @@
 package com.sirap.geek;
 
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.domain.ValuesItem;
+import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.IOUtil;
+import com.sirap.basic.util.MathUtil;
+import com.sirap.basic.util.MatrixUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
-import com.sirap.basic.util.XCodeUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.framework.SimpleKonfig;
+import com.sirap.geek.data.CityData;
+import com.sirap.geek.data.LonglatData;
 import com.sirap.geek.domain.DistrictItem;
 import com.sirap.geek.manager.GaodeManager;
 import com.sirap.geek.manager.GaodeUtils;
@@ -35,15 +37,7 @@ public class CommandGaode extends CommandBase {
 	private static final String KEY_GAODE_SEARCH = "gas";
 	private static final String KEY_GAODE_GEO = "geo";
 	
-	private static Map<String, String> LAKES = Maps.newConcurrentMap();
-	static {
-		LAKES.put("deli", "108.392544,22.828986");
-		LAKES.put("tam", "116.397573,39.908743");
-		LAKES.put("jia", "108.904706,24.777411");
-	}
-
 	public boolean handle() {
-		
 		boolean toRefresh = OptionUtil.readBooleanPRI(options, "r", false);
 
 		if(is(KEY_GAODE + KEY_2DOTS)) {
@@ -95,39 +89,35 @@ public class CommandGaode extends CommandBase {
 		solo = parseParam(KEY_GAODE_INPUTTIPS + "\\s+(.+?)");
 		if(solo != null) {
 			List<ValuesItem> items = GaodeUtils.tipsOf(solo);
+			useLowOptions("+so,c=#s");
 			export(items);
 			
 			return true;
 		}
 		
-		params = parseParams(KEY_GAODE_SEARCH + "\\s+(#?)(.+?)");
-		if(params != null) {
+		solo = parseParam(KEY_GAODE_SEARCH + "\\s+(.+?)");
+		if(solo != null) {
 			String city = OptionUtil.readString(options, "c", "");
-			boolean toConvert = !params[0].isEmpty();
-			String placeInfo = params[1];
-			String location = null;
-			if(GaodeUtils.isCoordination(placeInfo)) {
-				location = placeInfo;
-			} else {
-				String loc = LAKES.get(placeInfo);
-				if(loc != null) {
-					location = loc;
-				} else if(toConvert) {
-					location = GaodeUtils.locationOf(placeInfo, city);
+			String location = GaodeUtils.fetchLonglat(solo, city);
+			if(location == null) {
+				boolean isDistance = dealWithDistance(solo, city);
+				if(isDistance) {
+					return true;
 				}
 			}
-			List<String> lines = Lists.newArrayList();
+			
+			List<ValuesItem> lines = Lists.newArrayList();
 			if(location != null) {
 				String keywords = OptionUtil.readString(options, "k", "");
 				String types = OptionUtil.readString(options, "t", "");
 				String radius = OptionUtil.readString(options, "r", "");
 				lines = GaodeUtils.searchPlaceAround(location, keywords, types, radius);
 			} else {
-				String keywords = placeInfo, types = "";
+				String keywords = solo, types = "";
 				String kParam = OptionUtil.readString(options, "k", "");
 				if(!kParam.isEmpty()) {
 					keywords = kParam;
-					types = placeInfo;
+					types = solo;
 				}
 				String tParam = OptionUtil.readString(options, "t", "");
 				if(!tParam.isEmpty()) {
@@ -136,70 +126,93 @@ public class CommandGaode extends CommandBase {
 				lines = GaodeUtils.searchPlaceText(keywords, types, city);
 			}
 
+			useLowOptions("+so,c=#s");
 			export(lines);
+			
+			return true;
+		}
+
+		if(is(KEY_GAODE_GEO)) {
+			List<List> matrix = MatrixUtil.matrixOf(LonglatData.EGGS);
+			useLowOptions("c=#s2");
+			exportMatrix(matrix);
+		}
+
+		if(is(KEY_GAODE_GEO + KEY_2DOTS)) {
+			List<List> matrix = MatrixUtil.matrixOf(Lists.newArrayList(CityData.EGGS.values()));
+			useLowOptions("c=#s2");
+			exportMatrix(matrix);
 			
 			return true;
 		}
 		
 		solo = parseParam(KEY_GAODE_GEO + "\\s+(.+?)");
 		if(solo != null) {
-			String loc = LAKES.get(solo);
-			String ack = loc != null ? loc : solo;
+			String keyAddressGaode = "formatted_address";
+			String keyAddressTencent = "address";
 			
+			String city = OptionUtil.readString(options, "c", "");
+			String location = GaodeUtils.fetchLonglat(solo, city);
+			if(location == null) {
+				boolean isDistance = dealWithDistance(solo, city);
+				if(isDistance) {
+					return true;
+				}
+			}
+
 			boolean showJson = OptionUtil.readBooleanPRI(options, "j", false);
+			boolean appendParam = false;
+			String textAddress = null;
 			List<String> lines = Lists.newArrayList();
-			if(GaodeUtils.isCoordination(ack)) {
-				String location = ack;
+			if(location != null) {
 				if(OptionUtil.readBooleanPRI(options, "r", false)) {
 					export(KEY_GAODE_GEO + " " + GaodeUtils.reverseLongAndLat(location));
 					
 					return true;
 				}
-				String dest = OptionUtil.readString(options, "d");
-				if(dest != null) {
-					String mike = LAKES.get(dest);
-					String destLocation = mike != null ? mike : dest;
-					destLocation = destLocation.replace("+", ",");
-					if(GaodeUtils.isCoordination(destLocation)) {
-						String distance = GaodeUtils.distance(location, destLocation);
-						export(distance);
-					} else {
-						export("Not a valid location: " + dest);
-					}
-					
-					return true;
-				}
+				
 				String radius = OptionUtil.readString(options, "r", "1000");
-				lines = GaodeUtils.regeocodeOf(ack, radius);
-				String regex = StrUtil.occupy("\"{0}\"\\s*:\\s*\"([^\"]+)\"", "formatted_address");
-				String formattedAddress = StrUtil.findFirstMatchedItem(regex, StrUtil.connect(lines));
-				if(formattedAddress == null) {
-					lines.addAll(TencentUtils.regeocodeOf(GaodeUtils.reverseLongAndLat(location)));
+				boolean useTencent = OptionUtil.readBooleanPRI(options, "tx", false);
+				if(useTencent) {
+					lines = TencentUtils.regeocodeOf(GaodeUtils.reverseLongAndLat(location));
+					textAddress = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey(keyAddressTencent), StrUtil.connect(lines));
+					appendParam = true;
 				} else {
-					lines.add(StrUtil.occupy("\"location\":\"{0}\"", location));
+					lines = GaodeUtils.regeocodeOf(location, radius);
+					textAddress = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey(keyAddressGaode), StrUtil.connect(lines));
+					if(textAddress == null) {
+						appendParam = true;
+						lines = TencentUtils.regeocodeOf(GaodeUtils.reverseLongAndLat(location));				
+						textAddress = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey(keyAddressTencent), StrUtil.connect(lines));
+					}
 				}
 			} else {
-				String address = ack;
-				String city = OptionUtil.readString(options, "c", "");
-				lines = GaodeUtils.geocodeOf(address, city);
+				lines = GaodeUtils.geocodeOf(solo, city);
+				location = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("location"), StrUtil.connect(lines));
 			}
-
+			
 			if(!showJson) {
 				lines = prettyFormatOf(lines);
 			}
+
+			if(appendParam) {
+				lines.add(0, StrUtil.occupy("param_location: {0}", location));
+			}
 			
 			export(lines);
-			if(OptionUtil.readBooleanPRI(options, "ww", false)) {
-				String variables = generateVariables(lines);
-				generatePicker(variables);
-			} 
 			if(OptionUtil.readBooleanPRI(options, "w", false)) {
-				String requestParams = generateParams(lines);
+				String temp = "?location={0}&address={1}";
+				String requestParams = StrUtil.occupy(temp, location, textAddress);
 				String site = g().getUserValueOf("picker.site", HttpHelper.URL_AKA10_GEO_LOCATION);
 				String pickerUrl = site + requestParams;
 				viewPage(pickerUrl);
+			}
+			if(OptionUtil.readBooleanPRI(options, "ww", false)) {
+				String temp = "location = \"{0}\"; address = \"{1}\";";
+				String variables = StrUtil.occupy(temp, location, textAddress);
+				generatePicker(variables);
 			} 
-			
+
 			return true;
 		}
 		
@@ -219,41 +232,6 @@ public class CommandGaode extends CommandBase {
 		}
 		
 		return false;
-	}
-	
-	private String generateParams(List<String> lines) {
-		String regexTemp = "\"{0}\"\\s*:\\s*\"([^\"]+)\"";
-		String[] keys = {"formatted_address", "location"};
-		String regexA = StrUtil.occupy(regexTemp, keys[0]);
-		String regexB = StrUtil.occupy(regexTemp, keys[1]);
-		String oneline = StrUtil.connect(lines);
-		String address = StrUtil.findFirstMatchedItem(regexA, oneline);
-		String location = StrUtil.findFirstMatchedItem(regexB, oneline);
-		if(EmptyUtil.isNullOrEmpty(address) || EmptyUtil.isNullOrEmpty(location)) {
-			XXXUtil.alert("Result contains no valid {0} and {1}", keys[0], keys[1]);
-		}
-		
-		String temp = "?location={0}&address={1}";
-		String params = StrUtil.occupy(temp, location, XCodeUtil.urlEncodeUTF8(address));
-		
-		return params;
-	}
-	
-	private String generateVariables(List<String> lines) {
-		String regexTemp = "\"{0}\"\\s*:\\s*\"([^\"]+)\"";
-		String[] keys = {"formatted_address", "location"};
-		String regexA = StrUtil.occupy(regexTemp, keys[0]);
-		String regexB = StrUtil.occupy(regexTemp, keys[1]);
-		String oneline = StrUtil.connect(lines);
-		String address = StrUtil.findFirstMatchedItem(regexA, oneline);
-		String location = StrUtil.findFirstMatchedItem(regexB, oneline);
-		if(EmptyUtil.isNullOrEmpty(address) || EmptyUtil.isNullOrEmpty(location)) {
-			XXXUtil.alert("Result contains no valid {0} and {1}", keys[0], keys[1]);
-		}
-		
-		String temp = "location = \"{0}\"; address = \"{1}\";";
-		
-		return StrUtil.occupy(temp, location, address);
 	}
 	
 	private void generatePicker(String addressAndLocationVariables) {
@@ -286,7 +264,7 @@ public class CommandGaode extends CommandBase {
 	}
 	
 	private List<String> prettyFormatOf(List<String> lines) {
-		List<String> ignoredKeys = StrUtil.split("status,info,infocode,count");
+		List<String> ignoredKeys = StrUtil.split("status,info,infocode,count,message,request_id");
 		return prettyFormatOf(lines, ignoredKeys);
 	}
 	
@@ -298,11 +276,67 @@ public class CommandGaode extends CommandBase {
 			if(ma.find()) {
 				String key = ma.group(1);
 				if(!ignoredKeys.contains(key)) {
-					items.add(line.trim());
+					items.add(line.trim().replaceAll("(\"|,$)", ""));
 				}
 			}
 		}
 		
 		return items;
+	}
+	
+	private boolean dealWithDistance(String placeInfo, String city) {
+		String self = GaodeUtils.fetchLonglat(placeInfo, city);
+		if(self != null) {
+			return false;
+		}
+		
+		String[] points = StrUtil.parseParams("(.+?)\\s+(.+?)", placeInfo);
+		if(points == null) {
+			return false;
+		}
+
+		String origin = GaodeUtils.fetchLonglat(points[0], city, true);
+		String dest = null;
+		String msg = null;
+		if(origin == null) {
+			msg = "Not a valid location: " + points[0];
+		} else {
+			dest = GaodeUtils.fetchLonglat(points[1], city, true);
+			if(dest == null) {
+				msg = "Not a valid location: " + points[1];
+			}
+		}
+		
+		if(!EmptyUtil.isNullOrEmpty(msg)) {
+			export(msg);
+			return true;
+		}
+		
+		List<String> lines = Lists.newArrayList();
+		boolean isGood = false;
+		try {
+			int[] info = GaodeUtils.distanceAndDuration(origin, dest);
+			String distance = GaodeUtils.niceDistance(info[0]);
+			String duration = MathUtil.dhmsStrOfSeconds(info[1]);
+			lines.add(StrUtil.occupy("{0}-{1}: {2}, {3}", points[0], points[1], distance, duration));
+			isGood = true;
+		} catch (Exception ex) {
+			lines.add(ex.getMessage());
+		}
+		if(isGood) {
+			int[] info = GaodeUtils.distanceAndDuration(dest, origin);
+			String distance = GaodeUtils.niceDistance(info[0]);
+			String duration = MathUtil.dhmsStrOfSeconds(info[1]);
+			lines.add(StrUtil.occupy("{0}-{1}: {2}, {3}", points[1], points[0], distance, duration));
+		} else {
+			String prefix = StrUtil.equals(points[0], origin) ? "" : points[0] + " ";
+			lines.add("A: " + prefix + GaodeUtils.tieLocation(origin));
+			
+			prefix = StrUtil.equals(points[1], dest) ? "" : points[1] + " ";
+			lines.add("B: " + prefix + GaodeUtils.tieLocation(dest));
+		}
+		
+		export(lines);
+		return true;
 	}
 }

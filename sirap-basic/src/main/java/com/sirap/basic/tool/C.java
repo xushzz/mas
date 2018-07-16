@@ -3,6 +3,7 @@ package com.sirap.basic.tool;
 import java.util.List;
 
 import com.sirap.basic.domain.MexItem;
+import com.sirap.basic.util.ObjectUtil;
 import com.sirap.basic.util.StrUtil;
 
 /***
@@ -22,6 +23,26 @@ public class C {
 
 	public static void msg(String temp, Object... values) {
 		System.out.println(StrUtil.occupy(temp, values));
+	}
+	
+	@SafeVarargs
+	public static <T> void pla(T... objs) {
+		if(objs == null) {
+			C.pl(StrUtil.of(objs));
+		}
+		
+		int maxLen = 0;
+		for(Object obj : objs) {
+			String name = ObjectUtil.simpleNameOfInstance(obj);
+			int len = name.length();
+			if(maxLen < len) {
+				maxLen = len;
+			}
+		}
+
+		for(Object obj : objs) {
+			C.pl(StrUtil.of(obj));
+		}
 	}
 
 	public static void pl() {

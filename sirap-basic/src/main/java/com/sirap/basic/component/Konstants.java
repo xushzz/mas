@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.XCodeUtil;
 
 public class Konstants {
 	public static final int TIME_STEP = 60;
@@ -15,6 +16,11 @@ public class Konstants {
 	public static final int SECONDS_PER_MINUTE = TIME_STEP * 1;
     public static final int SECONDS_PER_HOUR   = TIME_STEP * SECONDS_PER_MINUTE;
     public static final int SECONDS_PER_DAY    = 24 * SECONDS_PER_HOUR;
+    
+    public static final String CHINESE_DAY_TIAN = XCodeUtil.urlDecodeUTF8("%E5%A4%A9");
+    public static final String CHINESE_HOUR_XIAOSHI = XCodeUtil.urlDecodeUTF8("%E5%B0%8F%E6%97%B6");
+    public static final String CHINESE_MINUTE_FENZHONG = XCodeUtil.urlDecodeUTF8("%E5%88%86%E9%92%9F");
+    public static final String CHINESE_SECOND_MIAO = XCodeUtil.urlDecodeUTF8("%E7%A7%92");
     
     public static final int FILE_SIZE_STEP = 1024;
 	public static final String FILE_SIZE_UNIT = "BKMGTPE";

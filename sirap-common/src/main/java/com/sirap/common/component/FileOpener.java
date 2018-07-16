@@ -18,6 +18,7 @@ import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.SatoUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.framework.SimpleKonfig;
 
 public class FileOpener {
@@ -256,6 +257,11 @@ public class FileOpener {
 	}
 	
 	public static boolean playThingByAppName(String filePath, String appDir) {
+		if(SimpleKonfig.g().isFromWeb()) {
+			XXXUtil.alerto("Forbidden to open [{0}] with [{1}].", filePath, appDir);
+			return false;
+		}
+		
 		if(PanaceaBox.isMac()) {
 			return PanaceaBox.openFile(filePath);
 		}

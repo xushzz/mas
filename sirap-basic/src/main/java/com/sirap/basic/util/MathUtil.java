@@ -10,25 +10,51 @@ import java.util.Map;
 
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
+import com.sirap.basic.component.map.AlinkMap;
 import com.sirap.basic.math.PermutationGenerator;
 import com.sirap.basic.tool.C;
 
 public class MathUtil {
 	
-	public static final Map<String, Double> TIME_DURATION = new LinkedHashMap<>();
+	public static final AlinkMap<String, Double> TIME_UNITS = Amaps.newLinkHashMap();
 	static {
-		TIME_DURATION.put("year", 1.0);
-		TIME_DURATION.put("month", 12.0);
-		TIME_DURATION.put("week", 52.0);
-		TIME_DURATION.put("day", 365.0);
-		TIME_DURATION.put("hour", 365 * 24.0);
-		TIME_DURATION.put("min", 365 * 24 * 60.0);
-		TIME_DURATION.put("minute", 365 * 24 * 60.0);
-		TIME_DURATION.put("sec", 365 * 24 * 60 * 60.0);
-		TIME_DURATION.put("second", 365 * 24 * 60 * 60.0);
-		TIME_DURATION.put("msec", 365 * 24 * 60 * 60 * 1000.0);
-		TIME_DURATION.put("millis", 365 * 24 * 60 * 60 * 1000.0);
-		TIME_DURATION.put("milliseconds", 365 * 24 * 60 * 60 * 1000.0);
+		TIME_UNITS.put("year", 1.0);
+		TIME_UNITS.put("month", 12.0);
+		TIME_UNITS.put("week", 52.0);
+		TIME_UNITS.put("day", 365.0);
+		TIME_UNITS.put("hour", 365 * 24.0);
+		TIME_UNITS.put("min", 365 * 24 * 60.0);
+		TIME_UNITS.put("minute", 365 * 24 * 60.0);
+		TIME_UNITS.put("sec", 365 * 24 * 60 * 60.0);
+		TIME_UNITS.put("second", 365 * 24 * 60 * 60.0);
+		TIME_UNITS.put("msec", 365 * 24 * 60 * 60 * 1000.0);
+		TIME_UNITS.put("milli", 365 * 24 * 60 * 60 * 1000.0);
+	}
+	
+	public static final AlinkMap<String, Double> WEIGHT_UNITS = Amaps.newLinkHashMap();
+	static {
+		WEIGHT_UNITS.put("kg", 1.0);
+		WEIGHT_UNITS.put("lb", 2.2046226);
+		WEIGHT_UNITS.put("oz", 35.2739619);
+	}
+	
+	public static final AlinkMap<String, Double> SHORT_DISTANCE_UNITS = Amaps.newLinkHashMap();
+	static {
+		SHORT_DISTANCE_UNITS.put("mi", 0.9144);
+		SHORT_DISTANCE_UNITS.put("yard", 1.0);
+		SHORT_DISTANCE_UNITS.put("chi", 2.7432);
+		SHORT_DISTANCE_UNITS.put("feet", 3.0);
+		SHORT_DISTANCE_UNITS.put("cun", 27.432);
+		SHORT_DISTANCE_UNITS.put("inch", 36.0);
+		SHORT_DISTANCE_UNITS.put("cm", 91.44);
+	}
+	
+	public static final AlinkMap<String, Double> LONG_DISTANCE_UNITS = Amaps.newLinkHashMap();
+	static {
+		LONG_DISTANCE_UNITS.put("nmi", 0.8689762);
+		LONG_DISTANCE_UNITS.put("mile", 1.0);
+		LONG_DISTANCE_UNITS.put("km", 1.609344);
+		LONG_DISTANCE_UNITS.put("meter", 1609.344);
 	}
 	
 	public static String setDoubleScale(double a, int scale) {
@@ -253,6 +279,34 @@ public class MathUtil {
 		return avg;
 	}
 	
+	public static String longlatOf(double degree, double min, double second, int scale) {
+		double temp = second / 60.0;
+		temp = (min + temp) / 60.0; 
+		temp = degree + temp;
+		
+		return toPrettyString(temp, scale);
+	}
+	
+	public static String longlatOf(double decimal, int scale) {
+		double degree = (int)decimal;
+		double temp = (decimal - degree) * 60;
+		double minute = (int)temp;
+		temp = temp - minute;
+		double second = temp * 60;
+		
+		List<String> items = Lists.newArrayList();
+		items.add(toPrettyString(degree, scale));
+		items.add(toPrettyString(minute, scale));
+		items.add(toPrettyString(second, scale));
+		
+		return StrUtil.connectWithCommaSpace(items);
+	}
+	
+	public static String toPrettyString(double value, int scale) {
+		String str = setDoubleScale(value, scale);
+		return StrUtil.removePointZeroes(str);
+	}
+	
 	public static String temperature(double value, String unit, int scale) {
 		XXXUtil.checkRange(scale, 0, 99);
 		String degreeFahrenheit = "Fa";
@@ -277,10 +331,7 @@ public class MathUtil {
 	
 	public static List<String> weight(double value, String unit, int scale) {
 		XXXUtil.checkRange(scale, 0, 99);
-		Map<String, Double> map = new LinkedHashMap<>();
-		map.put("kg", 1.0);
-		map.put("lb", 2.2046226);
-		map.put("oz", 35.2739619);
+		AlinkMap<String, Double> map = WEIGHT_UNITS;
 		
 		List<String> keys = Lists.newArrayList(map.keySet());
 
@@ -302,15 +353,9 @@ public class MathUtil {
 		return values;
 	}
 	
-	public static List<String> distance(double value, String unit, int scale) {
+	public static List<String> shortDistance(double value, String unit, int scale) {
 		XXXUtil.checkRange(scale, 0, 99);
-		Map<String, Double> map = new LinkedHashMap<>();
-		map.put("yard", 1.0);
-		map.put("chi", 2.7432);
-		map.put("feet", 3.0);
-		map.put("cun", 27.432);
-		map.put("inch", 36.0);
-		map.put("cm", 91.44);
+		AlinkMap<String, Double> map = SHORT_DISTANCE_UNITS;
 		
 		List<String> keys = Lists.newArrayList(map.keySet());
 
@@ -334,10 +379,7 @@ public class MathUtil {
 
 	public static List<String> longDistance(double value, String unit, int scale) {
 		XXXUtil.checkRange(scale, 0, 99);
-		Map<String, Double> map = new LinkedHashMap<>();
-		map.put("nmi", 0.8689762);
-		map.put("mile", 1.0);
-		map.put("km", 1.609344);
+		AlinkMap<String, Double> map = LONG_DISTANCE_UNITS;
 		
 		List<String> keys = Lists.newArrayList(map.keySet());
 
@@ -392,10 +434,28 @@ public class MathUtil {
 		
 		return values;
 	}
+	
+	/****
+	 * 15 hour
+	 * @param value
+	 * @param unit
+	 * @return
+	 */
+	public static String dhmsStrOfTime(double value, String unit) {
+		double currentFactor = TIME_UNITS.get("second");
+		double paramFactor = TIME_UNITS.get(unit.toLowerCase());
+		double temp = currentFactor * value / paramFactor;
+		if(temp > Integer.MAX_VALUE) {
+			XXXUtil.alerto("Too big of a value ${origin}, try less than {0} in seconds.", Integer.MAX_VALUE);
+		}
+		int seconds = (int)temp;
+
+		return dhmsStrOfSeconds(seconds);
+	} 
 
 	public static List<String> timeDuration(double value, String unit, int scale) {
 		XXXUtil.checkRange(scale, 0, 99);
-		Map<String, Double> map = TIME_DURATION;
+		Map<String, Double> map = TIME_UNITS;
 		
 		List<String> keys = Lists.newArrayList(map.keySet());
 
@@ -411,10 +471,58 @@ public class MathUtil {
 			Double currentFactor = map.get(currentKey);
 			Double king = currentFactor * value / paramFactor;
 			String va = setDoubleScale(king, scale);
+			String temp = StrUtil.removePointZeroes(va);
+			if(StrUtil.is0(temp)) {
+				continue;
+			}
 			values.add(StrUtil.removePointZeroes(va) + " " + currentKey);
 		}
 		
 		return values;
 	}
-
+	
+	/****
+	 * 69720 seconds
+	 * 8day1hour40minutes11second
+	 */
+	public static List<Integer> dhmsOfSeconds(int seconds) {
+		List<Integer> values = Lists.newArrayList();
+		int[] secondsPer = {Konstants.SECONDS_PER_DAY, Konstants.SECONDS_PER_HOUR, Konstants.SECONDS_PER_MINUTE};
+		int remain = seconds;
+		for(int item : secondsPer) {
+			int mod = remain / item;
+			remain = remain % item;
+			values.add(mod);
+		}
+		values.add(remain);
+		
+		return values;
+	}
+	
+	public static String dhmsStrOfSeconds(int seconds) {
+		return dhmsStrOfSeconds(seconds, false);
+	}
+	
+	public static String dhmsStrOfSeconds(int seconds, boolean inEnglish) {
+		List<Integer> items = dhmsOfSeconds(seconds);
+		List<String> units = Lists.newArrayList("day", "hour", "min", "seconds");
+		if(!inEnglish) {
+			units = Lists.newArrayList(Konstants.CHINESE_DAY_TIAN, Konstants.CHINESE_HOUR_XIAOSHI, Konstants.CHINESE_MINUTE_FENZHONG, Konstants.CHINESE_SECOND_MIAO);
+		}
+		XXXUtil.shouldBeEqual(items.size(), units.size());
+		StringBuffer sb = StrUtil.sb();
+		for(int i = 0 ; i < items.size(); i++) {
+			Integer item = items.get(i);
+			if(item != 0) {
+				sb.append(item).append(units.get(i));
+			}
+		}
+		
+		String temp = sb.toString();
+		if(temp.isEmpty()) {
+			temp = 0 + units.get(3);
+		}
+		
+		return temp;
+	}
 }

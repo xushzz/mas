@@ -7,7 +7,7 @@ import java.util.GregorianCalendar;
 import java.util.Map;
 
 import com.sirap.basic.data.HttpData;
-import com.sirap.basic.exception.DuplicationException;
+import com.sirap.basic.exception.MadeException;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.exception.NullArgumentException;
 import com.sirap.basic.tool.C;
@@ -130,8 +130,7 @@ public class XXXUtil {
 	}
 	
 	public static void alert(String msgTemplate, Object... params) {
-		String msg = StrUtil.occupy(msgTemplate, params);
-		alert(msg);
+		alert(StrUtil.occupy(msgTemplate, params));
 	}
 
 	public static void alert(String msg) {
@@ -139,7 +138,19 @@ public class XXXUtil {
 	}
 
 	public static void alert() {
-		throw new MexException("These violent delights have violent ends.");
+		alert("These violent delights have violent ends.");
+	}
+	
+	public static void alerto(String msgTemplate, Object... params) {
+		alerto(StrUtil.occupy(msgTemplate, params));
+	}
+
+	public static void alerto(String msg) {
+		throw new MadeException(msg);
+	}
+
+	public static void alerto() {
+		alerto("These violent delights have violent ends.");
 	}
 
 	public static void alert(Exception ex) {
@@ -183,9 +194,9 @@ public class XXXUtil {
 		return code + " " + explanation;
 	}
 	
-	public static <K, V> void checkDuplication(Map<K, V> map, K key) {
+	public static <K, V> void checkDuplication(Map<K, V> map, K key, V value) {
 		if(map.containsKey(key)) {
-			XXXUtil.alert("Map already contains key [{0}] with value [{1}]", key, map.get(key));
+			XXXUtil.alert("Fail to put {2} since map already contains key [{0}] with value [{1}]", key, map.get(key), value);
 		}
 	}
 

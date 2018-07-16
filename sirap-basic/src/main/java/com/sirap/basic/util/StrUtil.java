@@ -386,6 +386,10 @@ public class StrUtil {
 		return source.toLowerCase().endsWith(target.toLowerCase());
 	}
 	
+	public static boolean is0(String source) {
+		return StrUtil.equals(source, "0");
+	}
+	
 	public static boolean equals(String source, String target) {
 		if(source == null || target == null) {
 			return false;
@@ -744,6 +748,10 @@ public class StrUtil {
 	 * @param params
 	 * @return
 	 */
+	public static String occupyKeyValues(String source, String key, Object value) {
+		return occupyKeyValues(source, Amaps.createMap(key, value));
+	}
+	
 	public static String occupyKeyValues(String source, Map<String, Object> params) {
 		if(EmptyUtil.isNullOrEmpty(params)) {
 			return source;

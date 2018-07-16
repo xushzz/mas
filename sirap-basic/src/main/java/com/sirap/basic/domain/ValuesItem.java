@@ -98,7 +98,11 @@ public class ValuesItem extends MexItem {
 	
 	public String toPrint(String options) {
 		String conn = OptionUtil.readString(options, "c", ", ");
-		String result = StrUtil.connect(values, conn);
+		String result = "";
+		if(showOrder(options)) {
+			result = getPseudoOrder() + ") ";
+		}
+		result += StrUtil.connect(values, conn);
 
 		return result;
 	}
