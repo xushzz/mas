@@ -12,6 +12,7 @@ import java.util.UUID;
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.Extractor;
 import com.sirap.basic.component.comparator.MexFileComparator;
+import com.sirap.basic.data.HtmlData;
 import com.sirap.basic.data.HttpData;
 import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.domain.MexItem;
@@ -29,6 +30,7 @@ import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.ImageUtil;
 import com.sirap.basic.util.MathUtil;
+import com.sirap.basic.util.MatrixUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.SatoUtil;
@@ -64,6 +66,7 @@ public class CommandDev extends CommandBase {
 	private static final String KEY_HTTP_STATUS_CODES = "https";
 	private static final String KEY_HOSTS = "hosts";
 	private static final String KEY_PAGE_VIEWERS = "pvs";
+	private static final String KEY_HTML = "html";
 	
 	public boolean handle() {
 		
@@ -407,6 +410,28 @@ public class CommandDev extends CommandBase {
 		
 		if(is(KEY_PAGE_VIEWERS)) {
 			export(JsonUtil.toPrettyJson(SatoUtil.allExplorers()));
+			return true;
+		}
+		
+		solo = parseParam("&([a-z]{1,99});");
+		if(solo != null) {
+			export(HtmlData.EGGS.get(solo));
+			return true;
+		}
+		
+		solo = parseParam("&([0-9]{1,9});");
+		if(solo != null) {
+			int val = Integer.parseInt(solo);
+			export((char)val);
+			
+			return true;
+		}
+		
+		if(is(KEY_HTML + KEY_2DOTS)) {
+			List<List> matrix = MatrixUtil.matrixOf(HtmlData.eggs());
+			useLowOptions("c=#s2");
+			exportMatrix(matrix);
+			
 			return true;
 		}
 		

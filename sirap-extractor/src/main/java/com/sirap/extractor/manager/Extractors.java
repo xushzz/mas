@@ -868,35 +868,6 @@ public class Extractors {
 		return neymar.process().getItems();
 	}
 	
-	public static List<MexObject> fetchHtmlEntities() {
-		Extractor<MexObject> nikita = new Extractor<MexObject>() {
-
-			@Override
-			public List<String> getUrls() {
-				showFetching();
-				List<String> urls = Lists.newArrayList();
-				urls.add("http://www.w3school.com.cn/tags/html_ref_entities.html");
-				urls.add("http://www.w3school.com.cn/tags/html_ref_symbols.html");
-				
-				return urls;
-			}
-			
-			@Override
-			protected void parse() {
-				String regex = "<td>([^<>]+)</td>\\s*<td>&amp;([a-z]{1,99});</td>\\s*<td>&amp;#(\\d{1,7});</td>";
-
-				Matcher ma = createMatcher(regex);
-				String guys = "EGGS.put(\"{0}\", new HtmlEntity(\"{0}\", {1}, \"{2}\"));";
-				while(ma.find()) {
-					String temp = StrUtil.occupy(guys, ma.group(2), ma.group(3), ma.group(1).trim());
-					mexItems.add(new MexObject(temp));
-				}
-			}
-		};
-		
-		return nikita.process().getItems();
-	}
-	
 	/**
 	 * 
 	 * @param year 1917, bc626, 756

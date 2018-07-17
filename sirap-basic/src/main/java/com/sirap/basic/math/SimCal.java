@@ -47,7 +47,7 @@ public class SimCal {
 	
 	private static String preProcess(String expression) {
 		String content = expression.replaceAll("\\s+", "");
-		content = StrUtil.removePointZeroes(content);
+//		content = StrUtil.removePointZeroes(content);
 		char start = content.charAt(0);
 		if(start == '-') {
 			content = "_" + content.substring(1);

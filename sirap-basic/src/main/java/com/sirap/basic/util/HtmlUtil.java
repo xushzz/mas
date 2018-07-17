@@ -66,9 +66,10 @@ public class HtmlUtil {
 		Matcher ma = StrUtil.createMatcher("&([a-z]{1,99});", source);
 		String temp = source;
 		while(ma.find()) {
-			Integer unicode = HtmlData.EGGS.get(ma.group(1)).getCode();
-			if(unicode != null) {
-				temp = temp.replace(ma.group(0), "" + (char)unicode.intValue());
+			Object code = HtmlData.EGGS.get(ma.group(1)).getByIndex(HtmlData.INDEX_CODE);
+			if(Integer.class.isInstance(code)) {
+				int value = (Integer)code;
+				temp = temp.replace(ma.group(0), "" + (char)value);
 			}
 		}
 		

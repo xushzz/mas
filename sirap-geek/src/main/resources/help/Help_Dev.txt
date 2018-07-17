@@ -29,4 +29,7 @@ https              list all http status codes
 https 404          get detail explain of given http response code
 hosts              display content of hosts file from C:\WINDOWS\system32\drivers\etc\hosts, Windows only
 pvs                list all available explorers, as in page viewers, like Chrome, IE, Maxthon and Firefox
-ver=7/6/2018, V  GEEK-DEV1.0.34-KLAY
+&oplus;            display html entity or symbol by name
+&8869;             display html entity or symbol by code
+html..             list all html entities and symbols
+ver=7/17/2018, II  GEEK-DEV1.0.35-KLAY

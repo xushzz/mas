@@ -133,9 +133,9 @@ public class FileOpener {
 		}
 		
 //		flag = FileUtil.isAnyTypeOf(fileName, FileUtil.SUFFIX_MEX);
-		flag = FileUtil.EXTENSIONS_HTML.contains(extension);
+//		flag = FileUtil.EXTENSIONS_HTML.contains(extension);
 		if(flag) {
-			return true;
+//			return true;
 		}
 		
 //		flag = FileUtil.isAnyTypeOf(fileName, FileUtil.SUFFIX_SIRAP);

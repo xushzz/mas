@@ -34,6 +34,13 @@ public class CommandHelp extends CommandBase {
 	@Override
 	public boolean handle() {
 		
+		if(is("demo")) {
+			List<String> items = g().getUserValuesByKeyword("demo.exp");
+			export(items);
+			
+			return true;
+		}
+		
 		solo = parseParam("[?|'](.*?)");
 		if(solo != null) {
 			if(OptionUtil.readBooleanPRI(options, "w", false)) {

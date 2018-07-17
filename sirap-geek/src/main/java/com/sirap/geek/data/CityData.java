@@ -646,11 +646,11 @@ public class CityData {
 			protected void parse() {
 				String regex = "<tr><td>(.+?)</td><td>(.+?)</td><td>(.+?)</td><td>(.+?)</td><td>(.+?)</td></tr>";
 				Matcher ma = createMatcher(regex);
-				int count = 0;
+//				int count = 0;
 				while(ma.find()) {
-					if(++count > 100) {
+//					if(++count > 100) {
 //						break;
-					}
+//					}
 					String english = getPrettyText(ma.group(1));
 					String chinese = getPrettyText(ma.group(2));
 					String country = getPrettyText(ma.group(3));

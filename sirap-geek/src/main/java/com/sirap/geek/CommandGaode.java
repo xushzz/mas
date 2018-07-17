@@ -136,6 +136,8 @@ public class CommandGaode extends CommandBase {
 			List<List> matrix = MatrixUtil.matrixOf(LonglatData.EGGS);
 			useLowOptions("c=#s2");
 			exportMatrix(matrix);
+			
+			return true;
 		}
 
 		if(is(KEY_GAODE_GEO + KEY_2DOTS)) {

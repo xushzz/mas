@@ -1,5 +1,6 @@
 package com.sirap.basic.util;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -189,7 +190,7 @@ public class MatrixUtil {
 		return matrix;
 	}
 	
-	public static List<List> matrixOf(List<ValuesItem> vis) {
+	public static List<List> matrixOf(Collection<ValuesItem> vis) {
 		List<List> matrix = Lists.newArrayList();
 		for(ValuesItem vi : vis) {
 			matrix.add(vi.getValues());
