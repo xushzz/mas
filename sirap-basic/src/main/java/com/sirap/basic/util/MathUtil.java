@@ -507,7 +507,7 @@ public class MathUtil {
 		List<Integer> items = dhmsOfSeconds(seconds);
 		List<String> units = Lists.newArrayList("day", "hour", "min", "seconds");
 		if(!inEnglish) {
-			units = Lists.newArrayList(Konstants.CHINESE_DAY_TIAN, Konstants.CHINESE_HOUR_XIAOSHI, Konstants.CHINESE_MINUTE_FENZHONG, Konstants.CHINESE_SECOND_MIAO);
+			units = Lists.newArrayList(Konstants.CHINESE_DAY_TIAN, Konstants.CHINESE_HOUR_XIAOSHI, Konstants.CHINESE_MINUTE_FEN, Konstants.CHINESE_SECOND_MIAO);
 		}
 		XXXUtil.shouldBeEqual(items.size(), units.size());
 		StringBuffer sb = StrUtil.sb();

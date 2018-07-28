@@ -32,7 +32,7 @@ import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
 
 public class HttpHelper {
-	public static final String URL_AKA10_REPO = "http://www.aka10.com/finals";
+	public static final String URL_AKA10_REPO = "http://www.aka10.com/file/finals";
 	public static final String URL_AKA10_GEO_LOCATION = "http://www.aka10.com/sirap/picker";
 	public static final String KEY_BALL = "ball";
 	public static final String KEY_TITLE = "title";

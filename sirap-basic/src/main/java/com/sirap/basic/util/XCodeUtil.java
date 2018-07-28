@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.Base64;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,10 +19,6 @@ import com.sirap.basic.exception.MexException;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
 
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
-
-@SuppressWarnings("restriction")
 public class XCodeUtil {
 
 	public static final String REGEX_HEX = "[0-9A-F]{2}";
@@ -153,8 +150,7 @@ public class XCodeUtil {
 		
 		try {
 			byte[] data = source.getBytes(Konstants.CODE_UTF8);
-			BASE64Encoder jack = new BASE64Encoder();
-			String result = jack.encode(data);
+			String result = Base64.getEncoder().encodeToString(data);
 			result = result.replaceAll("\r\n","");
 			
 			return result;
@@ -174,11 +170,8 @@ public class XCodeUtil {
 			throw new MexException("String absolutely non BASE64-based [" + source + "]");
 		}
 		
-		BASE64Decoder  jack = new BASE64Decoder();
-		byte[] data = null;
-		
 		try {
-			data = jack.decodeBuffer(source);
+			byte[] data = Base64.getDecoder().decode(source);
 			String value = new String(data, charset);
 			
 			return value;

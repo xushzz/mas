@@ -44,10 +44,6 @@ import com.sirap.basic.tool.MexedAudioPlayer;
 
 @SuppressWarnings({"rawtypes"})
 public class IOUtil {
-	
-	public static String charset() {
-		return Charset.defaultCharset().name();
-	}
 	/***
 	 * 1) regular file such as > D:/Gitpro/OSChina/todos/high/celine.html
 	 * 	  regular file such as > D:\Gitpro\OSChina\todos\high\celine.html
@@ -171,6 +167,7 @@ public class IOUtil {
 					sb.append(lineSeperator);
 				}
 				sb.append(line);
+				theFirstOne = false;
 			}
 
 			br.close();
@@ -666,4 +663,14 @@ public class IOUtil {
         	throw new MexException(ex);
         }
     }
+
+	public static String charsetX() {
+		String temp = Konstants.CODE_UTF8 + " " + Konstants.CODE_GBK;
+		String desire = temp.replace(charset(), "").trim();
+		return desire;
+	}
+
+	public static String charset() {
+		return Charset.defaultCharset().name();
+	}
 }

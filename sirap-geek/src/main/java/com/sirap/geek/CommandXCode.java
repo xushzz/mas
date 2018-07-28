@@ -10,10 +10,13 @@ import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexLocale;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.search.MexFilter;
+import com.sirap.basic.thirdparty.ShiroHelper;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.LocaleUtil;
+import com.sirap.basic.util.MathUtil;
+import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.SecurityUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XCodeUtil;
@@ -109,13 +112,38 @@ public class CommandXCode extends CommandBase {
 				algo = sb.toString();
 			}
 			
+			String salt = OptionUtil.readString(options, "s");
+			int count = OptionUtil.readIntegerPRI(options, "i", 1);
+			
+			List<String> whatsaltcount = StrUtil.splitByRegex(what, "\\s+");
+			if(!whatsaltcount.isEmpty()) {
+				what = whatsaltcount.get(0);
+				if(whatsaltcount.size() > 1) {
+					salt = whatsaltcount.get(1);
+					if(whatsaltcount.size() > 2) {
+						String tempCount = whatsaltcount.get(2);
+						count = MathUtil.toInteger(tempCount, count);
+					}
+				}
+			}
+			
 			File normal = parseFile(what);
 			boolean isFile = normal != null;
 			String result = null;
-			if(isFile) {
-				result = SecurityUtil.digestFile(normal.getAbsolutePath(), algo);
+			
+			
+			if(salt != null) {
+				Object source = isFile ? normal : what;
+				if(StrUtil.equals(salt, ".")) {
+					salt = null;
+				}
+				result = ShiroHelper.hash(algo, source, salt, count);
 			} else {
-				result = SecurityUtil.digest(what, algo);
+				if(isFile) {
+					result = SecurityUtil.digestFile(normal.getAbsolutePath(), algo);
+				} else {
+					result = SecurityUtil.digest(what, algo);
+				}
 			}
 			
 			String prefix = "";
@@ -124,6 +152,12 @@ public class CommandXCode extends CommandBase {
 			}
 			
 			List<String> items = new ArrayList<>();
+			if(salt != null) {
+				items.add("salt: " + salt);
+			}
+			if(count > 1) {
+				items.add("times: " + count);
+			}
 			items.add(result);
 			items.add(prefix + algo.toUpperCase() + " generates " + result.length() + " chars.");
 			

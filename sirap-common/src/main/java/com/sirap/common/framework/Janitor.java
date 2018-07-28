@@ -59,12 +59,22 @@ public class Janitor extends Checker {
     	
     	String alias = JanitorHelper.findAliasFromUserProperties(command);
     	if(alias != null) {
+//    		D.pla(command, options, niceinput);
     		InputAnalyzer temp = new InputAnalyzer(alias);
     		
-    		command = temp.getCommand();
-    		options = OptionUtil.mergeOptions(options, temp.getOptions());
-    		niceinput = niceinput.replace(command, alias);
+    		String command2 = temp.getCommand();
+    		String options2 = OptionUtil.mergeOptions(options, temp.getOptions());
+    		String niceinput2 = command2;
+    		if(!EmptyUtil.isNullOrEmpty(options2)) {
+    			niceinput2 += "$" + options2;
+    		}
+    		niceinput = niceinput2;
+    		command = command2;
+    		options = options2;
+//    		D.pla(command2, options2, niceinput2);
     	}
+    	
+//    	if("".isEmpty()) return false;
 
     	long start = System.currentTimeMillis();
     	Stash.g().place(Stash.KEY_START_IN_MILLIS, start);

@@ -415,7 +415,7 @@ public class CommandDev extends CommandBase {
 		
 		solo = parseParam("&([a-z]{1,99});");
 		if(solo != null) {
-			export(HtmlData.EGGS.get(solo));
+			export(HtmlData.EGGS.getIgnorecase(solo));
 			return true;
 		}
 		

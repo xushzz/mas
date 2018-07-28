@@ -11,21 +11,24 @@ import java.nio.file.attribute.FileTime;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.filechooser.FileSystemView;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.json.JsonUtil;
+import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
 import com.sirap.basic.tool.FileSizeCalculator;
 import com.sirap.basic.tool.FileWalker;
@@ -48,6 +51,7 @@ public class FileUtil {
 	public static final String SUFFIXES_OTHERS = "jar;apk;zip";
 	
 	public static final List<String> EXTENSIONS_TEXT = StrUtil.split("txt,properties,java,js,json,css,xml,pom,bat,cpp,sh,py,sql,cmd,md,ini");
+	public static final List<String> EXTENSIONS_IMAGE = StrUtil.split("png,bmp,jpg,jpeg,jpe,jfif,gif,tif,tiff,ico");
 	public static final List<String> EXTENSIONS_PDF = StrUtil.split("pdf");
 	public static final List<String> EXTENSIONS_EXCEL = StrUtil.split("xls,xlsx");
 	public static final List<String> EXTENSIONS_HTML = StrUtil.split("htm,html");
@@ -392,24 +396,50 @@ public class FileUtil {
 		return records;
 	}
 	
-	public static List<Map> listShortnames(String dir) {
-		File file = new File(dir);
-		final List<Map> fileitems = Lists.newArrayList();
-		file.listFiles(new FileFilter() {
+	public static List<Map<String, Object>> listShortnames(String dir) {
+		final List<Map<String, Object>> holder = Lists.newArrayList();
+		List<File> files = Lists.newArrayList();
+		(new File(dir)).listFiles(new FileFilter() {
 			@Override
 			public boolean accept(File current) {
 				if(current.isFile()) {
-					Map fileitem = new LinkedHashMap<>();
-					fileitem.put("name", current.getName());
-					fileitem.put("size", FileUtil.formatSize(current.length()));
-					fileitems.add(fileitem);
+					files.add(current);
 				}
-
 				return true;
 			}
 		});
 		
-		return fileitems;
+		Collections.sort(files, new Comparator<File>(){
+			@Override
+			public int compare(File obj1, File obj2) {
+				long last1 = obj1.lastModified();
+				long last2 = obj2.lastModified();
+				
+				int va = 0;
+				if(last1 > last2) {
+					va = -1;
+				} else if (last1 < last2) {
+					va = 1;
+				}
+				
+				return va;
+			}
+		});
+		
+		C.listSome(files, 10);
+		
+		for(File current : files) {
+			String path = current.getAbsolutePath();
+			String extension = FileUtil.extensionOf(path);
+			Map<String, Object> fileitem = Maps.newConcurrentMap();
+			fileitem.put("istxt", StrUtil.isIn(extension, FileUtil.EXTENSIONS_TEXT));
+			fileitem.put("isimage", StrUtil.isIn(extension, FileUtil.EXTENSIONS_IMAGE));
+			fileitem.put("name", current.getName());
+			fileitem.put("size", FileUtil.formatSize(current.length()));
+			holder.add(fileitem);
+		}
+		
+		return holder;
 	}
 	
 	public static String generateFilenameByUrl(String httpUrl) {
@@ -685,6 +715,18 @@ public class FileUtil {
 		} else {
 			return result.longValue();
 		}
+	}
+	
+	public static FileTime creationTimeOf(String filepath) {
+		Path path = Paths.get(filepath);
+		try {
+			Object value = Files.getAttribute(path, "basic:creationTime");
+			return (FileTime)value;
+		} catch (Exception ex) {
+			XXXUtil.alert(ex);
+		}
+		
+		return null;
 	}
 	
 	public static List<String> detail(String filepath) {

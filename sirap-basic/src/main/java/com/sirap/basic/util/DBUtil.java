@@ -40,8 +40,11 @@ public class DBUtil {
 		return readSqls(lines, reduce);
 	}
 	
-	public static List<String> readSqlFile(String filepath, String charset, boolean reduce) {
+	public static List<String> readSqlFile(String filepath, String charset, boolean reduce, boolean fromSecondLine) {
 		List<String> lines = IOUtil.readLines(filepath, charset);
+		if(fromSecondLine && lines.size() > 1) {
+			lines.remove(0);
+		}
 		lines = Colls.filterSome(lines, Konstants.COMMENTS_START_WITH);
 		String oneline = HtmlUtil.removeBlockComment(StrUtil.connectWithSpace(lines));
 		return readSqls(StrUtil.split(oneline, ";"), reduce);

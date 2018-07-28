@@ -160,7 +160,7 @@ public class D {
 	
 	public static void sink(Object obj) {
 		StackTraceElement parent = parent();
-		String temp = DEBUG + " {0} > {1} {2}     #by {3}";
+		String temp = DEBUG + " {0} > ({1}) {2}     #by {3}";
 		String type = ObjectUtil.simpleNameOfInstance(obj);
 		println(StrUtil.occupy(temp, "SINK", type, StrUtil.of(obj), parent));
 	}
@@ -198,7 +198,7 @@ public class D {
 	//[DEBUG] 2018
 	public static void ts(Object obj) {
 		StackTraceElement parent = parent();
-		String temp = DEBUG + " {0} > {1} {2}     #by {3}";
+		String temp = DEBUG + " {0} > ({1}) {2}     #by {3}";
 		String type = ObjectUtil.simpleNameOfInstance(obj);
 		println(StrUtil.occupy(temp, now(), type, StrUtil.of(obj), parent));
 	}

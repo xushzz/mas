@@ -56,7 +56,7 @@ public class CommandDatabase extends CommandBase {
 				String filepath = file.getAbsolutePath();
 				if(FileOpener.isTextFile(filepath)) {
 					checkTooBigToHandle(file, g().getUserValueOf(SQL_MAX_SIZE_KEY, SQL_MAX_SIZE_DEFAULT));
-					sqls = DBUtil.readSqlFile(filepath, charset(), reduce);
+					sqls = DBUtil.readSqlFile(filepath, charset(), reduce, true);
 				} else {
 					XXXUtil.alert("Not a text file: {0}", solo);
 				}

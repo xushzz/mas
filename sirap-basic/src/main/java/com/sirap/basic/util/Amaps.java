@@ -47,18 +47,31 @@ public class Amaps {
 
 		return list;
 	}
-
-	public static <K, V> V getIgnorecase(Map<K, V> map, K targetKey) {
+	
+	public static <K, V> List<V> getX(Map<K, V> map, K targetKey) {
+		List<V> items = Lists.newArrayList();
 		Iterator<K> it = map.keySet().iterator();
 		while(it.hasNext()) {
 			K key = it.next();
 			V value = map.get(key);
 			if(StrUtil.equals(key.toString(), targetKey.toString())) {
-				return value;
+				items.add(value);
 			}
 		}
+
+		return items;
+	}
+
+	public static <K, V> V getIgnorecase(Map<K, V> map, K targetKey) {
+		List<V> items = getX(map, targetKey);
+		if(items.isEmpty()) {
+			return null;
+		} else if(items.size() > 1) {
+			String lines = StrUtil.connectWithLineSeparator(items);
+			XXXUtil.alert("More than one item containing same keys:\n{0}", lines);
+		}
 		
-		return null;
+		return items.get(0);
 	}
 
 	public static <K, V> V getFirst(Map<K, V> map) {

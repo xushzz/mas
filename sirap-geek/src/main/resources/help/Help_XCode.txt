@@ -14,6 +14,10 @@ t64 gavinbelson    convert given string to BASE64-based string.
 f64 YmluZ28=       convert a BASE64-based string to regular string.
 digest abc         encrypt string with digest algorithm, such as SM3,SHA,SHA1,SHA224,SHA256,SHA512,MD2,MD5
 digest F:\abc.txt  encrypt given file with digest algo, such as SHA,SHA1,SHA224,SHA256,SHA512,MD2,MD5
+md5 abc            encrypt string with md5, $s=salt,i=3, with salt and iterations
+md5 abc jack       encrypt string with md5, with jack as salt
+md5 abc jack 3     encrypt string with md5, with jack as salt and iterate three times
+md5 abc . 3        encrypt string with md5, dot means null, and iterate three times without salt
 url mixedCHNEng    encode given string in URL manner, application/x-www-form-urlencoded MIME  
 urx %E5%B8%88      decode given string from URL manner
 iso Chinese        display locale info containing Chinese: zh_HK, HKG, Chinese, Hong Kong
@@ -24,4 +28,4 @@ ccy Chinese        display currency info containing Chinese: zh_HK, HKG, Chinese
 ccy..              display all currency info provided by the JRE
 dfs zh_TW          display date format symbols info for local zh_TW
 dfs..              display all date format symbols info provided by the JRE
-ver=3/24/2018, VI  GEEK-XCODE1.0.6-IVANKA
+ver=7/25/2018, III  GEEK-XCODE1.0.7-YANJUN

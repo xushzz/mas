@@ -9,6 +9,7 @@ public class AtvData {
 
 	public static final AlinkMap<String, String> EGGS = Amaps.newLinkHashMap();
 	static {
+		EGGS.put("fargo", "https://en.wikipedia.org/wiki/List_of_Fargo_episodes");
 		EGGS.put("arrow", "https://en.wikipedia.org/wiki/List_of_Arrow_episodes");
 		EGGS.put("empire", "https://en.wikipedia.org/wiki/List_of_Boardwalk_Empire_episodes");
 		EGGS.put("bad", "https://en.wikipedia.org/wiki/List_of_Breaking_Bad_episodes");
