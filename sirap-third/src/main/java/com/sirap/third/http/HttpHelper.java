@@ -9,7 +9,6 @@ import java.util.List;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.ParseException;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -27,13 +26,12 @@ import org.apache.http.util.EntityUtils;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.exception.MexException;
-import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
 
 public class HttpHelper {
 	public static final String URL_AKA10_REPO = "http://www.aka10.com/file/finals";
-	public static final String URL_AKA10_GEO_LOCATION = "http://www.aka10.com/sirap/picker";
+	public static final String URL_AKA10_PICKER = "http://www.aka10.com/sirap/picker";
 	public static final String KEY_BALL = "ball";
 	public static final String KEY_TITLE = "title";
 

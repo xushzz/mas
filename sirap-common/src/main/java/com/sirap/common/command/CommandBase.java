@@ -27,12 +27,14 @@ import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
+import com.sirap.basic.util.HttpUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.MatrixUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.RandomUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.WebReader;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.framework.Janitor;
@@ -482,41 +484,75 @@ public abstract class CommandBase {
 		}
 		
 		String url = equiHttpProtoclIfNeeded(temp);
-		Boolean toViewPage = OptionUtil.readBoolean(options, "web");
+		Boolean toViewPage = OptionUtil.readBoolean(options, "w");
 		if(toViewPage != null) {
 			 if(toViewPage) {
 				 viewPage(url);
 			 } else {
-				 downloadFile(url);
+				 downloadFile(url, null);
 			 }
 			 
 			 return true;
 		}
 		
-		boolean toDownload = FileOpener.isPossibleNormalFile(url);
-		if(toDownload) {
-			downloadFile(url);
+		boolean toView = true;
+		Map<String, List<String>> headers = WebReader.headersOf(url);
+		String appType = WebReader.applicationTypeOf(headers);
+		if(appType != null) {
+			String filename;
+			String attachmentFilename = WebReader.attachmentFilenameOf(headers);
+			if(attachmentFilename != null) {
+				filename = attachmentFilename;
+			} else {
+				filename = HttpUtil.prettyFilenameOfUrl(url);
+			}
+			toView = false;
+			downloadFile(url, filename);
 		} else {
+			String imageType = WebReader.imageTypeOf(headers);
+			if(imageType != null) {
+				String extension;
+				String extensionFromUrl = HttpUtil.extensionOfUrl(url);
+				if(StrUtil.isIn(extensionFromUrl, FileUtil.EXTENSIONS_IMAGE)) {
+					extension = extensionFromUrl;
+				} else if(StrUtil.isIn(imageType, FileUtil.EXTENSIONS_IMAGE)) {
+					extension = imageType;
+				} else {
+					extension = "png";
+				}
+				String tempFilename = HttpUtil.prettyFilenameOfUrl(url);
+				String imageFilename = tempFilename.replaceAll("\\..+", "") + "." + extension;
+				toView = false;
+				downloadFile(url, imageFilename);
+			}
+		}
+
+		if(toView) {
 			viewPage(url);
 		}
-		
+
 		return true;
 	}
 	
-	private void downloadFile(String url) {
+	private void downloadFile(String url, String solidName) {
 		String httpUrl = url;
 		String unique = "";
 		boolean useUniqueFilename = g().isExportWithTimestampEnabled(options);
 		if(useUniqueFilename) {
 			unique = TimestampIDGenerator.nextId() + "_";
 		}
-		String jack = FileUtil.generateFilenameByUrl(httpUrl);
+		String jack = null;
+		if(solidName != null) {
+			jack = solidName;
+		} else {
+			jack = FileUtil.generateFilenameByUrl(httpUrl);
+		}
 		if(EmptyUtil.isNullOrEmpty(jack)) {
 			jack = RandomUtil.letters(7);
 		}
-		String fileName = unique + jack;
+		String filename = unique + jack;
 		String storage = pathOf("storage.misc", Konstants.FOLDER_MISC);
-		String filePath = StrUtil.useSeparator(storage, fileName);
+		String filePath = StrUtil.useSeparator(storage, filename);
 		if(FileUtil.exists(filePath)) {
 			C.pl("Existed => " + filePath);
 		} else {

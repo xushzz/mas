@@ -14,11 +14,6 @@ public class MiscUtil {
 	public static String CARPLATE_MILITARY_2012 = "VZKHEBSLJNGC";
 	public static String CARPLATE_OTHERS = "村";
 	
-	public static boolean isHttp(String source) {
-		String regex = "https?://[\\S]{3,}";
-		return StrUtil.isRegexMatched(regex, source);
-	}
-	
 	public static boolean isEmail(String source) {
 		if(EmptyUtil.isNullOrEmpty(source)) {
 			return false;

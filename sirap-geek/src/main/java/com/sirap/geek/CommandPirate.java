@@ -19,6 +19,7 @@ import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
+import com.sirap.basic.util.HttpUtil;
 import com.sirap.basic.util.IDCardUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.MathUtil;
@@ -62,7 +63,7 @@ public class CommandPirate extends CommandBase {
 				link = AtvData.EGGS.get(solo);
 			}
 			
-			if(!MiscUtil.isHttp(link)) {
+			if(!HttpUtil.isHttp(link)) {
 				export("Not a valid link: {0}", link);
 			} else {
 				List<String> items = GeekExtractors.wikiEpisodes(link);
@@ -88,7 +89,7 @@ public class CommandPirate extends CommandBase {
 					source = AtvData.EGGS.get(source);
 				}
 				List<String> epis;
-				if(MiscUtil.isHttp(source)) {
+				if(HttpUtil.isHttp(source)) {
 					epis = GeekExtractors.wikiEpisodes(source);
 				} else {
 					epis = IOUtil.readLines(source);
@@ -122,7 +123,7 @@ public class CommandPirate extends CommandBase {
 						if(todo) {
 							boolean flag = fileItem.renameTo(newFile);
 							String prefix = flag ? "RENAMED" : "FAILURE";
-							C.msg("[0] {1} => {2}", prefix, fileItem.getName(), nicename);
+							C.msg("{0} {1} => {2}", prefix, fileItem.getName(), nicename);
 						} else {
 							C.msg("{0} => {1}", fileItem.getName(), nicename);
 						}

@@ -22,4 +22,9 @@ public class Mp3Analyzer extends MediaFileAnalyzer {
 		
 		return items;
 	}
+	
+	public int durationInSeconds() {
+		int durationInSeconds = MediaHelper.readMp3DurationInSeconds(filepath);
+		return durationInSeconds;
+	}
 }

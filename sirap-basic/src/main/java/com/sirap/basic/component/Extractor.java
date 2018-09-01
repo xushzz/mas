@@ -9,8 +9,8 @@ import com.sirap.basic.exception.MexException;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.HtmlUtil;
+import com.sirap.basic.util.HttpUtil;
 import com.sirap.basic.util.IOUtil;
-import com.sirap.basic.util.MiscUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.WebReader;
 import com.sirap.basic.util.XCodeUtil;
@@ -71,7 +71,7 @@ public abstract class Extractor<T extends Object> {
 		String target = url;
 		
 		XXXUtil.nullCheck(target, "url");
-		if(!MiscUtil.isHttp(target)) {
+		if(!HttpUtil.isHttp(target)) {
 			if(printFetching) {
 				C.pl("Reading... " + target);
 			}

@@ -25,6 +25,8 @@ public class MathUtil {
 		TIME_UNITS.put("hour", 365 * 24.0);
 		TIME_UNITS.put("min", 365 * 24 * 60.0);
 		TIME_UNITS.put("minute", 365 * 24 * 60.0);
+		TIME_UNITS.put("secs", 365 * 24 * 60 * 60.0);
+		TIME_UNITS.put("seconds", 365 * 24 * 60 * 60.0);
 		TIME_UNITS.put("sec", 365 * 24 * 60 * 60.0);
 		TIME_UNITS.put("second", 365 * 24 * 60 * 60.0);
 		TIME_UNITS.put("msec", 365 * 24 * 60 * 60 * 1000.0);
@@ -505,16 +507,29 @@ public class MathUtil {
 	
 	public static String dhmsStrOfSeconds(int seconds, boolean inEnglish) {
 		List<Integer> items = dhmsOfSeconds(seconds);
-		List<String> units = Lists.newArrayList("day", "hour", "min", "seconds");
+		List<String> units = Lists.newArrayList("day", "hour", "min", "second");
 		if(!inEnglish) {
 			units = Lists.newArrayList(Konstants.CHINESE_DAY_TIAN, Konstants.CHINESE_HOUR_XIAOSHI, Konstants.CHINESE_MINUTE_FEN, Konstants.CHINESE_SECOND_MIAO);
 		}
 		XXXUtil.shouldBeEqual(items.size(), units.size());
 		StringBuffer sb = StrUtil.sb();
+		int count = 0;
 		for(int i = 0 ; i < items.size(); i++) {
 			Integer item = items.get(i);
 			if(item != 0) {
-				sb.append(item).append(units.get(i));
+				if(inEnglish) {
+					if(count != 0) {
+						sb.append(" ");
+					}
+					sb.append(item).append(" ").append(units.get(i));
+					boolean isPlural = item > 1;
+					if(isPlural) {
+						sb.append("s");
+					}
+					count++;
+				} else {
+					sb.append(item).append(units.get(i));
+				}
 			}
 		}
 		

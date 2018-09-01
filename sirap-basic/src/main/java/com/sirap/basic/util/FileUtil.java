@@ -15,7 +15,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -426,15 +425,30 @@ public class FileUtil {
 			}
 		});
 		
-		C.listSome(files, 10);
-		
+//		C.listSome(files, 10);
+
+		int count = 0, next, previous;
 		for(File current : files) {
+			next = count + 1;
+			if(next >= files.size()) {
+				next = 0;
+			}
+
+			previous = count - 1;
+			if(previous < 0) {
+				previous = files.size() - 1;
+			}
+			
+			count++;
+			
 			String path = current.getAbsolutePath();
 			String extension = FileUtil.extensionOf(path);
 			Map<String, Object> fileitem = Maps.newConcurrentMap();
 			fileitem.put("istxt", StrUtil.isIn(extension, FileUtil.EXTENSIONS_TEXT));
 			fileitem.put("isimage", StrUtil.isIn(extension, FileUtil.EXTENSIONS_IMAGE));
 			fileitem.put("name", current.getName());
+			fileitem.put("next", files.get(next).getName());
+			fileitem.put("previous", files.get(previous).getName());
 			fileitem.put("size", FileUtil.formatSize(current.length()));
 			holder.add(fileitem);
 		}

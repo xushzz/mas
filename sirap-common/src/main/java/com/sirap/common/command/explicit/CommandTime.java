@@ -295,17 +295,39 @@ public class CommandTime extends CommandBase {
 	}
 	
 	private void dealwithInternetTime(String site) {
-		Date now = new Date();
 		List<List> data = Lists.newArrayList();
 		Date date = WebReader.dateOfWebsite(site);
-		
-		data.add(Lists.newArrayList("Internet time", DateUtil.strOf(date, DateUtil.GMT2, 0, locale())));
-		
+		Date now = new Date();
+
 		String tzone = g().getUserValueOf("user.timezone");
 		if(tzone != null) {
 			data.add(Lists.newArrayList("User time", DateUtil.strOf(now, DateUtil.GMT2, tzone, locale())));
 		}
+		data.add(Lists.newArrayList("Internet time", DateUtil.strOf(date, DateUtil.GMT2, 0, locale())));
+		
 		data.add(Lists.newArrayList("Local time", DateUtil.strOf(now, DateUtil.GMT2, null, locale())));
+		int diffInSeconds = (int)(date.getTime() / 1000 - now.getTime() / 1000);
+
+		String expression, word;
+		boolean isEnglish = OptionUtil.readBooleanPRI(options, "en", false);
+		String timeInfo = MathUtil.dhmsStrOfSeconds((int)Math.abs(diffInSeconds), isEnglish);
+		if(diffInSeconds > 0) {
+			word = isEnglish ? " late" : "落后";
+		} else if(diffInSeconds < 0) {
+			word = isEnglish ? " ahead" : "提前";
+		} else {
+			word = isEnglish ? "same" : "一样";
+		}
+		if(isEnglish) {
+			expression = timeInfo + word;
+		} else {
+			expression = word + timeInfo;
+		}
+		if(diffInSeconds == 0) {
+			expression = word;
+		}
+		
+		data.add(Lists.newArrayList("Local time", expression));
 		exportMatrix(data, "c=:#s");
 	}
 }

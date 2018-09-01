@@ -87,7 +87,7 @@ public class IOUtil {
 	}
 	
 	public static List<String> readLines(String dynamicLocation, String charset) {
-		if(MiscUtil.isHttp(dynamicLocation)) {
+		if(HttpUtil.isHttp(dynamicLocation)) {
 			WebReader xiu = new WebReader(dynamicLocation, charset);
 			return xiu.readIntoList();
 		}
@@ -140,7 +140,7 @@ public class IOUtil {
 	}
 	
 	public static String readString(String dynamicLocation, String charset, String lineSeperator) {
-		if(MiscUtil.isHttp(dynamicLocation)) {
+		if(HttpUtil.isHttp(dynamicLocation)) {
 			WebReader xiu = new WebReader(dynamicLocation, charset);
 			return xiu.readIntoString();
 		}

@@ -1,6 +1,6 @@
 package com.sirap.basic.thirdparty;
 
-import org.apache.shiro.crypto.hash.SimpleHash;
+import com.sirap.basic.util.SecurityUtil;
 
 public class ShiroHelper {
 	
@@ -21,9 +21,10 @@ public class ShiroHelper {
 	}
 	
 	public static String hash(String algorithmName, Object source, Object salt, int hashIterations) {
-		SimpleHash joe = new SimpleHash(algorithmName, source, salt, hashIterations);
+//		SimpleHash joe = new SimpleHash(algorithmName, source, salt, hashIterations);
 		//D.pla(algorithmName, source, salt, hashIterations);
 
-		return joe.toString();
+//		return joe.toString();
+		return SecurityUtil.digest(source + "", algorithmName);
 	}
 }

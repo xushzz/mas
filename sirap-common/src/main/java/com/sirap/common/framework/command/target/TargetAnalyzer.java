@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
-import com.sirap.basic.util.MiscUtil;
+import com.sirap.basic.util.HttpUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.framework.SimpleKonfig;
@@ -327,7 +327,7 @@ public abstract class TargetAnalyzer {
 			}
 		}
 		
-		if(MiscUtil.isHttp(remoteurl)) {
+		if(HttpUtil.isHttp(remoteurl)) {
 			Target tweb = new TargetWeb(subject, remoteurl);
 			return tweb;
 		}

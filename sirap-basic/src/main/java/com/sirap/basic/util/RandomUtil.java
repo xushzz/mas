@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Random;
 
 import com.google.common.collect.Lists;
+import com.sirap.basic.data.CityData;
 import com.sirap.basic.data.NameData;
+import com.sirap.basic.domain.ValuesItem;
 
 public class RandomUtil {
 
@@ -25,6 +27,12 @@ public class RandomUtil {
 		String result = chars(countOfChars, StrUtil.LETTERS);
 		
 		return result;
+	}
+
+	public static boolean bool() {
+		Random r = new Random();
+		int va = r.nextInt(10);
+		return va > 5;
 	}
 
 	public static String LETTERS(int countOfChars) {
@@ -64,6 +72,26 @@ public class RandomUtil {
 		int result = xian.nextInt(maxValue);
 		
 		return result;
+	}
+	
+	public static ValuesItem city() {
+		return cities(1).get(0);
+	}
+	
+	public static List<ValuesItem> cities(int size) {
+		Random xian = new Random();
+		List<ValuesItem> sample = Lists.newArrayList(CityData.EGGS.values());
+		int samplesize = sample.size();
+		List<ValuesItem> items = Lists.newArrayList();
+		if(samplesize == 0) {
+			return items;
+		}
+		while(items.size() < size) {
+			int index = xian.nextInt(samplesize);
+			items.add(sample.get(index));
+		}
+		
+		return items;
 	}
 	
 	public static String name() {

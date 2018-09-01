@@ -5,6 +5,7 @@ import java.util.regex.Matcher;
 
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
+import com.sirap.basic.data.CityData;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.domain.ValuesItem;
@@ -22,7 +23,6 @@ import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.framework.SimpleKonfig;
-import com.sirap.geek.data.CityData;
 import com.sirap.geek.data.LonglatData;
 import com.sirap.geek.domain.DistrictItem;
 import com.sirap.geek.manager.GaodeManager;
@@ -150,9 +150,6 @@ public class CommandGaode extends CommandBase {
 		
 		solo = parseParam(KEY_GAODE_GEO + "\\s+(.+?)");
 		if(solo != null) {
-			String keyAddressGaode = "formatted_address";
-			String keyAddressTencent = "address";
-			
 			String city = OptionUtil.readString(options, "c", "");
 			String location = GaodeUtils.fetchLonglat(solo, city);
 			if(location == null) {
@@ -177,20 +174,29 @@ public class CommandGaode extends CommandBase {
 				boolean useTencent = OptionUtil.readBooleanPRI(options, "tx", false);
 				if(useTencent) {
 					lines = TencentUtils.regeocodeOf(GaodeUtils.reverseLongAndLat(location));
-					textAddress = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey(keyAddressTencent), StrUtil.connect(lines));
+					textAddress = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("address"), StrUtil.connect(lines));
 					appendParam = true;
 				} else {
 					lines = GaodeUtils.regeocodeOf(location, radius);
-					textAddress = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey(keyAddressGaode), StrUtil.connect(lines));
-					if(textAddress == null) {
+					String temp = StrUtil.connect(lines);
+					String formattedAddress = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("formatted_address"), temp);
+					if(formattedAddress != null) {
+						String province = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("province"), temp);
+						textAddress = formattedAddress.replaceAll("^" + province, "");
+					} else {
 						appendParam = true;
-						lines = TencentUtils.regeocodeOf(GaodeUtils.reverseLongAndLat(location));				
-						textAddress = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey(keyAddressTencent), StrUtil.connect(lines));
+						lines = TencentUtils.regeocodeOf(GaodeUtils.reverseLongAndLat(location));
+						temp = StrUtil.connect(lines);
+						textAddress = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("address"), temp);
 					}
 				}
 			} else {
 				lines = GaodeUtils.geocodeOf(solo, city);
-				location = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("location"), StrUtil.connect(lines));
+				String temp = StrUtil.connect(lines);
+				location = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("location"), temp);
+				String formattedAddress = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("formatted_address"), temp);
+				String province = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("province"), temp);
+				textAddress = formattedAddress.replaceAll("^" + province, "");
 			}
 			
 			if(!showJson) {
@@ -205,7 +211,7 @@ public class CommandGaode extends CommandBase {
 			if(OptionUtil.readBooleanPRI(options, "w", false)) {
 				String temp = "?location={0}&address={1}";
 				String requestParams = StrUtil.occupy(temp, location, textAddress);
-				String site = g().getUserValueOf("picker.site", HttpHelper.URL_AKA10_GEO_LOCATION);
+				String site = g().getUserValueOf("picker.site", HttpHelper.URL_AKA10_PICKER);
 				String pickerUrl = site + requestParams;
 				viewPage(pickerUrl);
 			}

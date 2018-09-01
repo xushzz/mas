@@ -95,7 +95,7 @@ public class CommandFetch extends CommandBase {
 			WebReader xiu = new WebReader(pageUrl, g().getCharsetInUse());
 			
 			if(len == 1) {
-				List<String> headers = xiu.readHeaders();
+				List<String> headers = WebReader.headers(pageUrl);
 				export(headers);
 			} else {
 				xiu.setMethodPost(OptionUtil.readBooleanPRI(options, "post", false));

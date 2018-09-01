@@ -1,6 +1,6 @@
 http://URLxxx.pdf  it is a typical url indicating a normal file, fetch the file and save to misc folder
-http://URLxxx.pdf $+web, to view given web page
-http://URLxxx.pdf $-web, to download given web page
+http://URLxxx.pdf $+w, to view given web page
+http://URLxxx.pdf $-w, to download given web page
 f E:\Links.txt     the text file could contain lines of URLs indicating specified resources, parse them
 f E:\Links.txt     and fetch resource one by one
 =http://www.a.cn  get headers for give connection by url

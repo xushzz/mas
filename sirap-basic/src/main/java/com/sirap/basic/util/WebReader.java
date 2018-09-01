@@ -6,11 +6,14 @@ import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
 
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
@@ -74,7 +77,80 @@ public class WebReader {
 		return content;
 	}
 	
-	public List<String> readHeaders() {
+	public static String imageTypeOf(Map<String, List<String>> headers) {
+		List<String> items = headers.get(Konstants.KEY_CONTENT_TYPE);
+		if(EmptyUtil.isNullOrEmpty(items)) {
+			return null;
+		}
+		
+		String subtype = null;
+		String regex = "image/([^;]+)";
+		for(String item : items) {
+			Matcher ma = StrUtil.createMatcher(regex, item);
+			if(ma.find()) {
+				subtype = ma.group(1);
+				break;
+			}
+		}
+		
+		return subtype;
+	}
+	
+	public static String applicationTypeOf(Map<String, List<String>> headers) {
+		List<String> items = headers.get(Konstants.KEY_CONTENT_TYPE);
+		if(EmptyUtil.isNullOrEmpty(items)) {
+			return null;
+		}
+		
+		String subtype = null;
+		String regex = "application/([^;]+)";
+		for(String item : items) {
+			Matcher ma = StrUtil.createMatcher(regex, item);
+			if(ma.find()) {
+				subtype = ma.group(1);
+				break;
+			}
+		}
+		
+		return subtype;
+	}
+	
+	public static String attachmentFilenameOf(Map<String, List<String>> headers) {
+		List<String> disposition = headers.get(Konstants.KEY_CONTENT_DISPOSITION);
+		if(EmptyUtil.isNullOrEmpty(disposition)) {
+			return null;
+		}
+		
+		String filename = null;
+		String regex = "filename=([^;]+)";
+		for(String item : disposition) {
+			Matcher ma = StrUtil.createMatcher(regex, item);
+			if(ma.find()) {
+				String temp = ma.group(1);
+				temp = temp.replace("\"", "");
+				temp = XCodeUtil.urlDecodeUTF8(temp);
+				temp = FileUtil.generateLegalFileNameBySpace(temp);
+				filename = temp.trim();
+				break;
+			}
+		}
+		
+		return filename;
+	}
+	
+	public static Map<String, List<String>> headersOf(String urlstring) {
+		try {
+			URL url = new URL(urlstring);
+			URLConnection conn = url.openConnection();
+			Map<String, List<String>> map = conn.getHeaderFields();
+			
+			return map;
+		} catch (Exception ex) {
+			throw new MexException(ex);
+		}
+	}
+	
+	public static List<String> headers(String urlstring) {
 		List<String> items = Lists.newArrayList();
 		try {
 			URL url = new URL(urlstring);
@@ -89,9 +165,12 @@ public class WebReader {
 				String value = StrUtil.connect(map.get(key));
 				if(StrUtil.equals(Konstants.KEY_CONTENT_LENGTH, key)) {
 					value = value + " (" + FileUtil.formatSize(Long.parseLong(value)) + ")";
+				} else if(StrUtil.equals(Konstants.KEY_AGE, key)) {
+					double dur = Double.parseDouble(value);
+					value = value + " (" + MathUtil.dhmsStrOfTime(dur, "sec") + ")";
 				}
 				if(key == null) {
-					key = "AA-Status";
+					key = "Status";
 				}
 				items.add(key + ": " + value);
 			}
@@ -99,7 +178,31 @@ public class WebReader {
 			throw new MexException(ex);
 		}
 		
-		return Colls.sortIgnoreCase(items);
+		Collections.sort(items, new Comparator<String>() {
+
+			@Override
+			public int compare(String apple, String orange) {
+				int v1 = valueOf(apple);
+				int v2 = valueOf(orange);
+				if(v1 == v2) {
+					return apple.toLowerCase().compareTo(orange.toLowerCase());
+				} else {
+					return v1 - v2;
+				}
+			}
+			
+			public int valueOf(String apple) {
+				if(apple.startsWith("Status")) {
+					return -2;
+				} else if(apple.startsWith("Content")) {
+					return -1;
+				} else {
+					return 0;
+				}
+			}
+		});
+		
+		return items;
 	}
 	
 	public List<String> readIntoList() {
@@ -194,7 +297,7 @@ public class WebReader {
 	public static Date dateOfWebsite(String webUrl) {
 		String site = StrUtil.addHttpProtoclIfNeeded(webUrl);
 		try {
-			if(!MiscUtil.isHttp(site)) {
+			if(!HttpUtil.isHttp(site)) {
 				XXXUtil.alert("Not a valid web site [{0}]", webUrl);
 			}
 			long start = System.currentTimeMillis();

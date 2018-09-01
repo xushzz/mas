@@ -3,6 +3,7 @@ package com.sirap.geek.data;
 import java.util.List;
 
 import com.sirap.basic.component.map.AlinkMap;
+import com.sirap.basic.data.CityData;
 import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.util.Amaps;
 
