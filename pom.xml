@@ -14,11 +14,11 @@
 		<module>sirap-pdf</module>
 		<module>sirap-excel</module>
 		<module>sirap-common</module>
-		<module>sirap-db</module>
 		<module>sirap-executor</module>
 		<module>sirap-extractor</module>
 		<module>sirap-geek</module>
 		<module>sirap-third</module>
+		<module>sirap-hua</module>
 	<!-- 
 		<module>sirap-executor</module>
 		<module>sirap-ldap</module>

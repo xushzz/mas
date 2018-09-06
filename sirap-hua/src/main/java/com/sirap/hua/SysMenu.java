@@ -46,6 +46,7 @@ public class SysMenu extends MexItem {
 	public void addKid(SysMenu menu) {
 		kids.add(menu);
 	}
+
 	@Override
 	public boolean parse(String record) {
 		// 0ca004d6b1bf4bcab9670a5060d82a55 , 3c92c17886944d0687e73e286cada573 , 树结构 , /test/testTree
@@ -55,6 +56,23 @@ public class SysMenu extends MexItem {
 			parent = items.get(1);
 			name = items.get(2);
 			href = items.get(3);
+			return true;
+		}
+		
+		return false;
+	}
+	
+	@Override
+	public boolean parse(List items) {
+		if(items == null) {
+			return false;
+		}
+		// 0ca004d6b1bf4bcab9670a5060d82a55 , 3c92c17886944d0687e73e286cada573 , 树结构 , /test/testTree
+		if(items.size() > 3) {
+			id = items.get(0) + "";
+			parent = items.get(1) + "";
+			name = items.get(2) + "";
+			href = items.get(3) + "";
 			return true;
 		}
 		

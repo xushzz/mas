@@ -29,12 +29,12 @@
   			<scope>system</scope>  
     		<systemPath>E:/KDB/libs/ojdbc14-10.2.0.4.0.jar</systemPath>
 		</dependency>
- -->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.1.31</version>
 		</dependency>
+ -->
 
 	</dependencies>
 </project>

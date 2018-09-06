@@ -20,12 +20,12 @@ public class HuaUtils {
 		return items;
 	}
 	
-	public static List<SysMenu> readMenus(List<List> rowItems) {
+	public static List<SysMenu> readMenus(List<List> rows) {
 		List<SysMenu> items = Lists.newArrayList();
 		
-		for(String line : lines) {
+		for(List row : rows) {
 			SysMenu menu = new SysMenu();
-			if(menu.parse(line)) {
+			if(menu.parse(row)) {
 				items.add(menu);
 			}
 		}

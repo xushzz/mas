@@ -2,10 +2,10 @@ package com.sirap.hua;
 
 import java.util.List;
 
-import com.sirap.basic.tool.C;
+import com.sirap.basic.util.DBUtil;
 import com.sirap.basic.util.OptionUtil;
+import com.sirap.basic.util.RandomUtil;
 import com.sirap.common.command.CommandBase;
-import com.sirap.db.DBHelper;
 
 public class CommandPdms extends CommandBase {
 
@@ -16,9 +16,12 @@ public class CommandPdms extends CommandBase {
 		regex = KEY_MENU + "\\s(.+?)";
 		solo = parseParam(regex);
 		if(solo != null) {
-			List<String> lines = linesOf(solo);
-			List<SysMenu> menus = HuaUtils.readMenus(lines);
-			C.listSome(menus, 8);
+			String url = "jdbc:mysql://localhost/pf_pdms";
+			String username = "root";
+			String password = "ninja";
+			List<List> matrix = DBUtil.queryRawList(url, username, password, solo);
+			List<SysMenu> menus = HuaUtils.readMenus(matrix);
+//			C.listSome(menus, 8);
 			String rootId = OptionUtil.readString(options, "r", "1");
 			SysMenu root = HuaUtils.treeOf(menus, rootId);
 			export(root.tree());
@@ -33,8 +36,14 @@ public class CommandPdms extends CommandBase {
 			String password = "ninja";
 			String sql = "select id, parent_id, name, href from sys_menu";
 			sql = solo;
-			List<List> matrix = DBHelper.queryRawList(url, username, password, sql);
+			List<List> matrix = DBUtil.queryRawList(url, username, password, sql);
 			export(matrix);
+			
+			return true;
+		}
+		
+		if(is("hay")) {
+			export(RandomUtil.letters(23));
 			
 			return true;
 		}
