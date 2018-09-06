@@ -24,8 +24,12 @@ public abstract class MexItem implements Serializable {
 
 	protected boolean caseSensitive;
 	protected int pseudoOrder;
-	
+
 	public boolean parse(String record) {
+		return false;
+	}
+	
+	public boolean parse(List record) {
 		return false;
 	}
 	

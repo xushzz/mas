@@ -836,4 +836,25 @@ public abstract class CommandBase {
 		
 		george.sitAndWait();
 	}
+	
+	protected List<String> linesOf(String fileinfo) {
+		File file = parseFile(fileinfo);
+		if(file == null) {
+			XXXUtil.alerto("Not a valid file: " + fileinfo);
+		}
+		
+		String filepath = file.getAbsolutePath();
+		boolean isMandatory = OptionUtil.readBooleanPRI(options, "man", false);
+		if(isMandatory) {
+			List<String> lines = IOUtil.readLines(filepath, charsetX());
+			return lines;
+		}
+		
+		if(!FileOpener.isTextFile(filepath)) {
+			XXXUtil.alerto("Not a text file: " + filepath);
+		}
+		
+		List<String> lines = IOUtil.readLines(filepath, charsetX());
+		return lines;
+	}
 }
