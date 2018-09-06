@@ -5,7 +5,6 @@ import java.sql.ResultSetMetaData;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.sirap.basic.tool.D;
 
 public class ResultSetObjectMatrixAnalyer extends ResultSetAnalyzer<List<List<Object>>> {
 

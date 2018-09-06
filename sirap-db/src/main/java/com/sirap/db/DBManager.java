@@ -1,6 +1,8 @@
 package com.sirap.db;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 import com.sirap.basic.db.SirapDAO;
@@ -28,6 +30,18 @@ public class DBManager extends SirapDAO {
 
 	public DBManager(String url, String username, String password) {
 		super(url, username, password);
+	}
+	
+	public boolean isAvailable() {
+		Connection conn = createConnection();
+		try {
+			conn.close();
+			return true;
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
+		
+		return false;
 	}
 	
 	public int update(String sql, boolean printSql) {

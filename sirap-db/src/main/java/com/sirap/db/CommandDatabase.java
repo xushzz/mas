@@ -87,7 +87,7 @@ public class CommandDatabase extends CommandBase {
 
 			if(DBHelper.takeAsColumnOrTableName(tableInfo)) {
 				String sql = DBKonstants.SHOW_COLUMNS + " " + tableInfo;
-				List<String> items = manager().query(restAsList(), sql, true, printSql()).exportLiteralStrings();
+				List<String> items = manager().query(resultSetAsList(), sql, true, printSql()).exportLiteralStrings();
 				if(EmptyUtil.isNullOrEmpty(items)) {
 					XXXUtil.info("Found no columns from: [{0}]", tableInfo);
 					C.pl();
@@ -269,7 +269,7 @@ public class CommandDatabase extends CommandBase {
 			String sql = "select version()";
 			DBConfigItem item = DBHelper.getActiveDB();
 			DBManager karius = DBManager.g(item.getUrl(), item.getUsername(), item.getPassword());
-			QueryWatcher ming = karius.query(restAsList(), sql);
+			QueryWatcher ming = karius.query(resultSetAsList(), sql);
 			List<String> items = ming.exportLiteralStrings();
 			if(items.size() > 0) {
 				long cost = System.currentTimeMillis() - start;
@@ -283,11 +283,23 @@ public class CommandDatabase extends CommandBase {
 		if(StrUtil.isRegexMatched(KEY_MYSQL + " (.+)", command)) {
 			DBConfigItem db = (new ConfigItemParserMySQL()).parse(command);
 			if(db != null) {
-				DBHelper.setActiveDB(db);
-				String dbName = db.getItemName();
-				Stash.g().place(dbName, db);
-				C.pl2("currently active: " + dbName + "");
-				export(db.toPrint());
+				String url = db.getUrl();
+				String username = db.getUsername();
+				String password = db.getPassword();
+				DBManager huang = DBManager.g(url, username, password);
+				try {
+					huang.isAvailable();
+					DBHelper.setActiveDB(db);
+					String dbName = db.getItemName();
+					Stash.g().place(dbName, db);
+					C.pl2("currently active: " + dbName + "");
+					export(db.toPrint());
+				} catch (Exception ex) {
+					export("Can't create a connection by: " + command);
+					if(isDebug()) {
+						ex.printStackTrace();
+					}
+				}
 			}
 			
 			return true;
@@ -448,7 +460,7 @@ public class CommandDatabase extends CommandBase {
 	private QueryWatcher query(String sql) {
 		Boolean pc2 = OptionUtil.readBoolean(options, "c");
 		boolean printColumnName = pc2 != null ? pc2 : g().isYes("sql.columnName.print");
-		QueryWatcher ming = manager().query(restAsList(), sql, true, printSql());
+		QueryWatcher ming = manager().query(resultSetAsList(), sql, true, printSql());
 		
 		ming.setPrintColumnName(printColumnName);
 		
@@ -467,7 +479,7 @@ public class CommandDatabase extends CommandBase {
 		return flag;
 	}
 	
-	public ResultSetMingAnalyzer restAsList() {
+	public ResultSetMingAnalyzer resultSetAsList() {
 		return new ResultSetMingAnalyzer();
 	}
 }

@@ -16,6 +16,7 @@ import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.framework.SimpleKonfig;
 import com.sirap.common.framework.Stash;
 import com.sirap.db.parser.SchemaNameParser;
+import com.sirap.db.resultset.ResultSetMingAnalyzer;
 
 public class DBHelper {
 
@@ -205,4 +206,12 @@ public class DBHelper {
 		
 		return true;
 	}
+	
+	public static List<List> queryRawList(String url, String username, String password, String sql) {
+		DBManager liu = DBManager.g(url, username, password);
+		QueryWatcher yan = liu.query(new ResultSetMingAnalyzer(), sql, true, false);
+		
+		return yan.getRecords();
+	}
+
 }

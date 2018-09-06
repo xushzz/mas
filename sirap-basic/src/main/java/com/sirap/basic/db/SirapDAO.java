@@ -79,11 +79,21 @@ public class SirapDAO {
                 stmt.close();
         	}
         	if(conn != null) {
-                conn.close();  
+                conn.close();
         	}
         } catch (SQLException e) {  
             e.printStackTrace();  
         }  
+    }
+    
+    public void closeConnection() {  
+    	try {
+    		if(conn != null) {
+                conn.close();
+        	}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
     }
 
 	public String getUrl() {
