@@ -19,10 +19,11 @@
 		<module>sirap-extractor</module>
 		<module>sirap-geek</module>
 		<module>sirap-third</module>
+		<module>sirap-titus</module>
+		<module>../maspri/sirap-security</module>
 	<!-- 
 		<module>sirap-executor</module>
 		<module>sirap-ldap</module>
-		<module>sirap-titus</module>
 		<module>sirap-basic</module>
 		<module>sirap-common</module>
 		<module>sirap-basic</module>

@@ -909,8 +909,10 @@ public class StrUtil {
 	public static List<String> parseUrlParams(String wholeUrl) {
 		String regex = "([^\\?&=]+)=([^\\?&#]*)";
 		Matcher ma = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(wholeUrl);
-
+		
 		List<String> params = new ArrayList<>();
+		String mainUrl = wholeUrl.replaceAll("\\?.*", "");
+		params.add(mainUrl);
 		while(ma.find()) {
 			String key = ma.group(1);
 			String value = ma.group(2);
