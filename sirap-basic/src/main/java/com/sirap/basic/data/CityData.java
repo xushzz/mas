@@ -1,14 +1,10 @@
 package com.sirap.basic.data;
 
 import java.util.List;
-import java.util.regex.Matcher;
 
-import com.sirap.basic.component.Extractor;
 import com.sirap.basic.component.map.AlinkMap;
 import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.util.Amaps;
-import com.sirap.basic.util.MathUtil;
-import com.sirap.basic.util.StrUtil;
 
 public class CityData {
 
@@ -630,61 +626,61 @@ public class CityData {
 		return Amaps.listOf(EGGS);
 	}
 	
-	public static List<String> toScript() {
-		Extractor<String> neymar = new Extractor<String>() {
-			
-			@Override
-			public String getUrl() {
-				String href = "https://www.cnblogs.com/haibin-zhang/p/4955880.html";
-				href = "E:/KDB/tasks/0714_Longlat/san.txt";
-				showFetching();
-				
-				return href;
-			}
-
-			@Override
-			protected void parse() {
-				String regex = "<tr><td>(.+?)</td><td>(.+?)</td><td>(.+?)</td><td>(.+?)</td><td>(.+?)</td></tr>";
-				Matcher ma = createMatcher(regex);
-//				int count = 0;
-				while(ma.find()) {
-//					if(++count > 100) {
-//						break;
-//					}
-					String english = getPrettyText(ma.group(1));
-					String chinese = getPrettyText(ma.group(2));
-					String country = getPrettyText(ma.group(3));
-					String lng = getLongOrLat(getPrettyText(ma.group(5)));
-					String lat = getLongOrLat(getPrettyText(ma.group(4)));
-					String longlat = lng + "," + lat;
-					String id = english.replaceAll("[^a-zA-Z]", "").toLowerCase();
-					mexItems.add(StrUtil.occupy(SCRIPT, id, english, chinese, country, longlat));
-				}
-			}
-		};
-		
-		return neymar.process().getItems();	
-	}
-	
-	public static String getLongOrLat(String mixedText) {
-		String[] params = mixedText.split(":");
-		String type = params[0];
-		String prefix = "";
-		if(StrUtil.isRegexFound("南|西", type)) {
-			prefix = "-";
-		}
-		String value = params[1];
-		List<String> numbers = StrUtil.findAllMatchedItems("\\d+", value);
-		
-		double degree = 0, minute = 0 , second = 0;
-		degree = Double.parseDouble(numbers.get(0));
-		if(numbers.size() > 1) {
-			minute = Double.parseDouble(numbers.get(1));
-			if(numbers.size() > 2) {
-				second = Double.parseDouble(numbers.get(2));
-			}
-		}
-		
-		return prefix + MathUtil.longlatOf(degree, minute, second, 3);
-	}
+//	public static List<String> toScript() {
+//		Extractor<String> neymar = new Extractor<String>() {
+//			
+//			@Override
+//			public String getUrl() {
+//				String href = "https://www.cnblogs.com/haibin-zhang/p/4955880.html";
+//				href = "E:/KDB/tasks/0714_Longlat/san.txt";
+//				showFetching();
+//				
+//				return href;
+//			}
+//
+//			@Override
+//			protected void parse() {
+//				String regex = "<tr><td>(.+?)</td><td>(.+?)</td><td>(.+?)</td><td>(.+?)</td><td>(.+?)</td></tr>";
+//				Matcher ma = createMatcher(regex);
+////				int count = 0;
+//				while(ma.find()) {
+////					if(++count > 100) {
+////						break;
+////					}
+//					String english = getPrettyText(ma.group(1));
+//					String chinese = getPrettyText(ma.group(2));
+//					String country = getPrettyText(ma.group(3));
+//					String lng = getLongOrLat(getPrettyText(ma.group(5)));
+//					String lat = getLongOrLat(getPrettyText(ma.group(4)));
+//					String longlat = lng + "," + lat;
+//					String id = english.replaceAll("[^a-zA-Z]", "").toLowerCase();
+//					mexItems.add(StrUtil.occupy(SCRIPT, id, english, chinese, country, longlat));
+//				}
+//			}
+//		};
+//		
+//		return neymar.process().getItems();	
+//	}
+//	
+//	public static String getLongOrLat(String mixedText) {
+//		String[] params = mixedText.split(":");
+//		String type = params[0];
+//		String prefix = "";
+//		if(StrUtil.isRegexFound("南|西", type)) {
+//			prefix = "-";
+//		}
+//		String value = params[1];
+//		List<String> numbers = StrUtil.findAllMatchedItems("\\d+", value);
+//		
+//		double degree = 0, minute = 0 , second = 0;
+//		degree = Double.parseDouble(numbers.get(0));
+//		if(numbers.size() > 1) {
+//			minute = Double.parseDouble(numbers.get(1));
+//			if(numbers.size() > 2) {
+//				second = Double.parseDouble(numbers.get(2));
+//			}
+//		}
+//		
+//		return prefix + MathUtil.longlatOf(degree, minute, second, 3);
+//	}
 }

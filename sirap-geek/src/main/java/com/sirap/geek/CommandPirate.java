@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
@@ -15,6 +16,7 @@ import com.sirap.basic.domain.Person;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.tool.C;
+import com.sirap.basic.util.Amaps;
 import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
@@ -31,7 +33,6 @@ import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
 import com.sirap.excel.MsExcelHelper;
-import com.sirap.geek.data.AtvData;
 import com.sirap.geek.domain.CaroItem;
 import com.sirap.geek.manager.FiveOManager;
 import com.sirap.geek.manager.HiredDaysCalculator;
@@ -51,7 +52,7 @@ public class CommandPirate extends CommandBase {
 	public boolean handle() {
 		
 		if(is(KEY_ATV)) {
-			export(AtvData.eggs());
+			export(Amaps.listOf(getAtvEggs()));
 			
 			return true;
 		}
@@ -59,8 +60,9 @@ public class CommandPirate extends CommandBase {
 		solo = parseParam(KEY_ATV + "\\s+(.+?)");
 		if(solo != null) {
 			String link = solo;
-			if(AtvData.EGGS.containsKey(solo)) {
-				link = AtvData.EGGS.get(solo);
+			Map<String, String> eggs = getAtvEggs();
+			if(eggs.containsKey(solo)) {
+				link = eggs.get(solo);
 			}
 			
 			if(!HttpUtil.isHttp(link)) {
@@ -85,8 +87,9 @@ public class CommandPirate extends CommandBase {
 			if(isGood) {
 				String folderstr = items.get(0);
 				String source = items.get(1);
-				if(AtvData.EGGS.containsKey(source)) {
-					source = AtvData.EGGS.get(source);
+				Map<String, String> eggs = getAtvEggs();
+				if(eggs.containsKey(source)) {
+					source = eggs.get(source);
 				}
 				List<String> epis;
 				if(HttpUtil.isHttp(source)) {
@@ -321,6 +324,14 @@ public class CommandPirate extends CommandBase {
 		}
 		
 		return false;
+	}
+	
+	private Map<String, String> getAtvEggs() {
+		String folder = pathOf("storage.data", Konstants.FOLDER_DATA);
+		String path = StrUtil.useSeparator(folder, "atvs.txt");
+		Map<String, String> eggs = FileUtil.getKeyValues(path);
+		
+		return eggs;
 	}
 	
 	private List<String> carolines(int index, int size, CaroItem item, Date birthday, String folderName) {

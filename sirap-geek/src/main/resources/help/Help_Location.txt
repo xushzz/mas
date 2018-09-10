@@ -15,7 +15,7 @@ geo deli tam       get the driving distance between deli and tam, forward and ba
 geo address        convert given formatted address to specific location, as in longitude and latitude pair, search for the whole nation
 geo address $c=A   convert given formatted address in given city A to specific location, as in longitude and latitude pair
 geo X,Y            convert given longitude and latitude to given formatted address, default radius is 1000 meters, $+r reverse/switch long and lat
-geo 130,-39        for those locations outside China, call Tencent API service to convert location, such Maralinga Tjarutja in Australia
+geo 130,-39        for those locations outside China, call Tencent API, such Maralinga Tjarutja in Australia, also for option $+tx
 geo X,Y $d=X2+Y2   calculate distance between two given locations, d means distance
 geo X,Y $r=100     convert given longitude and latitude to given formatted address, option: r=range, means radius, measured by meter
 geo ABC $+j        convert address to location or vice versa, display in json format, other wise list format
@@ -23,4 +23,8 @@ geo ABC $+w        convert address to location or vice versa, open web site with
 geo ABC $+ww       convert address to location or vice versa, generate a picker.html, open it with given address and coordination, as in location
 gip                get the city info where current HTTP request comes from
 gip 120.79.195.133 get the city info where given IP address comes from
-ver=7/17/2018, II  GEEK-GAODE1.0.9-FRANCE
+lon 120.79         convert given decimal style longitude to degree minute second style, various units
+lat -56.43         convert given decimal style latitude to degree minute second style, various units
+lon -20 79 12      convert given degree minute second style longitude to decimal style, various units
+lat 78 72 43       convert given degree minute second style latitude to decimal style, various units
+ver=9/10/2018, I  GEEK-GAODE1.0.10-FRANCE

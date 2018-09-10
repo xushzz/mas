@@ -6,6 +6,8 @@ import java.util.regex.Matcher;
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.data.CityData;
+import com.sirap.basic.domain.LocationItem;
+import com.sirap.basic.domain.LongOrLat;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.domain.ValuesItem;
@@ -15,6 +17,7 @@ import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.IOUtil;
+import com.sirap.basic.util.LonglatUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.MatrixUtil;
 import com.sirap.basic.util.OptionUtil;
@@ -30,12 +33,13 @@ import com.sirap.geek.manager.GaodeUtils;
 import com.sirap.geek.manager.TencentUtils;
 import com.sirap.third.http.HttpHelper;
 
-public class CommandGaode extends CommandBase {
+public class CommandLocation extends CommandBase {
 	private static final String KEY_GAODE = "gao";
 	private static final String KEY_GAODE_INPUTTIPS = "gin";
 	private static final String KEY_GAODE_IP = "gip";
 	private static final String KEY_GAODE_SEARCH = "gas";
 	private static final String KEY_GAODE_GEO = "geo";
+	private static final String KEY_LONGLAT = "(lon|lat)";
 	
 	public boolean handle() {
 		boolean toRefresh = OptionUtil.readBooleanPRI(options, "r", false);
@@ -150,8 +154,16 @@ public class CommandGaode extends CommandBase {
 		
 		solo = parseParam(KEY_GAODE_GEO + "\\s+(.+?)");
 		if(solo != null) {
+			String location = null;
+			LocationItem item = LonglatUtil.longAndlatOfDMS(solo);
+			if(item != null) {
+				location = item.longCommaLat();
+			}
 			String city = OptionUtil.readString(options, "c", "");
-			String location = GaodeUtils.fetchLonglat(solo, city);
+			if(location == null) {
+				location = GaodeUtils.fetchLonglat(solo, city);
+			}
+			
 			if(location == null) {
 				boolean isDistance = dealWithDistance(solo, city);
 				if(isDistance) {
@@ -166,13 +178,20 @@ public class CommandGaode extends CommandBase {
 			if(location != null) {
 				if(OptionUtil.readBooleanPRI(options, "r", false)) {
 					export(KEY_GAODE_GEO + " " + GaodeUtils.reverseLongAndLat(location));
-					
-					return true;
+					location = GaodeUtils.reverseLongAndLat(location);
+					//return true;
 				}
 				
 				String radius = OptionUtil.readString(options, "r", "1000");
 				boolean useTencent = OptionUtil.readBooleanPRI(options, "tx", false);
-				if(useTencent) {
+				
+				double[] dog = LonglatUtil.longlatOf(location);
+				boolean couldBeChina = true;
+				if(dog != null) {
+					couldBeChina = LonglatUtil.isInsideOf(dog, LonglatUtil.RANGE_CHINA_LONG, LonglatUtil.RANGE_CHINA_LAT);
+				}
+				
+				if(useTencent || !couldBeChina) {
 					lines = TencentUtils.regeocodeOf(GaodeUtils.reverseLongAndLat(location));
 					textAddress = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("address"), StrUtil.connect(lines));
 					appendParam = true;
@@ -196,7 +215,9 @@ public class CommandGaode extends CommandBase {
 				location = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("location"), temp);
 				String formattedAddress = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("formatted_address"), temp);
 				String province = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("province"), temp);
-				textAddress = formattedAddress.replaceAll("^" + province, "");
+				if(formattedAddress != null) {
+					textAddress = formattedAddress.replaceAll("^" + province, "");
+				}
 			}
 			
 			if(!showJson) {
@@ -235,6 +256,73 @@ public class CommandGaode extends CommandBase {
 			lines = prettyFormatOf(lines);
 			
 			export(lines);
+			
+			return true;
+		}
+		
+		LongOrLat item = LonglatUtil.longOrLatOfDMS(command);
+		if(item != null) {
+			List<String> list = Lists.newArrayList();
+			String pretty = MathUtil.toPrettyString(item.getDecimal(), 7);
+			if(StrUtil.isRegexMatched("[SW]", item.getFlag())) {
+				pretty = "-" + pretty;
+			}
+			if(item.getType() != null) {
+				list.add(item.getType() + " " + pretty);
+			} else {
+				list.add(LongOrLat.TYPE_LONGITUDE + " " + pretty);
+				list.add(LongOrLat.TYPE_LATITUDE + " " + pretty);
+			}
+			
+			export(list);
+			return true;
+		}
+
+		regex = KEY_LONGLAT + "\\s+(.+)";
+		params = parseParams(regex);
+		if(params != null) {
+			String type = params[0];
+			List<String> items = StrUtil.splitByRegex(params[1], "\\s+");
+			String msg = "Invalid coordination: " + params[1];
+			LongOrLat jack;
+			List<String> list = Lists.newArrayList();
+			if(items.size() == 1) {
+				Double decimal = MathUtil.toDouble(items.get(0));
+				if(decimal == null) {
+					XXXUtil.alerto(msg);
+				}
+				jack = new LongOrLat(type, decimal);
+				list.add(jack.getTypedDMS());
+			} else {
+				Integer degree = MathUtil.toInteger(items.get(0));
+				if(degree == null) {
+					XXXUtil.alerto(msg);
+				}
+				
+				Integer minute = MathUtil.toInteger(items.get(1));
+				if(minute == null) {
+					XXXUtil.alerto(msg);
+				}
+				
+				double second = 0;
+				if(items.size() == 3) {
+					Double second2 = MathUtil.toDouble(items.get(2));
+					if(second2 == null) {
+						XXXUtil.alerto(msg);
+					} else {
+						second = second2;
+					}
+				}
+				
+				jack = new LongOrLat(type, degree, minute, second);
+				list.add(jack.getTypedDecimal());
+			}
+			
+			list.add(jack.toDegreeMinuteSecondNEWS(LongOrLat.DEGREE, LongOrLat.MINUTE, LongOrLat.SECOND));
+			list.add(jack.toDegreeMinuteSecondNEWS(LongOrLat.DEGREE, "'", "\""));
+			list.add(jack.toDegreeMinuteSecondNEWS(" ", " ", ""));
+			
+			export(list);
 			
 			return true;
 		}

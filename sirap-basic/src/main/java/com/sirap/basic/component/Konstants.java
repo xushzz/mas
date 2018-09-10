@@ -40,6 +40,7 @@ public class Konstants {
 	public static final String KEY_CONTENT_TYPE = "Content-Type";
 	public static final String KEY_AGE = "Age";
 	public static final String FOLDER_EXPORT = "exp";
+	public static final String FOLDER_DATA = "data";
 	public static final String FOLDER_IMG = "img";
 	public static final String FOLDER_SOGOU = "sogou";
 	public static final String FOLDER_YOUDAO = "youdao";

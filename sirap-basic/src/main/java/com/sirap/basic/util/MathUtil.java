@@ -281,28 +281,6 @@ public class MathUtil {
 		return avg;
 	}
 	
-	public static String longlatOf(double degree, double min, double second, int scale) {
-		double temp = second / 60.0;
-		temp = (min + temp) / 60.0; 
-		temp = degree + temp;
-		
-		return toPrettyString(temp, scale);
-	}
-	
-	public static String longlatOf(double decimal, int scale) {
-		double degree = (int)decimal;
-		double temp = (decimal - degree) * 60;
-		double minute = (int)temp;
-		temp = temp - minute;
-		double second = temp * 60;
-		
-		List<String> items = Lists.newArrayList();
-		items.add(toPrettyString(degree, scale));
-		items.add(toPrettyString(minute, scale));
-		items.add(toPrettyString(second, scale));
-		
-		return StrUtil.connectWithCommaSpace(items);
-	}
 	
 	public static String toPrettyString(double value, int scale) {
 		String str = setDoubleScale(value, scale);
@@ -539,5 +517,16 @@ public class MathUtil {
 		}
 		
 		return temp;
+	}
+	
+	public static boolean isBetween(double target, double good, double bad) {
+		double min = good, max = bad;
+		if(good > bad) {
+			min = bad;
+			max = good;
+		}
+		
+		boolean flag = target <= max && target >= min;
+		return flag;
 	}
 }

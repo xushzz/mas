@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -23,11 +24,11 @@ import javax.swing.filechooser.FileSystemView;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.sirap.basic.component.Konstants;
+import com.sirap.basic.component.map.AlinkMap;
 import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.json.JsonUtil;
-import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
 import com.sirap.basic.tool.FileSizeCalculator;
 import com.sirap.basic.tool.FileWalker;
@@ -1016,4 +1017,22 @@ public class FileUtil {
 		
 		return null;
 	}
+	
+	public static Map<String, String> getKeyValues(String filepath) {
+		Map<String, String> map = Amaps.newLinkHashMap();
+		if(!FileUtil.exists(filepath)) {
+			D.pl("File not fould: " + filepath);
+			return map;
+		}
+		AlinkMap<String, String> props = Amaps.ofProperties(IOUtil.readLines(filepath, Konstants.CODE_UTF8));
+		Iterator<String> it = props.keySet().iterator();
+		while(it.hasNext()) {
+			String key = it.next();
+			String value = props.get(key);
+			map.put(key, value);
+		}
+		
+		return map;
+	}
+
 }

@@ -26,6 +26,7 @@ public class GaodeUtils {
 	public static final String GITEE_URL_CHINA_DISTRICTS = "https://gitee.com/thewire/stamina/raw/master/china/amapChinaDistricts.txt";
 	public static final String LEVEL_PROVINCE = "province";
 	public static final String API_KEY = "02a37b38c4b33a671f1cd1584b54adc8";
+	//8325164e247e15eea68b59e89200988b, found in 2018-9-7
 	public static final String TEMPLATE_DISTRICT = "http://restapi.amap.com/v3/config/district?extensions=base&subdistrict={0}&keywords={1}&key={2}";
 	public static final String TEMPLATE_GEOCODE = "http://restapi.amap.com/v3/geocode/geo?address={0}&city={1}&key={2}";
 	public static final String TEMPLATE_REGEOCODE = "http://restapi.amap.com/v3/geocode/regeo?location={0}&radius={1}&key={2}";
@@ -482,11 +483,6 @@ public class GaodeUtils {
 		}
 		
 		return mexItems;
-	}
-	
-	public static boolean isLongLat(String longAndLat) {
-		String regex = Konstants.REGEX_SIGN_FLOAT + "\\s*,\\s*" + Konstants.REGEX_SIGN_FLOAT;
-		return StrUtil.isRegexMatched(regex, longAndLat);
 	}
 	
 	public static String getIfLonglat(String longAndLat) {
