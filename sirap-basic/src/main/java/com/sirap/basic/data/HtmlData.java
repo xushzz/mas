@@ -21,7 +21,7 @@ public class HtmlData {
 	public static String SCRIPT = "EGGS.put(\"{0}\", new ValuesItem((char){1}, \"{0}\", {1}, \"{2}\"));";
 	static {
 		EGGS.put("quot", new ValuesItem((char)34, "quot", 34, "quotation mark"));
-		EGGS.put("apos", new ValuesItem((char)39, "apos", 39, "apostrophe&nbsp;"));
+		EGGS.put("apos", new ValuesItem((char)39, "apos", 39, "apostrophe"));
 		EGGS.put("amp", new ValuesItem((char)38, "amp", 38, "ampersand"));
 		EGGS.put("lt", new ValuesItem((char)60, "lt", 60, "less-than"));
 		EGGS.put("gt", new ValuesItem((char)62, "gt", 62, "greater-than"));

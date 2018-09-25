@@ -2,12 +2,14 @@ package com.sirap.common.framework.command.target;
 
 import java.util.List;
 
+import com.sirap.basic.component.Konstants;
 import com.sirap.basic.component.html.HtmlExporter;
 import com.sirap.basic.output.HtmlParams;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.common.component.FileOpener;
+import com.sirap.common.framework.Konfig;
 import com.sirap.common.framework.SimpleKonfig;
 
 public class TargetHtml extends TargetFile {
@@ -40,7 +42,8 @@ public class TargetHtml extends TargetFile {
 		}
 		
 		params.setTopInfo(topInfo);
-		List<String> htmlTemplate = IOUtil.readLines("/template_nice.html", SimpleKonfig.g().getCharsetInUse());
+		//IOUtil.readLinesFromStreamByClassLoader(Konfig.KONFIG_FILE, Konstants.CODE_UTF8)
+		List<String> htmlTemplate = IOUtil.readLinesFromStreamByClassLoader("template_nice.html", SimpleKonfig.g().getCharsetInUse());
 		List<String> htmlContent = HtmlExporter.generateHtmlContent(htmlTemplate, records, params);
 		
 		IOUtil.saveAsTxt(htmlContent, filePath);

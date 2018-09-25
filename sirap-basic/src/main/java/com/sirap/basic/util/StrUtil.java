@@ -1087,4 +1087,28 @@ public class StrUtil {
 		
 		return sb.toString();
 	}
+	
+	public static boolean isPositive(String str) {
+		return str != null && !str.isEmpty();
+	}
+	
+	public static String recoverSpace(String source) {
+		if(EmptyUtil.isNullOrEmpty(source)) {
+			return null;
+		}
+		
+		String regex = "#s(\\d{0,3})";
+		Matcher mat = StrUtil.createMatcher(regex, source);
+		StringBuffer sb = StrUtil.sb();
+		while(mat.find()) {
+			String repeat = mat.group(1);
+			String what = " ";
+			int times = repeat.isEmpty() ? 1 : Integer.parseInt(repeat);
+			String stuff = StrUtil.repeat(what, times);
+			mat.appendReplacement(sb, stuff);
+		}
+		mat.appendTail(sb);
+		
+		return sb.toString();
+	}
 }

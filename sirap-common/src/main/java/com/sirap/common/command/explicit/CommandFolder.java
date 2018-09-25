@@ -152,7 +152,7 @@ public class CommandFolder extends CommandBase {
 				if(EmptyUtil.isNullOrEmpty(nameCriteria)) {
 					allMexedFiles.addAll(allFiles);
 				} else {
-					List<MexFile> items = Colls.filter(allFiles, nameCriteria, isCaseSensitive(), isStayCriteria());
+					List<MexFile> items = Colls.filter(allFiles, useSpace(nameCriteria), isCaseSensitive(), isStayCriteria());
 					allMexedFiles.addAll(items);
 				}
 			}
@@ -204,7 +204,7 @@ public class CommandFolder extends CommandBase {
 			this.target = sean.getTarget();
 			this.options = sean.getOptions();
 			boolean detail = !params[0].isEmpty();
-			String criteria = params[1].trim();
+			String criteria = useSpace(params[1].trim());
 			List<MexFile> records = VFileManager.g().getFileRecordsByName(criteria, isCaseSensitive());
 			boolean toRemove = OptionUtil.readBooleanPRI(options, "remove", false);
 			if(toRemove) {

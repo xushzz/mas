@@ -8,6 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.sirap.basic.component.Extractor;
+import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.domain.Link;
 
@@ -15,6 +16,33 @@ public class ExtractorUtil {
 
 	public static final String HOMEPAGE_QIHU360 = "http://image.so.com";
 	public static final String HOMEPAGE_SOGOU = "http://pic.sogou.com";
+	public static final String SINA_SLIDES = "http://slide.sports.sina.com.cn/cba/slide_2_792_193598.html";
+
+	public static List<String> sinaSlides(final String albumUrl) {
+		Extractor<String> frank = new Extractor<String>() {
+			
+			@Override
+			public String getUrl() {
+				printFetching = true;
+				return albumUrl;
+			}
+			
+			@Override
+			protected void parse() {
+				String regex = JsonUtil.createRegexKey("image_url");
+				Matcher ma = createMatcher(regex);
+				while(ma.find()) {
+					String temp = ma.group(1);
+					temp = temp.replace("\\", "");
+					mexItems.add(temp);
+				}
+			}
+		};
+		
+		frank.process();
+		
+		return frank.getItems();
+	}
 
 	public static List<String> sogouImageLinks(final String keyword) {
 		Extractor<String> frank = new Extractor<String>() {

@@ -27,6 +27,9 @@ public class LonglatData {
 		EGGS.put("yayuan", "108.374956,22.829735");
 		EGGS.put("xida", "108.288135,22.839381");
 		EGGS.put("nyc", "-73.916666,40.7333333");
+		EGGS.put("tw", "120.914716,23.192564");
+		EGGS.put("moscow", "37.620539,55.753592");
+		EGGS.put("nurem", "11.124185,49.42595");
 //		EGGS.put("", "");
 //		EGGS.put("", "");
 //		EGGS.put("", "");

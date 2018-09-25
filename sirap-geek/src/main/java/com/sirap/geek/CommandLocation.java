@@ -154,6 +154,87 @@ public class CommandLocation extends CommandBase {
 		
 		solo = parseParam(KEY_GAODE_GEO + "\\s+(.+?)");
 		if(solo != null) {
+			String longCommaLat = null;
+			LocationItem item = LonglatUtil.longAndlatOfDMS(solo);
+			if(item != null) {
+				longCommaLat = item.longCommaLat();
+			}
+			String city = OptionUtil.readString(options, "c", "");
+			if(longCommaLat == null) {
+				longCommaLat = GaodeUtils.fetchLonglat(solo, city);
+			}
+			
+			if(longCommaLat == null) {
+				boolean isDistance = dealWithDistance(solo, city);
+				if(isDistance) {
+					return true;
+				}
+			} else {
+				if(OptionUtil.readBooleanPRI(options, "r", false)) {
+					C.pl(KEY_GAODE_GEO + " " + GaodeUtils.reverseLonglat(longCommaLat));
+					longCommaLat = GaodeUtils.reverseLonglat(longCommaLat);
+				}
+			}
+
+			boolean showJson = OptionUtil.readBooleanPRI(options, "j", false);
+			if(showJson) {
+				if(longCommaLat != null) {
+					export(TencentUtils.regeocodeOf(GaodeUtils.reverseLonglat(longCommaLat)));
+				} else {
+					export(GaodeUtils.geocodeOf(solo, city));
+				}
+				
+				return true;
+			}
+			
+			String niceAddress = null;
+			boolean showDetail = true;
+			boolean showWebsite = OptionUtil.readBooleanPRI(options, "w", false);
+			String rawJson;
+			if(longCommaLat != null) {
+				rawJson = TencentUtils.regeocodeOfRaw(GaodeUtils.reverseLonglat(longCommaLat));
+				String rawGao = GaodeUtils.regeocodeOfRaw(longCommaLat);
+				if(showWebsite) {
+					niceAddress = TencentUtils.niceAddressByRawJson(rawJson);
+					showDetail = TencentUtils.isInGreatDetail(rawJson);
+				}
+			} else {
+				rawJson = GaodeUtils.geocodeOfRaw(solo, city);
+				if(showWebsite) {
+					longCommaLat = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("location"), rawJson);
+					String formattedAddress = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("formatted_address"), rawJson);
+					String province = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("province"), rawJson);
+					if(formattedAddress != null) {
+						niceAddress = formattedAddress.replaceAll("^" + province, "");
+					}
+				}
+			}
+			
+			List<String> lines = JsonUtil.getPrettyTextInLines(rawJson);
+			lines.add(0, StrUtil.occupy("param_location: {0}", longCommaLat));
+			List<String> pretty = prettyFormatOf(lines);
+			export(pretty);
+			
+			if(showWebsite) {
+				String temp = "?zoom={0}&location={1}&address={2}";
+				int zoom = showDetail ? 15 : 7;
+				if(!StrUtil.isPositive(longCommaLat)) {
+					longCommaLat = "";
+				}
+				if(!StrUtil.isPositive(niceAddress)) {
+					niceAddress = "";
+				}
+				String requestParams = StrUtil.occupy(temp, zoom, longCommaLat, niceAddress);
+				String site = g().getUserValueOf("picker.site", HttpHelper.URL_AKA10_PICKER);
+				String pickerUrl = site + requestParams;
+				viewPage(pickerUrl);
+			}
+
+			return true;
+		}
+		
+		solo = parseParam(KEY_GAODE_GEO + "XXX\\s+(.+?)");
+		if(solo != null) {
 			String location = null;
 			LocationItem item = LonglatUtil.longAndlatOfDMS(solo);
 			if(item != null) {
@@ -177,13 +258,13 @@ public class CommandLocation extends CommandBase {
 			List<String> lines = Lists.newArrayList();
 			if(location != null) {
 				if(OptionUtil.readBooleanPRI(options, "r", false)) {
-					export(KEY_GAODE_GEO + " " + GaodeUtils.reverseLongAndLat(location));
-					location = GaodeUtils.reverseLongAndLat(location);
+					export(KEY_GAODE_GEO + " " + GaodeUtils.reverseLonglat(location));
+					location = GaodeUtils.reverseLonglat(location);
 					//return true;
 				}
 				
 				String radius = OptionUtil.readString(options, "r", "1000");
-				boolean useTencent = OptionUtil.readBooleanPRI(options, "tx", false);
+				boolean useTencent = OptionUtil.readBooleanPRI(options, "tx", true);
 				
 				double[] dog = LonglatUtil.longlatOf(location);
 				boolean couldBeChina = true;
@@ -192,7 +273,7 @@ public class CommandLocation extends CommandBase {
 				}
 				
 				if(useTencent || !couldBeChina) {
-					lines = TencentUtils.regeocodeOf(GaodeUtils.reverseLongAndLat(location));
+					lines = TencentUtils.regeocodeOf(GaodeUtils.reverseLonglat(location));
 					textAddress = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("address"), StrUtil.connect(lines));
 					appendParam = true;
 				} else {
@@ -204,7 +285,7 @@ public class CommandLocation extends CommandBase {
 						textAddress = formattedAddress.replaceAll("^" + province, "");
 					} else {
 						appendParam = true;
-						lines = TencentUtils.regeocodeOf(GaodeUtils.reverseLongAndLat(location));
+						lines = TencentUtils.regeocodeOf(GaodeUtils.reverseLonglat(location));
 						temp = StrUtil.connect(lines);
 						textAddress = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("address"), temp);
 					}

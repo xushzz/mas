@@ -187,6 +187,10 @@ public abstract class CommandBase {
 		return debug;
 	}
 	
+	public String useSpace(String strWithPoundS) {
+		return StrUtil.recoverSpace(strWithPoundS);
+	}
+	
 	@SuppressWarnings({ "rawtypes"})
 	public void export(List list) {
 		export(list, options);

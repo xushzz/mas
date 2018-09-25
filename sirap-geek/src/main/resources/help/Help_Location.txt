@@ -27,4 +27,4 @@ lon 120.79         convert given decimal style longitude to degree minute second
 lat -56.43         convert given decimal style latitude to degree minute second style, various units
 lon -20 79 12      convert given degree minute second style longitude to decimal style, various units
 lat 78 72 43       convert given degree minute second style latitude to decimal style, various units
-ver=9/10/2018, I  GEEK-GAODE1.0.10-FRANCE
+ver=9/25/2018, II  GEEK-GAODE1.0.11-Kattegat

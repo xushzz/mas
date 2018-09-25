@@ -362,6 +362,25 @@ public class GaodeUtils {
 
 		return null;
 	}
+	
+	public static String geocodeOfRaw(String address, String city) {
+		Extractor<String> neymar = new Extractor<String>() {
+
+			public String getUrl() {
+				showFetching().useUTF8();
+				String url = StrUtil.occupy(TEMPLATE_GEOCODE, encodeURLParam(address), encodeURLParam(city), API_KEY);
+				C.pl(lax() + StrUtil.occupy(TEMPLATE_GEOCODE, address, city, API_KEY));
+				return url;
+			}
+			
+			@Override
+			protected void parse() {
+				item = source;
+			}
+		};
+		
+		return neymar.process().getItem();
+	}
 
 	public static List<String> geocodeOf(String address, String city) {
 		Extractor<String> neymar = new Extractor<String>() {
@@ -388,6 +407,24 @@ public class GaodeUtils {
 	 * @param radius
 	 * @return
 	 */
+	public static String regeocodeOfRaw(String location) {
+		Extractor<String> neymar = new Extractor<String>() {
+
+			public String getUrl() {
+				showFetching().useUTF8();
+				String url = StrUtil.occupy(TEMPLATE_REGEOCODE, location.replace(" ", ""), "", API_KEY);
+				return url;
+			}
+			
+			@Override
+			protected void parse() {
+				item = source;
+			}
+		};
+		
+		return neymar.process().getItem();
+	}
+	
 	public static List<String> regeocodeOf(String location, String radius) {
 		Extractor<String> neymar = new Extractor<String>() {
 
@@ -494,7 +531,7 @@ public class GaodeUtils {
 		}
 	}
 	
-	public static String reverseLongAndLat(String longAndLat) {
+	public static String reverseLonglat(String longAndLat) {
 		String regex = Konstants.REGEX_SIGN_FLOAT + "\\s*,\\s*" + Konstants.REGEX_SIGN_FLOAT;
 		String[] params = StrUtil.parseParams(regex, longAndLat);
 		if(params == null) {

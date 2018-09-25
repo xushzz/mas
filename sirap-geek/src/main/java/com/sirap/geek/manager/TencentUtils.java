@@ -19,12 +19,30 @@ public class TencentUtils {
 	 * @param radius
 	 * @return
 	 */
-	public static List<String> regeocodeOf(String location) {
+	public static String regeocodeOfRaw(String latCommaLong) {
 		Extractor<String> neymar = new Extractor<String>() {
 
 			public String getUrl() {
 				showFetching().useUTF8();
-				String url = StrUtil.occupy(TEMPLATE_REGEOCODE, location.replace(" ", ""), API_KEY);
+				String url = StrUtil.occupy(TEMPLATE_REGEOCODE, latCommaLong.replace(" ", ""), API_KEY);
+				return url;
+			}
+			
+			@Override
+			protected void parse() {
+				item = source;
+			}
+		};
+		
+		return neymar.process().getItem();
+	}
+	
+	public static List<String> regeocodeOf(String latCommaLong) {
+		Extractor<String> neymar = new Extractor<String>() {
+
+			public String getUrl() {
+				showFetching().useUTF8();
+				String url = StrUtil.occupy(TEMPLATE_REGEOCODE, latCommaLong.replace(" ", ""), API_KEY);
 				return url;
 			}
 			
@@ -36,6 +54,45 @@ public class TencentUtils {
 		
 		return neymar.process().getItems();
 	}
+	
+	public static boolean isInGreatDetail(String jsonOneline) {
+		String recommend = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("recommend"), jsonOneline);
+		return StrUtil.isPositive(recommend);
+	}
 
-
+	public static String niceAddressByRawJson(String source) {
+		String nice;
+		String recommend = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("recommend"), source);
+		if(recommend != null) {
+			//in China.
+			String address = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("address"), source);
+			String temp = address.replace(recommend, "");
+			temp = recommend + " " + temp; 
+			nice = temp.trim();
+		} else {
+			//outside China
+			String nation = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("nation"), source);
+			String levelA = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("ad_level_1"), source);
+			String levelB = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("ad_level_2"), source);
+			String levelC = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("ad_level_3"), source);
+			String street = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("street"), source);
+			StringBuffer sb = StrUtil.sb(nation);
+			if(StrUtil.isPositive(levelA)) {
+				sb.append(" ").append(levelA);
+			}
+			if(StrUtil.isPositive(levelB)) {
+				sb.append(" ").append(levelB);
+			}
+			if(StrUtil.isPositive(levelC)) {
+				sb.append(" ").append(levelC);
+			}
+			if(StrUtil.isPositive(street)) {
+				sb.append(" ").append(street);
+			}
+			
+			nice = sb.toString().trim();
+		}
+		
+		return nice;
+	}
 }
