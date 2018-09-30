@@ -65,7 +65,7 @@ public class JsonBox {
 			recoverElement(king);
 			renameKeys();
 		} else {
-			XXXUtil.alert("Illegal json: [" + jsonText + "]");
+			XXXUtil.alert("Illegal json: {0}", jsonText);
 		}
 	}
 	

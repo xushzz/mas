@@ -20,7 +20,6 @@
 		<module>sirap-third</module>
 		<module>sirap-titus</module>
 		<module>../maspri/sirap-security</module>
-		<module>sirap-hua</module>
 	<!-- 
 		<module>sirap-executor</module>
 		<module>sirap-ldap</module>
@@ -94,6 +93,11 @@
 	</build>
 
 	<dependencies>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		    <version>1.16.20</version>
+		</dependency>
 	</dependencies>
 
 	<profiles>

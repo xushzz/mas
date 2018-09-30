@@ -154,6 +154,21 @@ public class ObjectUtil {
 		return null;
 	}
 	
+	public static Object readFieldValue(Object instance, String fieldName) {
+		try {
+			Class<?> clazz = Class.forName(instance.getClass().getName());
+			Field fd = clazz.getDeclaredField(fieldName);
+			fd.setAccessible(true);
+			Object obj = fd.get(instance);
+			
+			return obj;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		
+		return null;
+	}
+	
 	public static String simpleNameOfInstance(Object instance) {
 		return instance != null ? instance.getClass().getSimpleName() : Konstants.FAKED_NULL;
 	}

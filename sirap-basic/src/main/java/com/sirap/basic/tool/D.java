@@ -170,7 +170,8 @@ public class D {
 	 * @return
 	 */
 	public static String mark() {
-		return RandomUtil.LETTERS(2);
+//		return RandomUtil.LETTERS(2);
+		return RandomUtil.name();
 	}
 
 	private static String METHOD_INFO = DEBUG + " {0} {1} {2} {3}     #by {4}";

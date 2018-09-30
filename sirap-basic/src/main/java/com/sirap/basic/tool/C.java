@@ -46,7 +46,20 @@ public class C {
 	}
 
 	public static void pl() {
-		System.out.println();
+		plk(1);
+	}
+
+	public static void pl3() {
+		plk(3);
+	}
+
+	public static void pl8() {
+		plk(8);
+	}
+	
+	public static void plk(int kLines) {
+		String lines = StrUtil.repeat('\n', kLines);
+		System.out.print(lines);
 	}
 
 	public static void pl2(Object obj) {

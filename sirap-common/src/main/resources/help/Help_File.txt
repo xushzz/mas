@@ -28,3 +28,8 @@ ko juicy stuff     kick off, craete a new text file with given text "juicy stuff
 hex F:\a.class     print hex-style bytes of given normal file, such as 25 50 44 46 2d ... 31, k = 16 per line
 hex string stuff   print hex-style bytes of given string, 16 elements per line, $+k default, or $k=32
 xeh hex-bytes      convert hex-style bytes to given string, split by [,\\s]+
+@D:\pom.xml        print out whole xml file in pretty JSON format, option $+go, mandatory for text file
+@D:\pom.xml $s=version  print out values for those <version> elements
+@D:\pom.xml $s=?.version  print out value of element <project><version>, give root is <project>
+@D:\pom.xml $s=?.version  also for project.version, .build.finalName and so on
+@http://g.cn/some.xml also for http URLs

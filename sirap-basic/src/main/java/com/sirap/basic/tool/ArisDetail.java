@@ -162,7 +162,7 @@ public class ArisDetail {
 	}
 
 	private List<String> readFields() {
-		Field[] fields = glass.getDeclaredFields(); 
+		Field[] fields = glass.getDeclaredFields();
 		List<String> items = new ArrayList<>();
 		for(Field item : fields) {
             String modifier = Modifier.toString(item.getModifiers());  

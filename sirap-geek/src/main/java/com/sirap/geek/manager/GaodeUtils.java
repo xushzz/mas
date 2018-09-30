@@ -135,15 +135,16 @@ public class GaodeUtils {
 			
 			@Override
 			protected void parse() {
-				String regex = "<poi>(.+?)</poi>";
+				Object pois = XmlUtil.readValueFromText(source, ".pois");
+				List maps = XmlUtil.wrapMapIfNeeded(pois);
+				
 				List<String> keys = StrUtil.split("cityname,adname,name,type,address,tel,location");
-				Matcher ma = createMatcher(regex);
 				List<String> templist = Lists.newArrayList();
-				while(ma.find()) {
-					String xmlText = ma.group(1);
+				
+				for(Object item : maps) {
 					List<String> items = Lists.newArrayList();
 					for(String key : keys) {
-						String value = XmlUtil.readValue(xmlText, key);
+						String value = XmlUtil.valueOf(item, "." + key) + "";
 						if(EmptyUtil.isNullOrEmpty(value)) {
 							continue;
 						}
@@ -155,6 +156,7 @@ public class GaodeUtils {
 					}
 					templist.add(StrUtil.connect(items, " "));
 				}
+				
 				Collections.sort(templist);
 				int count = 0;
 				for(String item : templist) {
@@ -187,17 +189,16 @@ public class GaodeUtils {
 			
 			@Override
 			protected void parse() {
-				String regex = "<poi>(.+?)</poi>";
-				List<String> keys = StrUtil.split("distance,cityname,adname,name,type,address,tel,location");
-				Matcher ma = createMatcher(regex);
+				Object pois = XmlUtil.readValueFromText(source, ".pois");
+				List maps = XmlUtil.wrapMapIfNeeded(pois);
+				
 				int count = 0;
-				while(ma.find()) {
-					String xmlText = ma.group(1);
+				List<String> keys = StrUtil.split("distance,cityname,adname,name,type,address,tel,location");
+				for(Object item : maps) {
 					ValuesItem vi = new ValuesItem();
 					vi.setPseudoOrder(++count);
-					
 					for(String key : keys) {
-						String value = XmlUtil.readValue(xmlText, key);
+						String value = XmlUtil.valueOf(item, "." + key) + "";
 						if(EmptyUtil.isNullOrEmpty(value)) {
 							continue;
 						}
@@ -235,14 +236,15 @@ public class GaodeUtils {
 			
 			@Override
 			protected void parse() {
-				String distanceInMeter = XmlUtil.readValue(source, "distance");
+//				String distanceInMeter = XmlUtil.readValue(source, "distance");
+				String distanceInMeter = XmlUtil.readValueFromText(source, ".results..distance") + "";
 				Integer distance = MathUtil.toInteger(distanceInMeter);
 				if(distance == null || distance <= 0) {
 					String info = StrUtil.findFirstMatchedItem("<info>([^a-z]+)</info>", source);
 					XXXUtil.alert(info);
 				}
 				
-				String durationInSecond = XmlUtil.readValue(source, "duration");
+				String durationInSecond = XmlUtil.readValueFromText(source, ".results..duration") + "";
 				Integer duration = MathUtil.toInteger(durationInSecond, 1);
 				
 				item = new int[]{distance, duration};

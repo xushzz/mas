@@ -7,18 +7,21 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexZipEntry;
 import com.sirap.basic.exception.MexException;
+import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.ArisUtil;
 import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
+import com.sirap.basic.util.HttpUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.ImageUtil;
 import com.sirap.basic.util.MathUtil;
@@ -26,6 +29,7 @@ import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XCodeUtil;
 import com.sirap.basic.util.XXXUtil;
+import com.sirap.basic.util.XmlUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.domain.MemoryRecord;
@@ -42,6 +46,7 @@ public class CommandFile extends CommandBase {
 
 	private static final String KEY_PRINT_TXT_ONELINE = "&";
 	private static final String KEY_PRINT_TXT = "#";
+	private static final String KEY_PRINT_XML = "@";
 	private static final String KEY_PDF = "pdf";
 	private static final String KEY_DAY_CHECK = "dc";
 	private static final String KEY_MEMORABLE = "mm";
@@ -467,6 +472,46 @@ public class CommandFile extends CommandBase {
 			export(temp);
 			
 			return true;
+		}
+		
+		solo = parseParam(KEY_PRINT_XML + "(.+?)");
+		if(solo != null) {
+			String content = null;
+			if(HttpUtil.isHttp(solo)) {
+				content = IOUtil.readString(solo);
+			} else {
+				File xmlfile = parseFile(solo);
+				if(xmlfile != null) {
+					String path = xmlfile.getAbsolutePath();
+					boolean asText = OptionUtil.readBooleanPRI(options, "go", false);
+					if(asText || FileOpener.isTextFile(path)) {
+						content = IOUtil.readString(path);
+					} else {
+						XXXUtil.alerto("Can't read file as text: {0}", path);
+						return true;
+					}
+				}
+			}
+			
+			if(content != null) {
+				Object mars = XmlUtil.xmlOfText(content);
+				String expression = OptionUtil.readString(options, "s");
+				if(!EmptyUtil.isNullOrEmpty(expression)) {
+					String regex = "(\\??)(.+?)";
+					String[] params = StrUtil.parseParams(regex, expression);
+					mars = XmlUtil.valueOf(mars, params[1], !params[0].isEmpty());
+				}
+				
+				if(Map.class.isInstance(mars) || List.class.isInstance(mars)) {
+					String temp = JsonUtil.toPrettyJson(mars);
+					List<String> lines = JsonUtil.getPrettyTextInLines(temp);
+					export(lines);
+				} else {
+					export(mars);
+				}
+
+				return true;
+			}
 		}
 		
 		return false;

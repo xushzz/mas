@@ -112,17 +112,16 @@ public class CommandCollect extends CommandBase {
 		solo = parseParam(KEY_PHONE_MOBILE + "(.+)");
 		if(solo != null) {
 			String number = StrUtil.takeDigitsOnly(solo);
-
-			if(number.length() >= 7) {
+			if(StrUtil.isRegexMatched("[\\d]{7,30}", solo)) {
 				String detail = getMobilePhoneLocation(number);
 				if(EmptyUtil.isNullOrEmpty(detail)) {
 					detail = "no detail.";
 				}
 				String value = number + " " + detail;
 				export(value);
+				
+				return true;
 			}
-			
-			return true;
 		}
 				
 		solo = parseParam(KEY_TRANSLATE + "\\s+(.+?)");

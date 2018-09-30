@@ -25,11 +25,11 @@ public abstract class MexItem implements Serializable {
 	protected boolean caseSensitive;
 	protected int pseudoOrder;
 
-	public boolean parse(String record) {
+	public boolean parse(String str) {
 		return false;
 	}
 	
-	public boolean parse(List record) {
+	public boolean parse(List list) {
 		return false;
 	}
 	

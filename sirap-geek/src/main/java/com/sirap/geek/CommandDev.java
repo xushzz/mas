@@ -31,6 +31,7 @@ import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.ImageUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.MatrixUtil;
+import com.sirap.basic.util.MavenUtils;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.SatoUtil;
@@ -103,7 +104,7 @@ public class CommandDev extends CommandBase {
 
 		params = parseParams(KEY_MAVEN_REPO + "\\s+([\\S]+?)(|\\s(.+?))");
 		if(params != null) {
-			String repo = MavenManager.g().getMavenRepo() + "/";
+			String repo = MavenUtils.getRepo() + "/";
 			String path = MavenManager.toNormalPath(params[0]);
 			String criteria = params[1];
 			String full = StrUtil.useSeparator(repo, path);
@@ -149,7 +150,7 @@ public class CommandDev extends CommandBase {
 		}
 
 		if(is(KEY_MAVEN_REPO)) {
-			export(MavenManager.g().getMavenRepo());
+			export(MavenUtils.getRepo());
 			
 			return true;
 		}

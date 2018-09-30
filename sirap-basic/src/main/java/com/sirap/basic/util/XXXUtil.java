@@ -119,6 +119,12 @@ public class XXXUtil {
 		}
 	}
 	
+	public static void shouldBeNotnull(Object value) {
+		if(value == null) {
+			throw new MexException("value {0} should not be null.", value);
+		}
+	}
+	
 	public static void shouldBeEqual(Object a, Object b) {
 		if(a == null && b == null) {
 			return;

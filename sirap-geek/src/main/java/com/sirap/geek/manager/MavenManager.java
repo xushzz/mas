@@ -1,6 +1,5 @@
 package com.sirap.geek.manager;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -9,11 +8,9 @@ import java.util.TreeSet;
 import com.google.common.collect.Lists;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.tool.C;
+import com.sirap.basic.util.MavenUtils;
 import com.sirap.basic.util.PanaceaBox;
-import com.sirap.basic.util.SatoUtil;
 import com.sirap.basic.util.StrUtil;
-import com.sirap.basic.util.XXXUtil;
-import com.sirap.basic.util.XmlUtil;
 
 public class MavenManager {
 
@@ -33,60 +30,21 @@ public class MavenManager {
 	
 	public List<String> getMavenInfo() {
 		List<String> items = new ArrayList<>();
-		String home = getMavenHome();
-		items.add("Maven home : " + home);
-		items.add("Maven repo : " + getMavenRepo(home));
-		items.add("Super pom  : " + getSuperPom(home));
+		items.add("Maven home : " + MavenUtils.getHome());
+		items.add("Maven repo : " + MavenUtils.getRepo());
+		items.add("Settings   : " + MavenUtils.getSettings());
+		items.add("Super pom  : " + MavenUtils.getSuperPom());
 		
 		return items;
 	}
 	
-	private String getMavenHome() {
-		String mavenBin = SatoUtil.kidOfJavaLibPath("maven");
-		XXXUtil.nullCheck(mavenBin, "mavenBin");
-		String temp = mavenBin.replaceAll("\\\\bin", "");
-		
-		return temp;
-	}
-	
-	//C:/apache-maven-3.3.9/lib/maven-model-builder-3.3.9.jar!/org/apache/maven/model/pom-4.0.0.xml
-	public String getSuperPom(String home) {
-		String regex = "(\\d\\.\\d\\.\\d{1,2})";
-		String version = StrUtil.findFirstMatchedItem(regex, home);
-		String jarName = StrUtil.occupy("maven-model-builder-{0}.jar", version);
-		String jarPath = StrUtil.useDelimiter(File.separator, home, "lib", jarName);
-		String pomPath = jarPath.replace('\\', '/') + "!/org/apache/maven/model/pom-4.0.0.xml";
-		
-		return pomPath;
-	}
-	
-	public String getMavenRepo() {
-		return getMavenRepo(null);
-	}
-	
-	public String getMavenRepo(String home) {
-		if(home == null) {
-			home = getMavenHome();
-		}
-		
-		File satoshi = new File(home, "conf\\settings.xml");
-				
-		if(!satoshi.exists()) {
-			XXXUtil.alert("File non exists: " + satoshi);
-		}
-		
-		String repo = XmlUtil.readValueFromFile(satoshi.getAbsolutePath(), "localRepository");
-
-		return repo;
-	}
-	
 	public List<String> getDependencies(String mvnCommand) {
-		
 		String newCommand = "cmd /c " + mvnCommand;
 		C.pl2("building... " + mvnCommand);
 		
 		List<String> buildResult = PanaceaBox.executeAndRead(newCommand);
-		List<String> deps = validateAndParseDeps(getMavenRepo(getMavenHome()), buildResult);
+		String repo = MavenUtils.getRepo();
+		List<String> deps = validateAndParseDeps(repo, buildResult);
 		
 		return deps;
 	}
