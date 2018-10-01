@@ -38,12 +38,6 @@ public class MavenPom extends MavenItem {
 	private String pomPath;
 	private int depth;
 	
-	public String self() {
-		String item = groupId + " # " + artifactId + " " + version;
-		
-		return item;
-	}
-	
 	public void self(int depth) {
 		String dent = StrUtil.spaces(depth * 4);
 		D.pl(dent + groupId + " # " + artifactId + " " + version);
@@ -60,41 +54,7 @@ public class MavenPom extends MavenItem {
 		parseDeps();
 	}
 	
-	public Map<String, String> mapOfManagements() {
-		Map<String, String> mars = new LinkedHashMap<>();
-		for(MavenDep dep : managements) {
-//			D.pl(dep.keyOf());
-			mars.put(dep.keyOf(), dep.getVersion());
-		}
-		
-		return mars;
-	}
-	
-	public void dollarTest() {
-		String key = "parent.relativePath";
-//		D.pla("AAA", this.getParent());
-		String va = dollarOf(key, this);
-		D.pla("XXXXXXX", key, va);
-	}
-	
-	public List<MavenDep> getKidsDeps(MavenPom pom) {
-		List<MavenDep> aks = Lists.newArrayList();
-		for(MavenDep dep : pom.getDependencies()) {
-			String depPath = dep.path(pom.getRepoPath());
-			depPath = depPath.replaceAll("\\.jar$", ".pom");
-			D.pl();
-			D.sink(depPath);
-			D.pl(dep.getExclusions());
-			D.pl();
-			MavenPom mars = MavenBuilder.parsePom(depPath, pom.getRepoPath(), "XXX", 4);
-//			aks.addAll(mars.dependencies);
-			aks.addAll(applyExclusions(mars.getDependencies(), dep.getExclusions()));
-		}
-		
-		return aks;
-	}
-	
-	public List<MavenDep> applyExclusions(List<MavenDep> deps, List<MavenExclusion> clus) {
+	private List<MavenDep> applyExclusions(List<MavenDep> deps, List<MavenExclusion> clus) {
 		List<MavenDep> newlist = Lists.newArrayList();
 		for(MavenDep dep : deps) {
 			String gid = dep.getGroupId();
@@ -124,7 +84,7 @@ public class MavenPom extends MavenItem {
 		return newlist;
 	}
 	
-	public void parseDeps() {
+	private void parseDeps() {
 		Object moon = objOf("project.dependencies", origin);
 //		D.pjsp(moon);
 		if(moon == null) {
@@ -150,7 +110,7 @@ public class MavenPom extends MavenItem {
 		return mars;
 	}
 	
-	public List<MavenDep> getParentsDeps() {
+	public List<MavenDep> getParentsSelfDeps() {
 		List<MavenDep> mars = Lists.newArrayList();
 		MavenPom pom = this;
 		do {
@@ -161,7 +121,7 @@ public class MavenPom extends MavenItem {
 			pom = pom.getParent();
 		} while (pom != null);
 
-//		mars.putAll(depsToMap(getKidsDeps()));
+//		mars.addAll(getKidsDeps());
 		
 		return mars;
 	}
@@ -175,11 +135,26 @@ public class MavenPom extends MavenItem {
 		
 		return mars;
 	}
+
+	public List<MavenDep> getKidsDeps() {
+		List<MavenDep> aks = Lists.newArrayList();
+		for(MavenDep dep : dependencies) {
+			String depPath = dep.path(repoPath);
+			depPath = depPath.replaceAll("\\.jar$", ".pom");
+//			D.pl();
+//			D.sink(depPath);
+//			D.pl(dep.getExclusions());
+//			D.pl();
+			MavenPom pom = MavenBuilder.parsePom(depPath, repoPath, "KKK", 4);
+			aks.addAll(pom.dependencies);
+//			aks.addAll(applyExclusions(mars.getDependencies(), dep.getExclusions()));
+		}
+		
+		return aks;
+	}
 	
-	public void parseManagement() {
-//		D.pla("AAAA",pomPath);
+	private void parseManagement() {
 		Object moon = objOf("project.dependencyManagement.dependencies", origin);
-//		D.pjsp(moon);
 		if(moon == null) {
 			return;
 		}
@@ -189,7 +164,7 @@ public class MavenPom extends MavenItem {
 		applyExpression(managements, this);
 	}
 	
-	public void parseProps() {
+	private void parseProps() {
 		Object moon = objOf("project.properties", origin);
 		if(moon == null) {
 			return;

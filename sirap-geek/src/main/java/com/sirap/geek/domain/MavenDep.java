@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Lists;
+import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
 import com.sirap.basic.util.EmptyUtil;
@@ -28,8 +29,8 @@ public class MavenDep extends MavenItem {
 		return key;
 	}
 	
-	public String gist() {
-		String key = getGroupId() + " && " + getArtifactId() + " && " + getVersion();
+	public String gav() {
+		String key = getGroupId() + " && " + getArtifactId() + " => " + getVersion();
 		return key;
 	}
 	
@@ -157,5 +158,20 @@ public class MavenDep extends MavenItem {
 	
 	public String toJson() {
 		return D.jsp(this, this.getClass());
+	}
+	
+	@Override
+	public List toList() {
+		List item = Lists.newArrayList();
+		item.add(groupId);
+		item.add(artifactId);
+		item.add(version);
+		
+		return item;
+	}
+
+	@Override
+	public String toPrint() {
+		return gav();
 	}
 }

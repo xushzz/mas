@@ -4,9 +4,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import java.util.regex.Matcher;
 
 import com.google.common.collect.Lists;
-import com.sirap.basic.tool.D;
+//import com.sirap.basic.tool.D;
+import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
@@ -27,7 +29,8 @@ public class XmlToMapConverter {
 		String text = XmlUtil.removeHeaderCommentCDATA(origin);
 //		D.pl(text);
 		List<String> words = breakIntoList(text);
-		Object crown = analyze(words);
+//		D.list(words);
+		Object crown = process(words);
 		XXXUtil.shouldBeTrue(crown instanceof Map);
 		return (Map)crown;
 	}
@@ -37,8 +40,7 @@ public class XmlToMapConverter {
 		return pogba.read();
 	}
 	
-	
-	private Object analyze(List<String> words) {
+	private Object process(List<String> words) {
 		if(words.isEmpty()) {
 			return "";
 		}
@@ -58,13 +60,12 @@ public class XmlToMapConverter {
 				continue;
 			}
 			if(isEnd(word)) {
-//				D.pla(word, basket);
 				String expect = endOf(basket.peek());
 				boolean flag = StrUtil.equals(word, expect);
-//				D.pl(basket);
-				if(!flag) {
-					D.pla(word, expect, flag);
-				}
+//				if(!flag) {
+//					D.pl(basket);
+//					D.pla(word, expect, flag);
+//				}
 				XXXUtil.shouldBeTrue(flag);
 				basket.pop();
 				int start = indexes.pop();
@@ -75,43 +76,46 @@ public class XmlToMapConverter {
 				}
 			}
 		}
-		
+//		D.pl(basket);
 		XXXUtil.shouldBeTrue(basket.isEmpty());
 		
 		if(groups.size() == 1) {
 			List<String> group = groups.get(0);
-			Map<String, Object> mars = mapOf(group);
+			Map<String, Object> mars = mapOfGroup(group);
 			
 			return mars;
 		} else {
 			List<Object> gists = Lists.newArrayList();
 			for(List<String> group : groups) {
-				Map<String, Object> mars = mapOf(group);
+				Map<String, Object> mars = mapOfGroup(group);
 				gists.add(mars);
 			}
 			return gists;
 		}
 	}
 	
-	private Map<String, Object> mapOf(List<String> group) {
-		String name = nameOf(group.get(0));
+	private Map<String, Object> mapOfGroup(List<String> group) {
+		String wordx = group.get(0);
+		String name = nameOf(wordx);
+//		D.pla(name, group.get(0));
 //		D.list(group);
 		List<String> kids = group.subList(1, group.size() - 1);
 		Map<String, Object> mars = new LinkedHashMap<>();
-		Object gist = analyze(kids);
+		Map<String, String> attrs = mapOfProperties(wordx);
+		if(!EmptyUtil.isNullOrEmpty(attrs)) {
+			mars.put("attrs", mapOfProperties(wordx));
+		}
+		
+		Object gist = process(kids);
 		mars.put(name, gist);
 
 		return mars;
 	}
 
-	private static String nameOf(String text) {
-		String temp = text.replaceAll("<|</|>", "");
-		return temp;
-	}
-	
-	private static String endOf(String text) {
-		XXXUtil.shouldBeTrue(isStart(text));
-		String expect = text.replace("<", "</");
+	private static String endOf(String wordx) {
+		XXXUtil.shouldBeTrue(isStart(wordx));
+		String name = nameOf(wordx);
+		String expect = StrUtil.occupy("</{0}>", name);
 		
 		return expect;
 	}
@@ -124,40 +128,64 @@ public class XmlToMapConverter {
 		return StrUtil.isRegexFound("^</", text);
 	}
 	
+	/***
+	 * <OK>
+	 * <OK id="1918">
+	 * @param wordx
+	 * @return
+	 */
+	private static String nameOf(String wordx) {
+		String regex = "([^\\s<>]+)";
+		String name = StrUtil.findFirstMatchedItem(regex, wordx);
+		
+		return name;
+	}
+	
+	private static Map<String, String> mapOfProperties(String wordx) {
+		String regex = "([^\\s=]+)=\"([^\\s=]+)\"";
+		Matcher ma = StrUtil.createMatcher(regex, wordx);
+		Map<String, String> props = new LinkedHashMap<>();
+		while(ma.find()) {
+			props.put(ma.group(1), ma.group(2));
+		}
+		
+		return props;
+	}
+	
 	@AllArgsConstructor
 	class XmlWordsReader {
 		
-		public XmlWordsReader(String words) {
-			this.words = words;
+		public XmlWordsReader(String origin) {
+			this.origin = origin;
 		}
-		private String words;
-		private List<String> balls = Lists.newArrayList();
+		private String origin;
+		private List<String> words = Lists.newArrayList();
 		private Stack<Character> barrel = new Stack<>();
 		
 		public List<String> read() {
 			char expect = '>';
-			for(int i = 0; i < words.length(); i++) {
-				char drip = words.charAt(i);
-				if(drip != expect) {
-					barrel.push(drip);
+			for(int i = 0; i < origin.length(); i++) {
+				char ball = origin.charAt(i);
+				if(ball != expect) {
+					barrel.push(ball);
 					continue;
 				}
 				if(expect == '>') {
-					barrel.push(drip);
-					pourWater();
+					barrel.push(ball);
+					createWord();
 				} else {
-					pourWater();
-					barrel.push(drip);
+					createWord();
+					barrel.push(ball);
 				}
 				
 				expect = nextExpect(expect);
 			}
 			XXXUtil.shouldBeTrue(barrel.isEmpty());
 			
-			return balls;
+			return words;
 		}
 		
-		private boolean pourWater() {
+		private boolean createWord() {
 			String str = popAllDrips(barrel).trim();
 			if(str.isEmpty()) {
 				return false;
@@ -165,18 +193,13 @@ public class XmlToMapConverter {
 			
 			List<String> pair = niceBlank(str);
 			if(pair != null) {
-				balls.addAll(pair);
+				words.addAll(pair);
 			} else {
 				if(StrUtil.startsWith(str, "<")) {
-					str = removeAttrs(str);
-					str = str.replaceAll("\\s+", "");
-					balls.add(str);
+					words.add(str);
 				} else {
-					balls.add(str);
+					words.add(str);
 				}
-				
-				
-				
 			}
 			
 			return true;
@@ -184,27 +207,21 @@ public class XmlToMapConverter {
 
 		/***
 		 * <OK/>
-		 * <OK  />
+		 * <OK id="1918" />
 		 * @param text
 		 * @return
 		 */
-		private String nameOfBlank(String text) {
-			String regex = "<([^<>]*)\\s*/>";
-			String param = StrUtil.parseParam(regex, text);
-			
-			return param;
-		}
-		
 		private List<String> niceBlank(String word) {
-			String name = nameOfBlank(word);
-			if(name == null) {
+			String regex = "<([^\\s<>]+)(|.+?)/>";
+			String[] params = StrUtil.parseParams(regex, word);
+			if(params == null) {
 				return null;
 			}
 
-			List<String> group = Lists.newArrayList();
-			name = removeAttrs(name);
-			group.add("<" + name + ">");
-			group.add("</" + name + ">");
+			String name = params[0];
+			String start = word.replace("/", "");
+			String end = StrUtil.occupy("</{0}>", name);
+			List<String> group = Lists.newArrayList(start, end);
 
 			return group;
 		}
@@ -224,27 +241,6 @@ public class XmlToMapConverter {
 			String item = sb.reverse().toString();
 			
 			return item;
-		}
-		
-		/***
-		 * <dependency name="okthen">
-		 * <dependency/>
-		 * @param text
-		 * @return
-		 */
-		private String removeAttrs(String text) {
-			if(isStart(text)) {
-				String regex = "\\s+[^<>]+\\s*";
-				String temp = text.replaceAll(regex, "");
-				
-				return temp;
-			}
-			
-			if(isEnd(text)) {
-				return text.replaceAll("\\s*", "");
-			}
-			
-			return text;
 		}
 	}
 }

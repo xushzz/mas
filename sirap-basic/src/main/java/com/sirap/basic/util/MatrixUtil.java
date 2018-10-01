@@ -190,12 +190,13 @@ public class MatrixUtil {
 		return matrix;
 	}
 	
-	public static List<List> matrixOf(Collection<ValuesItem> vis) {
+	public static List<List> matrixOf(List<? extends Object> items) {
 		List<List> matrix = Lists.newArrayList();
-		for(ValuesItem vi : vis) {
-			matrix.add(vi.getValues());
+		for(Object item : items) {
+			List list = Colls.listOf(item);
+			matrix.add(list);
 		}
-
+		
 		return matrix;
 	}
 }

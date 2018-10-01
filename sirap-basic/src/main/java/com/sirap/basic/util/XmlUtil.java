@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.common.collect.Lists;
+import com.sirap.basic.component.Konstants;
 import com.sirap.basic.component.XmlToMapConverter;
 import com.sirap.basic.tool.D;
 
@@ -72,34 +73,57 @@ public class XmlUtil {
 	 * @return	Snow Crash
 	 */
 	public static Object valueOf(Object mapOrList, String expression) {
-		return valueOf(mapOrList, expression, true);
-	}
-	
-	public static Object valueOf(Object mapOrList, String expression, boolean matchedFromRoot) {
 		XXXUtil.nullOrEmptyCheck(expression);
 		
 		List<String> keys = StrUtil.split(expression, '.');
-		if(matchedFromRoot) {
-			Object gist = mapOrList;
-			for(String key : keys) {
-				gist = readFromStart(gist, key);
-			}
-			
-			return gist;
-		} else {
-			Object gist = mapOrList;
-			List matchedItems = null;
-			for(String key : keys) {
-				matchedItems = Lists.newArrayList();
-				findAnyMatched(matchedItems, gist, key);
-				gist = matchedItems;
-			}
-			
-			if(matchedItems != null && matchedItems.size() == 1) {
-				return matchedItems.get(0);
+
+		return valueOf(mapOrList, keys);
+	}
+	
+	public static Object valueOf(Object mapOrList, List<String> keys) {
+		XXXUtil.nullOrEmptyCheck(keys);
+		
+		Object gist = mapOrList;
+		
+		for(String key : keys) {
+			gist = readFromStart(gist, key);
+		}
+		
+		return gist;
+	}
+	
+	public static Object findBy(Object mapOrList, String expression) {
+		XXXUtil.nullOrEmptyCheck(expression);
+		
+		List<String> keys = StrUtil.split(expression, '.');
+		
+		return findBy(mapOrList, keys);
+	}
+	
+	public static Object findBy(Object mapOrList, List<String> keys) {
+		XXXUtil.nullOrEmptyCheck(keys);
+		
+		Object gist = mapOrList;
+		List matchedItems = null;
+		for(String key : keys) {
+			matchedItems = Lists.newArrayList();
+			findAnyMatched(matchedItems, gist, key);
+			gist = matchedItems;
+		}
+		
+		if(matchedItems == null || matchedItems.isEmpty()) {
+			return Konstants.FAKED_NULL;
+		}
+		
+		if(matchedItems.size() == 1) {
+			Object obj = matchedItems.get(0);
+			if(obj.toString().isEmpty()) {
+				return Konstants.FAKED_EMPTY;
 			} else {
-				return matchedItems;
+				return obj;
 			}
+		} else {
+			return matchedItems;
 		}
 	}
 	
@@ -180,11 +204,13 @@ public class XmlUtil {
 		String header = "<\\?xml.*?\\?>";
 		String comment = "<!--.*?-->";
 		String cdata = "<!\\[CDATA\\[.+?\\]\\]";
+		String doctype = "<!DOCTYPE.*?>";
 		
 		String temp = source;
 		temp = temp.replaceAll(header, "").trim();
 		temp = temp.replaceAll(comment, "").trim();
 		temp = temp.replaceAll(cdata, "").trim();
+		temp = temp.replaceAll(doctype, "").trim();
 		
 		return temp;
 	}

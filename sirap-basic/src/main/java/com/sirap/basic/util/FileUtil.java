@@ -601,8 +601,7 @@ public class FileUtil {
 		int ia = filepath.lastIndexOf('\\');
 		int ib = filepath.lastIndexOf('/');
 		int index = Math.max(ia, ib);
-		
-		if(ib >= 0) {
+		if(index >= 0) {
 			String[] arr = {filepath.substring(0, index), filepath.substring(index + 1)};
 			return arr;
 		} else {

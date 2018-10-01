@@ -480,26 +480,32 @@ public class CommandFile extends CommandBase {
 			if(HttpUtil.isHttp(solo)) {
 				content = IOUtil.readString(solo);
 			} else {
-				File xmlfile = parseFile(solo);
-				if(xmlfile != null) {
-					String path = xmlfile.getAbsolutePath();
-					boolean asText = OptionUtil.readBooleanPRI(options, "go", false);
-					if(asText || FileOpener.isTextFile(path)) {
-						content = IOUtil.readString(path);
-					} else {
-						XXXUtil.alerto("Can't read file as text: {0}", path);
-						return true;
-					}
-				}
+				content = readStringIfTextfile(solo);
 			}
 			
 			if(content != null) {
 				Object mars = XmlUtil.xmlOfText(content);
-				String expression = OptionUtil.readString(options, "s");
-				if(!EmptyUtil.isNullOrEmpty(expression)) {
+				String search = OptionUtil.readString(options, "s");
+				if(!EmptyUtil.isNullOrEmpty(search)) {
 					String regex = "(\\??)(.+?)";
-					String[] params = StrUtil.parseParams(regex, expression);
-					mars = XmlUtil.valueOf(mars, params[1], !params[0].isEmpty());
+					String[] params = StrUtil.parseParams(regex, search);
+					boolean toFindBy = params[0].isEmpty();
+					String expression = params[1];
+
+					boolean nosplit = OptionUtil.readBooleanPRI(options, "n", false);
+					List<String> keys = Lists.newArrayList();
+					if(nosplit) {
+						keys.add(expression);
+					} else {
+						String delimiter = OptionUtil.readString(options, "c", ".");
+						keys = StrUtil.split(expression, delimiter);
+					}
+					
+					if(toFindBy) {
+						mars = XmlUtil.findBy(mars, keys);
+					} else {
+						mars = XmlUtil.valueOf(mars, keys);
+					}
 				}
 				
 				if(Map.class.isInstance(mars) || List.class.isInstance(mars)) {
@@ -509,9 +515,9 @@ public class CommandFile extends CommandBase {
 				} else {
 					export(mars);
 				}
-
-				return true;
 			}
+			
+			return true;
 		}
 		
 		return false;

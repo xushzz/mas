@@ -349,6 +349,9 @@ public class Colls {
 			items = ((ValuesItem)obj).getValues();
 		} else if (obj instanceof List) {
 			items = (List)obj;
+		} else if (obj instanceof MexItem) {
+			MexItem item = (MexItem)obj;
+			items = item.toList();
 		} else {
 			XXXUtil.alert("Unsupported data type {0} of {1}", obj.getClass(), obj);
 		}

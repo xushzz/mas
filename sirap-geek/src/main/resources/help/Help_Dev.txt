@@ -2,6 +2,10 @@ ah A,B,C,D         split by comma and print as list
 ah A-B-C-D $s=-    split by - and print as list, option s=SPLITTER
 ah A,B,C $+s       split, sort and print list
 maven              display home, repository and location of super POM for Maven
+maven D:\my.pom    analyze pom file, print properties
+maven D:\my.pom $+pro   analyze pom file print properties
+maven D:\my.pom $+dep   analyze pom file print dependencies
+maven D:\my.pom $+man   analyze pom file print dependencies in management
 repo               display maven repository, depth 
 repo .             list out file items in repository till given depth, default 2
 repo . criteria    list out file items matching given criteria
@@ -32,4 +36,4 @@ pvs                list all available explorers, as in page viewers, like Chrome
 &oplus;            display html entity or symbol by name
 &8869;             display html entity or symbol by code
 html..             list all html entities and symbols
-ver=7/17/2018, II  GEEK-DEV1.0.35-KLAY
+ver=10/2/2018, II  GEEK-DEV1.0.36-WENGER

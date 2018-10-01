@@ -186,9 +186,20 @@ public abstract class CommandBase {
 		debug = debug || g().isYes("debug");
 		return debug;
 	}
-	
+
 	public String useSpace(String strWithPoundS) {
 		return StrUtil.recoverSpace(strWithPoundS);
+	}
+	
+	/***
+	 * This is slash : /
+	 * This is backslash: \
+	 * @param
+	 * @return
+	 */
+	public String useSlash(String path) {
+		XXXUtil.shouldBeNotnull(path);
+		return path.replace('\\', '/');
 	}
 	
 	@SuppressWarnings({ "rawtypes"})
@@ -860,5 +871,33 @@ public abstract class CommandBase {
 		
 		List<String> lines = IOUtil.readLines(filepath, charsetX());
 		return lines;
+	}
+	
+	protected String getPathIfTextfile(String param) {
+		File xmlfile = parseFile(param);
+		if(xmlfile == null) {
+			return null;
+		}
+
+		String path = xmlfile.getAbsolutePath();
+		
+		return useSlash(path);
+	}
+
+	
+	protected String readStringIfTextfile(String param) {
+		File xmlfile = parseFile(param);
+		if(xmlfile == null) {
+			return null;
+		}
+
+		String path = xmlfile.getAbsolutePath();
+		boolean asText = OptionUtil.readBooleanPRI(options, "go", false);
+		if(asText || FileOpener.isTextFile(path)) {
+			return IOUtil.readString(path);
+		} else {
+			XXXUtil.alerto("Can't read file as text: {0}", path);
+			return null;
+		}
 	}
 }

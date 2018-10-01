@@ -42,9 +42,11 @@ import com.sirap.common.component.FileOpener;
 import com.sirap.common.framework.SimpleKonfig;
 import com.sirap.common.framework.command.FileSizeInputAnalyzer;
 import com.sirap.common.framework.command.InputAnalyzer;
+import com.sirap.geek.domain.MavenPom;
 import com.sirap.geek.jenkins.JenkinsBuildRecord;
 import com.sirap.geek.jenkins.JenkinsManager;
 import com.sirap.geek.manager.GithubIssuesExtractor;
+import com.sirap.geek.manager.MavenBuilder;
 import com.sirap.geek.manager.MavenManager;
 import com.sirap.geek.util.GeekExtractors;
 
@@ -159,6 +161,31 @@ public class CommandDev extends CommandBase {
 			List<String> items = MavenManager.g().getMavenInfo();
 			export(items);
 			
+			return true;
+		}
+		
+		solo = parseParam(KEY_MAVEN + "\\s+(.+?)");
+		if(solo != null) {
+			String path = getPathIfTextfile(solo);
+			if(path != null) {
+				String repo = MavenUtils.getRepo();
+				MavenBuilder.cleanCache();
+				MavenPom me = MavenBuilder.parsePom(path, repo, "SEF", 0);
+				if(OptionUtil.readBooleanPRI(options, "pro", false)) {
+					List<List> items = MatrixUtil.matrixOf(me.getProps());
+					exportMatrix(items);
+				} else if(OptionUtil.readBooleanPRI(options, "man", false)) {
+					List<List> items = MatrixUtil.matrixOf(me.getParentsSelfKidsManagements());
+					exportMatrix(items);
+				} else if(OptionUtil.readBooleanPRI(options, "dep", false)) {
+					List<List> items = MatrixUtil.matrixOf(MavenBuilder.getParentsSelfKidsDeps(me));
+					exportMatrix(items);
+				} else {
+					List<List> items = MatrixUtil.matrixOf(MavenBuilder.getParentsSelfKidsDeps(me));
+					exportMatrix(items);
+				}
+			}
+
 			return true;
 		}
 		

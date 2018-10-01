@@ -32,4 +32,5 @@ xeh hex-bytes      convert hex-style bytes to given string, split by [,\\s]+
 @D:\pom.xml $s=version  print out values for those <version> elements
 @D:\pom.xml $s=?.version  print out value of element <project><version>, give root is <project>
 @D:\pom.xml $s=?.version  also for project.version, .build.finalName and so on
+@D:\pom.xml $s=-properties-main.basedir,c=- options c for connector, or delimiter
 @http://g.cn/some.xml also for http URLs

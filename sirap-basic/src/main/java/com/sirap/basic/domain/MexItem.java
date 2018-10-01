@@ -105,6 +105,14 @@ public abstract class MexItem implements Serializable {
 		
 		return false;
 	}
+
+	public ValuesItem toValuesItem() {
+		return null;
+	}
+
+	public List toList() {
+		return null;
+	}
 	
 	public String toJson() {
 		return JsonUtil.quote(toString());
