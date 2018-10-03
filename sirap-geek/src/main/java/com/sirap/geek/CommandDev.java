@@ -18,7 +18,6 @@ import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexZipEntry;
 import com.sirap.basic.domain.ValuesItem;
-import com.sirap.basic.exception.MexException;
 import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.search.MexFilter;
 import com.sirap.basic.tool.C;
@@ -38,7 +37,6 @@ import com.sirap.basic.util.SatoUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
-import com.sirap.common.component.FileOpener;
 import com.sirap.common.framework.SimpleKonfig;
 import com.sirap.common.framework.command.FileSizeInputAnalyzer;
 import com.sirap.common.framework.command.InputAnalyzer;
@@ -58,8 +56,6 @@ public class CommandDev extends CommandBase {
 	private static final String KEY_DEPS = "deps";
 	private static final String KEY_ISSUE = "iss";
 	private static final String KEY_JENKINS = "jk";
-	private static final String KEY_JSON = "js";
-	private static final int KEY_JSON_MIN_LEN = 9;
 	private static final String KEY_PAIR_KEY_VALUE = "pa";
 	private static final String KEY_TO_UPPERCASE = "up";
 	private static final String KEY_TO_LOWERCASE= "lo";
@@ -249,59 +245,6 @@ public class CommandDev extends CommandBase {
 			String numberStr = params[1];
 			JenkinsBuildRecord record = JenkinsManager.g().getBuildRecordByNumber(jobName, numberStr);
 			export(record);
-			
-			return true;
-		}
-		
-		solo = parseParam(KEY_JSON + "\\s+" + KEY_HTTP_WWW);
-		if(solo != null) {
-			String source = IOUtil.readString(solo, g().getCharsetInUse());
-			if(OptionUtil.readBooleanPRI(options, "r", false)) {
-				export(JsonUtil.getRawText(source));
-			} else {
-				export(JsonUtil.getPrettyTextInLines(source));
-			}
-			
-			return true;
-		}
-		
-		if(command.length() >= KEY_JSON_MIN_LEN) {
-			try {
-				if(OptionUtil.readBooleanPRI(options, "r", false)) {
-					export(JsonUtil.getRawText(command));
-				} else {
-					export(JsonUtil.getPrettyTextInLines(command));
-				}
-				return true;
-			} catch (MexException ex) {
-				//
-			}
-		}
-		
-		solo = parseParam(KEY_JSON + "\\s+(.+?)");
-		if(solo != null) {
-			File file = parseFile(solo);
-			if(file != null) {
-				String filePath = file.getAbsolutePath();
-				if(FileOpener.isTextFile(filePath)) {
-					String source = IOUtil.readString(filePath);
-					if(OptionUtil.readBooleanPRI(options, "r", false)) {
-						export(JsonUtil.getRawText(source));
-					} else {
-						export(JsonUtil.getPrettyTextInLines(source));
-					}
-				} else {
-					XXXUtil.alert("Not a text file: " + filePath);
-				}
-				
-				return true;
-			} else {
-				if(OptionUtil.readBooleanPRI(options, "r", false)) {
-					export(JsonUtil.getRawText(solo));
-				} else {
-					export(JsonUtil.getPrettyTextInLines(solo));
-				}
-			}
 			
 			return true;
 		}

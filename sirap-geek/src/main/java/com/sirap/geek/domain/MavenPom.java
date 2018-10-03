@@ -8,9 +8,9 @@ import java.util.Map;
 import com.google.common.collect.Lists;
 import com.sirap.basic.tool.D;
 import com.sirap.basic.util.FileUtil;
+import com.sirap.basic.util.MistUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
-import com.sirap.basic.util.XmlUtil;
 import com.sirap.geek.manager.MavenBuilder;
 
 import lombok.Data;
@@ -46,7 +46,9 @@ public class MavenPom extends MavenItem {
 	}
 	
 	public void process() {
-		origin = XmlUtil.xmlOfFile(pomPath);
+//		origin = XmlUtil.xmlOfFile(pomPath);
+		origin = (Map)MistUtil.ofXmlFile(pomPath);
+		
 		props.put("basedir", FileUtil.folderpathAndFilenameOf(pomPath)[0]);
 		parseBasis();
 		parseProps();

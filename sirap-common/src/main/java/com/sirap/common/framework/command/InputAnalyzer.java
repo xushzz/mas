@@ -116,8 +116,10 @@ public class InputAnalyzer {
 	}
 	
 	private String removeEscape(String source) {
+//		D.pl(source);
 		String temp = source.replace("!>", ">");
-		temp = source.replace("!$", "$");
+		temp = temp.replace("!$", "$");
+//		D.pl(temp);
 		return temp;
 	}
 	

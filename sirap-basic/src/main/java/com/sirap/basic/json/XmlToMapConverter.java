@@ -1,4 +1,4 @@
-package com.sirap.basic.component;
+package com.sirap.basic.json;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -12,21 +12,21 @@ import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
-import com.sirap.basic.util.XmlUtil;
 
 import lombok.AllArgsConstructor;
 
 public class XmlToMapConverter {
 
 	@SuppressWarnings("rawtypes")
-	public Map toMapFromXmlFile(String xmlPath) {
+	public Map fromXmlFile(String xmlPath) {
 //		D.pl(xmlPath);
 		String origin = IOUtil.readString(xmlPath);
-		return toMapFromXmlText(origin);
+		return fromXmlText(origin);
 	}
+	
 	@SuppressWarnings("rawtypes")
-	public Map toMapFromXmlText(String origin) {
-		String text = XmlUtil.removeHeaderCommentCDATA(origin);
+	public Map fromXmlText(String origin) {
+		String text = removeHeaderCommentCDATA(origin);
 //		D.pl(text);
 		List<String> words = breakIntoList(text);
 //		D.list(words);
@@ -39,6 +39,31 @@ public class XmlToMapConverter {
 		XmlWordsReader pogba = new XmlWordsReader(wordstr);
 		return pogba.read();
 	}
+
+	private Object niceValue(String source) {
+		XXXUtil.nullCheckOnly(source);
+		
+		if(source.isEmpty()) {
+			return null;
+		}
+		
+		Number number = StrUtil.numberOf(source);
+		if(number != null) {
+			return number;
+		}
+		
+		if(StrUtil.equals(source, "true")) {
+			return Boolean.TRUE;
+		} else if(StrUtil.equals(source, "false")) {
+			return Boolean.FALSE;
+		}
+		
+		if(StrUtil.equalsCaseSensitive(source, "null")) {
+			return null;
+		}
+		
+		return source;
+	}
 	
 	private Object process(List<String> words) {
 		if(words.isEmpty()) {
@@ -46,7 +71,7 @@ public class XmlToMapConverter {
 		}
 		
 		if(words.size() == 1) {
-			return words.get(0);
+			return niceValue(words.get(0));
 		}
 		
 		Stack<String> basket = new Stack<>();
@@ -62,11 +87,10 @@ public class XmlToMapConverter {
 			if(isEnd(word)) {
 				String expect = endOf(basket.peek());
 				boolean flag = StrUtil.equals(word, expect);
-//				if(!flag) {
+				if(!flag) {
 //					D.pl(basket);
-//					D.pla(word, expect, flag);
-//				}
-				XXXUtil.shouldBeTrue(flag);
+					XXXUtil.alert("Expect {0} but {1}", expect, word);
+				}
 				basket.pop();
 				int start = indexes.pop();
 				if(basket.isEmpty()) {
@@ -101,13 +125,28 @@ public class XmlToMapConverter {
 //		D.list(group);
 		List<String> kids = group.subList(1, group.size() - 1);
 		Map<String, Object> mars = new LinkedHashMap<>();
-		Map<String, String> attrs = mapOfProperties(wordx);
-		if(!EmptyUtil.isNullOrEmpty(attrs)) {
-			mars.put("attrs", mapOfProperties(wordx));
-		}
+		Map<String, Object> attrs = mapOfProperties(wordx);
 		
 		Object gist = process(kids);
-		mars.put(name, gist);
+		if(EmptyUtil.isNullOrEmpty(attrs)) {
+			mars.put(name, gist);
+		} else {
+			if(List.class.isInstance(gist)) {
+//				D.pl(gist);
+				((List)gist).add(0, attrs);
+				mars.put(name, gist);
+			} else if(Map.class.isInstance(gist)) {
+				Map temp = new LinkedHashMap<>();
+				temp.putAll((Map)gist);
+				((Map)gist).clear();
+				((Map)gist).putAll(attrs);
+				((Map)gist).putAll(temp);
+				mars.put(name, gist);
+			} else {
+				attrs.put("text", gist);
+				mars.put(name, attrs);
+			}
+		}
 
 		return mars;
 	}
@@ -141,15 +180,30 @@ public class XmlToMapConverter {
 		return name;
 	}
 	
-	private static Map<String, String> mapOfProperties(String wordx) {
-		String regex = "([^\\s=]+)=\"([^\\s=]+)\"";
+	private static Map<String, Object> mapOfProperties(String wordx) {
+		String regex = "([^\\s=]+)=\"([^\"]+)\"";
 		Matcher ma = StrUtil.createMatcher(regex, wordx);
-		Map<String, String> props = new LinkedHashMap<>();
+		Map<String, Object> props = new LinkedHashMap<>();
 		while(ma.find()) {
 			props.put(ma.group(1), ma.group(2));
 		}
 		
 		return props;
+	}
+	
+	public static String removeHeaderCommentCDATA(String source) {
+		String header = "<\\?xml.*?\\?>";
+		String comment = "<!--.*?-->";
+		String cdata = "<!\\[CDATA\\[.+?\\]\\]";
+		String doctype = "<!DOCTYPE.*?>";
+		
+		String temp = source;
+		temp = temp.replaceAll(header, "");
+		temp = temp.replaceAll(comment, "");
+		temp = temp.replaceAll(cdata, "");
+		temp = temp.replaceAll(doctype, "");
+		
+		return temp.trim();
 	}
 	
 	@AllArgsConstructor

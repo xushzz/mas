@@ -1,6 +1,5 @@
 package com.sirap.geek.domain;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -10,9 +9,9 @@ import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.tool.D;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.HtmlUtil;
+import com.sirap.basic.util.MistUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
-import com.sirap.basic.util.XmlUtil;
 
 public class MavenItem extends MexItem {
 	
@@ -27,7 +26,8 @@ public class MavenItem extends MexItem {
 	}
 
 	public String valueOf(String key, Object mapOrList) {
-		Object obj = XmlUtil.valueOf(mapOrList, key);
+//		Object obj = XmlUtil.valueOf(mapOrList, key);
+		Object obj = MistUtil.ofMapOrList(mapOrList).valueOf(key);
 		if(obj == null) {
 			return null;
 		}
@@ -36,11 +36,13 @@ public class MavenItem extends MexItem {
 	}
 	
 	public Object objOf(String key, Object mapOrList) {
-		return XmlUtil.valueOf(mapOrList, key);
+//		return XmlUtil.valueOf(mapOrList, key);
+		return MistUtil.ofMapOrList(mapOrList).valueOf(key);
 	}
 	
 	public List listOf(String key, Object mapOrList) {
-		Object mix = XmlUtil.valueOf(mapOrList, key);
+//		Object mix = XmlUtil.valueOf(mapOrList, key);
+		Object mix = MistUtil.ofMapOrList(mapOrList).valueOf(key);
 		if(mix == null) {
 			return null;
 		}
@@ -57,9 +59,10 @@ public class MavenItem extends MexItem {
 		XXXUtil.alert();
 		return null;
 	}
-	
+	//comeback
 	public List mapOf(String key, Map<String, Object> mars) {
-		Object mix = XmlUtil.valueOf(mars, key);
+//		Object mix = XmlUtil.valueOf(mars, key);
+		Object mix = MistUtil.ofMapOrList(mars).valueOf(key);
 		if(mix instanceof List) {
 			return (List)mix;
 		}

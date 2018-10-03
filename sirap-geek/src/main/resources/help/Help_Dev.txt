@@ -19,11 +19,6 @@ jk                 display the location of Jenkins server
 jk Elastos         display build info for Jenkins job Elasto
 jk Elastos.18      display latest 18 build info for Jenkins job Elasto
 jk Elastos#8       display build No.8 info for Jenkins job Elasto
-{"a":1, "b":2}     if given string, 9 chars at least, could be parsed to json, parse it
-js E:\A1.txt       parse local TXT file into json and display pretty format
-js http://X/json   parse URL-specified content into json and display pretty format
-js {"a":1, "b":2}  parse string into json and display pretty format
-js E:\A1.txt $+r   parse local TXT file into json and display in compressed manner, $r, means raw, compressed
 pa http://X/json?name=jack&id=19 parse key value pairs in URL with ask and &
 lo.QwErTy21        convert given string to lower case
 up.QwErTy21        convert given string to upper case
@@ -36,4 +31,4 @@ pvs                list all available explorers, as in page viewers, like Chrome
 &oplus;            display html entity or symbol by name
 &8869;             display html entity or symbol by code
 html..             list all html entities and symbols
-ver=10/2/2018, II  GEEK-DEV1.0.36-WENGER
+ver=10/3/2018, III  GEEK-DEV1.0.37-RONALDO

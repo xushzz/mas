@@ -216,12 +216,12 @@ public abstract class CommandBase {
 	}
 	
 	@SuppressWarnings({ "rawtypes"})
-	public void exportMatrix(List<List> matrix) {
+	public void exportMatrix(List<? extends List> matrix) {
 		exportMatrix(matrix, "");
 	}
 	
 	@SuppressWarnings({ "rawtypes"})
-	public void exportMatrix(List<List> matrix, String highPriority) {
+	public void exportMatrix(List<? extends List> matrix, String highPriority) {
 		if(!EmptyUtil.isNullOrEmpty(highPriority)) {
 			useHighOptions(highPriority);
 		}
@@ -894,7 +894,7 @@ public abstract class CommandBase {
 		String path = xmlfile.getAbsolutePath();
 		boolean asText = OptionUtil.readBooleanPRI(options, "go", false);
 		if(asText || FileOpener.isTextFile(path)) {
-			return IOUtil.readString(path);
+			return IOUtil.readString(path, charsetX());
 		} else {
 			XXXUtil.alerto("Can't read file as text: {0}", path);
 			return null;

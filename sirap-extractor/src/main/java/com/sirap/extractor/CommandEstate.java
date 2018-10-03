@@ -68,7 +68,7 @@ public class CommandEstate extends CommandBase {
 		}
 		
 		if(is(KEY_TOWN_POLICE)) {
-			export(Extractors.fetchNanningPolice());
+			exportMatrix(Extractors.fetchNanningPolice());
 			return true;
 		}
 		
@@ -77,7 +77,6 @@ public class CommandEstate extends CommandBase {
 		if(solo != null) {
 			Link mo = Extractors.fetchHangyangLocation(solo);
 			export(mo);
-			
 			if(mo != null && !EmptyUtil.isNullOrEmpty(mo.getHref())) {
 				Janitor.g().process(mo.getHref().trim());
 			}

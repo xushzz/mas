@@ -1,14 +1,12 @@
 package com.sirap.basic.json;
 
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.sirap.basic.exception.MexException;
 import com.sirap.basic.util.EmptyUtil;
+import com.sirap.basic.util.MistUtil;
 import com.sirap.basic.util.StrUtil;
-import com.sirap.basic.util.XXXUtil;
 
 public class JsonUtil {
 	
@@ -74,43 +72,9 @@ public class JsonUtil {
 		return StrUtil.occupy("\"{0}\"", temp);
 	}
 	
-	@SuppressWarnings("rawtypes")
-	public static List toList(String jsonString) {
-		Object sea = parseObject(jsonString);
-		
-		if(!(sea instanceof List)) {
-			XXXUtil.alert("can't convert the json to List, could be " + sea.getClass().getName());
-		}
-		
-		return (List)sea;
-	}
-
-	public static boolean isLegalJson(String jsonString) {
-		try {
-			JsonBox beiring = new JsonBox(jsonString);
-			
-			return beiring.isLegalJson();
-		} catch (MexException ex) {
-			return false;
-		}
-	}
-
 	public static Object parseObject(String jsonString) {
-		JsonBox beiring = new JsonBox(jsonString);
-		Object sea = beiring.getKing();
 		
-		return sea;
-	}
-
-	@SuppressWarnings("rawtypes")
-	public static Map toMap(String jsonString) {
-		Object sea = parseObject(jsonString);
-		
-		if(!(sea instanceof Map)) {
-			XXXUtil.alert("can't convert the json to Map, could be " + sea.getClass().getName());
-		}
-		
-		return (Map)sea;
+		return MistUtil.ofJsonText(jsonString).getCore();
 	}
 	
 	public static List<String> getPrettyTextInLines(String jsonString) {

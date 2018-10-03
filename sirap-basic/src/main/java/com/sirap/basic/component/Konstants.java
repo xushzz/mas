@@ -25,6 +25,7 @@ public class Konstants {
     
     public static final int FILE_SIZE_STEP = 1024;
 	public static final String FILE_SIZE_UNIT = "BKMGTPE";
+	public static final String REGEX_NUMBER = "-?((0|[1-9]\\d*)\\.\\d+|(0|[1-9]\\d*))(|[eE][+\\-]\\d+)";
 	public static final String REGEX_FLOAT = "(\\d+|\\d+\\.\\d*|\\d*\\.\\d+)";
 	public static final String REGEX_SIGN_FLOAT = "(-?\\d+|-?\\d+\\.\\d*|-?\\d*\\.\\d+)";
 	public static final String REGEX_JAVA_IDENTIFIER = "[a-zA-Z_$][\\da-zA-Z_$]*";

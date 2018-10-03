@@ -1,5 +1,6 @@
 package com.sirap.basic.util;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -1110,5 +1111,21 @@ public class StrUtil {
 		mat.appendTail(sb);
 		
 		return sb.toString();
+	}
+	
+	/***
+	 * 
+	 * @param source
+	 * @return
+	 */
+	public static Number numberOf(String source) {
+		String[] params = StrUtil.parseParams(Konstants.REGEX_NUMBER, source);
+		if(params == null) {
+			return null;
+		}
+		
+		BigDecimal jack = new BigDecimal(source);
+		
+		return jack;
 	}
 }

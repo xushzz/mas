@@ -193,7 +193,6 @@ public class CommandLocation extends CommandBase {
 			String rawJson;
 			if(longCommaLat != null) {
 				rawJson = TencentUtils.regeocodeOfRaw(GaodeUtils.reverseLonglat(longCommaLat));
-				String rawGao = GaodeUtils.regeocodeOfRaw(longCommaLat);
 				if(showWebsite) {
 					niceAddress = TencentUtils.niceAddressByRawJson(rawJson);
 					showDetail = TencentUtils.isInGreatDetail(rawJson);

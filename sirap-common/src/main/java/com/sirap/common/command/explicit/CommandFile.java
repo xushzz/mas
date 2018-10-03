@@ -7,15 +7,16 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
+import com.sirap.basic.component.Mist;
 import com.sirap.basic.domain.MexZipEntry;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.tool.C;
+import com.sirap.basic.tool.D;
 import com.sirap.basic.util.ArisUtil;
 import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.DateUtil;
@@ -25,11 +26,11 @@ import com.sirap.basic.util.HttpUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.ImageUtil;
 import com.sirap.basic.util.MathUtil;
+import com.sirap.basic.util.MistUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XCodeUtil;
 import com.sirap.basic.util.XXXUtil;
-import com.sirap.basic.util.XmlUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.domain.MemoryRecord;
@@ -53,6 +54,7 @@ public class CommandFile extends CommandBase {
 	private static final String KEY_KICK_OFF = "ko";
 	private static final String KEY_HEX = "hex";
 	private static final String KEY_XEH = "xeh";
+	private static final String KEY_JSON = "js";
 	
 	public static final String DEFAULT_TEXT_MAX_SIZE = "2M";
 
@@ -478,49 +480,70 @@ public class CommandFile extends CommandBase {
 		if(solo != null) {
 			String content = null;
 			if(HttpUtil.isHttp(solo)) {
-				content = IOUtil.readString(solo);
+				content = IOUtil.readString(solo, charsetX());
 			} else {
 				content = readStringIfTextfile(solo);
 			}
 			
-			if(content != null) {
-				Object mars = XmlUtil.xmlOfText(content);
-				String search = OptionUtil.readString(options, "s");
-				if(!EmptyUtil.isNullOrEmpty(search)) {
-					String regex = "(\\??)(.+?)";
-					String[] params = StrUtil.parseParams(regex, search);
-					boolean toFindBy = params[0].isEmpty();
-					String expression = params[1];
-
-					boolean nosplit = OptionUtil.readBooleanPRI(options, "n", false);
-					List<String> keys = Lists.newArrayList();
-					if(nosplit) {
-						keys.add(expression);
-					} else {
-						String delimiter = OptionUtil.readString(options, "c", ".");
-						keys = StrUtil.split(expression, delimiter);
-					}
-					
-					if(toFindBy) {
-						mars = XmlUtil.findBy(mars, keys);
-					} else {
-						mars = XmlUtil.valueOf(mars, keys);
-					}
-				}
-				
-				if(Map.class.isInstance(mars) || List.class.isInstance(mars)) {
-					String temp = JsonUtil.toPrettyJson(mars);
-					List<String> lines = JsonUtil.getPrettyTextInLines(temp);
-					export(lines);
-				} else {
-					export(mars);
-				}
+			if(content == null) {
+				content = solo;
 			}
+			D.pl(content.substring(0, solo.length() < 100 ? solo.length() : 100));
+			Mist mist = MistUtil.ofXmlText(content);
+			dealWithMist(mist);
+			
+			return true;
+		}
+		
+		solo = parseParam(KEY_JSON + "\\s+(.+?)");
+		if(solo != null) {
+			String content = null;
+			if(HttpUtil.isHttp(solo)) {
+				content = IOUtil.readString(solo, charsetX());
+			} else {
+				content = readStringIfTextfile(solo);
+			}
+			
+			if(content == null) {
+				content = solo;
+			}
+			D.pl(content.substring(0, solo.length() < 100 ? solo.length() : 100));
+			Mist mist = MistUtil.ofJsonText(content);
+			dealWithMist(mist);
 			
 			return true;
 		}
 		
 		return false;
+	}
+	
+	private void dealWithMist(Mist mist) {
+		Object mars = mist.getCore();
+		String search = OptionUtil.readString(options, "s");
+		if(!EmptyUtil.isNullOrEmpty(search)) {
+			String regex = "(\\??)(.+?)";
+			String[] params = StrUtil.parseParams(regex, search);
+			boolean toFindBy = params[0].isEmpty();
+			String expression = params[1];
+
+			boolean nosplit = OptionUtil.readBooleanPRI(options, "n", false);
+			List<String> keys = Lists.newArrayList();
+			if(nosplit) {
+				keys.add(expression);
+			} else {
+				String delimiter = OptionUtil.readString(options, "c", ".");
+				keys = StrUtil.split(expression, delimiter);
+			}
+			
+			if(toFindBy) {
+				mars = mist.findBy(keys);
+			} else {
+				mars = mist.valueOf(keys);
+			}
+		}
+		String temp = JsonUtil.toPrettyJson(mars);
+		List<String> lines = JsonUtil.getPrettyTextInLines(temp);
+		export(lines);
 	}
 	
 	abstract class MemoryKeeper {

@@ -1,12 +1,10 @@
 package com.sirap.basic.util;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Lists;
-import com.sirap.basic.domain.ValuesItem;
 
 @SuppressWarnings({ "rawtypes"})
 public class MatrixUtil {
@@ -36,7 +34,7 @@ public class MatrixUtil {
 		return newMatrix;
 	}
 	
-	public static <T extends Object> int[] maxlenOfEachColumn(List<List> matrix) {
+	public static <T extends Object> int[] maxlenOfEachColumn(List<? extends List> matrix) {
 		int cols = 0;
 		
 		if(!matrix.isEmpty()) {
@@ -82,7 +80,7 @@ public class MatrixUtil {
 		return newMatrix;
 	}
 	
-	public static List<String> prettyMatrixLines(List<List> matrix, String connector) {
+	public static List<String> prettyMatrixLines(List<? extends List> matrix, String connector) {
 		int cols = 0;
 		
 		if(!matrix.isEmpty()) {
@@ -105,7 +103,7 @@ public class MatrixUtil {
 		return newMatrix;
 	}
 	
-	public static List<String> lines(List<List> matrix, String connector) {
+	public static List<String> lines(List<? extends List> matrix, String connector) {
 		
 		List<String> newMatrix = Lists.newArrayList();
 

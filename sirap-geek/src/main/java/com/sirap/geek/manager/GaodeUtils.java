@@ -3,6 +3,7 @@ package com.sirap.geek.manager;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 
 import com.google.common.collect.Lists;
@@ -13,11 +14,11 @@ import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.MathUtil;
+import com.sirap.basic.util.MistUtil;
 import com.sirap.basic.util.NetworkUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XCodeUtil;
 import com.sirap.basic.util.XXXUtil;
-import com.sirap.basic.util.XmlUtil;
 import com.sirap.geek.data.LonglatData;
 import com.sirap.geek.domain.DistrictItem;
 
@@ -135,8 +136,8 @@ public class GaodeUtils {
 			
 			@Override
 			protected void parse() {
-				Object pois = XmlUtil.readValueFromText(source, ".pois");
-				List maps = XmlUtil.wrapMapIfNeeded(pois);
+				Object pois = MistUtil.ofXmlText(source).findBy("pois");
+				List maps = wrapMapIfNeeded(pois);
 				
 				List<String> keys = StrUtil.split("cityname,adname,name,type,address,tel,location");
 				List<String> templist = Lists.newArrayList();
@@ -144,7 +145,7 @@ public class GaodeUtils {
 				for(Object item : maps) {
 					List<String> items = Lists.newArrayList();
 					for(String key : keys) {
-						String value = XmlUtil.valueOf(item, "." + key) + "";
+						String value = MistUtil.ofMapOrList(item).valueOf("." + key) + "";
 						if(EmptyUtil.isNullOrEmpty(value)) {
 							continue;
 						}
@@ -189,8 +190,8 @@ public class GaodeUtils {
 			
 			@Override
 			protected void parse() {
-				Object pois = XmlUtil.readValueFromText(source, ".pois");
-				List maps = XmlUtil.wrapMapIfNeeded(pois);
+				Object pois = MistUtil.ofXmlText(source).findBy("pois");
+				List maps = wrapMapIfNeeded(pois);
 				
 				int count = 0;
 				List<String> keys = StrUtil.split("distance,cityname,adname,name,type,address,tel,location");
@@ -198,7 +199,8 @@ public class GaodeUtils {
 					ValuesItem vi = new ValuesItem();
 					vi.setPseudoOrder(++count);
 					for(String key : keys) {
-						String value = XmlUtil.valueOf(item, "." + key) + "";
+//						String value = XmlUtil.valueOf(item, "." + key) + "";
+						String value = MistUtil.ofMapOrList(item).valueOf("." + key) + "";
 						if(EmptyUtil.isNullOrEmpty(value)) {
 							continue;
 						}
@@ -237,14 +239,16 @@ public class GaodeUtils {
 			@Override
 			protected void parse() {
 //				String distanceInMeter = XmlUtil.readValue(source, "distance");
-				String distanceInMeter = XmlUtil.readValueFromText(source, ".results..distance") + "";
+//				String distanceInMeter = XmlUtil.readValueFromText(source, ".results..distance") + "";
+				String distanceInMeter = MistUtil.ofXmlText(source).valueOf(".results..distance") + "";
 				Integer distance = MathUtil.toInteger(distanceInMeter);
 				if(distance == null || distance <= 0) {
 					String info = StrUtil.findFirstMatchedItem("<info>([^a-z]+)</info>", source);
 					XXXUtil.alert(info);
 				}
 				
-				String durationInSecond = XmlUtil.readValueFromText(source, ".results..duration") + "";
+//				String durationInSecond = XmlUtil.readValueFromText(source, ".results..duration") + "";
+				String durationInSecond = MistUtil.ofXmlText(source).valueOf(".results..duration") + "";
 				Integer duration = MathUtil.toInteger(durationInSecond, 1);
 				
 				item = new int[]{distance, duration};
@@ -601,5 +605,18 @@ public class GaodeUtils {
 		}
 		
 		return null;
+	}
+	
+	public static List wrapMapIfNeeded(Object moon) {
+		List items = Lists.newArrayList();
+		if(List.class.isInstance(moon)) {
+			items.addAll((List)moon);
+		} else if(Map.class.isInstance(moon)) {
+			items.add(moon);
+		} else {
+//			XXXUtil.alert("Unsupported type: {0}", moon.getClass().getName());
+		}
+		
+		return items;
 	}
 }

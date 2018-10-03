@@ -24,7 +24,7 @@ public class XCodeUtil {
 	public static final String REGEX_HEX = "[0-9A-F]{2}";
 	public static final String REGEX_HEX_TAKE = "(" + REGEX_HEX + ")";
 	
-	public static String decodeHexChars(String fourOrSixHex, String code) throws MexException {
+	public static String decodeHexadecimalDigits(String fourOrSixHex, String code) throws MexException {
 		List<String> items = StrUtil.findAllMatchedItems(REGEX_HEX, fourOrSixHex);
 		
 		int size = items.size();
@@ -100,12 +100,38 @@ public class XCodeUtil {
 			String regex = StrUtil.occupy(late, digits[k]);
 			Matcher mc = StrUtil.createMatcher(regex, source);
 			while(mc.find()) {
-				String value = decodeHexChars(mc.group(1), code);
+				String value = decodeHexadecimalDigits(mc.group(1), code);
 				temp = temp.replace(mc.group(), value);
 			}
 		}
 		
 		return temp;
+	}
+	
+	/***
+	 * Unicode
+	 * @param source
+	 * @param code
+	 * @return
+	 */
+	public static String replaceUnicodes(String source) {
+		XXXUtil.nullCheck(source, "source");
+//		D.pl("\u4e2a\u6587\u4ef6");
+//		D.pla(regex, sb.toString());
+//		D.pl(StrUtil.isRegexMatched(regex, sb.toString()));
+//		D.sink(source + ", " + regex);
+		String regex = "\\\\u([0-9a-zA-Z]{4})";
+		Matcher ma = StrUtil.createMatcher(regex, source);
+		StringBuffer sb = StrUtil.sb();
+		while(ma.find()) {
+			String unicode = ma.group(1);
+			String value = decodeHexadecimalDigits(unicode, Konstants.CODE_UNICODE);
+//			D.pl(unicode + " " + value);
+			ma.appendReplacement(sb, value);
+		}
+		ma.appendTail(sb);
+		
+		return sb.toString();
 	}
 
 	/***

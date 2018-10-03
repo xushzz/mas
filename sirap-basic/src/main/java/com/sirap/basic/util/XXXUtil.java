@@ -125,6 +125,15 @@ public class XXXUtil {
 		}
 	}
 	
+	public static void shouldBeNotEmpty(String value) {
+		if(value == null) {
+			throw new MexException("value {0} should not be null.", value);
+		}
+		if(value.isEmpty()) {
+			throw new MexException("value {0} should not be empty.", value);
+		}
+	}
+	
 	public static void shouldBeEqual(Object a, Object b) {
 		if(a == null && b == null) {
 			return;

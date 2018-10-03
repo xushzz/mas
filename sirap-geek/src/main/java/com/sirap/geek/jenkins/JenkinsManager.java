@@ -8,8 +8,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.sirap.basic.component.Extractor;
-import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.tool.C;
+import com.sirap.basic.tool.D;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.IOUtil;
@@ -86,7 +86,8 @@ public class JenkinsManager {
 		List<JenkinsBuildRecord> records = new ArrayList<>();
 
 		String source = getAllBuildsInJson(jobName);
-		Map values = JsonUtil.toMap(source);
+		D.pl("marked in 15:41 2018/10/3");
+		Map values = null; //JsonUtil.toMap(source);
 		List list = (List)values.get(KEY_BUILDS);
 		
 		for(Object obj: list) {
@@ -106,7 +107,8 @@ public class JenkinsManager {
 	
 	public JenkinsBuildRecord getBuildRecordByNumber(String jobName, String buildNumber) {
 		String source = getAllBuildsInJson(jobName);
-		Map values = JsonUtil.toMap(source);
+		D.pl("marked in 15:41 2018/10/3");
+		Map values = null;//JsonUtil.toMap(source);
 		List list = (List)values.get(KEY_BUILDS);
 		
 		for(Object obj: list) {

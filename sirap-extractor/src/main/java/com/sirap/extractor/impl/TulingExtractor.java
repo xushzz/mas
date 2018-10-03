@@ -4,7 +4,7 @@ import java.util.Map;
 
 import com.sirap.basic.component.Extractor;
 import com.sirap.basic.domain.MexObject;
-import com.sirap.basic.json.JsonUtil;
+import com.sirap.basic.tool.D;
 import com.sirap.basic.util.StrUtil;
 
 @SuppressWarnings("rawtypes")
@@ -19,9 +19,13 @@ public class TulingExtractor extends Extractor<MexObject> {
 		setUrl(url);
 	}
 
+	/****
+	 * {"code":40004,"text":"亲爱的，当天请求次数已用完。"}
+	 */
 	@Override
 	protected void parse() {
-		Map naive = JsonUtil.toMap(source);
+		D.pl("marked in 15:41 2018/10/3");
+		Map naive = null;//JsonUtil.toMap(source);
 		Object code = naive.get("code");
 		if(StrUtil.equals(CODE_SUCCESS, code + "")) {
 			item = new MexObject(naive.get("text"));

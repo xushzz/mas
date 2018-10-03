@@ -12,6 +12,7 @@ import java.util.regex.Matcher;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.sirap.basic.component.Extractor;
+import com.sirap.basic.component.Mist;
 import com.sirap.basic.domain.KeyValuesItem;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexObject;
@@ -22,7 +23,9 @@ import com.sirap.basic.thread.WorkerItemsOriented;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.MathUtil;
+import com.sirap.basic.util.MistUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.domain.Link;
 import com.sirap.extractor.domain.MeijuRateItem;
 import com.sirap.extractor.domain.NameRankItem;
@@ -282,16 +285,17 @@ public class Extractors {
 			@Override
 			protected void parse() {
 				String fields = "floorName,area,spaceNo";
+				Mist mist = MistUtil.ofJsonText(source);
 				List<String> keys = StrUtil.split(fields);
 				String connector = ", ";
 				StringBuffer sb = StrUtil.sb();
 				for(String key : keys) {
-					String item = JsonUtil.getFirstStringValueByKey(source, key);
+					String item = mist.findBy(key) + "";
 					if(!EmptyUtil.isNullOrEmptyOrBlank(item)) {
 						sb.append(item.trim()).append(connector);
 					}
 				}
-				String href = JsonUtil.getFirstStringValueByKey(source, "carImage");
+				String href =  mist.findBy("carImage") + "";
 				String temp = sb.toString().replaceAll(connector + "$", "");
 				
 				if(EmptyUtil.isNullOrEmpty(href)) {
@@ -317,13 +321,17 @@ public class Extractors {
 			
 			@Override
 			protected void parse() {
-				String regex = "\\{(.+?)\\}";
-				Matcher ma = createMatcher(regex, source);
-				while(ma.find()) {
-					String section = ma.group(1);
-					String image = JsonUtil.getFirstStringValueByKey(section, "imgName");
-					String plate = JsonUtil.getFirstStringValueByKey(section, "plateNo");
-					String when = JsonUtil.getFirstStringValueByKey(section, "entryTime");
+				Object sections = MistUtil.ofJsonText(source).findBy("carinfos");
+				if(!List.class.isInstance(sections)) {
+					XXXUtil.alerto("Uncanny, section should be List:\n{0}", sections);
+					return;
+				}
+				
+				List list = (List)sections;
+				for(Object section : list) {
+					String image = MistUtil.ofMapOrList(section).findBy("imgName") + "";
+					String plate = MistUtil.ofMapOrList(section).findBy("plateNo") + "";
+					String when = MistUtil.ofMapOrList(section).findBy("entryTime") + "";
 					KeyValuesItem item = new KeyValuesItem();
 					item.add("plate", plate);
 					item.add("when", when);
