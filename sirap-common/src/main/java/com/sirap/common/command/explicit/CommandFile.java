@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.google.common.collect.Lists;
@@ -47,7 +48,7 @@ public class CommandFile extends CommandBase {
 
 	private static final String KEY_PRINT_TXT_ONELINE = "&";
 	private static final String KEY_PRINT_TXT = "#";
-	private static final String KEY_PRINT_XML = "@";
+	private static final String KEY_PRINT_XML = "xml";
 	private static final String KEY_PDF = "pdf";
 	private static final String KEY_DAY_CHECK = "dc";
 	private static final String KEY_MEMORABLE = "mm";
@@ -476,7 +477,7 @@ public class CommandFile extends CommandBase {
 			return true;
 		}
 		
-		solo = parseParam(KEY_PRINT_XML + "(.+?)");
+		solo = parseParam(KEY_PRINT_XML + "\\s+(.+)");
 		if(solo != null) {
 			String content = null;
 			if(HttpUtil.isHttp(solo)) {
@@ -488,7 +489,7 @@ public class CommandFile extends CommandBase {
 			if(content == null) {
 				content = solo;
 			}
-			D.pl(content.substring(0, solo.length() < 100 ? solo.length() : 100));
+			C.pl("XML> " + content.substring(0, solo.length() < 100 ? solo.length() : 100));
 			Mist mist = MistUtil.ofXmlText(content);
 			dealWithMist(mist);
 			
@@ -507,7 +508,7 @@ public class CommandFile extends CommandBase {
 			if(content == null) {
 				content = solo;
 			}
-			D.pl(content.substring(0, solo.length() < 100 ? solo.length() : 100));
+			C.pl("Json> " + content.substring(0, solo.length() < 100 ? solo.length() : 100));
 			Mist mist = MistUtil.ofJsonText(content);
 			dealWithMist(mist);
 			
@@ -541,9 +542,14 @@ public class CommandFile extends CommandBase {
 				mars = mist.valueOf(keys);
 			}
 		}
-		String temp = JsonUtil.toPrettyJson(mars);
-		List<String> lines = JsonUtil.getPrettyTextInLines(temp);
-		export(lines);
+		
+		if(Map.class.isInstance(mars) || List.class.isInstance(mars)) {
+			String temp = JsonUtil.toPrettyJson(mars);
+			List<String> lines = JsonUtil.getPrettyTextInLines(temp);
+			export(lines);
+		} else {
+			export(mars);
+		}
 	}
 	
 	abstract class MemoryKeeper {

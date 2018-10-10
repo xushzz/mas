@@ -73,6 +73,9 @@ public class JsonUtil {
 	}
 	
 	public static Object parseObject(String jsonString) {
+//		JsonBox beiring = new JsonBox(jsonString);
+//		Object sea = beiring.getKing();
+//		return sea;
 		
 		return MistUtil.ofJsonText(jsonString).getCore();
 	}

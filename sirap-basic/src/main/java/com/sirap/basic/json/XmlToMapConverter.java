@@ -7,6 +7,7 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 
 import com.google.common.collect.Lists;
+import com.sirap.basic.tool.D;
 //import com.sirap.basic.tool.D;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.IOUtil;
@@ -234,6 +235,7 @@ public class XmlToMapConverter {
 				
 				expect = nextExpect(expect);
 			}
+//			D.pl(barrel);
 			XXXUtil.shouldBeTrue(barrel.isEmpty());
 			
 			return words;

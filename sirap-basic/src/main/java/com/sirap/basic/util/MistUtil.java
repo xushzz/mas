@@ -1,8 +1,13 @@
 package com.sirap.basic.util;
 
+import java.awt.List;
+import java.util.ArrayList;
+import java.util.Map;
+
 import com.sirap.basic.component.Mist;
 import com.sirap.basic.json.JsonToMapListConverter;
 import com.sirap.basic.json.XmlToMapConverter;
+import com.sirap.basic.tool.D;
 
 /***
  * Map + List
@@ -12,6 +17,11 @@ import com.sirap.basic.json.XmlToMapConverter;
  */
 public class MistUtil {
 
+	public static boolean isMapOrList(Object obj) {
+		D.pla(obj.getClass(), Map.class.isInstance(obj), List.class.isInstance(obj), List.class.isInstance(obj));
+		return Map.class.isInstance(obj) || List.class.isInstance(obj);
+	}
+	
 	public static Mist ofMapOrList(Object mapOrList) {
 		Mist mist = new Mist(mapOrList);
 		
@@ -32,7 +42,7 @@ public class MistUtil {
 	
 	public static Mist ofJsonFile(String jsonPath) {
 		String origin = IOUtil.readString(jsonPath);
-		return ofXmlText(origin);
+		return ofJsonText(origin);
 	}
 	
 	public static Mist ofJsonText(String jsonText) {
