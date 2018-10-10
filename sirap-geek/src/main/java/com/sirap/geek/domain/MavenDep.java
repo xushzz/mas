@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Lists;
-import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
 import com.sirap.basic.util.EmptyUtil;

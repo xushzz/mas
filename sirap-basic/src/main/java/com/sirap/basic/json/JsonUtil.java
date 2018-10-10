@@ -101,12 +101,6 @@ public class JsonUtil {
 		return toJson(parseObject(jsonString));
 	}
 	
-	public static Object readObjectByPath(Object json, String path) {
-		JsonReader master = new JsonReader(json);
-		
-		return master.readObject(path);
-	}
-	
 	public static String createRegexKey(String key) {
 		String temp = "\"{0}\"\\s*:\\s*\"([^\"]+)\"";
 		return StrUtil.occupy(temp, key);

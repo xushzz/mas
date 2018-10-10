@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Stack;
 
 import com.google.common.collect.Lists;
-import com.sirap.basic.tool.D;
 import com.sirap.basic.util.HtmlUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.StrUtil;
@@ -72,7 +71,9 @@ public class JsonToMapListConverter {
 		}
 		
 		String string = getIfQuotedString(source);
-//		D.pla(source, string);
+		if(string == null) {
+			XXXUtil.alert("Expect a quoted string but: {0}", source);
+		}
 		String nice = applyEscapes(string);
 		
 		return nice;
@@ -154,6 +155,7 @@ public class JsonToMapListConverter {
 				//check if begins contains one and only one.
 				if(begins.size() == 1) {
 					String kid = current.substring(startIndex + 1, nowIndex).trim();
+					XXXUtil.shouldBeNotEmpty(kid);
 					kids.add(kid);
 					startIndex = nowIndex;
 				}

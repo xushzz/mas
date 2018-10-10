@@ -17,7 +17,6 @@ import com.sirap.basic.domain.MexZipEntry;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.tool.D;
 import com.sirap.basic.util.ArisUtil;
 import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.DateUtil;
@@ -489,8 +488,8 @@ public class CommandFile extends CommandBase {
 			if(content == null) {
 				content = solo;
 			}
-			C.pl("XML> " + content.substring(0, solo.length() < 100 ? solo.length() : 100));
-			Mist mist = MistUtil.ofXmlText(content);
+			C.pl("XML: " + content.substring(0, solo.length() < 100 ? solo.length() : 100));
+			Mist mist = MistUtil.ofXmlText(content, OptionUtil.readBooleanPRI(options, "a", false));
 			dealWithMist(mist);
 			
 			return true;
@@ -508,7 +507,7 @@ public class CommandFile extends CommandBase {
 			if(content == null) {
 				content = solo;
 			}
-			C.pl("Json> " + content.substring(0, solo.length() < 100 ? solo.length() : 100));
+			C.pl("JSON: " + content.substring(0, content.length() < 100 ? content.length() : 100));
 			Mist mist = MistUtil.ofJsonText(content);
 			dealWithMist(mist);
 			
@@ -545,8 +544,11 @@ public class CommandFile extends CommandBase {
 		
 		if(Map.class.isInstance(mars) || List.class.isInstance(mars)) {
 			String temp = JsonUtil.toPrettyJson(mars);
-			List<String> lines = JsonUtil.getPrettyTextInLines(temp);
-			export(lines);
+			if(OptionUtil.readBooleanPRI(options, "r", false)) {
+				export(JsonUtil.getRawText(temp));
+			} else {
+				export(JsonUtil.getPrettyTextInLines(temp));
+			}
 		} else {
 			export(mars);
 		}

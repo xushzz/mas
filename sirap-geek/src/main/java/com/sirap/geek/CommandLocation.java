@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 
 import com.google.common.collect.Lists;
-import com.sirap.basic.component.Konstants;
 import com.sirap.basic.data.CityData;
 import com.sirap.basic.domain.LocationItem;
 import com.sirap.basic.domain.LongOrLat;
@@ -14,9 +13,7 @@ import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.Colls;
-import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
-import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.LonglatUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.MatrixUtil;
@@ -24,8 +21,6 @@ import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
-import com.sirap.common.component.FileOpener;
-import com.sirap.common.framework.SimpleKonfig;
 import com.sirap.geek.data.LonglatData;
 import com.sirap.geek.domain.DistrictItem;
 import com.sirap.geek.manager.GaodeManager;
@@ -232,99 +227,6 @@ public class CommandLocation extends CommandBase {
 			return true;
 		}
 		
-		solo = parseParam(KEY_GAODE_GEO + "XXX\\s+(.+?)");
-		if(solo != null) {
-			String location = null;
-			LocationItem item = LonglatUtil.longAndlatOfDMS(solo);
-			if(item != null) {
-				location = item.longCommaLat();
-			}
-			String city = OptionUtil.readString(options, "c", "");
-			if(location == null) {
-				location = GaodeUtils.fetchLonglat(solo, city);
-			}
-			
-			if(location == null) {
-				boolean isDistance = dealWithDistance(solo, city);
-				if(isDistance) {
-					return true;
-				}
-			}
-
-			boolean showJson = OptionUtil.readBooleanPRI(options, "j", false);
-			boolean appendParam = false;
-			String textAddress = null;
-			List<String> lines = Lists.newArrayList();
-			if(location != null) {
-				if(OptionUtil.readBooleanPRI(options, "r", false)) {
-					export(KEY_GAODE_GEO + " " + GaodeUtils.reverseLonglat(location));
-					location = GaodeUtils.reverseLonglat(location);
-					//return true;
-				}
-				
-				String radius = OptionUtil.readString(options, "r", "1000");
-				boolean useTencent = OptionUtil.readBooleanPRI(options, "tx", true);
-				
-				double[] dog = LonglatUtil.longlatOf(location);
-				boolean couldBeChina = true;
-				if(dog != null) {
-					couldBeChina = LonglatUtil.isInsideOf(dog, LonglatUtil.RANGE_CHINA_LONG, LonglatUtil.RANGE_CHINA_LAT);
-				}
-				
-				if(useTencent || !couldBeChina) {
-					lines = TencentUtils.regeocodeOf(GaodeUtils.reverseLonglat(location));
-					textAddress = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("address"), StrUtil.connect(lines));
-					appendParam = true;
-				} else {
-					lines = GaodeUtils.regeocodeOf(location, radius);
-					String temp = StrUtil.connect(lines);
-					String formattedAddress = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("formatted_address"), temp);
-					if(formattedAddress != null) {
-						String province = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("province"), temp);
-						textAddress = formattedAddress.replaceAll("^" + province, "");
-					} else {
-						appendParam = true;
-						lines = TencentUtils.regeocodeOf(GaodeUtils.reverseLonglat(location));
-						temp = StrUtil.connect(lines);
-						textAddress = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("address"), temp);
-					}
-				}
-			} else {
-				lines = GaodeUtils.geocodeOf(solo, city);
-				String temp = StrUtil.connect(lines);
-				location = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("location"), temp);
-				String formattedAddress = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("formatted_address"), temp);
-				String province = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("province"), temp);
-				if(formattedAddress != null) {
-					textAddress = formattedAddress.replaceAll("^" + province, "");
-				}
-			}
-			
-			if(!showJson) {
-				lines = prettyFormatOf(lines);
-			}
-
-			if(appendParam) {
-				lines.add(0, StrUtil.occupy("param_location: {0}", location));
-			}
-			
-			export(lines);
-			if(OptionUtil.readBooleanPRI(options, "w", false)) {
-				String temp = "?location={0}&address={1}";
-				String requestParams = StrUtil.occupy(temp, location, textAddress);
-				String site = g().getUserValueOf("picker.site", HttpHelper.URL_AKA10_PICKER);
-				String pickerUrl = site + requestParams;
-				viewPage(pickerUrl);
-			}
-			if(OptionUtil.readBooleanPRI(options, "ww", false)) {
-				String temp = "location = \"{0}\"; address = \"{1}\";";
-				String variables = StrUtil.occupy(temp, location, textAddress);
-				generatePicker(variables);
-			} 
-
-			return true;
-		}
-		
 		solo = parseParam(KEY_GAODE_IP + "(|\\s+.+)");
 		if(solo != null) {
 			List<String> lines = null;
@@ -408,35 +310,6 @@ public class CommandLocation extends CommandBase {
 		}
 		
 		return false;
-	}
-	
-	private void generatePicker(String addressAndLocationVariables) {
-		String filePath = "/data/pickerT.html";
-		List<String> lines = IOUtil.readLines(filePath, Konstants.CODE_UTF8);
-		String newLine = null;
-		int index = 0;
-		String key = "//PLACEHOLDER";
-		for(String line : lines) {
-			if(line.trim().startsWith(key)) {
-				newLine = line.replaceAll(key + ".+", addressAndLocationVariables);
-				break;
-			}
-			index++;
-		}
-		if(newLine == null) {
-			XXXUtil.alert("Uncanny, not found placeholder: " + key);
-		}
-		lines.set(index, newLine);
-		String fileName = "picker.html";
-		String dir = getExportLocation();
-		String pcikerFilepath = dir + fileName;
-		if(SimpleKonfig.g().isExportWithTimestampEnabled(options)) {
-			pcikerFilepath = dir + DateUtil.timestamp() + "_" + fileName;
-		}
-
-		IOUtil.saveAsTxtWithCharset(lines, pcikerFilepath, Konstants.CODE_UTF8);
-		C.pl2("Exported => " + pcikerFilepath);
-		FileOpener.open(pcikerFilepath);
 	}
 	
 	private List<String> prettyFormatOf(List<String> lines) {

@@ -238,17 +238,14 @@ public class GaodeUtils {
 			
 			@Override
 			protected void parse() {
-//				String distanceInMeter = XmlUtil.readValue(source, "distance");
-//				String distanceInMeter = XmlUtil.readValueFromText(source, ".results..distance") + "";
-				String distanceInMeter = MistUtil.ofXmlText(source).valueOf(".results..distance") + "";
+				String distanceInMeter = MistUtil.ofXmlText(source).findBy("distance") + "";
 				Integer distance = MathUtil.toInteger(distanceInMeter);
 				if(distance == null || distance <= 0) {
 					String info = StrUtil.findFirstMatchedItem("<info>([^a-z]+)</info>", source);
 					XXXUtil.alert(info);
 				}
 				
-//				String durationInSecond = XmlUtil.readValueFromText(source, ".results..duration") + "";
-				String durationInSecond = MistUtil.ofXmlText(source).valueOf(".results..duration") + "";
+				String durationInSecond = MistUtil.ofXmlText(source).findBy("duration") + "";
 				Integer duration = MathUtil.toInteger(durationInSecond, 1);
 				
 				item = new int[]{distance, duration};

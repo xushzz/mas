@@ -7,16 +7,18 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 
 import com.google.common.collect.Lists;
-import com.sirap.basic.tool.D;
-//import com.sirap.basic.tool.D;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 
+@Data
 public class XmlToMapConverter {
+	
+	private boolean useAttributes;
 
 	@SuppressWarnings("rawtypes")
 	public Map fromXmlFile(String xmlPath) {
@@ -126,7 +128,10 @@ public class XmlToMapConverter {
 //		D.list(group);
 		List<String> kids = group.subList(1, group.size() - 1);
 		Map<String, Object> mars = new LinkedHashMap<>();
-		Map<String, Object> attrs = mapOfProperties(wordx);
+		Map<String, Object> attrs = null;
+		if(useAttributes) {
+			attrs = mapOfProperties(wordx);
+		}
 		
 		Object gist = process(kids);
 		if(EmptyUtil.isNullOrEmpty(attrs)) {
