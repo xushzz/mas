@@ -529,4 +529,50 @@ public class MathUtil {
 		boolean flag = target <= max && target >= min;
 		return flag;
 	}
+
+	public static String factorialExpressionOf(int number) {
+		XXXUtil.shouldBeTrue(number >= 0);
+		
+		if(number <= 1) {
+			return number + "!";
+		}
+		
+		String total = "";
+		byte temp = 1;
+		while(temp < number) {
+			total += temp + "*";
+			temp++;
+		}
+		total += number;
+		
+		return total;
+	}
+
+	public static BigDecimal factorialOf(int number) {
+		XXXUtil.shouldBeTrue(number >= 0);
+		
+		BigDecimal total = toBigDecimal(1);
+		int temp = number;
+		while(temp > 1) {
+			total = total.multiply(toBigDecimal(temp--));
+		}
+		
+		return total;
+	}
+	
+	public static int fibonacciCoins(int amount, List<Integer> units) {
+		int count = 0;
+		if(units.contains(amount)) {
+			count += 1;
+		}
+
+		int half = amount / 2;
+		for(int i = 1; i <= half; i++) {
+			int ka = i;
+			int kb = amount - i;
+			count += fibonacciCoins(ka, units) * fibonacciCoins(kb, units);
+		}
+		
+		return count;
+	}
 }

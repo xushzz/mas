@@ -1,12 +1,12 @@
 package com.sirap.basic.util;
 
-import java.awt.List;
+import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.component.Mist;
 import com.sirap.basic.json.JsonToMapListConverter;
 import com.sirap.basic.json.XmlToMapConverter;
-import com.sirap.basic.tool.D;
 
 /***
  * Map + List
@@ -60,5 +60,18 @@ public class MistUtil {
 		Mist mist = new Mist(jack.fromJsonText(jsonText));
 		
 		return mist;
+	}
+
+	public static List wrapMapIfNeeded(Object moon) {
+		List items = Lists.newArrayList();
+		if(List.class.isInstance(moon)) {
+			items.addAll((List)moon);
+		} else if(Map.class.isInstance(moon)) {
+			items.add(moon);
+		} else {
+//			XXXUtil.alert("Unsupported type: {0}", moon.getClass().getName());
+		}
+		
+		return items;
 	}
 }

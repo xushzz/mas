@@ -1,5 +1,6 @@
 package com.sirap.common.command.explicit;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -31,6 +32,39 @@ public class CommandMath extends CommandBase {
 	
 	@Override
 	public boolean handle() {
+		params = parseParams("split\\s+(\\d{1,4})\\s+([\\d\\s,]+)");
+		if(params != null) {
+			int amount = Integer.parseInt(params[0]);
+			List<String> items = StrUtil.split(params[1]);
+			List<Integer> units = Lists.newArrayList();
+			for(String item : items) {
+				units.add(Integer.parseInt(item));
+			}
+			
+			export(MathUtil.fibonacciCoins(amount, units));
+			return true;
+		}
+		
+		solo = parseParam("(\\d{1,2})!");
+		if(solo != null) {
+			short number = Short.valueOf(solo);
+			BigDecimal result = MathUtil.factorialOf(number);
+			
+			String temp = result.toString();
+			if(temp.length() > 5) {
+				temp += " (" + temp.length() + " digits)";
+			}
+			List<String> items = Lists.newArrayList();
+			if(number > 1) {
+				items.add(command + " = " + MathUtil.factorialExpressionOf(number));
+			}
+			items.add(command + " = " + temp);
+			
+			export(items);
+			
+			return true;
+		}
+		
 		solo = parseParam(REGEX_HEX8);
 		if(solo != null) {
 			export(Long.parseLong(solo, 16));

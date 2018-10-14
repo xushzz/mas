@@ -3,7 +3,10 @@ package com.sirap.geek.manager;
 import java.util.List;
 
 import com.sirap.basic.component.Extractor;
+import com.sirap.basic.component.Mist;
 import com.sirap.basic.json.JsonUtil;
+import com.sirap.basic.tool.D;
+import com.sirap.basic.util.MistUtil;
 import com.sirap.basic.util.StrUtil;
 
 public class TencentUtils {
@@ -56,26 +59,30 @@ public class TencentUtils {
 	}
 	
 	public static boolean isInGreatDetail(String jsonOneline) {
-		String recommend = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("recommend"), jsonOneline);
+		String recommend = MistUtil.ofJsonText(jsonOneline).asIs().findStringBy("recommend");
 		return StrUtil.isPositive(recommend);
 	}
 
 	public static String niceAddressByRawJson(String source) {
+		Mist mars = MistUtil.ofJsonText(source).asIs();
+		
 		String nice;
-		String recommend = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("recommend"), source);
+		String recommend = mars.findStringBy("recommend");
 		if(recommend != null) {
 			//in China.
-			String address = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("address"), source);
+			String address = mars.findStringBy("address");
 			String temp = address.replace(recommend, "");
 			temp = recommend + " " + temp; 
 			nice = temp.trim();
 		} else {
+			D.sink();
 			//outside China
-			String nation = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("nation"), source);
-			String levelA = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("ad_level_1"), source);
-			String levelB = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("ad_level_2"), source);
-			String levelC = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("ad_level_3"), source);
-			String street = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("street"), source);
+			String nation = mars.findStringBy("nation");
+			String levelA = mars.findStringBy("ad_level_1");
+			String levelB = mars.findStringBy("ad_level_2");
+			String levelC = mars.findStringBy("ad_level_3");
+			String street = mars.findStringBy("street");
+			D.pla(nation, levelA);
 			StringBuffer sb = StrUtil.sb(nation);
 			if(StrUtil.isPositive(levelA)) {
 				sb.append(" ").append(levelA);

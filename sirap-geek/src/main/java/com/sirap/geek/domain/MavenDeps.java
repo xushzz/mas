@@ -6,12 +6,17 @@ import java.util.Map;
 import com.google.common.collect.Lists;
 import com.sirap.basic.tool.D;
 
-import lombok.Data;
-
-@Data
 public class MavenDeps extends MavenItem {
 	private List<MavenDep> dependencies = Lists.newArrayList();
 	
+	public List<MavenDep> getDependencies() {
+		return dependencies;
+	}
+
+	public void setDependencies(List<MavenDep> dependencies) {
+		this.dependencies = dependencies;
+	}
+
 	public void read(Object cake) {
 		List items = Lists.newArrayList();
 		if(List.class.isInstance(cake)) {

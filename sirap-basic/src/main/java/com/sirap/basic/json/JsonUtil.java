@@ -1,8 +1,6 @@
 package com.sirap.basic.json;
 
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.MistUtil;
@@ -36,47 +34,13 @@ public class JsonUtil {
 		return JsonConvertManager.g(true).toJson(anyKindOfObject, depth);
 	}
 	
-	public static String getFirstStringValueByKey(String source, String key) {
-		if(source == null)
-			return null;
-		String template = "\"{0}\"\\s*:\\s*\"([^\"]*)\"";
-		String regex = StrUtil.occupy(template, key);
-		Matcher m = Pattern.compile(regex.toString(), Pattern.CASE_INSENSITIVE).matcher(source);
-
-		if(m.find()) {
-			String value = m.group(1);
-			return value;
-		}
-		
-		return null;
-	}
-	
-	public static String getFirstNumberValueByKey(String source, String key) {
-		if(source == null)
-			return null;
-		String template = "\"{0}\"\\s*:\\s*(\\d+)";
-		String regex = StrUtil.occupy(template, key);
-		Matcher m = Pattern.compile(regex.toString(), Pattern.CASE_INSENSITIVE).matcher(source);
-
-		if(m.find()) {
-			String value = m.group(1);
-			return value;
-		}
-		
-		return null;
-	}
-	
 	public static String quote(Object obj) {
 		String temp = obj + "";
 		temp = temp.replace("\"", "\\\"");
 		return StrUtil.occupy("\"{0}\"", temp);
 	}
 	
-	public static Object parseObject(String jsonString) {
-//		JsonBox beiring = new JsonBox(jsonString);
-//		Object sea = beiring.getKing();
-//		return sea;
-		
+	public static Object parse(String jsonString) {
 		return MistUtil.ofJsonText(jsonString).getCore();
 	}
 	
@@ -90,7 +54,17 @@ public class JsonUtil {
 			return jsonString;
 		}
 		
-		return toPrettyJson(parseObject(jsonString));
+		return toPrettyJson(parse(jsonString));
+	}
+	
+	public static List<String> objectToPrettyJsonInLines(Object anyKindOfObject) {
+		String prettyAce = toPrettyJson(anyKindOfObject);
+		
+		return StrUtil.split(prettyAce, "\n", false);
+	}
+	
+	public static String objectToPrettyJson(Object anyKindOfObject) {
+		return toPrettyJson(anyKindOfObject);
 	}
 	
 	public static String getRawText(String jsonString) {
@@ -98,7 +72,7 @@ public class JsonUtil {
 			return null;
 		}
 		
-		return toJson(parseObject(jsonString));
+		return toJson(parse(jsonString));
 	}
 	
 	public static String createRegexKey(String key) {

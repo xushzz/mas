@@ -17,9 +17,27 @@ import lombok.Data;
 //@NoArgsConstructor
 @Data
 public class Mist {
-	
+
 	private Object core;
+	private boolean isHumanReadable = true;
 	
+	public Object getCore() {
+		return core;
+	}
+
+	public void setCore(Object core) {
+		this.core = core;
+	}
+	
+	public boolean isHumanReadable() {
+		return isHumanReadable;
+	}
+
+	public Mist asIs() {
+		this.isHumanReadable = false;
+		return this;
+	}
+
 	public boolean isArray() {
 		return List.class.isInstance(core);
 	}
@@ -86,6 +104,19 @@ public class Mist {
 		return findBy(keys);
 	}
 	
+	public String findStringBy(String expression) {
+		XXXUtil.nullOrEmptyCheck(expression);
+		
+		List<String> keys = StrUtil.split(expression, '.');
+		
+		Object obj = findBy(keys);
+		if(obj == null) {
+			return null;
+		}
+		
+		return obj.toString();
+	}
+	
 	public Object findBy(List<String> keys) {
 		XXXUtil.nullOrEmptyCheck(keys);
 		
@@ -97,14 +128,15 @@ public class Mist {
 			gist = matchedItems;
 		}
 		
-		if(matchedItems == null || matchedItems.isEmpty()) {
-			return Konstants.FAKED_NULL;
+		if(EmptyUtil.isNullOrEmpty(matchedItems)) {
+			return isHumanReadable ? Konstants.FAKED_EMPTY : null;
 		}
 		
 		if(matchedItems.size() == 1) {
 			Object obj = matchedItems.get(0);
 			if(obj.toString().isEmpty()) {
-				return Konstants.FAKED_EMPTY;
+				return isHumanReadable ? Konstants.FAKED_EMPTY : "";
+//				return Konstants.FAKED_EMPTY;
 			} else {
 				return obj;
 			}

@@ -17,6 +17,7 @@ import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
+import com.sirap.basic.util.HttpUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.ObjectUtil;
@@ -65,6 +66,7 @@ public class CommandCollect extends CommandBase {
 	private static final String KEY_THIS_DAY_IN_HISTORY_CHINESE = "this";
 	private static final String KEY_THIS_DAY_IN_HISTORY_ENGLISH = "hist";
 	private static final String KEY_NOBEL_PRIZE = "nobel";
+	private static final String KEY_SINA = "sina";
 
 	{
 		helpMeanings.put("money.forex.url", XRatesForexRateExtractor.URL_X_RATES);
@@ -348,6 +350,16 @@ public class CommandCollect extends CommandBase {
 			export2(items, solo);
 			
 			return true;
+		}
+		
+		solo = parseParam(KEY_SINA + "\\s(.+)");
+		if(solo != null) {
+			if(HttpUtil.isHttp(solo)) {
+				List<String> items = ExtractorUtil.sinaSlides(solo);
+				export(items);
+				
+				return true;
+			}
 		}
 
 		return false;

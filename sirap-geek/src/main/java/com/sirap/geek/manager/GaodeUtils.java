@@ -3,7 +3,6 @@ package com.sirap.geek.manager;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 
 import com.google.common.collect.Lists;
@@ -137,7 +136,7 @@ public class GaodeUtils {
 			@Override
 			protected void parse() {
 				Object pois = MistUtil.ofXmlText(source).findBy("pois");
-				List maps = wrapMapIfNeeded(pois);
+				List maps = MistUtil.wrapMapIfNeeded(pois);
 				
 				List<String> keys = StrUtil.split("cityname,adname,name,type,address,tel,location");
 				List<String> templist = Lists.newArrayList();
@@ -191,7 +190,7 @@ public class GaodeUtils {
 			@Override
 			protected void parse() {
 				Object pois = MistUtil.ofXmlText(source).findBy("pois");
-				List maps = wrapMapIfNeeded(pois);
+				List maps = MistUtil.wrapMapIfNeeded(pois);
 				
 				int count = 0;
 				List<String> keys = StrUtil.split("distance,cityname,adname,name,type,address,tel,location");
@@ -602,18 +601,5 @@ public class GaodeUtils {
 		}
 		
 		return null;
-	}
-	
-	public static List wrapMapIfNeeded(Object moon) {
-		List items = Lists.newArrayList();
-		if(List.class.isInstance(moon)) {
-			items.addAll((List)moon);
-		} else if(Map.class.isInstance(moon)) {
-			items.add(moon);
-		} else {
-//			XXXUtil.alert("Unsupported type: {0}", moon.getClass().getName());
-		}
-		
-		return items;
 	}
 }

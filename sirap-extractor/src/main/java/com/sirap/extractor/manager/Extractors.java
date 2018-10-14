@@ -17,7 +17,6 @@ import com.sirap.basic.domain.KeyValuesItem;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.domain.ValuesItem;
-import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.thread.MasterItemsOriented;
 import com.sirap.basic.thread.WorkerItemsOriented;
 import com.sirap.basic.tool.C;
@@ -356,24 +355,23 @@ public class Extractors {
 			
 			@Override
 			protected void parse() {
-				String regex = "\\{(.+?)\\}";
-				Matcher ma = createMatcher(regex, source);
-				while(ma.find()) {
-					String section = ma.group(1);
-					String name = JsonUtil.getFirstStringValueByKey(section, "Name");
-					String address = JsonUtil.getFirstStringValueByKey(section, "ADDRESS");
-					String phone = JsonUtil.getFirstStringValueByKey(section, "PHONE1");
-					phone += " " + JsonUtil.getFirstStringValueByKey(section, "PHONE2");
+				List pies = MistUtil.wrapMapIfNeeded(MistUtil.ofJsonText(source).getCore());
+				for(Object obj : pies) {
+					Mist pie = MistUtil.ofMapOrList(obj).asIs();;
+					String name = pie.findBy("Name") + "";
+					String address = pie.findBy("ADDRESS") + "";
+					String phone = pie.findBy("PHONE1") + "";
+					phone += " " + pie.findBy("PHONE2") + "";
 					phone = phone.replace("null", "").trim();
-					String location = JsonUtil.getFirstStringValueByKey(section, "Lon");
-					location += "," + JsonUtil.getFirstStringValueByKey(section, "Lat");
+					String location = pie.findBy("Lon") + "";
+					location += "," + pie.findBy("Lat") + "";
 					location = location.replace("null", "").trim();
 					
 					List<String> lines = Lists.newArrayList();
-					lines.add(name);
-					lines.add(phone);
-					lines.add(address);
-					lines.add(location);
+					lines.add(name.trim());
+					lines.add(phone.trim());
+					lines.add(address.trim());
+					lines.add(location.trim());
 					mexItems.add(lines);
 				}
 			}

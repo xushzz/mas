@@ -24,3 +24,5 @@ sudoku             000010000,000007645,906000700,400000302,870000000,000000060,0
 ..23-.1.31         calculate day diff, the value of unspecified field is default to be that of current day  
 ..23+139           calculate next date with positive day diff, max 99999
 ..23-139           calculate next date with negative day diff, max -99999
+12!                factorial of number twelve
+split 100 1,2,5    how may ways to split 100 by 1, 2 and 5

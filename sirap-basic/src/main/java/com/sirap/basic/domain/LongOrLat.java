@@ -6,13 +6,6 @@ import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XCodeUtil;
 import com.sirap.basic.util.XXXUtil;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class LongOrLat {
 	public static final String TYPE_LONGITUDE = "lon";
 	public static final String TYPE_LATITUDE = "lat";
@@ -27,6 +20,56 @@ public class LongOrLat {
 	private double second;
 	private String flag;
 	
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public double getDecimal() {
+		return decimal;
+	}
+
+	public void setDecimal(double decimal) {
+		this.decimal = decimal;
+	}
+
+	public int getDegree() {
+		return degree;
+	}
+
+	public void setDegree(int degree) {
+		this.degree = degree;
+	}
+
+	public int getMinute() {
+		return minute;
+	}
+
+	public void setMinute(int minute) {
+		this.minute = minute;
+	}
+
+	public double getSecond() {
+		return second;
+	}
+
+	public void setSecond(double second) {
+		this.second = second;
+	}
+
+	public String getFlag() {
+		return flag;
+	}
+
+	public void setFlag(String flag) {
+		this.flag = flag;
+	}
+	
+	public LongOrLat() {}
+
 	public LongOrLat(String typeParam, double decimalParam) {
 		this.type = typeParam;
 		this.decimal = Math.abs(decimalParam);

@@ -543,11 +543,11 @@ public class CommandFile extends CommandBase {
 		}
 		
 		if(Map.class.isInstance(mars) || List.class.isInstance(mars)) {
-			String temp = JsonUtil.toPrettyJson(mars);
+//			String temp = JsonUtil.toPrettyJson(mars);
 			if(OptionUtil.readBooleanPRI(options, "r", false)) {
-				export(JsonUtil.getRawText(temp));
+				export(JsonUtil.toJson(mars));
 			} else {
-				export(JsonUtil.getPrettyTextInLines(temp));
+				export(JsonUtil.objectToPrettyJsonInLines(mars));
 			}
 		} else {
 			export(mars);

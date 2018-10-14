@@ -13,7 +13,6 @@ import com.sirap.geek.manager.MavenBuilder;
 
 import lombok.Data;
 
-@Data
 public class MavenDep extends MavenItem {
 	private String groupId;
 	private String artifactId;
@@ -22,6 +21,62 @@ public class MavenDep extends MavenItem {
 	private String classifier;
 	private String scope;
 	private List<MavenExclusion> exclusions;
+
+	public String getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(String groupId) {
+		this.groupId = groupId;
+	}
+
+	public String getArtifactId() {
+		return artifactId;
+	}
+
+	public void setArtifactId(String artifactId) {
+		this.artifactId = artifactId;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getClassifier() {
+		return classifier;
+	}
+
+	public void setClassifier(String classifier) {
+		this.classifier = classifier;
+	}
+
+	public String getScope() {
+		return scope;
+	}
+
+	public void setScope(String scope) {
+		this.scope = scope;
+	}
+
+	public List<MavenExclusion> getExclusions() {
+		return exclusions;
+	}
+
+	public void setExclusions(List<MavenExclusion> exclusions) {
+		this.exclusions = exclusions;
+	}
 
 	public String keyOf() {
 		String key = getGroupId() + " && " + getArtifactId();

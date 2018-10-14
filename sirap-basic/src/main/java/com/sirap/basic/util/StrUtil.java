@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.exception.MexException;
+import com.sirap.basic.tool.D;
 
 public class StrUtil {
 
@@ -1127,5 +1128,23 @@ public class StrUtil {
 		BigDecimal jack = new BigDecimal(source);
 		
 		return jack;
+	}
+	
+	/***
+	 * if given char is preceded by zero or double backslashes
+	 * @param source
+	 * @param nowIndex
+	 * @return
+	 */
+	public static boolean isPrecededByEvenBackslashes(String source, int nowIndex) {
+		int count = 0;
+		int previous = nowIndex - 1;
+//		D.pla(source.toCharArray());
+		while(previous >= 0 && source.charAt(previous) == '\\') {
+			count++;
+			previous = previous - 1;
+		}
+		
+		return count % 2 == 0;
 	}
 }

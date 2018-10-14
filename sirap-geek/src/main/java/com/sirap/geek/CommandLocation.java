@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 
 import com.google.common.collect.Lists;
+import com.sirap.basic.component.Mist;
 import com.sirap.basic.data.CityData;
 import com.sirap.basic.domain.LocationItem;
 import com.sirap.basic.domain.LongOrLat;
@@ -17,6 +18,7 @@ import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.LonglatUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.MatrixUtil;
+import com.sirap.basic.util.MistUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
@@ -195,9 +197,11 @@ public class CommandLocation extends CommandBase {
 			} else {
 				rawJson = GaodeUtils.geocodeOfRaw(solo, city);
 				if(showWebsite) {
-					longCommaLat = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("location"), rawJson);
-					String formattedAddress = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("formatted_address"), rawJson);
-					String province = StrUtil.findFirstMatchedItem(JsonUtil.createRegexKey("province"), rawJson);
+					Mist mars = MistUtil.ofJsonText(rawJson).asIs();
+					longCommaLat = mars.findBy("location") + "";
+					String formattedAddress = mars.findBy("formatted_address") + "";
+					String province = mars.findBy("province") + "";
+
 					if(formattedAddress != null) {
 						niceAddress = formattedAddress.replaceAll("^" + province, "");
 					}

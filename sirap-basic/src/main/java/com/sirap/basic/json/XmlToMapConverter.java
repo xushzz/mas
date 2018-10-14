@@ -20,6 +20,14 @@ public class XmlToMapConverter {
 	
 	private boolean useAttributes;
 
+	public boolean isUseAttributes() {
+		return useAttributes;
+	}
+
+	public void setUseAttributes(boolean useAttributes) {
+		this.useAttributes = useAttributes;
+	}
+
 	@SuppressWarnings("rawtypes")
 	public Map fromXmlFile(String xmlPath) {
 //		D.pl(xmlPath);
@@ -43,7 +51,7 @@ public class XmlToMapConverter {
 		return pogba.read();
 	}
 
-	private Object niceValue(String source) {
+	private Object niceValueOf(String source) {
 		XXXUtil.nullCheckOnly(source);
 		
 		if(source.isEmpty()) {
@@ -74,7 +82,7 @@ public class XmlToMapConverter {
 		}
 		
 		if(words.size() == 1) {
-			return niceValue(words.get(0));
+			return niceValueOf(words.get(0));
 		}
 		
 		Stack<String> basket = new Stack<>();

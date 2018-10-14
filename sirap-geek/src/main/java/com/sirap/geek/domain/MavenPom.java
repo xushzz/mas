@@ -19,7 +19,6 @@ import lombok.NoArgsConstructor;
 
 @SuppressWarnings("serial")
 @EqualsAndHashCode(callSuper=false)
-@Data
 @NoArgsConstructor
 public class MavenPom extends MavenItem {
 	private MavenPom parent;
@@ -38,6 +37,94 @@ public class MavenPom extends MavenItem {
 	private String pomPath;
 	private int depth;
 	
+	public MavenPom getParent() {
+		return parent;
+	}
+
+	public void setParent(MavenPom parent) {
+		this.parent = parent;
+	}
+
+	public Map<String, Object> getOrigin() {
+		return origin;
+	}
+
+	public void setOrigin(Map<String, Object> origin) {
+		this.origin = origin;
+	}
+
+	public Map<String, String> getProps() {
+		return props;
+	}
+
+	public void setProps(Map<String, String> props) {
+		this.props = props;
+	}
+
+	public List<MavenDep> getManagements() {
+		return managements;
+	}
+
+	public void setManagements(List<MavenDep> managements) {
+		this.managements = managements;
+	}
+
+	public String getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(String groupId) {
+		this.groupId = groupId;
+	}
+
+	public String getArtifactId() {
+		return artifactId;
+	}
+
+	public void setArtifactId(String artifactId) {
+		this.artifactId = artifactId;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public List<MavenDep> getDependencies() {
+		return dependencies;
+	}
+
+	public void setDependencies(List<MavenDep> dependencies) {
+		this.dependencies = dependencies;
+	}
+
+	public String getRepoPath() {
+		return repoPath;
+	}
+
+	public void setRepoPath(String repoPath) {
+		this.repoPath = repoPath;
+	}
+
+	public String getPomPath() {
+		return pomPath;
+	}
+
+	public void setPomPath(String pomPath) {
+		this.pomPath = pomPath;
+	}
+
+	public int getDepth() {
+		return depth;
+	}
+
+	public void setDepth(int depth) {
+		this.depth = depth;
+	}
+
 	public void self(int depth) {
 		String dent = StrUtil.spaces(depth * 4);
 		D.pl(dent + groupId + " # " + artifactId + " " + version);
