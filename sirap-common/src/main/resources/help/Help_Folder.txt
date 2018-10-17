@@ -27,3 +27,4 @@ remove F:\a.mp3    remove normal file F:\a.mp3 if file size is less than 5M, $+s
 remove F: $+k      remove all sub files in given folder but keep the folder itself, check file size
 F: 3 fire $+remove remove all searched file items by searching, apply $+sure if needed
 v fire $+remove    remove all searched file items by vip folder, apply $+sure if needed
+mexfile            options: t for tree, h for hide, k for kids, s for size, ss for super size, d for date

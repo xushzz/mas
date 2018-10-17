@@ -370,32 +370,6 @@ public class FileUtil {
 		return null;
 	}
 	
-	public static List<MexFile> listDirectory(String dir) {
-		File file = new File(dir);
-		List<MexFile> records = new ArrayList<>();
-		final List<MexFile> normalFiles = new ArrayList<>();
-		final List<MexFile> subFolders = new ArrayList<>();
-		file.listFiles(new FileFilter() {
-			@Override
-			public boolean accept(File currentFile) {
-				MexFile june = new MexFile(currentFile);
-				if(currentFile.isDirectory()) {
-					subFolders.add(june);
-				} else {
-					normalFiles.add(june);
-				}
-				
-				return true;
-			}
-		});
-		
-		records.add(new MexFile(file));
-		records.addAll(subFolders);
-		records.addAll(normalFiles);
-		
-		return records;
-	}
-	
 	public static List<Map<String, Object>> listShortnames(String dir) {
 		final List<Map<String, Object>> holder = Lists.newArrayList();
 		List<File> files = Lists.newArrayList();

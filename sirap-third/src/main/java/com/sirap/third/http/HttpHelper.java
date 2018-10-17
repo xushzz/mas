@@ -24,7 +24,6 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
 import com.sirap.basic.component.Konstants;
-import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
@@ -59,9 +58,6 @@ public class HttpHelper {
             for(Object obj : items) {
             	if(obj instanceof File) {
             		File file = (File)obj;
-            		builder.addBinaryBody(file.getName(), file);
-            	} else if(obj instanceof MexFile) {
-            		File file = ((MexFile)obj).getFile();
             		builder.addBinaryBody(file.getName(), file);
             	} else {
             		builder.addTextBody(KEY_BALL, obj + "", contentType);

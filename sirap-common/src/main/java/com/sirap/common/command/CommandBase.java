@@ -13,6 +13,7 @@ import com.sirap.basic.component.Konstants;
 import com.sirap.basic.component.TimestampIDGenerator;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexObject;
+import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.exception.MadeException;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.output.ConsoleParams;
@@ -37,6 +38,7 @@ import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.WebReader;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.component.FileOpener;
+import com.sirap.common.component.MexItemsFetcher;
 import com.sirap.common.framework.Janitor;
 import com.sirap.common.framework.SimpleKonfig;
 import com.sirap.common.framework.Stash;
@@ -69,6 +71,7 @@ public abstract class CommandBase {
 	public Target target;
 	protected boolean collectInput = true;
 	
+	protected boolean flag;
 	protected String solo;
 	protected String[] params;
 	protected String regex;
@@ -202,11 +205,6 @@ public abstract class CommandBase {
 		return path.replace('\\', '/');
 	}
 	
-	@SuppressWarnings({ "rawtypes"})
-	public void export(List list) {
-		export(list, options);
-	}
-	
 	public void useHighOptions(String highPriority) {
 		options = OptionUtil.mergeOptions(highPriority, options);
 	}
@@ -216,74 +214,103 @@ public abstract class CommandBase {
 	}
 	
 	@SuppressWarnings({ "rawtypes"})
-	public void exportMatrix(List<? extends List> matrix) {
-		exportMatrix(matrix, "");
+	public void exportMatrix(List data) {
+		exportMatrix(data, "");
 	}
 	
 	@SuppressWarnings({ "rawtypes"})
-	public void exportMatrix(List<? extends List> matrix, String highPriority) {
-		if(!EmptyUtil.isNullOrEmpty(highPriority)) {
-			useHighOptions(highPriority);
+	public void exportMatrix(List data, String lowOptions) {
+		List fixedData = applyMexCriteriaAndIgnoreSome(data);
+		
+		if(isToExcel()) {
+			export(fixedData);
+			return;
 		}
+		
+		if(!EmptyUtil.isNull(lowOptions)) {
+			useLowOptions(lowOptions);
+		}
+		
+		List<List> matrix = MatrixUtil.matrixOf(fixedData, options);
+		
 		boolean pretty = OptionUtil.readBooleanPRI(options, "p", true);
-		String connector = OptionUtil.readString(options, "c", " , ");
+		String connector = OptionUtil.readString(options, "c", "  ");
+		List matrixLines;
 		if(pretty) {
-			export(MatrixUtil.prettyMatrixLines(matrix, connector));
+			matrixLines = MatrixUtil.prettyMatrixLines(matrix, connector);
 		} else {
-			export(MatrixUtil.lines(matrix, connector));
+			matrixLines = MatrixUtil.lines(matrix, connector);
 		}
+		
+		export(matrixLines, true);
 	}
 	
 	@SuppressWarnings("rawtypes")
 	public void export2(List list, String criteria) {
-		List list2 = Colls.filterMix(list, criteria, isCaseSensitive());
-		export(list2, options);
+		List list2 = applyCriteria(list, criteria);
+		export(list2);
 	}
 	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private List applyMexCriteriaOnMexItems(List rawItems, String mexCriteria, boolean isCaseSensitive, boolean stay) {
-		List<MexItem> mexItems = Lists.newArrayList();
-		List nonItems = Lists.newArrayList();
-		for(Object obj : rawItems) {
-			if(obj instanceof MexItem) {
-				mexItems.add((MexItem)obj);
-			} else if(obj instanceof String) {
-				mexItems.add(new MexObject(obj));
-			} else {
-				nonItems.add(obj);
-			}
+	protected List applyCriteria(List rawItems, String criteria) {
+		if(EmptyUtil.isNullOrEmpty(criteria)) {
+			return rawItems;
 		}
-
-		List<MexItem> after = Colls.filter(mexItems, mexCriteria, isCaseSensitive, stay);
 		
-		nonItems.addAll(after);
-		
-		return nonItems;
-	}
+		boolean flagOfStay = OptionUtil.readBooleanPRI(options, "stay", false);
+		boolean sensitive = OptionUtil.readBooleanPRI(options, "case", false);
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private List toPrintIfMex(List items, String options) {
-		List records = new ArrayList<String>();
-		for(Object obj : items) {
+		List remains = Lists.newArrayList();
+		for(Object obj : rawItems) {
 			if(obj == null) {
 				continue;
 			}
-//			D.list(items);
-			MexItem item;
-			if(obj instanceof MexItem) {
+			
+			MexItem item = null;
+			if(obj instanceof List) {
+				item = ValuesItem.of((List)obj);
+			} else if(obj instanceof MexItem) {
 				item = (MexItem)obj;
-				if(goodToGo(item, options)) {
-					records.add(item.toPrint(options));
-				}
 			} else {
-				item = new MexObject(obj.toString());
-				if(goodToGo(item, options)) {
-					records.add(obj);
+				item = new MexObject(obj);
+			}
+
+			if(item.isMexMatched(criteria, sensitive, flagOfStay)) {
+				remains.add(obj);
+			}
+		}
+
+		return remains;
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private List applyMexCriteriaAndIgnoreSome(List rawItems) {
+		String mexCriteria = OptionUtil.readString(options, "z");
+		boolean flagOfStay = OptionUtil.readBooleanPRI(options, "stay", false);
+		boolean sensitive = OptionUtil.readBooleanPRI(options, "case", false);
+		List remains = Lists.newArrayList();
+		for(Object obj : rawItems) {
+			if(obj == null) {
+				continue;
+			}
+			
+			MexItem item = null;
+			if(obj instanceof List) {
+				item = ValuesItem.of(obj);
+			} else if(obj instanceof MexItem) {
+				item = (MexItem)obj;
+			} else {
+				item = new MexObject(obj);
+			}
+			if(goodToGo(item, options)) {
+				if(EmptyUtil.isNullOrEmpty(mexCriteria)) {
+					remains.add(obj);
+				} else if(item.isMexMatched(mexCriteria, sensitive, flagOfStay)) {
+					remains.add(obj);
 				}
 			}
 		}
-		
-		return records;
+
+		return remains;
 	}
 	
 	private boolean goodToGo(MexItem item, String options) {
@@ -302,45 +329,70 @@ public abstract class CommandBase {
 		return false;
 	}
 	
+	protected boolean isToExcel() {
+		return TargetExcel.class.isInstance(target);
+	}
+	
 	public void export(String template, Object... params) {
 		export(StrUtil.occupy(template, params));
 	}
+	
+	public void export(List origin) {
+		export(origin, false);
+	}
 
 	@SuppressWarnings({"rawtypes" })
-	public void export(List list, String finalOptions) {
-		XXXUtil.nullCheck(list, "list");
-		List newList = list;
-		String mexCriteria = OptionUtil.readString(finalOptions, "z");
-		Target where = whereToShot();
-		if(!EmptyUtil.isNullOrEmpty(mexCriteria)) {
-			boolean flagOfStay = OptionUtil.readBooleanPRI(finalOptions, "stay", false);
-			newList = applyMexCriteriaOnMexItems(newList, mexCriteria, isCaseSensitive(finalOptions), flagOfStay);
+	public void export(List origin, boolean fromMatrix) {
+		XXXUtil.nullCheck(origin, "list");
+		Target myTarget = whereToShot();
+		List listAfterFilter = origin;
+		
+		if(!fromMatrix) {
+			listAfterFilter = applyMexCriteriaAndIgnoreSome(origin);
 		}
-		boolean isExcel = target instanceof TargetExcel;
-		if(!isExcel) {
-			newList = toPrintIfMex(newList, finalOptions);
+		
+		if(isToExcel()) {
+			List<List> matrix = MatrixUtil.matrixOf(listAfterFilter, options);
+			myTarget.export(matrix, options, g().isExportWithTimestampEnabled(options));
+			return;
 		}
 
-		if(EmptyUtil.isNullOrEmpty(newList)) {
-			newList.add(Konstants.FAKED_EMPTY);
+		boolean toMatrix = OptionUtil.readBooleanPRI(options, "mat", false);
+		if(toMatrix) {
+			listAfterFilter = MatrixUtil.matrixOf(listAfterFilter, options);
+			boolean pretty = OptionUtil.readBooleanPRI(options, "p", true);
+			String connector = OptionUtil.readString(options, "c", " , ");
+			if(pretty) {
+				listAfterFilter = MatrixUtil.prettyMatrixLines(listAfterFilter, connector);
+			} else {
+				listAfterFilter = MatrixUtil.lines(listAfterFilter, connector);
+			}
+		}		
+
+		if(EmptyUtil.isNullOrEmpty(listAfterFilter)) {
+			listAfterFilter.add(Konstants.FAKED_EMPTY);
+		} else if(OptionUtil.readBooleanPRI(options, "sort", false)) {
+			Colls.sortIgnoreCase(listAfterFilter);
 		}
-		if(OptionUtil.readBooleanPRI(options, "sort", false)) {
-			Colls.sortIgnoreCase(newList);
+		
+		if(OptionUtil.readBooleanPRI(options, "self", false)) {
+			listAfterFilter.add(0, "$ " + input);
 		}
-		if(OptionUtil.readBooleanPRI(finalOptions, "self", false)) {
-			newList.add(0, "$ " + input);
-		}
-		boolean fromLastList = OptionUtil.readBooleanPRI(finalOptions, Stash.KEY_GETSTASH, false);
+		
+		boolean fromLastList = OptionUtil.readBooleanPRI(options, Stash.KEY_GETSTASH, false);
 		if(!fromLastList) {
-			Stash.g().setLastQuery(input, newList);
+			Stash.g().setLastQuery(input, listAfterFilter);
 		}
+		
 		if(g().isFromWeb()) {
-			if(TargetEmail.class.isInstance(where)) {
+			if(TargetEmail.class.isInstance(target)) {
 				C.pl2("Forbidden operation: can't send email from outside." );
 				return;
 			}
 		}
-		where.export(newList, finalOptions, g().isExportWithTimestampEnabled(finalOptions));
+		
+		// email, web, console
+		myTarget.export(listAfterFilter, options, g().isExportWithTimestampEnabled(options));
 	}
 	
 	private Target whereToShot() {
@@ -883,9 +935,17 @@ public abstract class CommandBase {
 		
 		return useSlash(path);
 	}
-
 	
-	protected String readStringIfTextfile(String param) {
+	protected boolean useText() {
+		return OptionUtil.readBooleanPRI(options, "go", false);
+	}
+	
+	/***
+	 * 
+	 * @param param
+	 * @return
+	 */
+	private Object readTextfile(String param, boolean inString) {
 		File xmlfile = parseFile(param);
 		if(xmlfile == null) {
 			return null;
@@ -894,10 +954,92 @@ public abstract class CommandBase {
 		String path = xmlfile.getAbsolutePath();
 		boolean asText = OptionUtil.readBooleanPRI(options, "go", false);
 		if(asText || FileOpener.isTextFile(path)) {
-			return IOUtil.readString(path, charsetX());
+			String charset = charsetX();
+			C.pl2(StrUtil.occupy("====== Using {0} to read {1} ======", charset, path));
+			if(inString) {
+				return IOUtil.readString(path, charset);
+			} else {
+				return IOUtil.readLines(path, charset);
+			}
 		} else {
 			XXXUtil.alerto("Can't read file as text: {0}", path);
 			return null;
 		}
+	}
+	
+	protected List<String> readLinesIfTextfile(String param) {
+		Object result = readTextfile(param, false);
+		if(result == null) {
+			return null;
+		}
+		
+		XXXUtil.shouldBeTrue(List.class.isInstance(result));
+		
+		return (List<String>)result;
+	}
+	
+	protected List<MexItem> toMexItems(List rawItems) {
+		List<MexItem> mexItems = Lists.newArrayList();
+		for(Object obj : rawItems) {
+			if(obj instanceof MexItem) {
+				mexItems.add((MexItem)obj);
+			} else {
+				mexItems.add(new MexObject(obj));
+			}
+		}
+		
+		return mexItems;
+	}
+	
+	protected String readStringIfTextfile(String param) {
+		Object result = readTextfile(param, true);
+		if(result == null) {
+			return null;
+		}
+		
+		XXXUtil.shouldBeTrue(String.class.isInstance(result));
+		
+		return (String)result;
+	}
+	
+	/***
+	 * ok
+	 * ok.. for all
+	 * ok good, for good
+	 * @return
+	 */
+	protected String searchRegexOf(String prefix) {
+		return prefix + "(\\.{2,}|\\s(.+?))";
+	}
+	
+	protected boolean searchAndProcess(String prefix, MexItemsFetcher myfetcher) {
+		String param = parseParam(searchRegexOf(prefix));
+		if(param == null) {
+			return false;
+		}
+		
+		param = myfetcher.fixCriteria(param);
+		
+		List<MexItem> body = myfetcher.body();
+		if(!StrUtil.isRegexMatched("\\.{2,}", param)) {
+			body = Colls.filter(body, param);
+		}
+		
+		List<MexItem> items = Lists.newArrayList();
+		
+		MexItem head = myfetcher.header;
+		if(head != null) {
+			items.add(head);
+		}
+		items.addAll(body);
+		
+		MexItem foot = myfetcher.footer;
+		if(foot != null && body.size() > 20) {
+			items.add(foot);
+		}
+		
+		myfetcher.handle(items);
+		
+		return true;		
 	}
 }

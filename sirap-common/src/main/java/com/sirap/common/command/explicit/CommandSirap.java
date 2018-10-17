@@ -57,17 +57,17 @@ public class CommandSirap extends CommandBase {
 		}
 		
 		if(is(KEY_LASTLIST + KEY_2DOTS)) {
-			String finalOptions = OptionUtil.mergeOptions(options, "+" + Stash.KEY_GETSTASH);
-			export(Stash.g().getQueryNames(), finalOptions);
+			useLowOptions("+" + Stash.KEY_GETSTASH);
+			export(Stash.g().getQueryNames());
 			
 			return true;
 		}
 		
 		solo = parseParam(KEY_LASTLIST + "(|\\d{1,3})");
 		if(solo != null) {
-			String finalOptions = OptionUtil.mergeOptions(options, "+" + Stash.KEY_GETSTASH);
+			useLowOptions("+" + Stash.KEY_GETSTASH);
 			int k = solo.isEmpty() ? 1 : Integer.parseInt(solo);
-			export(Stash.g().getLastKQuery(k), finalOptions);
+			export(Stash.g().getLastKQuery(k));
 			
 			return true;
 		}
@@ -97,7 +97,8 @@ public class CommandSirap extends CommandBase {
 
 		if(is(KEY_USER_SETTING)) {
 			List<List> matrix = g().getUserStatus();
-			exportMatrix(matrix, "c=:#s");
+			useLowOptions("c=:#s");
+			exportMatrix(matrix);
 			
 			return true;
 		}

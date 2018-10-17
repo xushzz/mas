@@ -42,7 +42,6 @@ public class MatrixUtil {
 		}
 		
 		int[] maxLens = new int[cols];
-		
 		for(int k = 0; k < cols; k++) {
 			int max = 0;
 			for(List row : matrix) {
@@ -82,7 +81,7 @@ public class MatrixUtil {
 	
 	public static List<String> prettyMatrixLines(List<? extends List> matrix, String connector) {
 		int cols = 0;
-		
+
 		if(!matrix.isEmpty()) {
 			cols = matrix.get(0).size();
 		}
@@ -187,11 +186,15 @@ public class MatrixUtil {
 
 		return matrix;
 	}
+
+	public static List<List> matrixOf(List items) {
+		return matrixOf(items, "");
+	}
 	
-	public static List<List> matrixOf(List<? extends Object> items) {
+	public static List<List> matrixOf(List items, String options) {
 		List<List> matrix = Lists.newArrayList();
 		for(Object item : items) {
-			List list = Colls.listOf(item);
+			List list = Colls.listOf(item, options);
 			matrix.add(list);
 		}
 		

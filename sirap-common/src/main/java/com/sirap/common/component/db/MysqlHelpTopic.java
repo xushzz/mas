@@ -101,7 +101,7 @@ public class MysqlHelpTopic extends MexItem {
 
 	@Override
 	public String toString() {
-		ValuesItem vi = new ValuesItem(id, name, parent, desc.length(), example.length());
+		ValuesItem vi = ValuesItem.of(id, name, parent, desc.length(), example.length());
 		return vi.toPrint();
 	}
 }

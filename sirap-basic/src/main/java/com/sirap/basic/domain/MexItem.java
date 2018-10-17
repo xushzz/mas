@@ -10,9 +10,11 @@ import com.sirap.basic.search.FileSizeCriteria;
 import com.sirap.basic.search.MexFilter;
 import com.sirap.basic.search.SizeCriteria;
 import com.sirap.basic.tool.C;
+import com.sirap.basic.tool.D;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.XXXUtil;
 
 @SuppressWarnings("serial")
 public abstract class MexItem implements Serializable {
@@ -40,11 +42,21 @@ public abstract class MexItem implements Serializable {
 	public void setPseudoOrder(int pseudoOrder) {
 		this.pseudoOrder = pseudoOrder;
 	}
-	
+
 	public boolean isMexMatched(String mexCriteria) {
+		return isMexMatched(mexCriteria, false);
+	}
+
+	public boolean isMexMatched(String mexCriteria, boolean sensitive) {
+		return isMexMatched(mexCriteria, sensitive, false);
+	}
+	
+	public boolean isMexMatched(String mexCriteria, boolean sensitive, boolean stay) {
 		MexFilter<MexItem> filter = new MexFilter<MexItem>(mexCriteria, this);
-		filter.setStayCriteria(false);
+		filter.setCaseSensitive(sensitive);
+		filter.setStayCriteria(stay);
 		List<MexItem> result = filter.process();
+		
 		return !EmptyUtil.isNullOrEmpty(result);
 	}
 	
@@ -106,11 +118,13 @@ public abstract class MexItem implements Serializable {
 		return false;
 	}
 
-	public ValuesItem toValuesItem() {
-		return null;
+	public List toList() {
+		return toList("");
 	}
 
-	public List toList() {
+	public List toList(String options) {
+		String method = D.current().getMethodName();
+		XXXUtil.alert("Method {0}.{1} must be overriden.", getClass().getName(), method);
 		return null;
 	}
 	
@@ -208,5 +222,13 @@ public abstract class MexItem implements Serializable {
 	
 	public boolean showOrder(String options) {
 		return OptionUtil.readBooleanPRI(options, "so", false);
+	}
+	
+	protected String trimRight(String stringEndedWithSpaces) {
+		if(stringEndedWithSpaces == null) {
+			return null;
+		}
+		return stringEndedWithSpaces.replaceAll("\\s*$", "");
+
 	}
 }

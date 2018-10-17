@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.data.AsciiData;
 import com.sirap.basic.domain.MexItem;
@@ -41,7 +42,7 @@ public class GeekManager {
 			XXXUtil.alert("The range should have two elments.");
 		}
 		
-		List<MexItem> items = new ArrayList<>();
+		List<MexItem> items = Lists.newArrayList();
 		for(int i = range[0]; i <= range[1]; i++) {
 			AsciiRecord item = new AsciiRecord(i);
 			String binary = StrUtil.padLeft(Integer.toBinaryString(i), 8, "0");

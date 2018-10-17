@@ -1,7 +1,5 @@
 asc                display ASCII values for all numbers and letters in bin/oct/dec/hex
 asc..              display ASCII values for characters in bin/oct/dec/hex/NATO phonetics
-ascii              display ASCII values for characters in bin/oct/dec/hex/NATO phonetics
-asc mike           search any ascii info matching given criteria bin/oct/dec/hex/nato
 cde ABC            encode regular chars to four or hex chars via UTF8, Unicode, GBK
 cde-UTF8           search charsets matching given criteria
 cde-BIG5 ABC       encode regular chars to Big5 hex chars, also for UTF8, Unicode,
@@ -22,10 +20,9 @@ url mixedCHNEng    encode given string in URL manner, application/x-www-form-url
 urx %E5%B8%88      decode given string from URL manner
 iso Chinese        display locale info containing Chinese: zh_HK, HKG, Chinese, Hong Kong
 iso..              display all locale info provided by the JRE
-iso=               display all locale info provided by the JRE
 iso=zh_TW          set locale in use as zh_TW, list likely items if invalid
 ccy Chinese        display currency info containing Chinese: zh_HK, HKG, Chinese, Hong Kong
 ccy..              display all currency info provided by the JRE
-dfs zh_TW          display date format symbols info for local zh_TW
-dfs..              display all date format symbols info provided by the JRE
-ver=7/25/2018, III  GEEK-XCODE1.0.7-YANJUN
+mon Chinese        mon for month, display month symbols info in Chinese
+wee Chinese        wee for weekday, display week day symbols info in Chinese
+ver=10/17/2018, III  GEEK-XCODE1.0.7-YANJUN

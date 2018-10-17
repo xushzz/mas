@@ -2,11 +2,12 @@ package com.sirap.basic.domain;
 
 import java.io.File;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.search.SizeCriteria;
 import com.sirap.basic.util.DateUtil;
-import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
@@ -31,7 +32,7 @@ public class MexFile extends MexItem implements Comparable<MexFile> {
 	}
 
 	private long folderSize = -1;
-	public long getFileFize() {
+	public long getSuperSize() {
 		if(folderSize == -1) {
 			folderSize = FileUtil.sizeOf(file.getAbsolutePath());
 		}
@@ -39,14 +40,12 @@ public class MexFile extends MexItem implements Comparable<MexFile> {
 		return folderSize;
 	}
 	
-	public String getKids() {
-		if(!file.isDirectory()) {
-			return null;
-		}
-		
-		String[] files = file.list();
-		if(files != null) {
-			return "(" + files.length + ")";
+	public Integer countOfKids() {
+		if(file.isDirectory()) {
+			String[] files = file.list();
+			if(files != null) {
+				return files.length;
+			}
 		}
 
 		return null;
@@ -140,57 +139,73 @@ public class MexFile extends MexItem implements Comparable<MexFile> {
 		return file.getAbsolutePath();
 	}
 	
-	public String toPrint(String options) {
-		StringBuilder sb = new StringBuilder();
-		if(OptionUtil.readBooleanPRI(options, "tree", false)) {
-			String dent = StrUtil.spaces(depth * 4);
-			sb.append(dent);
+	@Override
+	public List toList(String options) {
+		List<String> list = Lists.newArrayList();
+		
+		String dent = "";
+		if(OptionUtil.readBooleanPRI(options, "t", false)) {
+			dent = StrUtil.spaces(depth * 4);
 		}
+		
+		String filepath = "";
 		if(OptionUtil.readBooleanPRI(options, "win", false)) {
-			sb.append(getWindowsPath());
+			filepath = getWindowsPath();
 		} else if(OptionUtil.readBooleanPRI(options, "sh", false)) {
-			sb.append(getShellPath());
+			filepath = getShellPath();
 		} else if (OptionUtil.readBooleanPRI(options, "un", false)){
-			sb.append(getUnixPath());
+			filepath = getUnixPath();
 		} else {
-			sb.append(getPath());
+			filepath = getPath();
 		}
 
-		boolean flagHidden = OptionUtil.readBooleanPRI(options, "hide", false);
-		if(flagHidden) {
+		String kids = "";
+		if(OptionUtil.readBooleanPRI(options, "k", false)) {
+			Integer count = countOfKids();
+			if(count != null) {
+				kids = " (" + countOfKids() + ")";
+			}
+		}
+		
+		String hidden = "";
+		if(OptionUtil.readBooleanPRI(options, "h", false)) {
 			if(file.isHidden()) {
-				sb.append(" ").append("(H)");
-			}
-		}
-
-		boolean showKids = OptionUtil.readBooleanPRI(options, "kids", false);
-		if(showKids) {
-			String kids = getKids();
-			if(!EmptyUtil.isNullOrEmpty(kids)) {
-				sb.append(" ").append(kids);
+				hidden = " (H)";
 			}
 		}
 		
-		boolean showSize = OptionUtil.readBooleanPRI(options, "size", false);
+		list.add(dent + filepath + kids + hidden);
+		
+		boolean showSuperSize = OptionUtil.readBooleanPRI(options, "ss", false);
+		boolean showSize = OptionUtil.readBooleanPRI(options, "s", false);
+		if(showSuperSize) {
+			showSize = false;
+		}
+		
 		if(showSize) {
-			sb.append("  ");
-			sb.append(FileUtil.formatSize(file.length()));
+			list.add(FileUtil.formatSize(file.length()));
 		}
 		
-		boolean showSizeWithFolder = OptionUtil.readBooleanPRI(options, "sizes", false);
-		if(showSizeWithFolder) {
-			sb.append("  ");
-			sb.append(FileUtil.formatSize(getFileFize()));
+		if(showSuperSize) {
+			list.add(FileUtil.formatSize(getSuperSize()));
 		}
 
-		boolean showDate = OptionUtil.readBooleanPRI(options, "date", false);
-		if(showDate) {
-			sb.append("  ");
+		if(OptionUtil.readBooleanPRI(options, "d", false)) {
 			Date lastmodified = new Date(file.lastModified());
-			sb.append(DateUtil.displayDate(lastmodified, DateUtil.DATE_TIME));
+			list.add(DateUtil.displayDate(lastmodified, DateUtil.DATE_TIME));
 		}
 		
-		return sb.toString();
+		return list;
+	}
+	
+	public String toPrint(String options) {
+		List<String> items = toList(options);
+		StringBuffer sb = sb();
+		for(String item : items) {
+			sb.append(item).append(" ");
+		}
+		
+		return trimRight(sb.toString());
 	}
 	
 	public String seasonAndEpisodeOf(String floats) {

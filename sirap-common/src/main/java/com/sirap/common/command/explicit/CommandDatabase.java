@@ -419,13 +419,16 @@ public class CommandDatabase extends CommandBase {
 		return lines;
 	}
 	
-	private List<String> watcherExport(QueryWatcher ming) {
+	private List watcherExport(QueryWatcher ming) {
 		boolean rotate = OptionUtil.readBooleanPRI(options, "r", false);
-		boolean pretty = OptionUtil.readBooleanPRI(options, "p", true);
-		String connector = OptionUtil.readString(options, "c", " , ");
 		
-		List<String> items = ming.exportLiteralStrings(rotate, pretty, connector);
-		return items;
+		if(TargetExcel.class.isInstance(target)) {
+			return ming.exportListItems(rotate);
+		} else {
+			boolean pretty = OptionUtil.readBooleanPRI(options, "p", true);
+			String connector = OptionUtil.readString(options, "c", " , ");
+			return ming.exportLiteralStrings(rotate, pretty, connector);
+		}
 	}
 	
 	private void dealWith(List<String> sqls) {

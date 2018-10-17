@@ -1,6 +1,10 @@
 package com.sirap.geek.domain;
 
+import java.util.List;
+
+import com.google.common.collect.Lists;
 import com.sirap.basic.domain.MexItem;
+import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.util.StrUtil;
 
 @SuppressWarnings("serial")
@@ -93,17 +97,7 @@ public class AsciiRecord extends MexItem {
 		return false;
 	}
 	
-	public static String getHeader() {
-		StringBuffer sb = new StringBuffer();
-		
-		sb.append(StrUtil.padRight("[Binary", 12));
-		sb.append(StrUtil.padRight("Octal", 7));
-		sb.append(StrUtil.padRight("Dec", 7));
-		sb.append(StrUtil.padRight("Hex", 6));
-		sb.append("detail]");
-		
-		return sb.toString();
-	}
+	public static ValuesItem COLUMNS = ValuesItem.of("[Binary", "Octal", "Decimal", "Hex", "Char", "About]");
 	
 	public String quote() {
 		String temp = "";
@@ -116,19 +110,20 @@ public class AsciiRecord extends MexItem {
 		return temp;
 	}
 	
-	@Override
-	public String toString() {
-		String space = StrUtil.repeat(' ', 4);
-		StringBuffer sb = new StringBuffer();
-		sb.append(binary).append(space);
-		sb.append(octal).append(space);
-		sb.append(decimal).append(space);
-		sb.append(hex).append(space);
-		sb.append(quote());
-		if(info != null) {
-			sb.append(", ").append(info);
+	public List toList(String options) {
+		return Lists.newArrayList(binary, octal, decimal, hex, quote(), niceInfo());
+	}
+	
+	private String niceInfo() {
+		if(info == null) {
+			info = "";
 		}
 		
-		return sb.toString();
+		return info;
+	}
+	
+	@Override
+	public String toString() {
+		return StrUtil.connectWithSpace(toList());
 	}
 }

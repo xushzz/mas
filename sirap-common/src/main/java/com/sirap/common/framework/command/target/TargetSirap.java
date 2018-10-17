@@ -24,7 +24,7 @@ public class TargetSirap extends TargetFile {
 	public void export(List records, String options, boolean withTimestamp) {
 		String charset = SimpleKonfig.g().getCharsetInUse();
 		String filePath = withTimestamp ? getTimestampPath() : getFilePath();
-		String content = StrUtil.connectWithLineSeparator(records);
+		String content = StrUtil.connectWithLineSeparator(toStringList(records, options));
 		String passcode = SimpleKonfig.g().getSecurityPasscode();
 		String encoded = TrumpHelper.encodeBySIRAP(content, passcode);
 		

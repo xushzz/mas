@@ -1,10 +1,12 @@
 package com.sirap.common.framework.command.target;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.output.OutputParams;
 
-public class Target {
+public abstract class Target {
 	
 	private boolean flag;
 	private String value;
@@ -47,4 +49,26 @@ public class Target {
 		throw new UnsupportedOperationException("Method must be overriden");
 	}
 	
+	public String toStringItem(Object obj, String options) {
+		if(obj == null) {
+			return null;
+		}
+		
+		MexItem item;
+		if(obj instanceof MexItem) {
+			item = (MexItem)obj;
+			return item.toPrint(options);
+		} else {
+			return obj.toString();
+		}
+	}
+	
+	public List<String> toStringList(List list, String options) {
+		List lines = new ArrayList<String>();
+		for(Object obj : list) {
+			lines.add(toStringItem(obj, options));
+		}
+		
+		return lines;
+	}
 }

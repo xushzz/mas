@@ -103,7 +103,7 @@ public class LonglatData {
 						province = city;
 					}
 					if(LonglatUtil.isLongLat(location)) {
-						mexItems.add(new ValuesItem(city, province, country, location));
+						mexItems.add(ValuesItem.of(city, province, country, location));
 					} else {
 						D.pla("Bad location:", location, city, province, country);
 					}

@@ -62,7 +62,7 @@ public class D {
 	 * @param objs
 	 */
 	@SafeVarargs
-	public static <T> void printArray(T... objs) {
+	public static void printArray(Object... objs) {
 		if(objs == null) {
 			String simple = simpleClassNameDotMethodOf(current());
 			StackTraceElement parent = parent();
@@ -208,7 +208,7 @@ public class D {
 	 * list out stuff
 	 * @param list
 	 */
-	public static <T> void list(List<T> list) {
+	public static void list(List list) {
 		String simple = simpleClassNameDotMethodOf(current());
 		String random = mark();
 		printStart(simple, random, parent());

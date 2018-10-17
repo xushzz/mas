@@ -36,15 +36,17 @@ public class TargetHtml extends TargetFile {
 		String filePath = withTimestamp ? getTimestampPath() : getFilePath();
 		HtmlParams params = getParams();
 		
+		List newList = toStringList(records, options);
+		
 		String topInfo = getCommand();
-		if(records != null && records.size() > 5) {
-			topInfo = "(" + records.size() + ") " + topInfo;
+		if(newList != null && newList.size() > 5) {
+			topInfo = "(" + newList.size() + ") " + topInfo;
 		}
 		
 		params.setTopInfo(topInfo);
 		//IOUtil.readLinesFromStreamByClassLoader(Konfig.KONFIG_FILE, Konstants.CODE_UTF8)
 		List<String> htmlTemplate = IOUtil.readLinesFromStreamByClassLoader("template_nice.html", SimpleKonfig.g().getCharsetInUse());
-		List<String> htmlContent = HtmlExporter.generateHtmlContent(htmlTemplate, records, params);
+		List<String> htmlContent = HtmlExporter.generateHtmlContent(htmlTemplate, newList, params);
 		
 		IOUtil.saveAsTxt(htmlContent, filePath);
 		C.pl2("Exported => " + FileUtil.canonicalPathOf(filePath));

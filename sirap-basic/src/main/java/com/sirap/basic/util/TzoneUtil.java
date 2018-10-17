@@ -11,7 +11,7 @@ import com.sirap.basic.domain.ValuesItem;
 public class TzoneUtil {
 	
 	public static List<List> namesAndMore(String criteria, String localestrs, boolean showOffset, boolean showTime) {
-		List<Locale> lots = LocaleUtil.ofs(localestrs);
+		List<Locale> lots = LocaleUtil.listOf(localestrs);
 		if(lots.isEmpty()) {
 			lots.add(Locale.ENGLISH);
 		}

@@ -1,12 +1,10 @@
-package com.sirap.basic.util;
+package com.sirap.basic.json;
 
 import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Lists;
-import com.sirap.basic.component.Mist;
-import com.sirap.basic.json.JsonToMapListConverter;
-import com.sirap.basic.json.XmlToMapConverter;
+import com.sirap.basic.util.IOUtil;
 
 /***
  * Map + List
@@ -15,14 +13,7 @@ import com.sirap.basic.json.XmlToMapConverter;
  *
  */
 public class MistUtil {
-
-//	public static boolean isMapOrList(Object obj) {
-//		D.pl(obj.getClass());
-//		D.pl(obj instanceof List);
-//		D.pl(List.class.isInstance(obj));
-//		return Map.class.isInstance(obj) || List.class.isInstance(obj);
-//	}
-//	
+	
 	public static Mist ofMapOrList(Object mapOrList) {
 		Mist mist = new Mist(mapOrList);
 		

@@ -23,7 +23,7 @@ public class MexFilter<T extends MexItem> {
 	
 	private boolean caseSensitive;
 	private String criteria;
-	private List<T> source;
+	private List<T> source = Lists.newArrayList();
 	private boolean stayCriteria = true;
 	
 	public void setCriteria(String criteria) {
@@ -31,26 +31,27 @@ public class MexFilter<T extends MexItem> {
 	}
 
 	public void setSource(List<T> source) {
-		this.source = source;
+		this.source.clear();
+		this.source.addAll(source);
 	}
 
 	public void setStayCriteria(boolean stay) {
 		this.stayCriteria = stay;
 	}
+	
+	public void setCaseSensitive(boolean caseSensitive) {
+		this.caseSensitive = caseSensitive;
+	}
 
-	public MexFilter() {
-		
-	}
-	
-	public MexFilter(String criteria, List<T> source) {
-		this.criteria = criteria;
-		this.source = source;
-	}
-	
 	public MexFilter(String criteria, T item) {
 		this.criteria = criteria;
 		this.source = Lists.newArrayList();
 		this.source.add(item);
+	}
+	
+	public MexFilter(String criteria, List<T> source) {
+		this.criteria = criteria;
+		this.source.addAll(source);
 	}
 	
 	public MexFilter(String criteria, List<T> source, boolean caseSensitive) {

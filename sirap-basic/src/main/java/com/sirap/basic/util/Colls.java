@@ -3,6 +3,7 @@ package com.sirap.basic.util;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -230,6 +231,10 @@ public class Colls {
 	}
 	
 	public static <T extends MexItem> List<T> filter(List<T> mexItems, String mexCriteria, boolean isCaseSensitive, boolean keepAlive) {
+		if(EmptyUtil.isNullOrEmpty(mexCriteria)) {
+			return mexItems;
+		}
+		
 		MexFilter<T> filter = new MexFilter<T>(mexCriteria, mexItems, isCaseSensitive);
 		filter.setStayCriteria(keepAlive);
 		List<T> result = filter.process();
@@ -271,8 +276,15 @@ public class Colls {
 		return items;
 	}
 	
-	public static List<String> sortIgnoreCase(List<String> items) {
-		Collections.sort(items, new StringSenseComparator());
+	public static List sortIgnoreCase(List items) {
+		Collections.sort(items, new Comparator(){
+
+			@Override
+			public int compare(Object a, Object b) {
+				return a.toString().compareToIgnoreCase(b.toString());
+			}
+			
+		});
 		return items;
 	}
 	
@@ -341,17 +353,20 @@ public class Colls {
 	}
 	
 	public static List listOf(Object obj) {
+		return listOf(obj, "");
+	}
+	
+	public static List listOf(Object obj, String options) {
 		XXXUtil.nullCheck(obj, "obj");
 		List items = null;
-		if(obj instanceof String) {
-			items = StrUtil.split(obj + "");
-		} else if (obj instanceof ValuesItem) {
-			items = ((ValuesItem)obj).getValues();
-		} else if (obj instanceof List) {
+		if (obj instanceof List) {
 			items = (List)obj;
+		} else if(obj instanceof String) {
+			String splitBy = OptionUtil.readString(options, "sp", ",");
+			items = StrUtil.split(obj + "", splitBy);
 		} else if (obj instanceof MexItem) {
 			MexItem item = (MexItem)obj;
-			items = item.toList();
+			items = item.toList(options);
 		} else {
 			XXXUtil.alert("Unsupported data type {0} of {1}", obj.getClass(), obj);
 		}

@@ -12,21 +12,22 @@ import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
-import com.sirap.basic.component.Mist;
 import com.sirap.basic.domain.MexZipEntry;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.json.JsonUtil;
+import com.sirap.basic.json.Mist;
+import com.sirap.basic.json.MistUtil;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.ArisUtil;
 import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
+import com.sirap.basic.util.HtmlUtil;
 import com.sirap.basic.util.HttpUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.ImageUtil;
 import com.sirap.basic.util.MathUtil;
-import com.sirap.basic.util.MistUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XCodeUtil;
@@ -103,18 +104,18 @@ public class CommandFile extends CommandBase {
 				return true;
 			}
 			
-			if(FileOpener.isTextFile(filePath)) {
+			if(FileOpener.isTextFile(filePath) || useText()) {
 				String cat = IOUtil.charsetOfTextFile(file.getAbsolutePath());
 				if(OptionUtil.readBooleanPRI(options, "x", false)) {
 					cat = switchChartset(cat);
 				}
 				
-				List<String> records = FileOpener.readTextContent(filePath, true, cat);
 				if(OptionUtil.readBooleanPRI(options, "one", false)) {
 					String temp = IOUtil.readString(filePath, cat, "");
 					String result = StrUtil.reduceMultipleSpacesToOne(temp);
 					export(result);
 				} else {
+					List<String> records = FileOpener.readTextContent(filePath, true, cat);
 					boolean sensitive = isCaseSensitive();
 					if(OptionUtil.readBooleanPRI(options, "sort", false)) {
 						Colls.sort(records, sensitive);
@@ -459,8 +460,8 @@ public class CommandFile extends CommandBase {
 			boolean toSplit = OptionUtil.readBooleanPRI(options, "k", true);
 			if(toSplit) {
 				int kPerLine = OptionUtil.readIntegerPRI(options, "k", 16);
-				String finalOptions = OptionUtil.mergeOptions(options, "c=#s");
-				export(XCodeUtil.group(items, kPerLine), finalOptions);
+				useLowOptions("c=#s");
+				export(XCodeUtil.group(items, kPerLine));
 			} else {
 				export(items);
 			}
@@ -478,16 +479,7 @@ public class CommandFile extends CommandBase {
 		
 		solo = parseParam(KEY_PRINT_XML + "\\s+(.+)");
 		if(solo != null) {
-			String content = null;
-			if(HttpUtil.isHttp(solo)) {
-				content = IOUtil.readString(solo, charsetX());
-			} else {
-				content = readStringIfTextfile(solo);
-			}
-			
-			if(content == null) {
-				content = solo;
-			}
+			String content = readText(solo);
 			C.pl("XML: " + content.substring(0, solo.length() < 100 ? solo.length() : 100));
 			Mist mist = MistUtil.ofXmlText(content, OptionUtil.readBooleanPRI(options, "a", false));
 			dealWithMist(mist);
@@ -497,16 +489,7 @@ public class CommandFile extends CommandBase {
 		
 		solo = parseParam(KEY_JSON + "\\s+(.+?)");
 		if(solo != null) {
-			String content = null;
-			if(HttpUtil.isHttp(solo)) {
-				content = IOUtil.readString(solo, charsetX());
-			} else {
-				content = readStringIfTextfile(solo);
-			}
-			
-			if(content == null) {
-				content = solo;
-			}
+			String content = readText(solo);
 			C.pl("JSON: " + content.substring(0, content.length() < 100 ? content.length() : 100));
 			Mist mist = MistUtil.ofJsonText(content);
 			dealWithMist(mist);
@@ -515,6 +498,26 @@ public class CommandFile extends CommandBase {
 		}
 		
 		return false;
+	}
+	
+	private String readText(String source) {
+		String temp = null;
+		if(HttpUtil.isHttp(source)) {
+			temp = IOUtil.readString(source, charsetX());
+		} else {
+			temp = readStringIfTextfile(source);
+		}
+		
+		if(temp == null) {
+			temp = source;
+		}
+		
+		String content = temp;
+		if(OptionUtil.readBooleanPRI(options, "rc", false)) {
+			content = HtmlUtil.removeBlockComment(temp);
+		}
+		
+		return content;
 	}
 	
 	private void dealWithMist(Mist mist) {
@@ -543,7 +546,6 @@ public class CommandFile extends CommandBase {
 		}
 		
 		if(Map.class.isInstance(mars) || List.class.isInstance(mars)) {
-//			String temp = JsonUtil.toPrettyJson(mars);
 			if(OptionUtil.readBooleanPRI(options, "r", false)) {
 				export(JsonUtil.toJson(mars));
 			} else {

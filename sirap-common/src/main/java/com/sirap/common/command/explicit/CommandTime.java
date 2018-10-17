@@ -291,7 +291,8 @@ public class CommandTime extends CommandBase {
 		boolean showDatetime = OptionUtil.readBooleanPRI(options, "d", false);
 		String locales = OptionUtil.readString(options, "l");
 		List<List> data = TzoneUtil.namesAndMore(criteria, locales, showOffset, showDatetime);
-		exportMatrix(data, "c=#s2");
+		useLowOptions("c=#s2");
+		exportMatrix(data);
 	}
 	
 	private void dealwithInternetTime(String site) {
@@ -328,6 +329,7 @@ public class CommandTime extends CommandBase {
 		}
 		
 		data.add(Lists.newArrayList("Local time", expression));
-		exportMatrix(data, "c=:#s");
+		useLowOptions("c=#s2,+mat");
+		export(data);
 	}
 }

@@ -39,23 +39,21 @@ public class TargetWeb extends Target {
 
 	@Override
 	public void export(List records, String options, boolean withTimestamp) {
+		List newList = Lists.newArrayList();
 		if(isFileRelated()) {
-			List newList = Lists.newArrayList();
 			for(Object obj : records) {
-				if(obj instanceof File) {
-					newList.add(obj);
-            	} else if(obj instanceof MexFile) {
-					newList.add(obj);
-            	}
-				
-				File file = FileUtil.getIfNormalFile(obj.toString());
+				File file = FileUtil.of(obj);
 				if(file != null) {
 					newList.add(file);
-				}
+            	} else {
+            		newList.add(obj);
+            	}
 			}
+		} else {
+			newList = toStringList(records, options);
 		}
 		
-		String temp = HttpHelper.sendStringsAndFiles(records, url, subject);
+		String temp = HttpHelper.sendStringsAndFiles(newList, url, subject);
 		String msg = StrUtil.occupy("Sent to {0} :\n {1}", url, temp);
 		C.pl2(msg);
 	}

@@ -67,7 +67,7 @@ public class MexFileComparator implements Comparator<MexFile> {
 		}
 		
 		if(value == 0 && bySizeAsc != null) {
-			value = ma.getFileFize() < mb.getFileFize()? 1 : -1;
+			value = ma.getSuperSize() < mb.getSuperSize()? 1 : -1;
 			if(bySizeAsc) {
 				value *= -1;
 			}

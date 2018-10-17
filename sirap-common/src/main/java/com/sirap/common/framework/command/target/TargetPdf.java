@@ -37,13 +37,16 @@ public class TargetPdf extends TargetFile {
 		params.setUseAsianFont(SimpleKonfig.g().isAsianFontWhenPDF());
 		
 		String topInfo = getCommand();
-		if(records != null && records.size() > 5) {
-			topInfo = "(" + records.size() + ") " + topInfo;
+		
+		List newList = toStringList(records, options);
+		
+		if(newList != null && newList.size() > 5) {
+			topInfo = "(" + newList.size() + ") " + topInfo;
 		}
 		
 		params.setTopInfo(topInfo);
 		
-		PdfHelper.export(records, filePath, params);
+		PdfHelper.export(newList, filePath, params);
 		C.pl2("Exported => " + FileUtil.canonicalPathOf(filePath));
 		if(SimpleKonfig.g().isGeneratedFileAutoOpen()) {
 			FileOpener.open(filePath);

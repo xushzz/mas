@@ -72,6 +72,7 @@ public class Konstants {
 	public static final String SHITED_FACE = "^=^";
 	public static final String HYPHEN = "-";
 	public static final String NEWLINE = "\n";
+	public static final String NEWLINE_SHORT = "NL";
 	
 	public static final char BEEP = 7;
 	

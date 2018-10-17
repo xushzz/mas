@@ -151,7 +151,7 @@ public class AvronExtractors {
 	}
 	
 	public static List<ValuesItem> areacodesOfGX() {
-		ValuesItem vi = new ValuesItem("450000000000");
+		ValuesItem vi = ValuesItem.of("450000000000");
 		vi.add("广西壮族自治区");
 		vi.add(AREACODE_ROOT);
 		vi.add(1);
@@ -184,7 +184,7 @@ public class AvronExtractors {
 					String code = ma.group(1);
 					String name = ma.group(2);
 					String parentCode = topAreacode;
-					ValuesItem vi = new ValuesItem();
+					ValuesItem vi = ValuesItem.of();
 					vi.add(code);
 					vi.add(name);
 					vi.add(parentCode);
@@ -298,7 +298,7 @@ public class AvronExtractors {
 			
 			@Override
 			protected void parse() {
-				ValuesItem vi = new ValuesItem();
+				ValuesItem vi = ValuesItem.of();
 				String regex = "<td width=\"400\" style=\"padding-bottom:18px\">(.+?)</td>";
 				String info = StrUtil.findFirstMatchedItem(regex, source);
 				if(info == null) {
@@ -379,7 +379,7 @@ public class AvronExtractors {
 				Matcher ma = createMatcher(regex, source);
 				
 				while(ma.find()) {
-					ValuesItem item = new ValuesItem();
+					ValuesItem item = ValuesItem.of();
 					String pkid = StrUtil.findFirstMatchedItem("pkid=([a-z\\d]+)\"", ma.group(7));
 					item.add(pkid);
 					for(int k = 1; k <= 6; k++) {
@@ -446,7 +446,7 @@ public class AvronExtractors {
 				Matcher ma = createMatcher(regex, source);
 				
 				while(ma.find()) {
-					ValuesItem item = new ValuesItem(ma.group(3));
+					ValuesItem item = ValuesItem.of(ma.group(3));
 					String pkid = StrUtil.findFirstMatchedItem("dataid=([a-z\\d]+)\"", ma.group(8));
 					item.add(pkid);
 					for(int k = 0; k < 7; k++) {

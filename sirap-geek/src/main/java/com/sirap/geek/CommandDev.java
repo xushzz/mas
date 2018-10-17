@@ -21,6 +21,7 @@ import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.search.MexFilter;
 import com.sirap.basic.tool.C;
+import com.sirap.basic.tool.D;
 import com.sirap.basic.tool.ScreenCaptor;
 import com.sirap.basic.util.ArisUtil;
 import com.sirap.basic.util.Colls;
@@ -311,19 +312,20 @@ public class CommandDev extends CommandBase {
 					allItems.addAll(items);
 				}
 			}
-			String tempOptions = showSize ? "+size" : "";
-			if(options != null) {
-				tempOptions += "," + options;
+			
+			if(showSize) {
+				useHighOptions("+size");
 			}
 			
+			D.pl(criteria);
 			if(KEY_2DOTS.equals(criteria)) {
 				Collections.sort(allItems);
-				export(allItems, tempOptions);
+				export(allItems);
 			} else {
-				MexFilter<MexZipEntry> filter = new MexFilter<MexZipEntry>(criteria, allItems, isCaseSensitive(tempOptions));
+				MexFilter<MexZipEntry> filter = new MexFilter<MexZipEntry>(criteria, allItems, isCaseSensitive());
 				List<MexZipEntry> result = filter.process();
 				Collections.sort(result);
-				export(result, tempOptions);
+				export(result);
 			}
 			
 			return true;
@@ -368,7 +370,7 @@ public class CommandDev extends CommandBase {
 			List<ValuesItem> items = Colls.filter(GeekExtractors.fetchHttpResponseCodes(), solo);
 			String concise = HttpData.EGGS.get(solo);
 			if(concise != null) {
-				items.add(new ValuesItem(concise));
+				items.add(ValuesItem.of(concise));
 			}
 			export(items);
 			return true;

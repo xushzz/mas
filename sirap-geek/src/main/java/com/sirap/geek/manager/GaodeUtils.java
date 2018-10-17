@@ -2,18 +2,21 @@ package com.sirap.geek.manager;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 
-import com.google.common.collect.Lists;
 import com.sirap.basic.component.Extractor;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.json.JsonUtil;
+import com.sirap.basic.json.MistUtil;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.MathUtil;
-import com.sirap.basic.util.MistUtil;
 import com.sirap.basic.util.NetworkUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XCodeUtil;
@@ -139,29 +142,36 @@ public class GaodeUtils {
 				List maps = MistUtil.wrapMapIfNeeded(pois);
 				
 				List<String> keys = StrUtil.split("cityname,adname,name,type,address,tel,location");
-				List<String> templist = Lists.newArrayList();
+				Set<ValuesItem> box = new TreeSet<>(new Comparator<ValuesItem>() {
+					@Override
+					public int compare(ValuesItem a, ValuesItem b) {
+						return a.getValues().toString().compareTo(b.getValues().toString());
+					}
+				});
 				
 				for(Object item : maps) {
-					List<String> items = Lists.newArrayList();
+					ValuesItem vi = new ValuesItem();
 					for(String key : keys) {
 						String value = MistUtil.ofMapOrList(item).valueOf("." + key) + "";
 						if(EmptyUtil.isNullOrEmpty(value)) {
+							vi.add(key);
 							continue;
 						}
+						
 						if(StrUtil.equals(key, "location")) {
-							items.add(tieLocation(value));
+							vi.add(tieLocation(value));
 						} else {
-							items.add(value);
+							vi.add(value);
 						}
 					}
-					templist.add(StrUtil.connect(items, " "));
+					box.add(vi);
 				}
 				
-				Collections.sort(templist);
-				int count = 0;
-				for(String item : templist) {
-					ValuesItem vi = new ValuesItem(item);
-					vi.setPseudoOrder(++count);
+				Iterator<ValuesItem> it = box.iterator();
+				int count = 1;
+				while(it.hasNext()) {
+					ValuesItem vi = it.next();
+					vi.setPseudoOrder(count++);
 					mexItems.add(vi);
 				}
 			}
@@ -198,9 +208,9 @@ public class GaodeUtils {
 					ValuesItem vi = new ValuesItem();
 					vi.setPseudoOrder(++count);
 					for(String key : keys) {
-//						String value = XmlUtil.valueOf(item, "." + key) + "";
 						String value = MistUtil.ofMapOrList(item).valueOf("." + key) + "";
 						if(EmptyUtil.isNullOrEmpty(value)) {
+							vi.add(key);
 							continue;
 						}
 						if(StrUtil.equals(key, "distance")) {
@@ -544,7 +554,7 @@ public class GaodeUtils {
 	}
 	
 	public static String tieLocation(String location) {
-		String value = StrUtil.occupy("[{0}]", location.replaceAll("\\s+", ""));
+		String value = location.replaceAll("\\s+", "");
 		
 		return value;
 	}

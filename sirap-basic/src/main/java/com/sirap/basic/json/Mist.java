@@ -1,4 +1,4 @@
-package com.sirap.basic.component;
+package com.sirap.basic.json;
 
 import java.util.Iterator;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.common.collect.Lists;
+import com.sirap.basic.component.Konstants;
 import com.sirap.basic.tool.D;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.StrUtil;
@@ -23,14 +24,6 @@ public class Mist {
 	
 	public Object getCore() {
 		return core;
-	}
-
-	public void setCore(Object core) {
-		this.core = core;
-	}
-	
-	public boolean isHumanReadable() {
-		return isHumanReadable;
 	}
 
 	public Mist asIs() {

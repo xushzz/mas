@@ -46,7 +46,9 @@ public class TargetConsole extends Target {
 	}
 	@Override
 	public void export(List records, String options, boolean withTimestamp) {
-		simplePrint(records, params);
+		List newList = toStringList(records, options);
+		
+		simplePrint(newList, params);
 	}
 	
 	public static void simplePrint(List records, ConsoleParams params) {

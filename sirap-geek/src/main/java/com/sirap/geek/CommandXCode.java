@@ -4,23 +4,23 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexLocale;
-import com.sirap.basic.domain.MexObject;
-import com.sirap.basic.search.MexFilter;
 import com.sirap.basic.thirdparty.ShiroHelper;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.LocaleUtil;
 import com.sirap.basic.util.MathUtil;
+import com.sirap.basic.util.MatrixUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.SecurityUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XCodeUtil;
 import com.sirap.common.command.CommandBase;
+import com.sirap.common.component.MexItemsFetcher;
 import com.sirap.geek.domain.AsciiRecord;
 import com.sirap.geek.domain.CharsetCode;
 import com.sirap.geek.manager.GeekManager;
@@ -28,7 +28,6 @@ import com.sirap.geek.manager.GeekManager;
 public class CommandXCode extends CommandBase {
 
 	private static final String KEY_ASCII_SHORT = "asc";
-	private static final String KEY_ASCII_ALL = "ascii";
 	private static final String KEY_TO_BASE64 = "t64";
 	private static final String KEY_FROM_BASE64 = "f64";
 	private static final String KEY_DIGEST_ALGORITHMS = "(SM3|SHA|SHA1|SHA224|SHA256|SHA512|MD2|MD5)";
@@ -38,52 +37,39 @@ public class CommandXCode extends CommandBase {
 	private static final String KEY_DECODE = "cdx";
 	private static final String KEY_ISO = "iso";
 	private static final String KEY_CURRENCY = "ccy";
-	private static final String KEY_DATE_FORMAT_SYMBOL = "dfs";
+	private static final String KEY_MONTHS = "mon";
+	private static final String KEY_WEEKS = "wee";
 
 	public boolean handle() {
 		
-		if(is(KEY_ASCII_SHORT)) {
-			List<MexItem> items = new ArrayList<>();
-			MexObject header = new MexObject((AsciiRecord.getHeader()));
-			items.add(header);
+		flag = searchAndProcess(KEY_ASCII_SHORT, new MexItemsFetcher() {
 			
+			@Override
+			public void handle(List<MexItem> items) {
+				exportMatrix(items);
+			}
+			
+			@Override
+			public List<MexItem> body() {
+				header = AsciiRecord.COLUMNS;
+				footer = AsciiRecord.COLUMNS;
+				return GeekManager.g().asciiAll();
+			}
+		});
+		if(flag) return true;
+		
+		if(is(KEY_ASCII_SHORT)) {
+			List<MexItem> items = Lists.newArrayList(AsciiRecord.COLUMNS);
 			int[][] ranges= {{'0', '9'}, {'A', 'Z'}, {'a', 'z'}};
 			for(int i = 0; i < ranges.length; i++) {
 				int[] range = ranges[i];
 				items.addAll(GeekManager.g().ascii(range));
 			}
+			items.add(AsciiRecord.COLUMNS);
 			
-			items.add(header);
-			
-			export(items);
-			
-			return true;
+			exportMatrix(items);
 		}
 		
-		if(isIn(KEY_ASCII_ALL + "," + KEY_ASCII_SHORT + KEY_2DOTS)) {
-			List<MexItem> items = GeekManager.g().asciiAll();
-			MexObject header = new MexObject((AsciiRecord.getHeader()));
-			items.add(0, header);
-			items.add(header);
-			
-			export(items);
-			
-			return true;
-		}
-		
-		solo = parseParam(KEY_ASCII_SHORT + "\\s(.+?)");
-		if(solo != null) {
-			List<MexItem> items = Colls.filter(GeekManager.g().asciiAll(), solo, isCaseSensitive(), isStayCriteria());
-			
-			if(!EmptyUtil.isNullOrEmpty(items)) {
-				items.add(0, new MexObject((AsciiRecord.getHeader())));
-			}
-
-			export(items);
-			
-			return true;
-		}
-
 		solo = parseParam(KEY_TO_BASE64 + "\\s(.+?)");
 		if(solo != null) {
 			String result = XCodeUtil.toBase64(solo);
@@ -253,96 +239,93 @@ public class CommandXCode extends CommandBase {
 			}
 		}
 		
-		if(isIn(KEY_CURRENCY + KEY_2DOTS)) {
-			String extraLocales = g().getUserValueOf("iso.locales");
-			List<MexObject> records = LocaleUtil.getAllCurrencies(extraLocales);
-
-			export(records);
+		flag = searchAndProcess(KEY_CURRENCY, new MexItemsFetcher() {
 			
-			return true;
-		}
-		
-		solo = parseParam(KEY_CURRENCY + "\\s(.+?)");
-		if(isSingleParamNotnull()) { 
-			String extraLocales = g().getUserValueOf("iso.locales");
-			List<MexObject> records = LocaleUtil.getAllCurrencies(extraLocales);
-			
-			MexFilter<MexObject> filter = new MexFilter<MexObject>(solo, records);
-			List<MexObject> items = filter.process();
-
-			export(items);
-			
-			return true;
-		}
-		
-		if(isIn(KEY_DATE_FORMAT_SYMBOL + KEY_2DOTS)) {
-			List<String> records = LocaleUtil.getAllMonthWeekdays();
-			export(records);
-			
-			return true;
-		}
-		
-		solo = parseParam(KEY_DATE_FORMAT_SYMBOL + "\\s(.+?)");
-		if(isSingleParamNotnull()) { 
-			List<String> records = LocaleUtil.getAllMonthWeekdays();
-			export2(records, solo);
-			
-			return true;
-		}
-		
-		if(isIn(KEY_ISO + KEY_2DOTS, KEY_ISO + KEY_EQUALS)) {
-			String extraLocales = g().getUserValueOf("iso.locales");
-			List<MexLocale> records = LocaleUtil.AAM_LOCALES;
-			C.pl(LocaleUtil.getIso3Header(extraLocales));
-			
-			export(Colls.items2PrintRecords(records, creteaLocaleParams()));
-			
-			return true;
-		}
-		
-		solo = parseParam(KEY_ISO + "\\s(.+?)");
-		if(isSingleParamNotnull()) { 
-			String extraLocales = g().getUserValueOf("iso.locales");
-			MexFilter<MexLocale> filter = new MexFilter<MexLocale>(solo, LocaleUtil.AAM_LOCALES);
-			List<MexLocale> items = filter.process();
-
-			if(!EmptyUtil.isNullOrEmpty(items)) {
-				C.pl(LocaleUtil.getIso3Header(extraLocales));
+			@Override
+			public void handle(List<MexItem> items) {
+				exportMatrix(items);
 			}
-
-			export(Colls.items2PrintRecords(items, creteaLocaleParams()));
 			
-			return true;
-		}
+			@Override
+			public List<MexItem> body() {
+				String locales = g().getUserValueOf("iso.locales");
+				return LocaleUtil.getAllCurrencies(locales);
+			}
+		});
+		if(flag) return true;
+		
+		flag = searchAndProcess(KEY_MONTHS, new MexItemsFetcher() {
+			
+			@Override
+			public void handle(List<MexItem> items) {
+				exportMatrix(items);
+			}
+			
+			@Override
+			public List<MexItem> body() {
+				return LocaleUtil.getMonths(LocaleUtil.LOCALES);
+			}
+		});
+		if(flag) return true;
+		
+		flag = searchAndProcess(KEY_WEEKS, new MexItemsFetcher() {
+			
+			@Override
+			public void handle(List<MexItem> items) {
+				exportMatrix(items);
+			}
+			
+			@Override
+			public List<MexItem> body() {
+				return LocaleUtil.getWeeks(LocaleUtil.LOCALES);
+			}
+		});
+		if(flag) return true;
+
+		flag = searchAndProcess(KEY_ISO, new MexItemsFetcher() {
+			@Override
+			public void handle(List<MexItem> items) {
+				exportMatrix(items, "c=#s2");
+			}
+			@Override
+			public List<MexItem> body() {
+				String locs = "locs=" + getUserLocalesAsOption(g().getUserValueOf("iso.locales"));
+				header = MexLocale.getHeader(locs);
+				footer = header;
+				useLowOptions(locs);
+				
+				return Lists.newArrayList(LocaleUtil.MEX_LOCALES);
+			}
+		});
+		if(flag) return true;
 	
-		solo = parseParam(KEY_ISO + "=\\s*([^|&]*?)");
+		solo = parseParam(KEY_ISO + "=\\s*(.+?)");
 		if(solo != null) {
 			Locale locale = null;
-			List<MexLocale> items = null;
 			String criteria = "^" + solo + "$";
-			List<MexLocale> accurateItems = LocaleUtil.searchSimilars(criteria);
-			if(accurateItems.size() == 1) {
-				locale = accurateItems.get(0).getLocale();
+			List<MexLocale> matchedItems = Colls.filter(LocaleUtil.MEX_LOCALES, criteria);
+			if(matchedItems.size() == 1) {
+				locale = matchedItems.get(0).getLocale();
 			} else {
-				criteria = solo.replace('_', '|');
-				items = LocaleUtil.searchSimilars(criteria);
-				if(items.size() == 1) {
-					locale = items.get(0).getLocale();
+				matchedItems = Colls.filter(LocaleUtil.MEX_LOCALES, solo);
+				if(matchedItems.size() == 1) {
+					locale = matchedItems.get(0).getLocale();
 				}
 			}
 			
-			Map mexItemParams = creteaLocaleParams();
+			String locs = "locs=" + getUserLocalesAsOption(g().getUserValueOf("iso.locales"));
+			
 			if(locale != null) {
 				g().setLocale(locale);
 				MexLocale ml = new MexLocale(locale);
-				C.pl2("Locale set as " + ml.toPrint(mexItemParams));
+				C.pl2("Locale set as " + ml.toPrint(locs + ",c=#s"));
 			} else {
-				C.pl("[" + solo + "] is not a valid locale, did you mean one of these?");
-				if(EmptyUtil.isNullOrEmpty(items)) {
-					C.listSome(Colls.items2PrintRecords(LocaleUtil.AAM_LOCALES, mexItemParams), 10);
+				if(EmptyUtil.isNullOrEmpty(matchedItems)) {
+					C.pl("[" + solo + "] is not a valid locale, please check from:");
+					C.listSome(LocaleUtil.MEX_LOCALES, 7);
 				} else {
-					C.list(Colls.items2PrintRecords(items, mexItemParams));
-					C.pl();
+					C.pl("[" + solo + "] is not a valid locale, do you mean one of this?");
+					exportMatrix(MatrixUtil.matrixOf(matchedItems, locs), "c=#s2");
 				}
 			}
 			
@@ -352,10 +335,17 @@ public class CommandXCode extends CommandBase {
 		return false;
 	}
 	
-	protected Map<String, Object> creteaLocaleParams() {
-		String multipleLocalesString = g().getUserValueOf("iso.locales");
-		List<Locale> localesInDisplay = LocaleUtil.ofs(multipleLocalesString);
+	private String getUserLocalesAsOption(String locales) {
+		if(EmptyUtil.isNullOrEmpty(locales)) {
+			return "";
+		}
 		
-		return createMexItemParams("localesInDisplay", localesInDisplay);
+		List<String> newlist = Lists.newArrayList();
+		List<Locale> items = LocaleUtil.listOf(locales);
+		for(Locale item : items) {
+			newlist.add(item.toString());
+		}
+		
+		return StrUtil.connect(newlist, "+");
 	}
 }

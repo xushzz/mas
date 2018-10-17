@@ -32,21 +32,9 @@ public class TargetFolder extends Target {
 	public void export(List records, String options, boolean withTimestamp) {
 		List<File> normalFiles = Lists.newArrayList();
 		for(Object item: records) {
-			if(item instanceof File) {
-				File file = (File)item;
-				if(file.isFile()) {
-					normalFiles.add(file);
-				}
-			} else if (item instanceof MexFile) {
-				MexFile mexFile = (MexFile)item;
-				if(mexFile.getFile().isFile()) {
-					normalFiles.add(mexFile.getFile());
-				}
-			} else if(isFileRelated()) {
-				File file = FileUtil.getIfNormalFile(item.toString());
-				if(file != null) {
-					normalFiles.add(file);
-				}
+			File file = FileUtil.of(item);
+			if(file != null) {
+				normalFiles.add(file);
 			}
 		}
 		

@@ -159,6 +159,7 @@ public class IOUtil {
 				String temp = dynamicLocation.replaceAll("^file:///", "");
 				ins = new FileInputStream(temp);
 			}
+			
 			BufferedReader br = new BufferedReader(new InputStreamReader(ins, charset));
 			String line;
 			boolean theFirstOne = true;

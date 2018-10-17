@@ -14,8 +14,10 @@ import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.MathUtil;
+import com.sirap.basic.util.MatrixUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.framework.command.FileSizeInputAnalyzer;
 import com.sirap.common.framework.command.InputAnalyzer;
@@ -42,10 +44,9 @@ public class CommandFolder extends CommandBase {
 					paths.add(newPath);
 				}
 			}
-			if(!EmptyUtil.isNullOrEmpty(paths)) {
-				dealWithFolderPaths(paths);
-				return true;
-			}
+			
+			dealWithMexFiles(getMexFilesByPaths(paths));
+			return true;
 //			D.sink("seko out");
 		}
 		
@@ -69,7 +70,7 @@ public class CommandFolder extends CommandBase {
 					export(items);
 				}
 			} else {
-				dealWithFolderPaths(Lists.newArrayList(cleverPath));
+				dealWithMexFiles(getMexFilesByPaths(Lists.newArrayList(cleverPath)));
 			}
 			
 //			D.ts("out of carrie");
@@ -78,26 +79,12 @@ public class CommandFolder extends CommandBase {
 		}
 		
 		if(is(KEY_LIST_STORAGE)) {
-			File file = FileUtil.getIfNormalFolder(storageWithSeparator());
-			if(file != null) {
-				String path = file.getAbsolutePath();
-				if(path != null) {
-					List<MexFile> allFiles = FileUtil.listDirectory(path);
-					boolean orderByNameAsc = OptionUtil.readBooleanPRI(options, "byname", true);
-					MexFileComparator cesc = new MexFileComparator(orderByNameAsc);
-					boolean orderByTypeDirAtTop = OptionUtil.readBooleanPRI(options, "bytype", true);
-					cesc.setByTypeAsc(orderByTypeDirAtTop);
-					cesc.setByDateAsc(OptionUtil.readBoolean(options, "bydate"));
-					cesc.setBySizeAsc(OptionUtil.readBoolean(options, "bysize"));
-					Collections.sort(allFiles, cesc);
-					String tempOptions = options;
-					if(options == null || !options.contains("kids")) {
-						tempOptions += ",+kids";
-					}
-
-					export(allFiles, tempOptions);
-				}
-			}
+			String filepath = storageWithSeparator();
+			File file = FileUtil.getIfNormalFolder(filepath);
+			XXXUtil.nullCheck(file, "Bad path: " + filepath);
+			
+			dealWithMexFiles(getMexFilesByPaths(Lists.newArrayList(filepath)));
+			
 			return true;
 		}
 		
@@ -157,39 +144,11 @@ public class CommandFolder extends CommandBase {
 				}
 			}
 			
-			if(EmptyUtil.isNullOrEmpty(allMexedFiles)) {
-				exportEmptyMsg();
-			} else {
-				boolean toRemove = OptionUtil.readBooleanPRI(options, "remove", false);
-				if(toRemove) {
-					for(MexFile mf : allMexedFiles) {
-						removeFile(mf.getPath());
-					}
-					
-					return true;
-				}
-				if(target.isFileRelated()) {
-					List<File> files = new ArrayList<File>();
-					for(MexFile mf:allMexedFiles) {
-						File fileItem = mf.getFile();
-						if(fileItem.isFile()) {
-							files.add(fileItem);
-						}
-					}
-					
-					export(files);
-				} else {
-					boolean orderByNameAsc = OptionUtil.readBooleanPRI(options, "byname", true);
-					MexFileComparator cesc = new MexFileComparator(orderByNameAsc); 
-					cesc.setByTypeAsc(OptionUtil.readBoolean(options, "bytype"));
-					cesc.setByDateAsc(OptionUtil.readBoolean(options, "bydate"));
-					cesc.setBySizeAsc(OptionUtil.readBoolean(options, "bysize"));
-					Collections.sort(allMexedFiles, cesc);
-					String tempOptions = jack.isShowDetail() ? "+size" : "";
-					String finalOptions = OptionUtil.mergeOptions(options, tempOptions);
-					export(allMexedFiles, finalOptions);
-				}
+			if(jack.isShowDetail()) {
+				useHighOptions("+size");
 			}
+			
+			dealWithMexFiles(allMexedFiles);
 //			D.ts("folder and path, end");
 			
 			return true;
@@ -205,45 +164,20 @@ public class CommandFolder extends CommandBase {
 			this.options = sean.getOptions();
 			boolean detail = !params[0].isEmpty();
 			String criteria = useSpace(params[1].trim());
-			List<MexFile> records = VFileManager.g().getFileRecordsByName(criteria, isCaseSensitive());
-			boolean toRemove = OptionUtil.readBooleanPRI(options, "remove", false);
-			if(toRemove) {
-				for(MexFile mf : records) {
-					removeFile(mf.getPath());
-				}
-				
-				return true;
+			List<MexFile> mexfiles = VFileManager.g().getFileRecordsByName(criteria, isCaseSensitive());
+			
+			if(detail) {
+				useHighOptions("+size");
 			}
-			if(target.isFileRelated()) {
-				Collections.sort(records);
-				export(Colls.toFileList(records));
-			} else {
-				boolean orderByNameAsc = OptionUtil.readBooleanPRI(options, "byname", true);
-				MexFileComparator cesc = new MexFileComparator(orderByNameAsc); 
-				cesc.setByDateAsc(OptionUtil.readBoolean(options, "bydate"));
-				cesc.setBySizeAsc(OptionUtil.readBoolean(options, "bysize"));
-				Collections.sort(records, cesc);
-				String tempOptions = detail ? "+size" : "";
-				String finalOptions = OptionUtil.mergeOptions(options, tempOptions);
-				export(records, finalOptions);
-			}
+			
+			dealWithMexFiles(mexfiles);
 			
 			return true;
 		}
 		
 		if(is(KEY_VERY_IMPORTANT_FOLDER + KEY_2DOTS)) {
-			List<MexFile> records = VFileManager.g().getAllFileRecords();
-			boolean orderByNameAsc = OptionUtil.readBooleanPRI(options, "byname", true);
-			MexFileComparator cesc = new MexFileComparator(orderByNameAsc); 
-			cesc.setByDateAsc(OptionUtil.readBoolean(options, "bydate"));
-			cesc.setBySizeAsc(OptionUtil.readBoolean(options, "bysize"));
-			Collections.sort(records, cesc);
-
-			if(target.isFileRelated()) {
-				export(Colls.toFileList(records));
-			} else {
-				export(records);
-			}
+			List<MexFile> mexfiles = VFileManager.g().getAllFileRecords();
+			dealWithMexFiles(mexfiles);
 			
 			return true;
 		}
@@ -328,29 +262,57 @@ public class CommandFolder extends CommandBase {
 		return null;
 	}
 	
-	private void dealWithFolderPaths(List<String> paths) {
-		List<MexFile> allFiles = new ArrayList<>();
+	private List<MexFile> getMexFilesByPaths(List<String> paths) {
+		List<MexFile> allFiles = Lists.newArrayList();
 		for(String path: paths) {
-			List<MexFile> records = FileUtil.listDirectory(path);
+//			List<MexFile> records = FileUtil.listDirectory(path);
+			List<MexFile> records = FileUtil.scanSingleFolder(path, 0);
 			if(!EmptyUtil.isNullOrEmpty(records)) {
 				allFiles.addAll(records);
 			}
 		}
 		
+		return allFiles;
+	}
+	
+	private void dealWithMexFiles(List<MexFile> mexfiles) {
+		boolean toRemove = OptionUtil.readBooleanPRI(options, "remove", false);
+		if(toRemove) {
+			for(MexFile mf : mexfiles) {
+				removeFile(mf.getPath());
+			}
+			
+			return;
+		}
+		
 		if(target.isFileRelated()) {
-			export(Colls.toFileList(allFiles));
+			export(Colls.toFileList(mexfiles));
 			return;
 		}
 		
 		boolean orderByNameAsc = OptionUtil.readBooleanPRI(options, "byname", true);
 		MexFileComparator cesc = new MexFileComparator(orderByNameAsc);
-		boolean orderByTypeDirAtTop = OptionUtil.readBooleanPRI(options, "bytype", true);
-		cesc.setByTypeAsc(orderByTypeDirAtTop);
+		cesc.setByTypeAsc(OptionUtil.readBoolean(options, "bytype"));
 		cesc.setByDateAsc(OptionUtil.readBoolean(options, "bydate"));
 		cesc.setBySizeAsc(OptionUtil.readBoolean(options, "bysize"));
-		Collections.sort(allFiles, cesc);
-		String tempOptions = "+kids";
-		String finalOptions = OptionUtil.mergeOptions(options, tempOptions);
-		export(allFiles, finalOptions);
+		Collections.sort(mexfiles, cesc);
+
+		useLowOptions("+k");
+		boolean showAllDetail = OptionUtil.readBooleanPRI(options, "a", false);
+		if(showAllDetail) {
+			useLowOptions("+m");
+			useLowOptions("+d");
+			useLowOptions("+ss");
+			useLowOptions("+s");
+			useLowOptions("+k");
+			useLowOptions("+h");
+		}
+		
+		if(OptionUtil.readBooleanPRI(options, "m", false)) {
+			useLowOptions("c=#s2");
+			exportMatrix(MatrixUtil.matrixOf(mexfiles, options));
+		} else {
+			export(mexfiles);
+		}
 	}
 }

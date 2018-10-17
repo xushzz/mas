@@ -4,64 +4,75 @@ import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Currency;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TreeMap;
 
 import com.google.common.collect.Lists;
+import com.sirap.basic.component.map.AlinkMap;
+import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexLocale;
 import com.sirap.basic.domain.MexObject;
-import com.sirap.basic.search.MexFilter;
+import com.sirap.basic.domain.ValuesItem;
 
 public class LocaleUtil {
-
-	public static final List<Locale> AA_LOCALES = Arrays.asList(Locale.getAvailableLocales());
-	public static final List<MexLocale> AAM_LOCALES = new ArrayList<>();
+	
+	public static final List<String> TOP_CURRENCIES;
 	static {
-		for(Locale item : AA_LOCALES) {
-			if(EmptyUtil.isNullOrEmpty(item.getLanguage())) {
-				continue;
+		TOP_CURRENCIES = StrUtil.split("CNY,GBP,EUR,USD,JPY,AUD,CAD,CHF,HKD,TWD,SGD,NZD");
+	}
+	
+	/***
+	 	Currency.getAvailableCurrencies().size() 225
+		Locale.getAvailableLocales().length 160
+		Locale: 160
+		Currency: 114 by locale
+		Currency: 75 different by locale
+	 */
+
+	public static final List<Locale> LOCALES = Lists.newArrayList();
+	public static final List<MexLocale> MEX_LOCALES = new ArrayList<>();
+	public static final AlinkMap<String, Locale> MAP_LOCALES = Amaps.newLinkHashMap();
+	public static final Map<String, String> MAP_CURRENCY_CODE_SYMBOL = new TreeMap<>();
+	
+	static {
+		for(Locale item : Locale.getAvailableLocales()) {
+			if(!item.toString().isEmpty()) {
+				LOCALES.add(item);
 			}
-			
-			if(StrUtil.contains(item.toString(), "#")) {
-				continue;
-			}
-			AAM_LOCALES.add(new MexLocale(item));
 		}
-		Collections.sort(AAM_LOCALES);
+		Collections.sort(LOCALES, comparatorOfLocale());
+		
+		for(Locale item : LOCALES) {
+			MEX_LOCALES.add(new MexLocale(item));
+			MAP_LOCALES.put(item.toString(), item);
+			try {
+				Currency ccy = Currency.getInstance(item);
+				MAP_CURRENCY_CODE_SYMBOL.put(ccy.getCurrencyCode(), ccy.getSymbol(item));
+			} catch (Exception ex) {
+//				do nothing.
+			}
+		}
 	}
 
 	public static Locale of(String localeStr) {
-		XXXUtil.nullCheck(localeStr, "localeStr");
-
-		String regex = "([a-z]{2})(_([A-Z]{2})|)";
-		String[] params = StrUtil.parseParams(regex, localeStr);
-		if(params != null) {
-			Locale lo = null;
-			String lang = params[0].toLowerCase();
-			String area = params[2];
-			if(area != null) {
-				lo = new Locale(lang, area.toUpperCase());
-			} else {
-				lo = new Locale(lang);
-			}
-
-			return lo;
-		}
+		XXXUtil.shouldBeNotnull(localeStr);
 		
-		return null;
+		return MAP_LOCALES.get(localeStr);
 	}
 	
-	public static List<Locale> ofs(String multipleLocalesString) {
+	public static List<Locale> listOf(String locales) {
 		List<Locale> lots = new ArrayList<>();
-		if(EmptyUtil.isNullOrEmpty(multipleLocalesString)) {
+		if(EmptyUtil.isNullOrEmpty(locales)) {
 			return lots;
 		}
-		List<String> items = StrUtil.splitByRegex(multipleLocalesString, ",|\\+");
+		
+		List<String> items = StrUtil.splitByRegex(locales, ",|\\+");
 		for(String item : items) {
-			Locale lot = of(item);
+			Locale lot = MAP_LOCALES.get(item);
 			if(lot == null) {
 				XXXUtil.alert("Not a valid locale: " + item);
 			}
@@ -79,36 +90,11 @@ public class LocaleUtil {
 		return flag;
 	}
 	
-	public static List<MexLocale> searchSimilars(String criteria) {
-		MexFilter<MexLocale> filter = new MexFilter<MexLocale>(criteria, AAM_LOCALES);
-		List<MexLocale> mexItems = filter.process();	
-		
-		return mexItems;
-	}
-	
 	public static List<Locale> getAvailableLocales() {
 		List<Locale> list = Arrays.asList(Locale.getAvailableLocales());
 		
 		return list;
 	}
-	
-	public static String getIso3Header(String extraLocales) {
-		StringBuffer sb = new StringBuffer();
-		
-		sb.append("[");
-		sb.append("locale").append(", ");
-		sb.append("code").append(", ");
-		sb.append("lang").append(", ");
-		sb.append("country").append(", ");
-		sb.append("local");
-		if(!EmptyUtil.isNullOrEmpty(extraLocales)) {
-			sb.append(", ").append(extraLocales);
-		}
-		sb.append("]");
-		
-		return sb.toString();
-	}
-
 
 	/**
 	 * 
@@ -123,7 +109,7 @@ public class LocaleUtil {
 	}
 	
 	public static String getIso3CountryInfo(Locale countryLocale, String multipleLocalesString) {
-		List<Locale> extraLocales = ofs(multipleLocalesString);
+		List<Locale> extraLocales = listOf(multipleLocalesString);
 		
 		StringBuffer sb = new StringBuffer();
 		Locale temp = countryLocale;
@@ -159,82 +145,137 @@ public class LocaleUtil {
 		return records;
 	}
 	
-	public static List<MexObject> getAllCurrencies(String multipleLocalesString) {
+	public static List<MexItem> getAllCurrencies(String locales) {
 		List<Currency> items = new ArrayList<>(Currency.getAvailableCurrencies());
-		List<MexObject> records = new ArrayList<>();
-		List<Locale> extraLocales = ofs(multipleLocalesString);
-		Map<String, String> ma = getCurrencyCodeAndSymbol();
+		List<Locale> others = listOf(locales);
 		
+		List<ValuesItem> list = Lists.newArrayList();
 		for(Currency item : items) {
 			String code = item.getCurrencyCode();
-			String symbol = ma.get(code);
+			String symbol = MAP_CURRENCY_CODE_SYMBOL.get(code);
 			if(symbol == null) {
-				symbol = item.getSymbol();
+				symbol = "";
 			}
 			
-			StringBuffer sb = new StringBuffer();
-			sb.append(code).append(", ");
-			sb.append(symbol).append(", ");
-			sb.append(item.getDisplayName(Locale.ENGLISH)).append(", ");
-			sb.append(item.getDisplayName()).append(", ");
-            if(!EmptyUtil.isNullOrEmpty(extraLocales)) {
-            	for(Locale extra : extraLocales) {
-            		sb.append(item.getDisplayName(extra)).append(", ");
-            	}
-            }
-            String temp = sb.toString().replaceAll(",\\s*$", "");
-            records.add(new MexObject(temp));
+			ValuesItem vi = ValuesItem.of();
+			vi.add(code);
+			vi.add(symbol);
+			vi.add(item.getDisplayName(Locale.ENGLISH));
+			vi.add(item.getDisplayName());
+			for(Locale other : others) {
+        		vi.add(item.getDisplayName(other));
+        	}
+			list.add(vi);
 		}
 		
-		return records;
+		Collections.sort(list, comparatorOfCurrencyCode());
+		
+		return Lists.newArrayList(list);
 	}
 	
-	public static Map<String, String> getCurrencyCodeAndSymbol() {
-		Locale[] allLocales = Locale.getAvailableLocales();
-		Map<String, String> ma = new HashMap<>();
-		for(int i = 0; i < allLocales.length; i++) {
-			Locale lo = allLocales[i];
-			try {
-				Currency ccy = Currency.getInstance(lo);
-				String code = ccy.getCurrencyCode();
-				String symbol = ccy.getSymbol(lo);
-				
-				ma.put(code, symbol);
-			} catch (Exception ex) {
-				//do nothing.
+	public static Comparator<ValuesItem> comparatorOfCurrencyCode() {
+		return new Comparator<ValuesItem>() {
+
+			@Override
+			public int compare(ValuesItem a, ValuesItem b) {
+				int diff = valueOf(a) - valueOf(b);
+				if(diff != 0) {
+					return diff;
+				}
+				return a.toString().compareTo(b.toString());
 			}
-		}
-		
-		return ma;
+			
+			private int valueOf(ValuesItem vi) {
+				String code = vi.getByIndex(0) + "";
+				int index = TOP_CURRENCIES.indexOf(code);
+//				D.pl(index);
+				if(index < 0) {
+					index = TOP_CURRENCIES.size();
+				}
+//				D.pl(index);
+//				D.pl();
+				return index;
+			}
+		};
 	}
 	
-	public static List<String> getAllMonthWeekdays() {
-		Locale[] allLocales = Locale.getAvailableLocales();
-		List<String> items = new ArrayList<>();
-		for(int i = 0; i < allLocales.length; i++) {
-			Locale lo = allLocales[i];
-			DateFormatSymbols bol = new DateFormatSymbols(lo);
-			items.add(lo + ", part month: " + trimStringArray(bol.getShortMonths()));
-			items.add(lo + ", full month: " + trimStringArray(bol.getMonths()));
-			items.add(lo + ", part weeks: " + trimStringArray(bol.getShortWeekdays()));
-			items.add(lo + ", full weeks: " + trimStringArray(bol.getWeekdays()));
+	public static Comparator<Locale> comparatorOfLocale() {
+		return new Comparator<Locale>() {
+			@Override
+			public int compare(Locale a, Locale b) {
+				int diff = valueOf(a) - valueOf(b);
+				if(diff != 0) {
+					return diff;
+				}
+				return a.toString().compareTo(b.toString());
+			}
+			
+			private int valueOf(Locale loc) {
+				if(StrUtil.equals(loc.getLanguage(), Locale.CHINESE.getLanguage())) {
+					return 1;
+				} else if(StrUtil.equals(loc.getLanguage(), Locale.ENGLISH.getLanguage())) {
+					return 2;
+				} else if(StrUtil.equals(loc.getDisplayLanguage(Locale.ENGLISH), "Spanish")) {
+					return 3;
+				} else if(StrUtil.equals(loc.getLanguage(), Locale.FRENCH.getLanguage())) {
+					return 4;
+				} else if(StrUtil.equals(loc.getLanguage(), Locale.GERMAN.getLanguage())) {
+					return 5;
+				} else if(StrUtil.equals(loc.getLanguage(), Locale.ITALIAN.getLanguage())) {
+					return 6;
+				} else if(StrUtil.equals(loc.getDisplayLanguage(Locale.ENGLISH), "Serbian")) {
+					return 7;
+				} else {
+					return 99;
+				}
+			}
+		};
+	}
+	
+	public static List<MexItem> getMonths(List<Locale> locs) {
+		List<MexItem> items = new ArrayList<>();
+		Locale must = Locale.ENGLISH;
+		boolean useDefault = !Locale.getDefault().equals(must);
+		for(Locale other : locs) {
+			String lang = other.getDisplayLanguage(must);
+			if(useDefault) {
+				lang += " " + other.getDisplayLanguage(Locale.getDefault());
+			}
+			
+			DateFormatSymbols jack = new DateFormatSymbols(other);
+			items.add(ValuesItem.of(lang).addAll(listOf(jack.getShortMonths())));
+			items.add(ValuesItem.of(lang).addAll(listOf(jack.getMonths())));
 		}
 		
 		return items;
 	}
 	
-	private static String trimStringArray(String[] arr) {
-		StringBuilder sb = new StringBuilder();
-		for(int i = 0; i < arr.length; i++) {
-			String item = arr[i];
-			if(EmptyUtil.isNullOrEmpty(item)) {
-				continue;
+	public static List<MexItem> getWeeks(List<Locale> locs) {
+		List<MexItem> items = new ArrayList<>();
+		Locale must = Locale.ENGLISH;
+		boolean useDefault = !Locale.getDefault().equals(must);
+		for(Locale other : locs) {
+			String lang = other.getDisplayLanguage(must);
+			if(useDefault) {
+				lang += " " + other.getDisplayLanguage(Locale.getDefault());
 			}
 			
-			sb.append(item.trim()).append(", ");
+			DateFormatSymbols jack = new DateFormatSymbols(other);
+			items.add(ValuesItem.of(lang).addAll(listOf(jack.getShortWeekdays())));
+			items.add(ValuesItem.of(lang).addAll(listOf(jack.getWeekdays())));
 		}
 		
-		String temp = sb.toString().replaceAll(",\\s*$", "");
-		return temp;
+		return items;
+	}
+	
+	public static List<String> listOf(String[] items) {
+		List<String> list = Lists.newArrayList();
+		for(String item : items) {
+			if(!item.isEmpty()) {
+				list.add(item);
+			}
+		}
+
+		return list;
 	}
 }

@@ -4,7 +4,7 @@ import com.sirap.basic.tool.D;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.StrUtil;
 
-public class TargetFile extends Target {
+public abstract class TargetFile extends Target {
 	
 	protected String folderpath;
 	protected String filename;

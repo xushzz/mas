@@ -21,7 +21,7 @@ public class TargetText extends TargetFile {
 	public void export(List records, String options, boolean withTimestamp) {
 		String charset = SimpleKonfig.g().getCharsetInUse();
 		String filePath = withTimestamp ? getTimestampPath() : getFilePath();
-		IOUtil.saveAsTxtWithCharset(records, filePath, charset);
+		IOUtil.saveAsTxtWithCharset(toStringList(records, options), filePath, charset);
 		C.pl2("Exported => " + FileUtil.canonicalPathOf(filePath));
 		if(SimpleKonfig.g().isGeneratedFileAutoOpen()) {
 			FileOpener.open(filePath);

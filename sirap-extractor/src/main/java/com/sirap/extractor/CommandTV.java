@@ -8,6 +8,7 @@ import com.sirap.basic.component.Extractor;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.DateUtil;
+import com.sirap.basic.util.MatrixUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
@@ -99,9 +100,8 @@ public class CommandTV extends CommandBase {
 				}
 			}
 			
-			String temp = "maxLen=" + maxLenOfName(list) + ",space=2";
-			String mergedOptions = OptionUtil.mergeOptions(options, temp);
-			export(list, mergedOptions);
+			useLowOptions("c=#s2");
+			exportMatrix(MatrixUtil.matrixOf(list));
 			
 			return true;
 		}

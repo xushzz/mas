@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 
 import com.google.common.collect.Lists;
-import com.sirap.basic.component.Mist;
 import com.sirap.basic.data.CityData;
 import com.sirap.basic.domain.LocationItem;
 import com.sirap.basic.domain.LongOrLat;
@@ -12,13 +11,14 @@ import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.json.JsonUtil;
+import com.sirap.basic.json.Mist;
+import com.sirap.basic.json.MistUtil;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.LonglatUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.MatrixUtil;
-import com.sirap.basic.util.MistUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
@@ -126,7 +126,7 @@ public class CommandLocation extends CommandBase {
 				}
 				lines = GaodeUtils.searchPlaceText(keywords, types, city);
 			}
-
+			//so: show order
 			useLowOptions("+so,c=#s");
 			export(lines);
 			
@@ -134,17 +134,14 @@ public class CommandLocation extends CommandBase {
 		}
 
 		if(is(KEY_GAODE_GEO)) {
-			List<List> matrix = MatrixUtil.matrixOf(LonglatData.EGGS);
-			useLowOptions("c=#s2");
-			exportMatrix(matrix);
+			exportMatrix(MatrixUtil.matrixOf(LonglatData.EGGS));
 			
 			return true;
 		}
 
 		if(is(KEY_GAODE_GEO + KEY_2DOTS)) {
-			List<List> matrix = MatrixUtil.matrixOf(Lists.newArrayList(CityData.EGGS.values()));
-			useLowOptions("c=#s2");
-			exportMatrix(matrix);
+			List<ValuesItem> items = Lists.newArrayList(CityData.EGGS.values());
+			exportMatrix(items);
 			
 			return true;
 		}

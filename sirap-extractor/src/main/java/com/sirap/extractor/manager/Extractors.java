@@ -12,17 +12,17 @@ import java.util.regex.Matcher;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.sirap.basic.component.Extractor;
-import com.sirap.basic.component.Mist;
 import com.sirap.basic.domain.KeyValuesItem;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.domain.ValuesItem;
+import com.sirap.basic.json.Mist;
+import com.sirap.basic.json.MistUtil;
 import com.sirap.basic.thread.MasterItemsOriented;
 import com.sirap.basic.thread.WorkerItemsOriented;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.MathUtil;
-import com.sirap.basic.util.MistUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.domain.Link;
@@ -114,7 +114,7 @@ public class Extractors {
 				Matcher ma = createMatcher(regex);
 				
 				while(ma.find()) {
-					ValuesItem item = new ValuesItem();
+					ValuesItem item = ValuesItem.of();
 					item.add(ma.group(1));
 					item.add(ma.group(2));
 					item.add(ma.group(3));
@@ -978,8 +978,8 @@ public class Extractors {
 		return neymar.process().getItems();
 	}
 
-	public static List<MexObject> fetchCarNoList() {
-		Extractor<MexObject> neymar = new Extractor<MexObject>() {
+	public static List<MexItem> fetchCarNoList() {
+		Extractor<MexItem> neymar = new Extractor<MexItem>() {
 
 			@Override
 			public String getUrl() {
@@ -993,8 +993,8 @@ public class Extractors {
 				String regex = "<td>(.)([A-Z])\\s*</td><td>([^<>]+)</td>";
 				Matcher ma = createMatcher(regex);
 				while(ma.find()) {
-					String temp = sea.get(ma.group(1)) + " " + ma.group(1) + ma.group(2) + " " + ma.group(3);
-					mexItems.add(new MexObject(temp));
+					ValuesItem vi = ValuesItem.of(sea.get(ma.group(1)), ma.group(1) + ma.group(2), ma.group(3));
+					mexItems.add(vi);
 				}
 			}
 			
@@ -1007,6 +1007,50 @@ public class Extractors {
 				}
 				
 				return sea;
+			}
+		};
+		
+		return neymar.process().getItems();
+	}
+	
+	public static List<MexItem> fetchWeather() {
+		Extractor<MexItem> neymar = new Extractor<MexItem>() {
+
+			@Override
+			public String getUrl() {
+				printFetching = true;
+				return "http://www.nmc.cn/publish/forecast/china.html";
+			}
+			
+			@Override
+			protected void parse() {
+				StringBuffer regex = new StringBuffer();
+				regex.append("<div class=\"cname\">");
+				regex.append("\\s+<a target=\"_blank\" href=\"/publish/forecast/[A-Z]{1,5}/([A-Z\\-]{1,50}).html\">([^<]+)</a>");
+				regex.append("\\s+</div>");
+				regex.append("\\s+<div class=\"weather\">");
+				regex.append("\\s+([^<>]+)");
+				regex.append("\\s+</div>");
+				regex.append("\\s+<div class=\"temp\">");
+				regex.append("\\s+([^<>]+)");
+				regex.append("\\s+</div>");
+				Matcher m = createMatcher(regex.toString());
+				
+				Set<String> cities = new HashSet<>();
+				while(m.find()) {
+					String cityPinyin = m.group(1).trim();
+					if(cities.contains(cityPinyin)) {
+						continue;
+					}
+					cities.add(cityPinyin);
+					ValuesItem vi = ValuesItem.of();
+					vi.add(cityPinyin.replace("-", ""));
+					vi.add(m.group(2).trim());
+					vi.add(m.group(3).trim());
+					vi.add(m.group(4).trim());
+					
+					mexItems.add(vi);
+				}
 			}
 		};
 		
@@ -1051,7 +1095,7 @@ public class Extractors {
 			
 			@Override
 			protected void parse() {
-				ValuesItem vi = new ValuesItem();
+				ValuesItem vi = ValuesItem.of();
 				
 				String name = StrUtil.findFirstMatchedItem(">([^<>]+)</a></h3>", source);
 				vi.add(name);

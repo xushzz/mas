@@ -1,9 +1,11 @@
 package com.sirap.extractor.domain;
 
+import java.util.List;
+
+import com.google.common.collect.Lists;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.search.SizeCriteria;
 import com.sirap.basic.util.MathUtil;
-import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 
 @SuppressWarnings("serial")
@@ -58,26 +60,15 @@ public class MeijuRateItem extends MexItem implements Comparable<MeijuRateItem> 
 		return false;
 	}
 	
-	@Override
-	public String toPrint(String options) {
-		int maxLen = OptionUtil.readIntegerPRI(options, "maxLen", 40);
-		int space = OptionUtil.readIntegerPRI(options, "space", 2);
-		StringBuffer sb = new StringBuffer();
-		sb.append(StrUtil.padRightAscii(name, maxLen + space));
-		sb.append(rate).append(StrUtil.spaces(space));
-		sb.append(href);
-		
-		return sb.toString();
+	public List toList(String options) {
+		List items = Lists.newArrayList(name, rate, href);
+
+		return items;
 	}
 
 	@Override
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
-		sb.append(StrUtil.padRightAscii(name, 40));
-		sb.append(rate).append("  ");
-		sb.append(href);
-		
-		return sb.toString();
+		return StrUtil.connectWithSpace(toList());
 	}
 
 	@Override

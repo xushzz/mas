@@ -25,7 +25,9 @@ public class JsonToMapListConverter {
 	}
 	
 	public Object fromJsonText(String origin) {
-		String text = HtmlUtil.removeBlockComment(origin).trim();
+		XXXUtil.shouldBeNotnull(origin);
+//		String text = HtmlUtil.removeBlockComment(origin).trim();
+		String text = origin.trim();
 		
 		boolean toMap = origin.startsWith("{");
 		boolean toList = origin.startsWith("[");	

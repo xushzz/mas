@@ -3,9 +3,9 @@ package com.sirap.basic.domain;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
-import com.sirap.basic.util.EmptyUtil;
+import com.sirap.basic.util.LocaleUtil;
+import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 
 @SuppressWarnings("serial")
@@ -45,7 +45,7 @@ public class MexLocale extends MexItem implements Comparable<MexLocale> {
 		return locale.toString().compareTo(o.locale.toString());
 	}
 
-	public List<String> keyItems() {
+	public List<String> toList(String options) {
 		List<String> items = new ArrayList<>();
 		
 		items.add(locale.toString());
@@ -54,12 +54,31 @@ public class MexLocale extends MexItem implements Comparable<MexLocale> {
 		items.add(locale.getDisplayCountry(Locale.ENGLISH));
 		items.add(locale.getDisplayCountry());
 		
+		String locales = OptionUtil.readString(options, "locs");
+		List<Locale> kids = LocaleUtil.listOf(locales);
+//		D.list(kids);
+		for(Locale kid : kids) {
+			items.add(locale.getDisplayCountry(kid));
+    	}
+		
 		return items;
+	}
+	
+	public static ValuesItem getHeader(String options) {
+		ValuesItem vi = ValuesItem.of("Locale", "Code", "Lang", "Country", "Current");
+		String locales = OptionUtil.readString(options, "locs");
+		List<Locale> kids = LocaleUtil.listOf(locales);
+//		D.list(kids);
+		for(Locale kid : kids) {
+			vi.add(kid.toString());
+    	}
+		
+		return vi;
 	}
 	
 	@Override
 	public boolean isMatched(String keyWord) {
-		List<String> items = keyItems();
+		List<String> items = toList();
 		for(String item : items) {
 			if(isRegexMatched(item, keyWord)) {
 				return true;
@@ -75,35 +94,10 @@ public class MexLocale extends MexItem implements Comparable<MexLocale> {
 	}
 
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
-		List<String> items = keyItems();
-		for(String item : items) {
-			sb.append(item).append(", ");
-		}
-		
-		return sb.toString();
+		return StrUtil.connectWithCommaSpace(toList());
 	}
 	
-	public String toPrint(Map<String, Object> params) {
-		Object stuff = params.get("localesInDisplay");
-		List<Locale> localesInDisplay = null;
-		if(stuff instanceof List) {
-			localesInDisplay = (List<Locale>)stuff;
-		}
-
-		StringBuffer sb = new StringBuffer();
-		List<String> items = keyItems();
-		for(String item : items) {
-			sb.append(item).append(", ");
-		}
-        if(!EmptyUtil.isNullOrEmpty(localesInDisplay)) {
-        	for(Locale extra : localesInDisplay) {
-                sb.append(locale.getDisplayCountry(extra)).append(", ");
-        	}
-        }
-        
-        String value = sb.toString().replaceAll("[\\s,]+$", "");
-        
-        return value;
+	public String toPrint(String options) {
+		return StrUtil.connectWithCommaSpace(toList(options));
 	}
 }

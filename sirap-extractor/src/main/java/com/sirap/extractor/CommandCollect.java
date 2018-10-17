@@ -6,6 +6,7 @@ import java.util.List;
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.Extractor;
 import com.sirap.basic.component.Konstants;
+import com.sirap.basic.component.map.AlinkMap;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.domain.ValuesItem;
@@ -13,6 +14,7 @@ import com.sirap.basic.output.PDFParams;
 import com.sirap.basic.thread.Master;
 import com.sirap.basic.thread.Worker;
 import com.sirap.basic.tool.C;
+import com.sirap.basic.util.Amaps;
 import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
@@ -26,14 +28,13 @@ import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
-import com.sirap.common.domain.WeatherRecord;
+import com.sirap.common.component.MexItemsFetcher;
 import com.sirap.common.framework.command.target.TargetPdf;
 import com.sirap.extractor.domain.ZhihuRecord;
 import com.sirap.extractor.impl.EnglishDictionaryExtractor;
 import com.sirap.extractor.impl.FindJarExtractor;
 import com.sirap.extractor.impl.IcibaTranslationExtractor;
 import com.sirap.extractor.impl.MobilePhoneLocationExtractor;
-import com.sirap.extractor.impl.NationalWeatherExtractor;
 import com.sirap.extractor.impl.TulingExtractor;
 import com.sirap.extractor.impl.WeixinSearchExtractor;
 import com.sirap.extractor.impl.WikiSummaryExtractor;
@@ -45,13 +46,12 @@ import com.sirap.extractor.manager.FinancialTimesChineseExtractorManager;
 import com.sirap.extractor.manager.ForexManager;
 import com.sirap.extractor.manager.IcibaManager;
 import com.sirap.extractor.manager.RssExtractorManager;
-import com.sirap.extractor.manager.WeatherManager;
 
 public class CommandCollect extends CommandBase {
 
 	private static final String KEY_WEATHER = "wea";	
-	private static final String KEY_CAR = "car";	
-	private static final String KEY_CARNO = "kar";
+	private static final String KEY_CAR_DETAIL = "card";	
+	private static final String KEY_CARNO = "car";
 	private static final String KEY_PHONE_MOBILE = "@";
 	private static final String KEY_DICTONARY = "ia";
 	private static final String KEY_TRANSLATE = "i";
@@ -71,7 +71,7 @@ public class CommandCollect extends CommandBase {
 	{
 		helpMeanings.put("money.forex.url", XRatesForexRateExtractor.URL_X_RATES);
 		helpMeanings.put("tuling.url", TulingExtractor.HOMEPAGE);
-		helpMeanings.put("china.weather.url", NationalWeatherExtractor.HOMEPAGE);
+		helpMeanings.put("china.weather.url", "http://www.nmc.cn/publish/forecast/china.html");
 		helpMeanings.put("phone.char.url", MobilePhoneLocationExtractor.HOMEPAGE);
 		helpMeanings.put("iciba.url", IcibaTranslationExtractor.HOMEPAGE);
 		helpMeanings.put("dictionary.url", EnglishDictionaryExtractor.HOMEPAGE);
@@ -80,7 +80,20 @@ public class CommandCollect extends CommandBase {
 	
 	public boolean handle() {
 
-		solo = parseParam(KEY_CAR + "\\s+(.+)");
+		flag = searchAndProcess(KEY_CARNO, new MexItemsFetcher() {
+			@Override
+			public void handle(List<MexItem> items) {
+				exportMatrix(items);
+			}
+			
+			@Override
+			public List<MexItem> body() {
+				return Extractors.fetchCarNoList();
+			}
+		});
+		if(flag) return true;
+		
+		solo = parseParam(KEY_CAR_DETAIL + "\\s+(.+)");
 		if(solo != null) {
 			List<MexItem> items = Extractors.fetchCarList();
 			export(Colls.filter(items, solo, isCaseSensitive(), isStayCriteria()));
@@ -88,28 +101,38 @@ public class CommandCollect extends CommandBase {
 			return true;
 		}
 
-		solo = parseParam(KEY_CAR + "-([^\\.]+)");
+		solo = parseParam(KEY_CAR_DETAIL + "-([^\\.]+)");
 		if(solo != null) {
 			export(Extractors.fetchCarDetail(solo));
 			
 			return true;
 		}
 
-		solo = parseParam(KEY_CARNO + "\\s(.+)");
-		if(solo != null) {
-			List<MexObject> items = Extractors.fetchCarNoList();
-			export(Colls.filter(items, solo, isCaseSensitive(), isStayCriteria()));
+		flag = searchAndProcess(KEY_WEATHER, new MexItemsFetcher() {
+			@Override
+			public void handle(List<MexItem> items) {
+				exportMatrix(items);
+			}
 			
-			return true;
-		}
-
-		solo = parseParam(KEY_WEATHER + "\\s(.+)");
-		if(solo != null) {
-			List<WeatherRecord> items = WeatherManager.g().search(solo);
-			export(items);
+			@Override
+			public String fixCriteria(String criteria) {
+				AlinkMap<String, String> cities = Amaps.newLinkHashMap();
+				cities.put("sz", "shenzhen");
+				cities.put("gz", "guangzhou");
+				cities.put("bj", "beijing");
+				cities.put("cd", "chengdu");
+				cities.put("sh", "shanghai");
+				cities.put("dl", "dalian");
+				String name = cities.getIgnorecase(criteria);
+				return name != null ? name : criteria;
+			}
 			
-			return true;
-		}
+			@Override
+			public List<MexItem> body() {
+				return Extractors.fetchWeather();
+			}
+		});
+		if(flag) return true;
 		
 		solo = parseParam(KEY_PHONE_MOBILE + "(.+)");
 		if(solo != null) {
@@ -152,7 +175,8 @@ public class CommandCollect extends CommandBase {
 				for(String single : words) {
 					items.addAll(getTranslation(fetchOnly, single, filePath));
 				}
-				export(items, "c=\n");
+				useLowOptions("c=NL");
+				export(items);
 			}
 
 			return true;

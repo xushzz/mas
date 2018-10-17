@@ -34,7 +34,7 @@ public class CommandText extends CommandBase {
 			String filePath = filepathAndCriteria[0];
 			String criteria = filepathAndCriteria[1];
 			
-			if(FileOpener.isTextFile(filePath)) {
+			if(FileOpener.isTextFile(filePath) || useText()) {
 				List<MexObject> all = readFileIntoList(filePath);
 				List<MexObject> items = Colls.filter(all, criteria, isCaseSensitive(), isStayCriteria());
 				export(Colls.items2PrintRecords(items, options));
@@ -86,8 +86,8 @@ public class CommandText extends CommandBase {
 			String fileCriteria = engine.getFileCriteria();
 			String engineOptions = engine.getOptions();
 			List<MexTextLine> list = TextSearcher.search(folders, fileCriteria, contentCriteria);
-			String finalOptions = OptionUtil.mergeOptions(options, engineOptions);
-			export(list, finalOptions);
+			useLowOptions(engineOptions);
+			export(list);
 			
 			return true;
 		}
