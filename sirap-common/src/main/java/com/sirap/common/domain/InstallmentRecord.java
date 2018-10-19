@@ -1,8 +1,6 @@
 package com.sirap.common.domain;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.sirap.basic.domain.MexItem;
 
@@ -36,16 +34,5 @@ public class InstallmentRecord extends MexItem {
 
 	public void setOrder(String order) {
 		this.order = order;
-	}
-
-	@Override
-	public List<String> toPDF() {
-		List<String> list = new ArrayList<String>();
-		list.add(pseudoOrder + ")");
-		list.add(capital.toString());
-		list.add(plusByAverageInterest.toString());
-		list.add(plusByAverageCapital.toString());
-		
-		return list;
 	}
 }

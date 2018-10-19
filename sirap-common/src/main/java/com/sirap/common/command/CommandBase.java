@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -47,6 +48,7 @@ import com.sirap.common.framework.command.target.TargetConsole;
 import com.sirap.common.framework.command.target.TargetEmail;
 import com.sirap.common.framework.command.target.TargetExcel;
 import com.sirap.common.framework.command.target.TargetFolder;
+import com.sirap.common.framework.command.target.TargetPdf;
 
 public abstract class CommandBase {
 
@@ -213,38 +215,6 @@ public abstract class CommandBase {
 		options = OptionUtil.mergeOptions(options, lowPriority);
 	}
 	
-	@SuppressWarnings({ "rawtypes"})
-	public void exportMatrix(List data) {
-		exportMatrix(data, "");
-	}
-	
-	@SuppressWarnings({ "rawtypes"})
-	public void exportMatrix(List data, String lowOptions) {
-		List fixedData = applyMexCriteriaAndIgnoreSome(data);
-		
-		if(isToExcel()) {
-			export(fixedData);
-			return;
-		}
-		
-		if(!EmptyUtil.isNull(lowOptions)) {
-			useLowOptions(lowOptions);
-		}
-		
-		List<List> matrix = MatrixUtil.matrixOf(fixedData, options);
-		
-		boolean pretty = OptionUtil.readBooleanPRI(options, "p", true);
-		String connector = OptionUtil.readString(options, "c", "  ");
-		List matrixLines;
-		if(pretty) {
-			matrixLines = MatrixUtil.prettyMatrixLines(matrix, connector);
-		} else {
-			matrixLines = MatrixUtil.lines(matrix, connector);
-		}
-		
-		export(matrixLines, true);
-	}
-	
 	@SuppressWarnings("rawtypes")
 	public void export2(List list, String criteria) {
 		List list2 = applyCriteria(list, criteria);
@@ -333,55 +303,60 @@ public abstract class CommandBase {
 		return TargetExcel.class.isInstance(target);
 	}
 	
+	protected boolean isToPdf() {
+		return TargetPdf.class.isInstance(target);
+	}
+	
 	public void export(String template, Object... params) {
 		export(StrUtil.occupy(template, params));
 	}
 	
-	public void export(List origin) {
-		export(origin, false);
+	public <T extends Object> void exportMatrix(List<T> data) {
+		useLowOptions("+mat");
+		export(data);
 	}
 
-	@SuppressWarnings({"rawtypes" })
-	public void export(List origin, boolean fromMatrix) {
-		XXXUtil.nullCheck(origin, "list");
-		Target myTarget = whereToShot();
-		List listAfterFilter = origin;
-		
-		if(!fromMatrix) {
-			listAfterFilter = applyMexCriteriaAndIgnoreSome(origin);
-		}
-		
-		if(isToExcel()) {
-			List<List> matrix = MatrixUtil.matrixOf(listAfterFilter, options);
-			myTarget.export(matrix, options, g().isExportWithTimestampEnabled(options));
-			return;
-		}
-
-		boolean toMatrix = OptionUtil.readBooleanPRI(options, "mat", false);
-		if(toMatrix) {
-			listAfterFilter = MatrixUtil.matrixOf(listAfterFilter, options);
-			boolean pretty = OptionUtil.readBooleanPRI(options, "p", true);
-			String connector = OptionUtil.readString(options, "c", " , ");
-			if(pretty) {
-				listAfterFilter = MatrixUtil.prettyMatrixLines(listAfterFilter, connector);
-			} else {
-				listAfterFilter = MatrixUtil.lines(listAfterFilter, connector);
-			}
-		}		
-
-		if(EmptyUtil.isNullOrEmpty(listAfterFilter)) {
-			listAfterFilter.add(Konstants.FAKED_EMPTY);
-		} else if(OptionUtil.readBooleanPRI(options, "sort", false)) {
-			Colls.sortIgnoreCase(listAfterFilter);
-		}
-		
-		if(OptionUtil.readBooleanPRI(options, "self", false)) {
-			listAfterFilter.add(0, "$ " + input);
-		}
+	public <T extends Object> void export(List<T> origin) {
+		XXXUtil.nullCheck(origin, "origin");
 		
 		boolean fromLastList = OptionUtil.readBooleanPRI(options, Stash.KEY_GETSTASH, false);
 		if(!fromLastList) {
-			Stash.g().setLastQuery(input, listAfterFilter);
+			Stash.g().saveLastQuery(input, options, origin);
+		}
+		
+		if(OptionUtil.readBooleanPRI(options, "sort", false)) {
+			Colls.sortIgnoreCase(origin);
+		}
+
+		Target myTarget = whereToShot();
+		boolean inMatrix = OptionUtil.readBooleanPRI(options, "mat", false);
+		boolean useTimestamp = g().isExportWithTimestampEnabled(options);
+		List data = applyMexCriteriaAndIgnoreSome(origin);
+		
+		if(data.isEmpty()) {
+			data.add(Konstants.FAKED_EMPTY);
+		}
+
+		boolean hasBeenExported = false;
+		if(isToExcel() || isToPdf() | inMatrix) {
+			List<List> matrix = MatrixUtil.matrixOf(data, options);
+			if(isToPdf()) {
+				useHighOptions("columns=" + matrix.get(0).size());
+			}
+			if(isToExcel() || isToPdf()) {
+				myTarget.export(matrix, options, useTimestamp);
+				return;
+			} else if(inMatrix) {
+				boolean pretty = OptionUtil.readBooleanPRI(options, "p", true);
+				String connector = OptionUtil.readString(options, "c", "  ");
+				List matrixLines;
+				if(pretty) {
+					matrixLines = MatrixUtil.prettyMatrixLines(matrix, connector);
+				} else {
+					matrixLines = MatrixUtil.lines(matrix, connector);
+				}
+				data = matrixLines;
+			}
 		}
 		
 		if(g().isFromWeb()) {
@@ -392,7 +367,9 @@ public abstract class CommandBase {
 		}
 		
 		// email, web, console
-		myTarget.export(listAfterFilter, options, g().isExportWithTimestampEnabled(options));
+		if(!hasBeenExported) {
+			myTarget.export(data, options, useTimestamp);
+		}
 	}
 	
 	private Target whereToShot() {
@@ -978,19 +955,6 @@ public abstract class CommandBase {
 		return (List<String>)result;
 	}
 	
-	protected List<MexItem> toMexItems(List rawItems) {
-		List<MexItem> mexItems = Lists.newArrayList();
-		for(Object obj : rawItems) {
-			if(obj instanceof MexItem) {
-				mexItems.add((MexItem)obj);
-			} else {
-				mexItems.add(new MexObject(obj));
-			}
-		}
-		
-		return mexItems;
-	}
-	
 	protected String readStringIfTextfile(String param) {
 		Object result = readTextfile(param, true);
 		if(result == null) {
@@ -1012,7 +976,7 @@ public abstract class CommandBase {
 		return prefix + "(\\.{2,}|\\s(.+?))";
 	}
 	
-	protected boolean searchAndProcess(String prefix, MexItemsFetcher myfetcher) {
+	protected <T extends MexItem> boolean searchAndProcess(String prefix, MexItemsFetcher<T> myfetcher) {
 		String param = parseParam(searchRegexOf(prefix));
 		if(param == null) {
 			return false;
@@ -1020,20 +984,20 @@ public abstract class CommandBase {
 		
 		param = myfetcher.fixCriteria(param);
 		
-		List<MexItem> body = myfetcher.body();
+		List<T> body = myfetcher.body();
 		if(!StrUtil.isRegexMatched("\\.{2,}", param)) {
-			body = Colls.filter(body, param);
+			body = Colls.filter(body, param, isCaseSensitive(), isStayCriteria());
 		}
 		
-		List<MexItem> items = Lists.newArrayList();
+		List<T> items = Lists.newArrayList();
 		
-		MexItem head = myfetcher.header;
+		T head = myfetcher.header;
 		if(head != null) {
 			items.add(head);
 		}
 		items.addAll(body);
 		
-		MexItem foot = myfetcher.footer;
+		T foot = myfetcher.footer;
 		if(foot != null && body.size() > 20) {
 			items.add(foot);
 		}
@@ -1041,5 +1005,9 @@ public abstract class CommandBase {
 		myfetcher.handle(items);
 		
 		return true;		
+	}
+	
+	protected <T> List<MexItem> toMexItems(List<T> rawList) {
+		return rawList.stream().map(k -> MexItem.ofObject(k)).collect(Collectors.toList());
 	}
 }

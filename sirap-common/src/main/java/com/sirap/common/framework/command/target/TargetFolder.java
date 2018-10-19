@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
+import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.OptionUtil;
@@ -30,13 +31,7 @@ public class TargetFolder extends Target {
 	
 	@Override
 	public void export(List records, String options, boolean withTimestamp) {
-		List<File> normalFiles = Lists.newArrayList();
-		for(Object item: records) {
-			File file = FileUtil.of(item);
-			if(file != null) {
-				normalFiles.add(file);
-			}
-		}
+		List<File> normalFiles = Colls.fileListOf(records);
 		
 		if(normalFiles.size() > 0) {
 			long start = System.currentTimeMillis();

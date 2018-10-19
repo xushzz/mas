@@ -1,9 +1,10 @@
 package com.sirap.common.domain;
 
 import java.util.Date;
+import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.domain.MexItem;
-import com.sirap.basic.tool.C;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.StrUtil;
 
@@ -61,8 +62,8 @@ public class MemoryRecord extends MexItem {
 	}
 	
 	@Override
-	public void print() {
-		C.pl(this);
+	public List toList(String options) {
+		return Lists.newArrayList(dateStr, name);
 	}
 	
 	@Override

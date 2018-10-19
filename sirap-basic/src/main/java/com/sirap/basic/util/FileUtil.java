@@ -27,6 +27,7 @@ import com.sirap.basic.component.Konstants;
 import com.sirap.basic.component.map.AlinkMap;
 import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.domain.MexObject;
+import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.tool.D;
@@ -588,8 +589,8 @@ public class FileUtil {
 	 * @return C:
 	 *         D:
 	 */
-	public static List<String> availableDiskDetails() {
-		List<String> items = new ArrayList<>();
+	public static List<ValuesItem> availableDiskDetails() {
+		List<ValuesItem> items = Lists.newArrayList();
 		String template = "{0} {3}% available {1} out of {2}";
 		FileSystemView dan = FileSystemView.getFileSystemView();
 		
@@ -601,11 +602,12 @@ public class FileUtil {
 			}
 			
 			String displayName = dan.getSystemDisplayName(file);
+			String desc = StrUtil.findFirstMatchedItem("(^[^\\(]+)", displayName);
+			String disk = displayName.replace(desc, "");
 			long free = file.getFreeSpace();
 			long total = file.getTotalSpace();
 			int percentage = (int)(free * 100.0 / total);
-			String record = StrUtil.occupy(template, displayName, formatSize(free), formatSize(total), percentage);
-			items.add(record);
+			items.add(ValuesItem.of(desc.trim(), disk.trim(), percentage + "%", "available", formatSize(free),  "/", formatSize(total)));
 		}
 		
 		return items;

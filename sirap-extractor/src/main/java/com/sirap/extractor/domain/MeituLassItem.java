@@ -1,5 +1,8 @@
 package com.sirap.extractor.domain;
 
+import java.util.List;
+
+import com.google.common.collect.Lists;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.util.StrUtil;
 
@@ -96,14 +99,17 @@ public class MeituLassItem extends MexItem implements Comparable<MeituLassItem> 
 	}
 	
 	@Override
-	public String toPrint() {
-		String value = printAllButNull(path, name, intro, org);
-		return value;
+	public List toList(String options) {
+		return Lists.newArrayList(path, name, intro, org);
+	}
+	
+	@Override
+	public String toPrint(String options) {
+		return StrUtil.connWithCommaSpace(toList());
 	}
 	
 	@Override
 	public String toString() {
-		String value = printAll(path, name, intro, org);
-		return value;
+		return toPrint("");
 	}
 }

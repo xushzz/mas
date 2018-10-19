@@ -286,7 +286,7 @@ public class CommandFolder extends CommandBase {
 		}
 		
 		if(target.isFileRelated()) {
-			export(Colls.toFileList(mexfiles));
+			export(Colls.fileListOf(mexfiles));
 			return;
 		}
 		

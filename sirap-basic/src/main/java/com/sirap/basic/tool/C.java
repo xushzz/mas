@@ -85,7 +85,7 @@ public class C {
 	
 		for(Object obj:list) {
 			if(obj instanceof MexItem) {
-				((MexItem)obj).print();
+				C.pl(((MexItem)obj).toPrint());
 			} else {
 				C.pl(obj);
 			}
@@ -111,7 +111,7 @@ public class C {
 		
 		for(Object obj: list) {
 			if(obj instanceof MexItem) {
-				((MexItem)obj).print();
+				C.pl(((MexItem)obj).toPrint());
 			} else {
 				C.pl(obj);
 			}
@@ -149,7 +149,7 @@ public class C {
 		for(Object obj:list) {
 			if(count < maxRecords) {
 				if(obj instanceof MexItem) {
-					((MexItem)obj).print();
+					C.pl(((MexItem)obj).toPrint());
 				} else {
 					String order = "";
 					if(showOrder) {

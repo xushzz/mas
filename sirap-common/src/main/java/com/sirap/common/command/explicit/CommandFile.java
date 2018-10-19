@@ -578,7 +578,7 @@ public class CommandFile extends CommandBase {
 			}
 			
 			List<MemoryRecord> records = readRecords();
-			export(Colls.items2PrintRecords(records));
+			exportMatrix(records);
 			
 			return true;
 		}

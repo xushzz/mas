@@ -2,12 +2,17 @@ package com.sirap.geek;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.sirap.basic.domain.MexItem;
-import com.sirap.basic.domain.MexLocale;
+import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.thirdparty.ShiroHelper;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.Colls;
@@ -42,7 +47,7 @@ public class CommandXCode extends CommandBase {
 
 	public boolean handle() {
 		
-		flag = searchAndProcess(KEY_ASCII_SHORT, new MexItemsFetcher() {
+		flag = searchAndProcess(KEY_ASCII_SHORT, new MexItemsFetcher<MexItem>() {
 			
 			@Override
 			public void handle(List<MexItem> items) {
@@ -239,22 +244,7 @@ public class CommandXCode extends CommandBase {
 			}
 		}
 		
-		flag = searchAndProcess(KEY_CURRENCY, new MexItemsFetcher() {
-			
-			@Override
-			public void handle(List<MexItem> items) {
-				exportMatrix(items);
-			}
-			
-			@Override
-			public List<MexItem> body() {
-				String locales = g().getUserValueOf("iso.locales");
-				return LocaleUtil.getAllCurrencies(locales);
-			}
-		});
-		if(flag) return true;
-		
-		flag = searchAndProcess(KEY_MONTHS, new MexItemsFetcher() {
+		flag = searchAndProcess(KEY_MONTHS, new MexItemsFetcher<MexItem>() {
 			
 			@Override
 			public void handle(List<MexItem> items) {
@@ -268,7 +258,7 @@ public class CommandXCode extends CommandBase {
 		});
 		if(flag) return true;
 		
-		flag = searchAndProcess(KEY_WEEKS, new MexItemsFetcher() {
+		flag = searchAndProcess(KEY_WEEKS, new MexItemsFetcher<MexItem>() {
 			
 			@Override
 			public void handle(List<MexItem> items) {
@@ -281,51 +271,119 @@ public class CommandXCode extends CommandBase {
 			}
 		});
 		if(flag) return true;
+		
+		if(is(KEY_ISO)) {
+			boolean inMatrix;
+			Map<String, Set<String>> mars;
+			if(OptionUtil.readBooleanPRI(options, "l", false)) {
+				inMatrix = OptionUtil.readBooleanPRI(options, "mat", false);
+				mars = LocaleUtil.groupByLangs();
+			} else {
+				inMatrix = OptionUtil.readBooleanPRI(options, "mat", true);
+				mars = LocaleUtil.groupByCountries();
+			}
+			Iterator<String> it = mars.keySet().iterator();
+			List<ValuesItem> list = Lists.newArrayList();
+			while(it.hasNext()) {
+				String key = it.next();
+				Set<String> va = mars.get(key);
+				String countries = StrUtil.connectWithCommaSpace(Lists.newArrayList(va));
+				list.add(ValuesItem.of(key, va.size(), countries));
+			}
+			
+			Collections.sort(list, new Comparator<ValuesItem>() {
 
-		flag = searchAndProcess(KEY_ISO, new MexItemsFetcher() {
+				@Override
+				public int compare(ValuesItem a, ValuesItem b) {
+					int countA = ((Integer)a.getByIndex(1)).intValue();
+					int countB = ((Integer)b.getByIndex(1)).intValue();
+					
+					return countB - countA;
+				}
+			});
+
+			if(inMatrix) {
+				exportMatrix(list);
+			} else {
+				export(list);
+			}
+			
+			return true;
+		}
+		
+		flag = searchAndProcess(KEY_CURRENCY, new MexItemsFetcher<ValuesItem>() {
+			
 			@Override
-			public void handle(List<MexItem> items) {
-				exportMatrix(items, "c=#s2");
+			public void handle(List<ValuesItem> items) {
+				exportMatrix(items);
+			}
+			
+			@Override
+			public List<ValuesItem> body() {
+				List<Locale> localesInColumns = LocaleUtil.langsOf(g().getUserValueOf("iso.locales"));
+				ValuesItem vi = ValuesItem.of("Code", "Symbol");
+				
+				for(Locale kid : localesInColumns) {
+					vi.add(kid.getDisplayName());
+		    	}
+				
+				header = vi;
+
+				return LocaleUtil.getAllCurrencies(localesInColumns);
+			}
+		});
+		if(flag) return true;
+
+		flag = searchAndProcess(KEY_ISO, new MexItemsFetcher<ValuesItem>() {
+			@Override
+			public void handle(List<ValuesItem> items) {
+				exportMatrix(items);
 			}
 			@Override
-			public List<MexItem> body() {
-				String locs = "locs=" + getUserLocalesAsOption(g().getUserValueOf("iso.locales"));
-				header = MexLocale.getHeader(locs);
-				footer = header;
-				useLowOptions(locs);
+			public List<ValuesItem> body() {
+				List<Locale> localesInColumns = LocaleUtil.langsOf(g().getUserValueOf("iso.locales"));
 				
-				return Lists.newArrayList(LocaleUtil.MEX_LOCALES);
+				ValuesItem vi = ValuesItem.of("Locale", "Code");
+				
+				for(Locale kid : localesInColumns) {
+					vi.add(kid.getDisplayLanguage());
+					vi.add(kid.getDisplayCountry());
+		    	}
+				
+				header = vi;
+				footer = header;
+				
+				return LocaleUtil.getLocaleRecords(localesInColumns);
 			}
 		});
 		if(flag) return true;
 	
 		solo = parseParam(KEY_ISO + "=\\s*(.+?)");
 		if(solo != null) {
-			Locale locale = null;
-			String criteria = "^" + solo + "$";
-			List<MexLocale> matchedItems = Colls.filter(LocaleUtil.MEX_LOCALES, criteria);
-			if(matchedItems.size() == 1) {
-				locale = matchedItems.get(0).getLocale();
-			} else {
-				matchedItems = Colls.filter(LocaleUtil.MEX_LOCALES, solo);
+			List<Locale> localesInColumns = LocaleUtil.langsOf(g().getUserValueOf("iso.locales"));
+			List<ValuesItem> mexLocales = LocaleUtil.getLocaleRecords(localesInColumns);
+			
+			ValuesItem goodItem = null;
+			List<ValuesItem> matchedItems = Lists.newArrayList();
+			String[] arr = {"^" + solo + "$", solo};
+			for(String criteria : arr) {
+				matchedItems = Colls.filter(mexLocales, criteria);
 				if(matchedItems.size() == 1) {
-					locale = matchedItems.get(0).getLocale();
+					goodItem = matchedItems.get(0);
+					break;
 				}
 			}
-			
-			String locs = "locs=" + getUserLocalesAsOption(g().getUserValueOf("iso.locales"));
-			
-			if(locale != null) {
-				g().setLocale(locale);
-				MexLocale ml = new MexLocale(locale);
-				C.pl2("Locale set as " + ml.toPrint(locs + ",c=#s"));
+
+			if(goodItem != null) {
+				g().setLocale(LocaleUtil.of(goodItem.getByIndex(0) + ""));
+				C.pl2("Locale set as " + goodItem.toPrint("c=  "));
 			} else {
 				if(EmptyUtil.isNullOrEmpty(matchedItems)) {
 					C.pl("[" + solo + "] is not a valid locale, please check from:");
-					C.listSome(LocaleUtil.MEX_LOCALES, 7);
+					C.listSome(mexLocales, 7);
 				} else {
 					C.pl("[" + solo + "] is not a valid locale, do you mean one of this?");
-					exportMatrix(MatrixUtil.matrixOf(matchedItems, locs), "c=#s2");
+					exportMatrix(MatrixUtil.matrixOf(matchedItems));
 				}
 			}
 			
@@ -333,19 +391,5 @@ public class CommandXCode extends CommandBase {
 		}
 				
 		return false;
-	}
-	
-	private String getUserLocalesAsOption(String locales) {
-		if(EmptyUtil.isNullOrEmpty(locales)) {
-			return "";
-		}
-		
-		List<String> newlist = Lists.newArrayList();
-		List<Locale> items = LocaleUtil.listOf(locales);
-		for(Locale item : items) {
-			newlist.add(item.toString());
-		}
-		
-		return StrUtil.connect(newlist, "+");
 	}
 }

@@ -7,6 +7,7 @@ import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.sirap.basic.domain.KeyValuesItem;
+import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.thread.MasterItemsOriented;
 import com.sirap.basic.thread.WorkerItemsOriented;
@@ -29,7 +30,7 @@ public class CommandEstate extends CommandBase {
 
 	public boolean handle() {
 		if(is(KEY_ANJUKE)) {
-			export(Extractors.fetchAnjukeCities());
+			exportMatrix(Extractors.fetchAnjukeCities());
 			return true;
 		}
 		
@@ -42,10 +43,10 @@ public class CommandEstate extends CommandBase {
 			}
 			String town = params[1];
 			int maxPage = MathUtil.toInteger(params[2], 1);
-			Set<String> allItems = new LinkedHashSet<String>();
+			Set<ValuesItem> allItems = new LinkedHashSet<>();
 			for(int k = 1; k <= maxPage; k++) {
 				try {
-					List<String> items = Extractors.fetchAnjukeHouse(city, town, k);
+					List<ValuesItem> items = Extractors.fetchAnjukeHouse(city, town, k);
 					if(EmptyUtil.isNullOrEmpty(items)) {
 						break;
 					}
@@ -62,7 +63,7 @@ public class CommandEstate extends CommandBase {
 				}
 			}
 			
-			export(new ArrayList<>(allItems));
+			exportMatrix(Lists.newArrayList(allItems));
 			
 			return true;
 		}
@@ -87,8 +88,7 @@ public class CommandEstate extends CommandBase {
 		regex = KEY_HANGYANG + "\\s+([a-z0-9]{1,5})";
 		solo = parseParam(regex);
 		if(solo != null) {
-			List<KeyValuesItem> items = Extractors.fetchHangyangPlates(solo);
-			export(items);
+			exportMatrix(Extractors.fetchHangyangPlates(solo));
 			return true;
 		}
 		

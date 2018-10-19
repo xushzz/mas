@@ -97,7 +97,7 @@ public class MexMap {
 	
 	public TypedKeyValueItem getEntryIgnorecase(String key) {
 		String criteria = "^" + key + "$";
-		List<TypedKeyValueItem> sato = Colls.filter(listOf(), criteria);
+		List<TypedKeyValueItem> sato = Colls.filter(listOf(), criteria, false, true);
 		if(EmptyUtil.isNullOrEmpty(sato)) {
 			return null;
 		}

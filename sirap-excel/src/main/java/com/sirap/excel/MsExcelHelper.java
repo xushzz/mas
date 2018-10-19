@@ -22,6 +22,7 @@ import com.sirap.basic.output.ExcelParams;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.MathUtil;
+import com.sirap.basic.util.RandomUtil;
 import com.sirap.basic.util.StrUtil;
 
 @SuppressWarnings("rawtypes")
@@ -126,7 +127,7 @@ public class MsExcelHelper {
 
 	public static boolean export(List list, String fullFileName, ExcelParams params) {
 		Workbook wb = newWorkbook(fullFileName);
-		Sheet she = wb.createSheet("sheet1");
+		Sheet she = wb.createSheet(RandomUtil.name(200));
 
 		int startRow = 0;
 		if (params != null) {

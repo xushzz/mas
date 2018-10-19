@@ -19,8 +19,6 @@ public class Stash {
 		
 	}
 	
-	private static Stash instanace;
-	
 	private static class Holder {
 		private static Stash instance = new Stash();
 	}
@@ -36,7 +34,7 @@ public class Stash {
 	}
 	
 	public List<String> getQueryNames() {
-		List items = Lists.newArrayList();
+		List<String> items = Lists.newArrayList();
 		String temp = "#last{0} [{1} records] for {2}";
 		int count = 1;
 		for(QueryItem item : queryList) {
@@ -46,29 +44,32 @@ public class Stash {
 		return items;
 	}
 	
-	public List getLastQuery() {
+	public QueryItem getLastQuery() {
 		return getLastKQuery(1);
 	}
 	
-	public List getLastKQuery(int kFromOne) {
+	public QueryItem getLastKQuery(int kFromOne) {
+		if(queryList.isEmpty()) {
+			C.pl2("No previous query.");
+			return null;
+		}
+		
 		int size = queryList.size();
 		if(kFromOne > size || kFromOne < 1) {
-			C.pl2("The demanded query #{0} exceeds query size of {1}.", kFromOne, size);
-			return getQueryNames();
+			C.pl2("Query #{0} doesn't exist, choose between {1} and {2}.", kFromOne, 1, size);
+			return null;
 		}
 		
 		QueryItem item = queryList.get(kFromOne - 1);
-		List all = Lists.newArrayList("$ " + item.getCommand());
-		all.addAll(item.getResult());
 		
-		return all;
+		return item;
 	}
 	
-	public void setLastQuery(String command, List result) {
-		setLastQuery(new QueryItem(command, result));
+	public void saveLastQuery(String command, String options, List result) {
+		saveLastQuery(new QueryItem(command, options, result));
 	}
 
-	public void setLastQuery(QueryItem query) {
+	public void saveLastQuery(QueryItem query) {
 		if(queryList.size() >= MAX_QUERY_RESULT) {
 			//remove the oldest
 			queryList.remove(queryList.size() - 1);

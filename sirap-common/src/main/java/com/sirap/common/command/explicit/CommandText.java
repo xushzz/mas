@@ -15,7 +15,6 @@ import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.MathUtil;
-import com.sirap.basic.util.OptionUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.domain.TextSearchEngine;
@@ -37,7 +36,7 @@ public class CommandText extends CommandBase {
 			if(FileOpener.isTextFile(filePath) || useText()) {
 				List<MexObject> all = readFileIntoList(filePath);
 				List<MexObject> items = Colls.filter(all, criteria, isCaseSensitive(), isStayCriteria());
-				export(Colls.items2PrintRecords(items, options));
+				export(items);
 				
 				return true;
 			} else if(FileUtil.isAnyTypeOf(filePath, FileUtil.SUFFIXES_EXCEL)) {

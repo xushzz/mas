@@ -10,10 +10,8 @@ import java.util.Map;
 
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.comparator.StringSenseComparator;
-import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexObject;
-import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.search.MexFilter;
 
 public class Colls {
@@ -69,62 +67,6 @@ public class Colls {
 			typeValueMap.put(type, count + 1);
 		}
 	}
-
-	public static <E extends MexItem> List<String> items2PrintRecords(List<E> items) {
-		return items2PrintRecords(items, Collections.EMPTY_MAP);
-	}
-	
-	public static <E extends MexItem> List<String> items2PrintRecords(List<E> items, String key, Object value) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put(key, value);
-		
-		return items2PrintRecords(items, map);
-	}
-	
-	public static List<String> items2PrintRecords(List items, Map<String, Object> options) {
-		List<String> records = new ArrayList<String>();
-		
-		for(Object item : items) {
-			if(item instanceof MexItem) {
-				MexItem mi = (MexItem)item;
-				records.add(mi.toPrint(options));
-			} else {
-				records.add(item + "");
-			}
-		}
-		
-		return records;
-	}
-
-	public static List<String> items2PrintRecords(List items, String options) {
-		List<String> records = new ArrayList<String>();
-		
-		for(Object item : items) {
-			if(item instanceof MexItem) {
-				MexItem mi = (MexItem)item;
-				records.add(mi.toPrint(options));
-			} else {
-				records.add(item + "");
-			}
-		}
-		
-		return records;
-	}
-	
-	public static <E extends MexItem> List<List<String>> items2PDFRecords(List<E> items) {
-		List<List<String>> records = new ArrayList<>();
-		
-		for(Object item : items) {
-			if(item instanceof MexItem) {
-				MexItem mi = (MexItem)item;
-				records.add(mi.toPDF());
-			} else {
-				records.add(Lists.newArrayList(item + ""));
-			}
-		}
-		
-		return records;
-	}
 	
 	public static List<String> splitIntoRecords(String source, int charsPerRecord) {
 		if(source == null) {
@@ -170,24 +112,12 @@ public class Colls {
 		return records;
 	}
 	
-	public static List<File> toFileList(List items) {
-		List<File> files = new ArrayList<File>();
-		for(Object obj:items) {
-			if(obj == null) {
-				continue;
-			}
-			
-			File file = null;
-			if(obj instanceof MexFile) {
-				file = ((MexFile)obj).getFile();
-				if(file.isFile()) {
-					files.add(file);
-				}
-			} else {
-				file = FileUtil.getIfNormalFile(obj.toString());
-				if(file != null) {
-					files.add(file);
-				}
+	public static List<File> fileListOf(List items) {
+		List<File> files = Lists.newArrayList();
+		for(Object item:items) {
+			File file = FileUtil.of(item);
+			if(file != null) {
+				files.add(file);
 			}
 		}
 		
@@ -230,13 +160,13 @@ public class Colls {
 		return filter(mexItems, mexCriteria, isCaseSensitive, false);
 	}
 	
-	public static <T extends MexItem> List<T> filter(List<T> mexItems, String mexCriteria, boolean isCaseSensitive, boolean keepAlive) {
+	public static <T extends MexItem> List<T> filter(List<T> mexItems, String mexCriteria, boolean isCaseSensitive, boolean noSplit) {
 		if(EmptyUtil.isNullOrEmpty(mexCriteria)) {
 			return mexItems;
 		}
 		
 		MexFilter<T> filter = new MexFilter<T>(mexCriteria, mexItems, isCaseSensitive);
-		filter.setStayCriteria(keepAlive);
+		filter.setNoSplit(noSplit);
 		List<T> result = filter.process();
 		
 		return result;
@@ -276,8 +206,8 @@ public class Colls {
 		return items;
 	}
 	
-	public static List sortIgnoreCase(List items) {
-		Collections.sort(items, new Comparator(){
+	public static <T extends Object> void sortIgnoreCase(List<T> items) {
+		Collections.sort(items, new Comparator<T>(){
 
 			@Override
 			public int compare(Object a, Object b) {
@@ -285,7 +215,6 @@ public class Colls {
 			}
 			
 		});
-		return items;
 	}
 	
 	public static List lineNumber(List<String> records, boolean align) {

@@ -2,20 +2,20 @@ package com.sirap.basic.util;
 
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Currency;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.sirap.basic.component.map.AlinkMap;
 import com.sirap.basic.domain.MexItem;
-import com.sirap.basic.domain.MexLocale;
-import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.domain.ValuesItem;
 
 public class LocaleUtil {
@@ -34,7 +34,6 @@ public class LocaleUtil {
 	 */
 
 	public static final List<Locale> LOCALES = Lists.newArrayList();
-	public static final List<MexLocale> MEX_LOCALES = new ArrayList<>();
 	public static final AlinkMap<String, Locale> MAP_LOCALES = Amaps.newLinkHashMap();
 	public static final Map<String, String> MAP_CURRENCY_CODE_SYMBOL = new TreeMap<>();
 	
@@ -47,7 +46,6 @@ public class LocaleUtil {
 		Collections.sort(LOCALES, comparatorOfLocale());
 		
 		for(Locale item : LOCALES) {
-			MEX_LOCALES.add(new MexLocale(item));
 			MAP_LOCALES.put(item.toString(), item);
 			try {
 				Currency ccy = Currency.getInstance(item);
@@ -64,36 +62,46 @@ public class LocaleUtil {
 		return MAP_LOCALES.get(localeStr);
 	}
 	
-	public static List<Locale> listOf(String locales) {
-		List<Locale> lots = new ArrayList<>();
-		if(EmptyUtil.isNullOrEmpty(locales)) {
-			return lots;
+	public static List<Locale> langsOf(String locales) {
+		return langsOf(locales, true);
+	}
+	
+	public static List<Locale> langsOf(String locales, boolean withDefault) {
+		Set<Locale> set = Sets.newLinkedHashSet();
+		if(withDefault) {
+			set.add(Locale.getDefault());
+			set.add(Locale.ENGLISH);
 		}
 		
+		if(EmptyUtil.isNullOrEmpty(locales)) {
+			return Lists.newArrayList(set);
+		}
+
 		List<String> items = StrUtil.splitByRegex(locales, ",|\\+");
 		for(String item : items) {
-			Locale lot = MAP_LOCALES.get(item);
-			if(lot == null) {
+			Locale kid = searchLocaleByLang(item);
+			if(kid == null) {
 				XXXUtil.alert("Not a valid locale: " + item);
 			}
 			
-			lots.add(lot);
+			set.add(kid);
 		}
 		
-		return lots;
+		return Lists.newArrayList(set);
 	}
 	
-	public static boolean doesExist(Locale locale) {
-		List<Locale> list = getAvailableLocales();
-		boolean flag = list.indexOf(locale) >= 0;
-
-		return flag;
-	}
-	
-	public static List<Locale> getAvailableLocales() {
-		List<Locale> list = Arrays.asList(Locale.getAvailableLocales());
+	public static Locale searchLocaleByLang(String target) {
+		for(Locale item : LOCALES) {
+			String langAndCountry = item.toString();
+			String lang = item.getLanguage();
+			String english = item.getDisplayLanguage(Locale.ENGLISH);
+			String chinese = item.getDisplayLanguage(Locale.CHINESE);
+			if(StrUtil.isIn(target, Lists.newArrayList(langAndCountry, lang, english, chinese))) {
+				return item;
+			}
+		}
 		
-		return list;
+		return null;
 	}
 
 	/**
@@ -104,51 +112,84 @@ public class LocaleUtil {
 	 *                4) xx
 	 * @return
 	 */
-	public static List<MexObject> getIso3Countries() {
-		return getIso3Countries(null);
-	}
 	
-	public static String getIso3CountryInfo(Locale countryLocale, String multipleLocalesString) {
-		List<Locale> extraLocales = listOf(multipleLocalesString);
-		
-		StringBuffer sb = new StringBuffer();
-		Locale temp = countryLocale;
-		String iso = "SHIT";
-        try {
-        	iso = temp.getISO3Country();
+	public static String iso3CountryOf(Locale locale) {
+		try {
+        	String iso = locale.getISO3Country();
+        	return iso;
         } catch (Exception ex) {
         	//D.pl(ex.getMessage());
         }
-        sb.append(temp).append(", ");
-        sb.append(iso).append(", ");
-        sb.append(temp.getDisplayLanguage(Locale.ENGLISH)).append(", ");
-        sb.append(temp.getDisplayCountry(Locale.ENGLISH)).append(", ");
-        sb.append(temp.getDisplayCountry()).append(", ");
-        if(!EmptyUtil.isNullOrEmpty(extraLocales)) {
-        	for(Locale extra : extraLocales) {
-                sb.append(temp.getDisplayCountry(extra)).append(", ");
-        	}
-        }
-        String item = sb.toString().replaceAll(",\\s*$", "");
-        
-        return item;
+		
+		return null;
 	}
-	
-	public static List<MexObject> getIso3Countries(String multipleLocalesString) {
-		Locale[] allLocales = Locale.getAvailableLocales();
-		List<MexObject> records = new ArrayList<>();
-		for(int i = 0; i < allLocales.length; i++) {
-			String item = getIso3CountryInfo(allLocales[i], multipleLocalesString);
-            records.add(new MexObject(item));
+
+	public static List<ValuesItem> getLocaleRecords(List<Locale> localesInColumns) {
+		List<ValuesItem> list = Lists.newArrayList();
+		for(Locale locale : LOCALES) {
+			if(locale.toString().isEmpty()) {
+				continue;
+			}
+			
+			ValuesItem vi = ValuesItem.of(locale.toString(), iso3CountryOf(locale));
+			for(Locale kid : localesInColumns) {
+				vi.add(locale.getDisplayLanguage(kid));
+				vi.add(locale.getDisplayCountry(kid));
+	    	}
+			list.add(vi);
 		}
 		
-		return records;
+		return Lists.newArrayList(list);
+	}
+
+	public static Map<String, Set<String>> groupByLangs() {
+		Map<String, Set<String>> mars = new LinkedHashMap<>();
+		
+		for(Locale locale : LOCALES) {
+			String lang = locale.getDisplayLanguage(Locale.ENGLISH);
+			String country = locale.getDisplayCountry(Locale.ENGLISH);
+			if(country.isEmpty()) {
+				continue;
+			}
+			
+			Set<String> vi = mars.get(lang);
+			if(vi == null) {
+				vi = Sets.newTreeSet();
+				vi.add(country);
+				mars.put(lang, vi);
+			} else {
+				vi.add(country);
+			}
+		}
+		
+		return mars;
+	}
+
+	public static Map<String, Set<String>> groupByCountries() {
+		Map<String, Set<String>> mars = new LinkedHashMap<>();
+		
+		for(Locale locale : LOCALES) {
+			String lang = locale.getDisplayLanguage(Locale.ENGLISH);
+			String country = locale.getDisplayCountry(Locale.ENGLISH);
+			if(country.isEmpty()) {
+				continue;
+			}
+			
+			Set<String> vi = mars.get(country);
+			if(vi == null) {
+				vi = Sets.newTreeSet();
+				vi.add(lang);
+				mars.put(country, vi);
+			} else {
+				vi.add(lang);
+			}
+		}
+		
+		return mars;
 	}
 	
-	public static List<MexItem> getAllCurrencies(String locales) {
+	public static List<ValuesItem> getAllCurrencies(List<Locale> localesInColumns) {
 		List<Currency> items = new ArrayList<>(Currency.getAvailableCurrencies());
-		List<Locale> others = listOf(locales);
-		
 		List<ValuesItem> list = Lists.newArrayList();
 		for(Currency item : items) {
 			String code = item.getCurrencyCode();
@@ -160,10 +201,8 @@ public class LocaleUtil {
 			ValuesItem vi = ValuesItem.of();
 			vi.add(code);
 			vi.add(symbol);
-			vi.add(item.getDisplayName(Locale.ENGLISH));
-			vi.add(item.getDisplayName());
-			for(Locale other : others) {
-        		vi.add(item.getDisplayName(other));
+			for(Locale locale : localesInColumns) {
+        		vi.add(item.getDisplayName(locale));
         	}
 			list.add(vi);
 		}
@@ -234,17 +273,19 @@ public class LocaleUtil {
 	
 	public static List<MexItem> getMonths(List<Locale> locs) {
 		List<MexItem> items = new ArrayList<>();
-		Locale must = Locale.ENGLISH;
-		boolean useDefault = !Locale.getDefault().equals(must);
+		Locale forSearch = Locale.ENGLISH;
+		boolean isCurrentEnglish = StrUtil.equals(Locale.getDefault().getLanguage(), forSearch.getLanguage());
 		for(Locale other : locs) {
-			String lang = other.getDisplayLanguage(must);
-			if(useDefault) {
-				lang += " " + other.getDisplayLanguage(Locale.getDefault());
+			String prefix = "";
+			if(isCurrentEnglish) {
+				prefix = other.getDisplayName(Locale.getDefault());
+			} else {
+				prefix = other.getDisplayLanguage(forSearch) + " " + other.getDisplayName(Locale.getDefault());
 			}
 			
 			DateFormatSymbols jack = new DateFormatSymbols(other);
-			items.add(ValuesItem.of(lang).addAll(listOf(jack.getShortMonths())));
-			items.add(ValuesItem.of(lang).addAll(listOf(jack.getMonths())));
+			items.add(ValuesItem.of(prefix).addAll(listOf(jack.getShortMonths())));
+			items.add(ValuesItem.of(prefix).addAll(listOf(jack.getMonths())));
 		}
 		
 		return items;
@@ -252,17 +293,19 @@ public class LocaleUtil {
 	
 	public static List<MexItem> getWeeks(List<Locale> locs) {
 		List<MexItem> items = new ArrayList<>();
-		Locale must = Locale.ENGLISH;
-		boolean useDefault = !Locale.getDefault().equals(must);
+		Locale forSearch = Locale.ENGLISH;
+		boolean isCurrentEnglish = StrUtil.equals(Locale.getDefault().getLanguage(), forSearch.getLanguage());
 		for(Locale other : locs) {
-			String lang = other.getDisplayLanguage(must);
-			if(useDefault) {
-				lang += " " + other.getDisplayLanguage(Locale.getDefault());
+			String prefix = "";
+			if(isCurrentEnglish) {
+				prefix = other.getDisplayName(Locale.getDefault());
+			} else {
+				prefix = other.getDisplayLanguage(forSearch) + " " + other.getDisplayName(Locale.getDefault());
 			}
 			
 			DateFormatSymbols jack = new DateFormatSymbols(other);
-			items.add(ValuesItem.of(lang).addAll(listOf(jack.getShortWeekdays())));
-			items.add(ValuesItem.of(lang).addAll(listOf(jack.getWeekdays())));
+			items.add(ValuesItem.of(prefix).addAll(listOf(jack.getShortWeekdays())));
+			items.add(ValuesItem.of(prefix).addAll(listOf(jack.getWeekdays())));
 		}
 		
 		return items;

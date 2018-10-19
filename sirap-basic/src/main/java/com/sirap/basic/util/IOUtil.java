@@ -361,7 +361,7 @@ public class IOUtil {
 			}
 			
 			for(Object member: objList) {
-				thomas.write(MexUtil.print(member));
+				thomas.write(member + "");
 				thomas.newLine();
 			}
 			
@@ -390,7 +390,7 @@ public class IOUtil {
 		XXXUtil.nullCheck(objList, "List objList");
 		try(OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(fullFileName), charset)) {
 			for(Object member: objList) {
-				out.write(MexUtil.print(member));
+				out.write(member + "");
 				out.write("\r\n");
 			}
 			

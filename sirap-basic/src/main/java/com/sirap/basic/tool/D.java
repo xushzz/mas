@@ -4,6 +4,7 @@ import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.json.JsonConvertManager;
 import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.util.DateUtil;
@@ -295,5 +296,17 @@ public class D {
 
 		int index = k + 3;
 		return items[index];
+	}
+	
+	public static List listOf(int depth) {
+		List list = Lists.newArrayList(RandomUtil.name());
+		for(int i = 0; i < depth; i++) {
+			List temp = Lists.newArrayList();
+			temp.add(list);
+			list = temp;
+			
+		}
+
+		return list;
 	}
 }

@@ -10,8 +10,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
@@ -401,33 +399,6 @@ public class DateUtil {
 		}
 		
 		return value;
-	}
-	
-	public static Locale parseLocale(String localeStr) {
-		if(localeStr == null) {
-			return null;
-		}
-
-		String lang, area;
-		
-		Pattern p = Pattern.compile("([a-z]{2})_([A-Z]{2})", Pattern.CASE_INSENSITIVE);
-		Matcher m = p.matcher(localeStr);
-		
-		if(m.matches()) {
-			lang = m.group(1);
-			area = m.group(2);
-			return new Locale(lang, area);
-		}
-		
-		p = Pattern.compile("([a-z]{2})", Pattern.CASE_INSENSITIVE);
-		m = p.matcher(localeStr);
-		
-		if(m.matches()) {
-			lang = m.group(1);
-			return new Locale(lang);
-		}
-		
-		return null;
 	}
 	
 	public static String[] getShortWeekdays() {

@@ -6,6 +6,7 @@ import java.util.List;
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.Extractor;
 import com.sirap.basic.component.Konstants;
+import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
@@ -18,6 +19,7 @@ import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.domain.SiteSearchEngine;
+import com.sirap.common.framework.QueryItem;
 import com.sirap.common.framework.Stash;
 import com.sirap.common.framework.command.InputAnalyzer;
 
@@ -65,9 +67,24 @@ public class CommandSirap extends CommandBase {
 		
 		solo = parseParam(KEY_LASTLIST + "(|\\d{1,3})");
 		if(solo != null) {
-			useLowOptions("+" + Stash.KEY_GETSTASH);
 			int k = solo.isEmpty() ? 1 : Integer.parseInt(solo);
-			export(Stash.g().getLastKQuery(k));
+			QueryItem query = Stash.g().getLastKQuery(k);
+			if(query == null) {
+				List<String> queries = Stash.g().getQueryNames();
+				if(!queries.isEmpty()) {
+					C.pl("Preivous queries: ");
+					export(queries);
+				}
+			} else {
+				useLowOptions(query.getOptions());
+				useLowOptions("+" + Stash.KEY_GETSTASH);
+				StringBuffer sb = StrUtil.sb(query.getCommand());
+				if(!EmptyUtil.isNullOrEmpty(query.getOptions())) {
+					sb.append(" $").append(query.getOptions());
+				}
+				C.pl("Last$ " + sb);
+				export(query.getResult());
+			}
 			
 			return true;
 		}
@@ -96,9 +113,8 @@ public class CommandSirap extends CommandBase {
 		}
 
 		if(is(KEY_USER_SETTING)) {
-			List<List> matrix = g().getUserStatus();
 			useLowOptions("c=:#s");
-			exportMatrix(matrix);
+			exportMatrix(g().getUserStatus());
 			
 			return true;
 		}
@@ -140,11 +156,12 @@ public class CommandSirap extends CommandBase {
 		}
 
 		if(is(KEY_IP)) {
-			List<String> items = Lists.newArrayList();
-			items.add("Local  IP: " + NetworkUtil.getLocalhostIp());
-			items.add("Public IP: " + NetworkUtil.getPublicIp(OptionUtil.readBooleanPRI(options, "url", false)));
-			items.add("Aliyun IP: " + "120.79.195.133");
-			export(items);
+			List<ValuesItem> items = Lists.newArrayList();
+			items.add(ValuesItem.of("Local", NetworkUtil.getLocalhostIp()));
+			items.add(ValuesItem.of("Public", NetworkUtil.getPublicIp(OptionUtil.readBooleanPRI(options, "url", false))));
+			items.add(ValuesItem.of("Aliyun", "120.79.195.133"));
+			exportMatrix(items);
+			
 			return true;
 		}
 
@@ -224,8 +241,7 @@ public class CommandSirap extends CommandBase {
 			return true;
 		}
 		
-		String regex = StrUtil.occupy("({0}|{1})({2}?)", KEY_TILDE_USER_HOME, KEY_PWD_USER_DIR, KEY_OPEN_FOLDER);
-		params = parseParams(regex);
+		params = parseParams("(~|pwd)(<?)");
 		if(params != null) {
 			String pathname = "";
 			if(StrUtil.equals(params[0], KEY_PWD_USER_DIR)) {
@@ -242,10 +258,8 @@ public class CommandSirap extends CommandBase {
 			return true;
 		}
 	
-		//list out disk info such as used, available and shit
 		if(is(KEY_ALL_DISKS_ONE_COLON)) {
-			List<String> records = FileUtil.availableDiskDetails();
-			export(records);
+			exportMatrix(FileUtil.availableDiskDetails());
 			
 			return true;
 		}

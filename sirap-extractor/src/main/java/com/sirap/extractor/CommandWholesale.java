@@ -117,7 +117,7 @@ public class CommandWholesale extends CommandBase {
 		} 
 		
 		if(target.isFileRelated()) {
-			export(Colls.toFileList(pathList));
+			export(Colls.fileListOf(pathList));
 		} else {
 			export(pathList);
 		}

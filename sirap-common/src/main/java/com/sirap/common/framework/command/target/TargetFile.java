@@ -1,5 +1,7 @@
 package com.sirap.common.framework.command.target;
 
+import java.util.List;
+
 import com.sirap.basic.tool.D;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.StrUtil;
@@ -37,5 +39,14 @@ public abstract class TargetFile extends Target {
 	@Override
 	public String toString() {
 		return D.jst(this);
+	}
+
+	public String topInfo(List records) {
+		String topInfo = getCommand();
+		if(records != null && records.size() > 5) {
+			topInfo = "(" + records.size() + ") " + topInfo;
+		}
+		
+		return topInfo;
 	}
 }

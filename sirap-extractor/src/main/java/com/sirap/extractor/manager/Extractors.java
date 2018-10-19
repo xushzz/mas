@@ -15,6 +15,7 @@ import com.sirap.basic.component.Extractor;
 import com.sirap.basic.domain.KeyValuesItem;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexObject;
+import com.sirap.basic.domain.NameRankItem;
 import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.json.Mist;
 import com.sirap.basic.json.MistUtil;
@@ -27,7 +28,6 @@ import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.domain.Link;
 import com.sirap.extractor.domain.MeijuRateItem;
-import com.sirap.extractor.domain.NameRankItem;
 import com.sirap.extractor.domain.SportsMatchItem;
 
 public class Extractors {
@@ -125,7 +125,7 @@ public class Extractors {
 		
 		return neymar.process().getItems();
 	}
-	
+
 	public static List<MeijuRateItem> fetchTopMeijus() {
 		Extractor<MeijuRateItem> neymar = new Extractor<MeijuRateItem>() {
 
@@ -158,13 +158,45 @@ public class Extractors {
 		return neymar.process().getItems();
 	}
 	
+	public static List<ValuesItem> fetchManmankanChannels() {
+		Extractor<ValuesItem> neymar = new Extractor<ValuesItem>() {
+
+			public String getUrl() {
+				showFetching().useGBK();
+				String template = "http://www.manmankan.com/dy2013/jiemubiao";
+				return template;
+			}
+			
+			@Override
+			protected void parse() {
+				String regex = "<li><a href=\"[^\"]+/(\\d+)/\"[^<>]+>([^<>]+)</a></li>";
+				Matcher ma = createMatcher(regex);
+				while(ma.find()) {
+					int id = Integer.parseInt(ma.group(1));
+					String name = ma.group(2);
+					mexItems.add(ValuesItem.of(id, name));
+				}
+				
+				Collections.sort(mexItems, new Comparator<ValuesItem>() {
+
+					@Override
+					public int compare(ValuesItem o1, ValuesItem o2) {
+						return ((Integer)o1.getByIndex(0)).compareTo((Integer)o2.getByIndex(0));
+					}
+				});
+			}
+		};
+		
+		return neymar.process().getItems();
+	}
+	
 	public static List<String> fetchMeiju(String param) {
 		Extractor<String> neymar = new Extractor<String>() {
 
 			public String getUrl() {
 				showFetching().usePost().useGBK();
 				String template = "http://www.meijutt.com/search.asp?searchword=";
-				return template + param.replace(' ', '+');
+				return template + encodeURLParam(param);
 			}
 			
 			@Override
@@ -174,40 +206,6 @@ public class Extractors {
 				while(ma.find()) {
 					String raw = ma.group(1).replace("</li><li>", " ");
 					mexItems.add(getPrettyText(raw));
-				}
-			}
-		};
-		
-		return neymar.process().getItems();
-	}
-
-	public static List<NameRankItem> fetchEnglishNames() {
-		return fetchEnglishNames(true, null);
-	}
-	
-	public static List<NameRankItem> fetchEnglishNames(boolean isMale, String criteria) {
-		Extractor<NameRankItem> neymar = new Extractor<NameRankItem>() {
-
-			public String getUrl() {
-				useList().showFetching();
-				String template = "https://gitee.com/thewire/stamina/raw/master/names/{0}males.txt";
-				template = "#data/{0}males.txt";
-				String key = isMale ? "" : "fe";
-				return StrUtil.occupy(template, key);
-			}
-			
-			@Override
-			protected void parse() {
-				for(String line : sourceList) {
-					List<String> items = StrUtil.split(line);
-					if(items != null && items.size() > 1) {
-						NameRankItem item = new NameRankItem();
-						item.setName(items.get(0));
-						item.setRank(items.get(1));
-						if(EmptyUtil.isNullOrEmpty(criteria) || item.isMexMatched(criteria)) {
-							mexItems.add(item);
-						}
-					}
 				}
 			}
 		};
@@ -245,8 +243,8 @@ public class Extractors {
 		return neymar.process().getItems();
 	}
 
-	public static List<String> fetchJapaneseNames() {
-		Extractor<String> neymar = new Extractor<String>() {
+	public static List<ValuesItem> fetchJapaneseNames() {
+		Extractor<ValuesItem> neymar = new Extractor<ValuesItem>() {
 
 			@Override
 			public String getUrl() {
@@ -262,7 +260,10 @@ public class Extractors {
 				List<String> list = StrUtil.splitByRegex(names, "<br\\s*/>");
 				for(String item : list) {
 					String temp = item.replaceAll("^([^a-zA-Z]+)", "").trim();
-					mexItems.add(temp);
+					String english = StrUtil.findFirstMatchedItem("([a-z\\s]+)", temp).trim();
+					String chinese = temp.replace(english, "").trim();
+					ValuesItem vi = ValuesItem.of(english, chinese);
+					mexItems.add(vi);
 				}
 			}
 		};
@@ -380,8 +381,8 @@ public class Extractors {
 		return neymar.process().getItems();
 	}
 
-	public static List<String> fetchAnjukeCities() {
-		Extractor<String> neymar = new Extractor<String>() {
+	public static List<ValuesItem> fetchAnjukeCities() {
+		Extractor<ValuesItem> neymar = new Extractor<ValuesItem>() {
 
 			@Override
 			public String getUrl() {
@@ -401,7 +402,7 @@ public class Extractors {
 					while(ma.find()) {
 						String code = ma.group(1);
 						String name = ma.group(3);
-						mexItems.add(code + " " + name);
+						mexItems.add(ValuesItem.of(code, name));
 					}
 				}
 			}
@@ -410,8 +411,8 @@ public class Extractors {
 		return neymar.process().getItems();
 	}
 	
-	public static List<String> fetchAnjukeHouse(String city, String town, int pageNumber) {
-		Extractor<String> neymar = new Extractor<String>() {
+	public static List<ValuesItem> fetchAnjukeHouse(String city, String town, int pageNumber) {
+		Extractor<ValuesItem> neymar = new Extractor<ValuesItem>() {
 
 			@Override
 			public String getUrl() {
@@ -434,8 +435,7 @@ public class Extractors {
 					String location = getPrettyText(ma.group(1));
 					location = location.replaceAll("\\)[^\\)\\(]+", ")");
 					String price = getPrettyText(ma.group(2));
-					String temp = location + " " + price;
-					mexItems.add(temp);
+					mexItems.add(ValuesItem.of(location, price));
 				}
 			}
 		};

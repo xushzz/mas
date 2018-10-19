@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -574,5 +575,12 @@ public class MathUtil {
 		}
 		
 		return count;
+	}
+	
+	public static int[] kIntsOf(int value, int k) {
+		int[] arr = new int[k];
+		Arrays.fill(arr, value);
+		
+		return arr;
 	}
 }

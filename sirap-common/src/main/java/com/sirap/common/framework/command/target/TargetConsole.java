@@ -7,6 +7,7 @@ import com.sirap.basic.tool.C;
 import com.sirap.basic.util.Colls;
 import com.sirap.common.framework.Stash;
 
+@SuppressWarnings("rawtypes")
 public class TargetConsole extends Target {
 
 	private ConsoleParams params;
@@ -44,6 +45,7 @@ public class TargetConsole extends Target {
 	public void setParams(ConsoleParams params) {
 		this.params = params;
 	}
+	
 	@Override
 	public void export(List records, String options, boolean withTimestamp) {
 		List newList = toStringList(records, options);

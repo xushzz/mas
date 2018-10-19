@@ -24,6 +24,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.output.PDFParams;
+import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.MexUtil;
@@ -55,14 +56,14 @@ public class PdfHelper {
 			document.open();
 			if(params.isPrintTopInfo()) {
 				String topInfo = params.getTopInfo();
-				if (topInfo != null) {
+				if(!EmptyUtil.isNullOrEmpty(topInfo)) {
 					insertTopInfo(document, topInfo, params);
 				}
 			}
 			insertTable(document, objList, params);
 			document.close();
 		} catch (Exception ex) {
-			throw new MexException(ex);
+			XXXUtil.alert(ex);
 		}
 
 		return true;
@@ -88,9 +89,16 @@ public class PdfHelper {
 			throws DocumentException {
 		Font font = createFont(params.isUseAsianFont());
 		boolean toGray = false;
-		int[] cellsWidth = params.getCellsWidth();
-		int[] cellsAlign = params.getCellsAlign();
+		int[] cellsWidth = params.getCellWidths();
+		if(cellsWidth == null) {
+			cellsWidth = MathUtil.kIntsOf(1, 1);
+		};
+		int[] cellsAlign = params.getCellAligns();
+		if(cellsAlign == null) {
+			cellsAlign = MathUtil.kIntsOf(1, 1);
+		};
 		int cols = cellsWidth.length;
+		
 		PdfPTable datatable = new PdfPTable(cols);
 		datatable.setWidths(cellsWidth);
 		datatable.setWidthPercentage(100);
@@ -108,11 +116,7 @@ public class PdfHelper {
 			if(record instanceof List) {
 				List items = (List)record;
 				for(int k = 0; k < items.size(); k++) {
-					Object item = items.get(k);
-					String stuff = MexUtil.print(item);
-					if(stuff.isEmpty()) {
-						stuff = " ";
-					}
+					String stuff = items.get(k) + "";
 					int align = cellsAlign[k];
 					datatable.getDefaultCell().setHorizontalAlignment(align);
 					datatable.addCell(new Paragraph(stuff, font));	

@@ -12,6 +12,8 @@ public abstract class Target {
 	private String value;
 	private String command;
 	protected OutputParams params;
+	private int[] pdfCellWidths;
+	private int[] pdfCellAligns;
 	
 	public OutputParams getParams() {
 		return params;
@@ -19,6 +21,22 @@ public abstract class Target {
 
 	public void setParams(OutputParams params) {
 		this.params = params;
+	}
+
+	public int[] getPdfCellWidths() {
+		return pdfCellWidths;
+	}
+
+	public void setPdfCellWidths(int... pdfCellWidths) {
+		this.pdfCellWidths = pdfCellWidths;
+	}
+	
+	public int[] getPdfCellAligns() {
+		return pdfCellAligns;
+	}
+
+	public void setPdfCellAligns(int... pdfCellAligns) {
+		this.pdfCellAligns = pdfCellAligns;
 	}
 
 	public boolean isFileRelated() {

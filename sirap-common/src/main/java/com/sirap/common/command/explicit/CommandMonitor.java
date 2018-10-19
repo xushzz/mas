@@ -5,14 +5,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
 
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexFile;
+import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.TypedKeyValueItem;
-import com.sirap.basic.output.PDFParams;
+import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.thirdparty.TrumpHelper;
 import com.sirap.basic.tool.C;
+import com.sirap.basic.tool.D;
 import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
@@ -26,6 +29,7 @@ import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.component.KeysReader;
+import com.sirap.common.component.MexItemsFetcher;
 import com.sirap.common.domain.CommandRecord;
 import com.sirap.common.domain.InputRecord;
 import com.sirap.common.domain.LoginRecord;
@@ -41,20 +45,12 @@ public class CommandMonitor extends CommandBase {
 	private static final String KEY_KEYS_READER = "k";
 	private static final String KEY_KEYS_CONFIG = "kc";
 	private static final String KEY_SYSTEM_CONFIG = "sc";
-	private static final String KEY_NODES_CONFIG = "n..";
+	private static final String KEY_COMAMND_NODES = "nz";
 	private static final String KEY_COMMAND_HISTORY = ";";
 	private static final String KEY_LOGIN_HISTORY = "lh";
 	private static final String KEY_SECURITY_ENCODE = "jiami";
 	private static final String KEY_SECURITY_DECODE = "jiemi";
 	private static final String KEY_LOGIN_HISTORY_DISTRIBUTION = "ld";
-
-	private static final int[] CH_cellsWidth = {12, 38};
-	private static final int[] CH_cellsAlign = {0, 0};
-	private static final PDFParams CH_PDF_PARAMS = new PDFParams(CH_cellsWidth, CH_cellsAlign);
-	
-	private static final int[] LH_cellsWidth = {3, 1, 3};
-	private static final int[] LH_cellsAlign = {0, 1, 2};
-	private static final PDFParams LH_PDF_PARAMS = new PDFParams(LH_cellsWidth, LH_cellsAlign);
 	private static final String KEY_ECHO = "echo";
 
 	@Override
@@ -202,13 +198,13 @@ public class CommandMonitor extends CommandBase {
 			solo = parseParam(KEY_LOGIN_HISTORY + "\\s(.+?)");
 			if(solo != null) {
 				List<LoginRecord> records = LoginHistoryManager.g().search(solo);
+				D.list(records);
 				if(target instanceof TargetPdf) {
-					target.setParams(LH_PDF_PARAMS);
-					List<List<String>> items = Colls.items2PDFRecords(records);
-					export(items);
-				} else {
-					export(Colls.items2PrintRecords(records));
+//					target.setParams(LH_PDF_PARAMS);
+//					List<List<String>> items = Colls.items2PDFRecords(records);
+//					export(records);
 				}
+				exportMatrix(records);
 				return true;
 			}
 
@@ -216,26 +212,16 @@ public class CommandMonitor extends CommandBase {
 			if(params != null) {
 				int count = MathUtil.toInteger(params[0], 20);
 				List<LoginRecord> records = LoginHistoryManager.g().getLoginRecords(count);
-				if(target instanceof TargetPdf) {
-					target.setParams(LH_PDF_PARAMS);
-					List<List<String>> items = Colls.items2PDFRecords(records);
-					export(items);
-				} else {
-					export(Colls.items2PrintRecords(records));
-				}
+				export(records);
 				
 				return true;
 			}
 			
 			if (is(KEY_LOGIN_HISTORY + KEY_2DOTS)) {
 				List<LoginRecord> records = LoginHistoryManager.g().getAllInputRecords();
-				if(target instanceof TargetPdf) {
-					target.setParams(LH_PDF_PARAMS);
-					List<List<String>> items = Colls.items2PDFRecords(records);
-					export(items);
-				} else {
-					export(Colls.items2PrintRecords(records));
-				}
+				target.setPdfCellWidths(3, 1, 3);
+
+				exportMatrix(records);
 				
 				return true;
 			}
@@ -257,13 +243,9 @@ public class CommandMonitor extends CommandBase {
 					}
 				}
 				
-				if(target instanceof TargetPdf) {
-					target.setParams(CH_PDF_PARAMS);
-					List<List<String>> items = Colls.items2PDFRecords(records);
-					export(items);
-				} else {
-					export(Colls.items2PrintRecords(records));
-				}
+				target.setPdfCellWidths(12, 38);
+				
+				exportMatrix(records);
 				
 				return true;
 			}
@@ -296,15 +278,33 @@ public class CommandMonitor extends CommandBase {
 				return true;
 			}
 		}
-		
-		params = parseParams(KEY_KEYS_CONFIG + "(|\\s+(.*?))");
-		if(params != null) {
-			String criteria = params[1];
-			List<String> list = IOUtil.readLinesFromStreamByClassLoader(Konfig.KEYS_FILE, Konstants.CODE_UTF8);
-			export(Colls.filterMix(list, criteria, isCaseSensitive()));
+
+		flag = searchAndProcess(KEY_KEYS_CONFIG, new MexItemsFetcher<MexItem>() {
+			@Override
+			public void handle(List<MexItem> items) {
+				exportMatrix(items);
+			}
 			
-			return true;
-		}
+			@Override
+			public List<MexItem> body() {
+				List<String> list = IOUtil.readLinesFromStreamByClassLoader(Konfig.KEYS_FILE, Konstants.CODE_UTF8);
+				Collections.sort(list);
+				List<MexItem> items = Lists.newArrayList();
+				target.setPdfCellWidths(3, 1, 5);
+				target.setPdfCellAligns(0, 1, 0);
+				
+				for(String line : list) {
+					String regex = "(.+?)\\s(\\d+)\\s(.+)";
+					Matcher ma = StrUtil.createMatcher(regex, line);
+					while(ma.find()) {
+						items.add(ValuesItem.of(ma.group(1), ma.group(2), ma.group(3)));
+					}
+				}
+				
+				return items;
+			}
+		});
+		if(flag) return true;
 		
 		params = parseParams(KEY_SYSTEM_CONFIG + "(|\\s+(.*?))");
 		if(params != null) {
@@ -315,12 +315,25 @@ public class CommandMonitor extends CommandBase {
 			return true;
 		}
 		
-		if(is(KEY_NODES_CONFIG)) {
-			List<CommandRecord> items = g().getCommandNodes();
-			export(items);
+//		if(is(KEY_NODES_CONFIG)) {
+//			List<CommandRecord> items = g().getCommandNodes();
+//			export(items);
+//			
+//			return true;
+//		}
+//		
+		flag = searchAndProcess(KEY_COMAMND_NODES, new MexItemsFetcher<CommandRecord>() {
+			@Override
+			public void handle(List<CommandRecord> items) {
+				exportMatrix(items);
+			}
 			
-			return true;
-		}
+			@Override
+			public List<CommandRecord> body() {
+				return g().getCommandNodes();
+			}
+		});
+		if(flag) return true;
 
 		solo = parseParam(KEY_KEYS_READER + "\\s(.+?)");
 		if(solo != null) {
@@ -350,7 +363,7 @@ public class CommandMonitor extends CommandBase {
 			return true;
 		}
 		
-		if(is(KEY_SECURITY_ENCODE +KEY_SECURITY_DECODE)) {
+		if(is(KEY_SECURITY_ENCODE + KEY_SECURITY_DECODE)) {
 			noCollect();
 			export(g().getSecurityPasscode());
 			

@@ -14,10 +14,12 @@ import java.util.Map;
 
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
+import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.thirdparty.TrumpHelper;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
+import com.sirap.basic.util.LocaleUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
@@ -161,9 +163,12 @@ public class SimpleKonfig extends Konfig {
 		}
 		commandInstances = createCommandInstances();
 		
-		locale = DateUtil.parseLocale(getUserValueOf("locale.in_use"));
-		if(locale == null) {
-			locale = Locale.US;
+		String temp = getUserValueOf("locale.in_use");
+		if(!EmptyUtil.isNullOrEmpty(temp)) {
+			locale = LocaleUtil.of(temp);
+			if(locale == null) {
+				locale = Locale.getDefault();
+			}
 		}
 		charsetInUse = isYes("use.gbk") ? Konstants.CODE_GBK : Konstants.CODE_UTF8;
 		isCaptureSoundOn = isYes("capture.sound.on");
@@ -207,44 +212,45 @@ public class SimpleKonfig extends Konfig {
 		return locale;
 	}
 	
-	public List<List> getUserStatus() {
-		List<List> items = Lists.newArrayList();
+	public List<ValuesItem> getUserStatus() {
+		List<ValuesItem> items = Lists.newArrayList();
 		String serverTZ = ZoneId.systemDefault().toString();
 		String serverDiff = DateUtil.tzoneOffsetInHour(serverTZ);
-		items.add(Lists.newArrayList("Local timezone", StrUtil.occupy("{0} (GMT{1})", serverTZ, serverDiff)));
-		items.add(Lists.newArrayList("Local charset", Charset.defaultCharset()));
-		items.add(Lists.newArrayList("Local locale", Locale.getDefault()));
-		items.add(Lists.newArrayList("User", AkaBase.USERNAME));
+		items.add(ValuesItem.of("Local timezone", StrUtil.occupy("{0} (GMT{1})", serverTZ, serverDiff)));
+		items.add(ValuesItem.of("Local charset", Charset.defaultCharset()));
+		items.add(ValuesItem.of("Local locale", Locale.getDefault()));
+		items.add(ValuesItem.of("User", AkaBase.USERNAME));
 		
 		String userTZ = getUserValueOf("user.timezone");
 		String userDiff = null;
 		if(EmptyUtil.isNullOrEmpty(userTZ)) {
-			items.add(Lists.newArrayList("User timezone", Konstants.FAKED_EMPTY));
+			items.add(ValuesItem.of("User timezone", Konstants.FAKED_EMPTY));
 		} else {
 			userDiff = DateUtil.tzoneOffsetInHour(userTZ);
-			items.add(Lists.newArrayList("User timezone", StrUtil.occupy("{0} (GMT{1})", userTZ, userDiff)));
+			items.add(ValuesItem.of("User timezone", StrUtil.occupy("{0} (GMT{1})", userTZ, userDiff)));
 		}
 		
-		items.add(Lists.newArrayList("User charset", charsetInUse));
-		items.add(Lists.newArrayList("User locale", locale));
-		items.add(Lists.newArrayList("Email", getDisplayEnableSign(isEmailEnabled)));
-		items.add(Lists.newArrayList("Remote control", getDisplayEnableSign(isRemoteEnabled)));
-		items.add(Lists.newArrayList("Capture sound", getDisplayEnableSign(isCaptureSoundOn)));
-		items.add(Lists.newArrayList("Auto open", getDisplayEnableSign(isGeneratedFileAutoOpen)));
-		items.add(Lists.newArrayList("Use timestamp", getDisplayEnableSign(isExportWithTimestampEnabled)));
-		items.add(Lists.newArrayList("Suck option", getDisplayEnableSign(isSuckOptionsEnabled)));
+		items.add(ValuesItem.of("User charset", charsetInUse));
+		items.add(ValuesItem.of("User locale", locale));
+		items.add(ValuesItem.of("Email", getDisplayEnableSign(isEmailEnabled)));
+		items.add(ValuesItem.of("Remote control", getDisplayEnableSign(isRemoteEnabled)));
+		items.add(ValuesItem.of("Capture sound", getDisplayEnableSign(isCaptureSoundOn)));
+		items.add(ValuesItem.of("Auto open", getDisplayEnableSign(isGeneratedFileAutoOpen)));
+		items.add(ValuesItem.of("Use timestamp", getDisplayEnableSign(isExportWithTimestampEnabled)));
+		items.add(ValuesItem.of("Suck option", getDisplayEnableSign(isSuckOptionsEnabled)));
 		
 		String expiry = Konstants.FAKED_EMPTY;
 		Date date = Janitor.g().getExpirationDate();
 		if(date != null) {
 			expiry = DateUtil.strOf(date, DateUtil.GMT, getLocale());
 		}
-		items.add(Lists.newArrayList("Expiration: ", expiry));
+		items.add(ValuesItem.of("Expiration", expiry));
 		
 		return items;
 	}
 
 	public void setLocale(Locale locale) {
+		XXXUtil.shouldBeNotnull(locale);
 		this.locale = locale;
 	}
 	

@@ -8,19 +8,10 @@ public class PDFParams implements OutputParams {
 	private boolean useAsianFont = false; 
 	
 	private String topInfo;
-	private int[] cellsWidth = {1};
-	private int[] cellsAlign = {0};
+	private int[] cellsWidth;
+	private int[] cellsAlign;
 
 	public PDFParams() {
-	}
-	
-	public PDFParams(int[] cellsWidth) {
-		this.cellsWidth = cellsWidth;
-	}
-	
-	public PDFParams(int[] cellsWidth, int[] cellsAlign) {
-		this.cellsWidth = cellsWidth;
-		this.cellsAlign = cellsAlign;
 	}
 	
 	public boolean isPrintGreyRow() {
@@ -47,19 +38,19 @@ public class PDFParams implements OutputParams {
 		this.topInfo = topInfo;
 	}
 
-	public int[] getCellsWidth() {
+	public int[] getCellWidths() {
 		return cellsWidth;
 	}
 
-	public void setCellsWidth(int[] cellsWidth) {
+	public void setCellWidths(int[] cellsWidth) {
 		this.cellsWidth = cellsWidth;
 	}
 
-	public int[] getCellsAlign() {
+	public int[] getCellAligns() {
 		return cellsAlign;
 	}
 
-	public void setCellsAlign(int[] cellsAlign) {
+	public void setCellAligns(int[] cellsAlign) {
 		this.cellsAlign = cellsAlign;
 	}
 

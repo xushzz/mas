@@ -20,7 +20,6 @@ import com.sirap.extractor.impl.CCTVProgramExtractor;
 import com.sirap.extractor.impl.MMKProgramExtractor;
 import com.sirap.extractor.manager.CCTVManager;
 import com.sirap.extractor.manager.Extractors;
-import com.sirap.extractor.manager.MMKManager;
 
 public class CommandTV extends CommandBase {
 
@@ -59,7 +58,7 @@ public class CommandTV extends CommandBase {
 		}
 
 		if(is(KEY_MANMANKAN + KEY_2DOTS)) {
-			export(MMKManager.g().allChannels());
+			exportMatrix(Extractors.fetchManmankanChannels());
 			
 			return true;
 		}
@@ -100,7 +99,6 @@ public class CommandTV extends CommandBase {
 				}
 			}
 			
-			useLowOptions("c=#s2");
 			exportMatrix(MatrixUtil.matrixOf(list));
 			
 			return true;

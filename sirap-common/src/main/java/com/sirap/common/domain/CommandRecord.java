@@ -1,5 +1,8 @@
 package com.sirap.common.domain;
 
+import java.util.List;
+
+import com.google.common.collect.Lists;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.MathUtil;
@@ -47,6 +50,12 @@ public class CommandRecord extends MexItem implements Comparable<CommandRecord> 
 		remark = arr[4];
 		
 		return true;
+	}
+	
+	@Override
+	public List toList(String options) {
+		String temp = remark != null ? remark : "";
+		return Lists.newArrayList(key, getPseudoOrder(), className, temp);
 	}
 
 	@Override

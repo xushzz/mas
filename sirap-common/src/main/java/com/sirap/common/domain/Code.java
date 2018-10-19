@@ -1,7 +1,6 @@
 package com.sirap.common.domain;
 
 import com.sirap.basic.domain.MexItem;
-import com.sirap.basic.tool.C;
 import com.sirap.basic.util.StrUtil;
 
 @SuppressWarnings("serial")
@@ -134,12 +133,12 @@ public class Code extends MexItem implements Comparable<Code> {
 	}
 
 	@Override
-	public void print() {
+	public String toPrint(String options) {
 		StringBuffer sb = new StringBuffer();
 		sb.append(StrUtil.padRight(name, 10));
 		sb.append(StrUtil.padRight(type, 20));
 		sb.append(StrUtil.padRight(meaning, 40));
 		
-		C.pl(sb);
+		return sb.toString();
 	}
 }

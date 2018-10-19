@@ -1,12 +1,15 @@
-package com.sirap.extractor.domain;
+package com.sirap.basic.domain;
 
+import java.util.List;
+
+import com.google.common.collect.Lists;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.util.StrUtil;
 
 @SuppressWarnings("serial")
 public class NameRankItem extends MexItem implements Comparable<NameRankItem> {
 	private String name;
-	private boolean isMale;
+	private String gender;
 	private String rank;
 	
 	public String getName() {
@@ -17,12 +20,12 @@ public class NameRankItem extends MexItem implements Comparable<NameRankItem> {
 		this.name = name;
 	}
 	
-	public boolean isMale() {
-		return isMale;
+	public String getGender() {
+		return gender;
 	}
 
-	public void setMale(boolean isMale) {
-		this.isMale = isMale;
+	public void setGender(String gender) {
+		this.gender = gender;
 	}
 
 	public String getRank() {
@@ -35,9 +38,8 @@ public class NameRankItem extends MexItem implements Comparable<NameRankItem> {
 	
 	public String eggOf() {
 		String temp = "EGGS.put(\"{0}{1}\", \"{2}\");";
-		char flag = isMale ? 'm' : 'f';
 		String nice = name.toUpperCase().charAt(0) + name.substring(1).toLowerCase();
-		return StrUtil.occupy(temp, flag, rank, nice);
+		return StrUtil.occupy(temp, gender, rank, nice);
 	}
 	
 	@Override
@@ -50,7 +52,7 @@ public class NameRankItem extends MexItem implements Comparable<NameRankItem> {
 			return true;
 		}
 		
-		if(StrUtil.equals(rank, keyWord)) {
+		if(StrUtil.equals("#" + gender, keyWord)) {
 			return true;
 		}
 		
@@ -58,17 +60,25 @@ public class NameRankItem extends MexItem implements Comparable<NameRankItem> {
 			return true;
 		}
 		
+		if(StrUtil.contains(rank, keyWord)) {
+			return true;
+		}
+		
+		if(isRegexMatched(rank, keyWord)) {
+			return true;
+		}
+		
 		return false;
+	}
+	
+	@Override
+	public List toList(String options) {
+		return Lists.newArrayList(rank, gender, name);
 	}
 
 	@Override
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
-		sb.append(StrUtil.padRight(rank, 4));
-		sb.append("  ");
-		sb.append(name);
-		
-		return sb.toString();
+		return toPrint();
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package com.sirap.basic.domain;
 import java.util.Date;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 
@@ -84,6 +85,11 @@ public class MexObject extends MexItem {
 		sb.append(getString());
 		
 		return sb.toString();
+	}
+	
+	@Override
+	public List toList(String options) {
+		return Lists.newArrayList(obj);
 	}
 	
 	@Override

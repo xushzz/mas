@@ -126,14 +126,4 @@ public class ForexRateRecord extends MexItem implements Comparable<ForexRateReco
 		
 		return sb.toString();
 	}
-	
-	@Override
-	public List<String> toPDF() {
-		List<String> list = new ArrayList<String>();
-		list.add(code);
-		list.add(displayName);
-		list.add(getDisplayAmount());
-		
-		return list;
-	}
 }

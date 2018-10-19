@@ -10,7 +10,6 @@ import com.sirap.basic.component.map.AlinkMap;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.domain.ValuesItem;
-import com.sirap.basic.output.PDFParams;
 import com.sirap.basic.thread.Master;
 import com.sirap.basic.thread.Worker;
 import com.sirap.basic.tool.C;
@@ -80,7 +79,7 @@ public class CommandCollect extends CommandBase {
 	
 	public boolean handle() {
 
-		flag = searchAndProcess(KEY_CARNO, new MexItemsFetcher() {
+		flag = searchAndProcess(KEY_CARNO, new MexItemsFetcher<MexItem>() {
 			@Override
 			public void handle(List<MexItem> items) {
 				exportMatrix(items);
@@ -108,7 +107,7 @@ public class CommandCollect extends CommandBase {
 			return true;
 		}
 
-		flag = searchAndProcess(KEY_WEATHER, new MexItemsFetcher() {
+		flag = searchAndProcess(KEY_WEATHER, new MexItemsFetcher<MexItem>() {
 			@Override
 			public void handle(List<MexItem> items) {
 				exportMatrix(items);
@@ -198,10 +197,8 @@ public class CommandCollect extends CommandBase {
 			Double bd = MathUtil.toDouble(amount);
 			if(bd != null) {
 				if(target instanceof TargetPdf) {
-					int[] cellsWidth = {1, 4, 2};
-					int[] cellsAlign = {1, 0, 2};
-					PDFParams pdfParams = new PDFParams(cellsWidth, cellsAlign);
-					target.setParams(pdfParams);
+					target.setPdfCellWidths(1, 4, 2);
+					target.setPdfCellAligns(1, 0, 2);
 					List<List<String>> records = ForexManager.g().convert4PDF(name, amount, currencies);
 					export(records);
 				} else {

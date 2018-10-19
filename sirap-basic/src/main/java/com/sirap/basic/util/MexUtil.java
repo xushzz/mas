@@ -317,14 +317,6 @@ public class MexUtil {
 		return true;
 	}
 	
-	public static String print(Object obj) {
-		if(obj instanceof MexItem) {
-			return ((MexItem)obj).toPrint();
-		} else {
-			return obj + "";
-		}
-	}
-	
 	public static List<String> allFonts() {
 		GraphicsEnvironment e = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		String[] fontNames = e.getAvailableFontFamilyNames();

@@ -21,6 +21,8 @@ urx %E5%B8%88      decode given string from URL manner
 iso Chinese        display locale info containing Chinese: zh_HK, HKG, Chinese, Hong Kong
 iso..              display all locale info provided by the JRE
 iso=zh_TW          set locale in use as zh_TW, list likely items if invalid
+iso                group by country and display country and langs in matrix, $+mat for matrix
+iso $+l            l for lang, group by lang and display country and langs, $+mat for matrix
 ccy Chinese        display currency info containing Chinese: zh_HK, HKG, Chinese, Hong Kong
 ccy..              display all currency info provided by the JRE
 mon Chinese        mon for month, display month symbols info in Chinese

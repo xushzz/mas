@@ -16,6 +16,8 @@ import com.itextpdf.text.pdf.PdfPageEventHelper;
 import com.itextpdf.text.pdf.PdfTemplate;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.sirap.basic.util.DateUtil;
+import com.sirap.basic.util.RandomUtil;
+import com.sirap.basic.util.StrUtil;
 
 public class TableHeaderEvent extends PdfPageEventHelper {
     /** The template with the total number of pages. */
@@ -43,13 +45,13 @@ public class TableHeaderEvent extends PdfPageEventHelper {
 	public void onEndPage(PdfWriter writer, Document document) {
         PdfPTable table = new PdfPTable(3);
         try {
-            table.setWidths(new int[]{24, 24, 2});
+            table.setWidths(new int[]{44, 04, 2});
             table.setTotalWidth(527);
             table.setLockedWidth(true);
             table.getDefaultCell().setFixedHeight(20);
             table.getDefaultCell().setBorder(Rectangle.BOTTOM);
-            String header = DateUtil.strOf(new Date(), DateUtil.GMT);
-            table.addCell(header);
+            String datestr = DateUtil.strOf(new Date(), DateUtil.GMT);
+            table.addCell(StrUtil.occupy("{0} [{1}]", datestr, RandomUtil.name(100)));
             table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_RIGHT);
             table.addCell(String.format("%d /", writer.getPageNumber()));
             PdfPCell cell = new PdfPCell(Image.getInstance(total));

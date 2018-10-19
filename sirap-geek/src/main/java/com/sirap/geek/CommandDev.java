@@ -194,7 +194,7 @@ public class CommandDev extends CommandBase {
 			}
 			List<String> items = MavenManager.g().getDependencies(mvnCommand);
 			if(target.isFileRelated()) {
-				export(Colls.toFileList(items));
+				export(Colls.fileListOf(items));
 			} else {
 				export(items);
 			}

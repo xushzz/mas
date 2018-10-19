@@ -24,7 +24,7 @@ public class MexFilter<T extends MexItem> {
 	private boolean caseSensitive;
 	private String criteria;
 	private List<T> source = Lists.newArrayList();
-	private boolean stayCriteria = true;
+	private boolean noSplit;
 	
 	public void setCriteria(String criteria) {
 		this.criteria = criteria;
@@ -35,8 +35,8 @@ public class MexFilter<T extends MexItem> {
 		this.source.addAll(source);
 	}
 
-	public void setStayCriteria(boolean stay) {
-		this.stayCriteria = stay;
+	public void setNoSplit(boolean noSplit) {
+		this.noSplit = noSplit;
 	}
 	
 	public void setCaseSensitive(boolean caseSensitive) {
@@ -123,7 +123,7 @@ public class MexFilter<T extends MexItem> {
 	
 	public MexCriteria createMexCriteria() {
 		List<String> list = new ArrayList<String>();
-		if(stayCriteria || StrUtil.isRegexMatched("[" + SYMBOL_AND + SYMBOL_OR + "]+", criteria)) {
+		if(noSplit || StrUtil.isRegexMatched("[" + SYMBOL_AND + SYMBOL_OR + "]+", criteria)) {
 			list.add(criteria);
 			return new MexCriteria(list);
 		}

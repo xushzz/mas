@@ -1,14 +1,14 @@
 package com.sirap.common.domain;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.domain.MexItem;
-import com.sirap.basic.tool.C;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.MathUtil;
+import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 
 @SuppressWarnings("serial")
@@ -26,6 +26,12 @@ public class LoginRecord extends MexItem {
 		this.datetimeLogin = datetime;
 	}
 	
+	@Override
+	public List toList(String options) {
+		String temp = datetimeExit != null ? datetimeExit : "";
+		return Lists.newArrayList(datetimeLogin, mins, temp);
+	}
+
 	public String getDatetimeLogin() {
 		return datetimeLogin;
 	}
@@ -103,29 +109,13 @@ public class LoginRecord extends MexItem {
 	}
 	
 	@Override
-	public void print() {
-		C.pl(this);
+	public String toPrint(String options) {
+		String connector = OptionUtil.readString(options, "c", "  ");
+		return StrUtil.connect(toList(), connector);
 	}
 	
 	@Override
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
-		sb.append(datetimeLogin);
-		sb.append("\t").append(mins);
-		if(datetimeExit != null) {
-			sb.append("\t").append(datetimeExit);
-		}
-		
-		return sb.toString();
-	}
-	
-	@Override
-	public List<String> toPDF() {
-		List<String> list = new ArrayList<String>();
-		list.add(datetimeLogin);
-		list.add(mins + "");
-		list.add(datetimeExit);
-		
-		return list;
+		return toPrint("");
 	}
 }

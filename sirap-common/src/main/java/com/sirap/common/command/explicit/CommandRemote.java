@@ -36,7 +36,7 @@ public class CommandRemote extends CommandBase {
 		
 		if(is(KEY_REMOTE_COMMANDS)) {
 			List<EmailCommandRecord> records = RemoteCommandManager.g().getAllRemoteCommands();
-			export(Colls.items2PrintRecords(records));
+			export(records);
 			
 			return true;
 		}

@@ -5,6 +5,8 @@ import java.util.List;
 import com.sirap.basic.output.PDFParams;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.FileUtil;
+import com.sirap.basic.util.MathUtil;
+import com.sirap.basic.util.OptionUtil;
 import com.sirap.common.component.FileOpener;
 import com.sirap.common.framework.SimpleKonfig;
 import com.sirap.third.msoffice.PdfHelper;
@@ -24,7 +26,7 @@ public class TargetPdf extends TargetFile {
 			return (PDFParams)params;
 		} else {
 			params = new PDFParams();
-			return (PDFParams)params;
+			return new PDFParams();
 		}
 	}
 	
@@ -35,18 +37,23 @@ public class TargetPdf extends TargetFile {
 		params.setPrintGreyRow(SimpleKonfig.g().isPrintGreyRowWhenPDF());
 		params.setPrintTopInfo(SimpleKonfig.g().isPrintTopInfoWhenPDF());
 		params.setUseAsianFont(SimpleKonfig.g().isAsianFontWhenPDF());
+		params.setTopInfo(topInfo(records));
 		
-		String topInfo = getCommand();
+		int columns = OptionUtil.readIntegerPRI(options, "columns", 1);
 		
-		List newList = toStringList(records, options);
-		
-		if(newList != null && newList.size() > 5) {
-			topInfo = "(" + newList.size() + ") " + topInfo;
+		int[] cells = getPdfCellAligns();
+		if(cells == null) {
+			cells = MathUtil.kIntsOf(0, columns);
 		}
+		params.setCellAligns(cells);
 		
-		params.setTopInfo(topInfo);
+		cells = getPdfCellWidths();
+		if(cells == null) {
+			cells = MathUtil.kIntsOf(1, columns);
+		}
+		params.setCellWidths(cells);
 		
-		PdfHelper.export(newList, filePath, params);
+		PdfHelper.export(records, filePath, params);
 		C.pl2("Exported => " + FileUtil.canonicalPathOf(filePath));
 		if(SimpleKonfig.g().isGeneratedFileAutoOpen()) {
 			FileOpener.open(filePath);

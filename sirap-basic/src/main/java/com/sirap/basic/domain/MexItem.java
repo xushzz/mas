@@ -3,13 +3,11 @@ package com.sirap.basic.domain;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.search.FileSizeCriteria;
 import com.sirap.basic.search.MexFilter;
 import com.sirap.basic.search.SizeCriteria;
-import com.sirap.basic.tool.C;
 import com.sirap.basic.tool.D;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.OptionUtil;
@@ -26,6 +24,18 @@ public abstract class MexItem implements Serializable {
 
 	protected boolean caseSensitive;
 	protected int pseudoOrder;
+	
+	public static MexItem ofObject(Object obj) {
+		if(obj instanceof List) {
+			return ValuesItem.of(obj);
+		} 
+		
+		if(obj instanceof MexItem) {
+			return (MexItem)obj;
+		}
+
+		return new MexObject(obj);
+	}
 
 	public boolean parse(String str) {
 		return false;
@@ -54,7 +64,7 @@ public abstract class MexItem implements Serializable {
 	public boolean isMexMatched(String mexCriteria, boolean sensitive, boolean stay) {
 		MexFilter<MexItem> filter = new MexFilter<MexItem>(mexCriteria, this);
 		filter.setCaseSensitive(sensitive);
-		filter.setStayCriteria(stay);
+		filter.setNoSplit(stay);
 		List<MexItem> result = filter.process();
 		
 		return !EmptyUtil.isNullOrEmpty(result);
@@ -124,7 +134,7 @@ public abstract class MexItem implements Serializable {
 
 	public List toList(String options) {
 		String method = D.current().getMethodName();
-		XXXUtil.alert("Method {0}.{1} must be overriden.", getClass().getName(), method);
+		XXXUtil.alert("Method {0}.{1}(String) must be overriden.", getClass().getName(), method);
 		return null;
 	}
 	
@@ -137,67 +147,14 @@ public abstract class MexItem implements Serializable {
 	}
 	
 	public String toPrint() {
-		return toString();
-	}
-	
-	public String toPrint(Map<String, Object> options) {
-		return toPrint();
+		return toPrint("");
 	}
 	
 	public String toPrint(String options) {
-		return toPrint();
+		String connector = OptionUtil.readString(options, "c", "  ");
+		return StrUtil.connect(toList(options), connector);
 	}
 	
-	public List<String> toPDF() {
-		List<String> list = new ArrayList<String>();
-		list.add(toPrint());
-		
-		return list;
-	}
-	
-	public void print() {
-		C.pl(toPrint());
-	}
-	
-	public void print(Map<String, Object> params) {
-		C.pl(toPrint(params));
-	}
-	
-	public void print(String options) {
-		C.pl(toPrint(options));
-	}
-	
-	public String printAll(Object... values) {
-		StringBuffer sb = new StringBuffer();
-		for(int i = 0; i < values.length; i++) {
-			Object obj = values[i];
-			
-			sb.append(obj);
-			if(i != values.length - 1) {
-				sb.append(" ");
-			}
-		}
-		
-		return sb.toString();
-	}
-	
-	public String printAllButNull(Object... values) {
-		StringBuffer sb = new StringBuffer();
-		for(int i = 0; i < values.length; i++) {
-			Object obj = values[i];
-			if(obj == null) {
-				continue;
-			}
-			
-			sb.append(obj);
-			if(i != values.length - 1) {
-				sb.append(" ");
-			}
-		}
-		
-		return sb.toString();
-	}
-
 	public static StringBuffer sb() {
 		return new StringBuffer();
 	}

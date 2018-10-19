@@ -383,7 +383,7 @@ public class CommandDatabase extends CommandBase {
 		ming.setPrintColumnName(false);
 		List<String> items = ming.exportLiteralStrings();
 		String smaCriteria = "^" + tempSchema + "$";
-		List<MexItem> tempA = Colls.filterMix(items, smaCriteria, false);
+		List<MexItem> tempA = Colls.filter(toMexItems(items), smaCriteria);
 		if(tempA.size() == 1) {
 			actualSchema = tempSchema;
 		} else {

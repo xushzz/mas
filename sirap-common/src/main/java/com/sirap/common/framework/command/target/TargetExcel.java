@@ -25,17 +25,9 @@ public class TargetExcel extends TargetFile {
 	public void export(List records, String options, boolean withTimestamp) {
 		String filePath = withTimestamp ? getTimestampPath() : getFilePath();
 		ExcelParams params = getParams();
+		params.setTopInfo(topInfo(records));
 		
-		List newList = records;
-		
-		String topInfo = getCommand();
-		if(newList != null && newList.size() > 5) {
-			topInfo = "(" + newList.size() + ") " + topInfo;
-		}
-		
-		params.setTopInfo(topInfo);
-		
-		MsExcelHelper.export(newList, filePath, params);
+		MsExcelHelper.export(records, filePath, params);
 		C.pl2("Exported => " + FileUtil.canonicalPathOf(filePath));
 		if(SimpleKonfig.g().isGeneratedFileAutoOpen()) {
 			FileOpener.open(filePath);

@@ -51,40 +51,29 @@ public class KeyValuesItem extends MexItem {
 		return toPrint(options);
 	}
 	
-	public String toPrint(String options) {
-		String keys = OptionUtil.readString(options, "keys", "");
-		String connector = OptionUtil.readString(options, "c", ", ");
-		List<String> list;
-		if(keys.isEmpty()) {
-			list = Lists.newArrayList(box.keySet());
-		} else {
-			list = StrUtil.split(keys, '|');
+	@Override
+	public List toList(String options) {
+		String temp = OptionUtil.readString(options, "keys", "");
+		if(temp.isEmpty()) {
+			return Lists.newArrayList(box.values());
 		}
-		StringBuffer sb = sb();
-		boolean isTheFirstOne = true;
-		for(String key : list) {
-			if(!isTheFirstOne) {
-				sb.append(connector);
-			}
-			sb.append(box.get(key));
-			isTheFirstOne = false;
+
+		List<String> keys = StrUtil.split(temp, '|');
+		List list = Lists.newArrayList();
+		for(String key : keys) {
+			list.add(box.get(key));
 		}
 		
-		return sb.toString();
+		return list;
+	}
+	
+	public String toPrint(String options) {
+		String connector = OptionUtil.readString(options, "c", ", ");
+
+		return StrUtil.connect(toList(), connector);
 	}
 
 	public String toString() {
-		List<String> list = Lists.newArrayList(box.keySet());
-		StringBuffer sb = sb();
-		boolean isTheFirstOne = true;
-		for(String key : list) {
-			if(!isTheFirstOne) {
-				sb.append(", ");
-			}
-			sb.append(box.get(key));
-			isTheFirstOne = false;
-		}
-		
-		return sb.toString();
+		return toPrint("");
 	}
 }

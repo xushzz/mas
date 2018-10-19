@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.StrUtil;
@@ -157,6 +158,15 @@ public class EmailCommandRecord extends MexItem implements Comparable<EmailComma
 		return true;
 	}
 	
+	@Override
+	public List toList(String options) {
+    	String dateStr = DateUtil.displayDate(sentDate, DateUtil.DATETIME_UNDERLINE_TIGHT);
+    	String msgFromStr = getMsgFromString(); 
+    	String msgToStr = getMsgToString();
+    	List<String> list = Lists.newArrayList(dateStr, status, subject, msgFromStr, msgToStr);
+    	return list;
+
+	}
 	@Override
 	public String toString() {
 		String template = "{0}_{1}_[{2}][{3}][{4}]";

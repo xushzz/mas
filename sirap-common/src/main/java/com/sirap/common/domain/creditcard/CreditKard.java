@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import com.sirap.basic.domain.MexItem;
-import com.sirap.basic.tool.C;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.StrUtil;
@@ -97,8 +96,8 @@ public class CreditKard extends MexItem {
 	}
 	
 	@Override
-	public void print() {
-		C.pl(this);
+	public String toPrint(String options) {
+		return this.toString();
 	}
 
 	@Override

@@ -1,10 +1,9 @@
 package com.sirap.common.domain;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.domain.MexItem;
-import com.sirap.basic.tool.C;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.StrUtil;
 
@@ -38,7 +37,10 @@ public class InputRecord extends MexItem implements Comparable<InputRecord> {
 	public void setInput(String input) {
 		this.input = input;
 	}
-
+	@Override
+	public List toList(String options) {
+		return Lists.newArrayList(datetime, input);
+	}
 	@Override
 	public boolean isMatched(String keyWord) {
 		String month = DateUtil.parseMonthIndex(keyWord);
@@ -78,26 +80,12 @@ public class InputRecord extends MexItem implements Comparable<InputRecord> {
 	}
 	
 	@Override
-	public void print() {
-		C.pl(this);
-	}
-	
-	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append(datetime);
 		sb.append("\t").append(input);
 		
 		return sb.toString();
-	}
-	
-	@Override
-	public List<String> toPDF() {
-		List<String> list = new ArrayList<String>();
-		list.add(datetime);
-		list.add(input);
-		
-		return list;
 	}
 
 	@Override
