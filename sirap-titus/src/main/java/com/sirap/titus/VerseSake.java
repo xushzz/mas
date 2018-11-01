@@ -1,5 +1,8 @@
 package com.sirap.titus;
 
+import java.util.List;
+
+import com.google.common.collect.Lists;
 import com.sirap.basic.domain.MexItem;
 
 @SuppressWarnings("serial")
@@ -43,7 +46,11 @@ public class VerseSake extends MexItem {
 		result = prime * result + verseNumber;
 		return result;
 	}
-
+	@Override
+	public List toList(String options) {
+		List<Object> items = Lists.newArrayList(verseNumber, value);
+		return items;
+	}
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

@@ -29,6 +29,7 @@ import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.ImageUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.OptionUtil;
+import com.sirap.basic.util.RandomUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XCodeUtil;
 import com.sirap.basic.util.XXXUtil;
@@ -495,6 +496,23 @@ public class CommandFile extends CommandBase {
 			dealWithMist(mist);
 			
 			return true;
+		}
+		
+		solo = parseParam(KEY_JSON + "(\\d{1,3})");
+		if(solo != null) {
+			int depth = Integer.parseInt(solo);
+			List list = Lists.newArrayList(RandomUtil.name(99));
+			for(int i = 0; i < depth - 1; i++) {
+				List temp = Lists.newArrayList();
+				temp.add(list);
+				list = temp;
+			}
+
+			if(OptionUtil.readBooleanPRI(options, "r", false)) {
+				export(JsonUtil.toJson(list));
+			} else {
+				export(JsonUtil.objectToPrettyJsonInLines(list));
+			}
 		}
 		
 		return false;

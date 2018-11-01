@@ -395,7 +395,7 @@ public abstract class CommandBase {
 	}
 
 	public void exportEmptyMsg() {
-		export("The result is empty.");
+		export(Konstants.FAKED_EMPTY);
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -505,6 +505,10 @@ public abstract class CommandBase {
 	
 	public String miscPath() {
 		return pathOf("storage.misc", Konstants.FOLDER_MISC);
+	}
+	
+	public String pathOfImages() {
+		return pathOf("storage.imgs", "imgs");
 	}
 	
 	protected String screenShotPath() {

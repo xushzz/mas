@@ -1,7 +1,5 @@
 package com.sirap.extractor;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.sirap.basic.component.Konstants;
@@ -10,8 +8,11 @@ import com.sirap.basic.tool.C;
 import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
+import com.sirap.basic.util.HttpUtil;
+import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
+import com.sirap.common.domain.Album;
 import com.sirap.common.framework.command.target.TargetConsole;
 import com.sirap.extractor.impl.ExtractorChinaAreaCodeZou114;
 import com.sirap.extractor.impl.ExtractorChinaPostCodeToolcncn;
@@ -20,16 +21,17 @@ import com.sirap.extractor.impl.ExtractorPhoenix;
 	
 public class CommandWholesale extends CommandBase {
 
-	private static final String KEY_SOGOU = "sg";
-	private static final String KEY_QIHU360 = "so";
+	private static final String KEY_SOGOU = "so";
+	private static final String KEY_QIHU360 = "qi";
 	private static final String KEY_PHOENIX = "fenghuang,phoenix";
 	private static final String KEY_POSTCODE = "postcode,youbian";
 	private static final String KEY_AREACODE = "areacode,quhao";
 	private static final String FOLDER_QIHU360 = "so360";
+	private static final String KEY_GET_ALBUM = "ga";
 	
 	{
-		helpMeanings.put("sogou.url", ExtractorUtil.HOMEPAGE_SOGOU);
-		helpMeanings.put("qihu360.url", ExtractorUtil.HOMEPAGE_QIHU360);
+		helpMeanings.put("sogou.url", LinksFetcher.HOMEPAGE_SOGOU);
+		helpMeanings.put("qihu360.url", LinksFetcher.HOMEPAGE_QIHU360);
 		helpMeanings.put("qihu360.folder", FOLDER_QIHU360);
 		helpMeanings.put("163.netease.url", "http://www.163.com");
 		helpMeanings.put("phoenix.url", ExtractorPhoenix.HOMEPAGE);
@@ -39,35 +41,44 @@ public class CommandWholesale extends CommandBase {
 	
 	public boolean handle() {
 		
+		solo = parseParam(KEY_GET_ALBUM + "\\s(.+)");
+		if(solo != null) {
+			if(HttpUtil.isHttp(solo)) {
+				Album al = LinksFetcher.fetchAlbum(solo);
+				if(al == null) {
+					exportEmptyMsg();
+				} else {
+					if(al.isUseUnique()) {
+						useLowOptions("+ts");
+					} else {
+						useLowOptions("-ts");
+					}
+					dealWithLinks(al.getLinks(), al.getName(), al.getTag());
+				}
+				
+				return true;
+			}
+		}
+		
 		solo = parseParam(KEY_SOGOU + "\\s(.*?)");
 		if(isSingleParamNotnull()) {
-			List<String> links = ExtractorUtil.sogouImageLinks(solo);
-			if(!EmptyUtil.isNullOrEmpty(links)) {
-				String folderName = FileUtil.generateLegalFileName(solo);
-				String path = pathOf("storage.sogou", Konstants.FOLDER_SOGOU);
-				String whereToSave = path + folderName + File.separator;
-				
-				batchDownload(links, whereToSave);
-			}
+			useLowOptions("-ts");
+			List<String> links = LinksFetcher.sogouImageLinks(solo);
+			dealWithLinks(links, solo, "sogou");
 			
 			return true;
 		}
 		
 		solo = parseParam(KEY_QIHU360 + "\\s(.*?)");
 		if(isSingleParamNotnull()) {
-			List<String> links = ExtractorUtil.qihu360ImageLinks(solo);
-			if(!EmptyUtil.isNullOrEmpty(links)) {
-				String folderName = FileUtil.generateLegalFileName(solo);
-				String path = pathOf("storage.so360", FOLDER_QIHU360);
-				String whereToSave = path + folderName + File.separator;
-				
-				batchDownload(links, whereToSave);
-			}
+			useLowOptions("-ts");
+			List<String> links = LinksFetcher.qihu360ImageLinks(solo);
+			dealWithLinks(links, solo, "qihu");
 			
 			return true;
 		}
 		
-		String types = StrUtil.connect(new ArrayList<String>(ExtractorNetease.TYPE_METHOD.keySet()), "|");
+		String types = StrUtil.regexOfKeys(ExtractorNetease.TYPE_METHOD);
 		solo = parseParam("163(" + types+ ")");
 		if(solo != null) {
 			String type = solo.toLowerCase();
@@ -100,6 +111,23 @@ public class CommandWholesale extends CommandBase {
 		}
 		
 		return false;
+	}
+	
+	private void dealWithLinks(List<String> links, String about, String tag) {
+		if(EmptyUtil.isNullOrEmpty(links)) {
+			export(links);
+			return;
+		}
+		
+		boolean download = OptionUtil.readBooleanPRI(options, "do", true);
+		if(download) {
+			String temp = StrUtil.occupy("{0}({1}{2})", about, tag, links.size());
+			String folderName = FileUtil.generateLegalFileName(temp);
+			String whereToSave = pathOfImages() + folderName + "/";
+			batchDownload(links, whereToSave);
+		} else {
+			export(links);
+		}
 	}
 	
 	public boolean batchDownload(List<String> links, String whereToSave) {

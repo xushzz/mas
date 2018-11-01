@@ -4,7 +4,6 @@ import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.List;
 
-import com.google.common.collect.Lists;
 import com.sirap.basic.json.JsonConvertManager;
 import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.util.DateUtil;
@@ -33,7 +32,7 @@ public class D {
 	 * solid response
 	 * [DEBUG] D.pl => from Boston Celtics to Golden State Warriors
 	 * @param obj
-	 */
+	 */	
 	public static void pl(Object obj) {
 		String simple = simpleClassNameDotMethodOf(current());
 		StackTraceElement parent = parent();
@@ -43,6 +42,11 @@ public class D {
 			type = obj.getClass().getName();
 		}
 		println(StrUtil.occupy(temp, simple, type, StrUtil.of(obj), parent));
+	}
+	
+	public static void at() {
+		StackTraceElement parent = parent();
+		println(parent);
 	}
 	
 	/***
@@ -296,17 +300,5 @@ public class D {
 
 		int index = k + 3;
 		return items[index];
-	}
-	
-	public static List listOf(int depth) {
-		List list = Lists.newArrayList(RandomUtil.name());
-		for(int i = 0; i < depth; i++) {
-			List temp = Lists.newArrayList();
-			temp.add(list);
-			list = temp;
-			
-		}
-
-		return list;
 	}
 }

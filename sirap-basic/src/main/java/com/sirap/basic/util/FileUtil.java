@@ -432,6 +432,46 @@ public class FileUtil {
 		return holder;
 	}
 	
+	public static List<String> getImageShortnamesFrom(String dir) {
+		List<String> names = Lists.newArrayList();
+		(new File(dir)).listFiles(new FileFilter() {
+			@Override
+			public boolean accept(File current) {
+				String path = current.getAbsolutePath();
+				String extension = FileUtil.extensionOf(path);
+				if(StrUtil.isIn(extension, FileUtil.EXTENSIONS_IMAGE)) {
+					names.add(current.getName());
+				}
+				return true;
+			}
+		});
+		
+		return names;
+	}
+	
+	public static List<Map<String, Object>> getSubFolderShortnamesFrom(String dir) {
+		List<Map<String, Object>> items = Lists.newArrayList();
+		(new File(dir)).listFiles(new FileFilter() {
+			@Override
+			public boolean accept(File current) {
+				if(!current.isDirectory()) {
+					return false;
+				}
+				
+				int countOfSubfiles = current.list().length;
+				String folderName = current.getName();
+			
+				Map<String, Object> props = Amaps.createMap("size", countOfSubfiles);
+				props.put("name", folderName);
+				items.add(props);
+				
+				return true;
+			}
+		});
+		
+		return items;
+	}
+	
 	public static String generateFilenameByUrl(String httpUrl) {
 		return generateFilenameByUrl(httpUrl, null);
 	}

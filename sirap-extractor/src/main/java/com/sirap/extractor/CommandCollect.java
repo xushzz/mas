@@ -48,8 +48,8 @@ import com.sirap.extractor.manager.RssExtractorManager;
 
 public class CommandCollect extends CommandBase {
 
-	private static final String KEY_WEATHER = "wea";	
-	private static final String KEY_CAR_DETAIL = "card";	
+	private static final String KEY_WEATHER = "wea";
+	private static final String KEY_CAR_DETAIL = "card";
 	private static final String KEY_CARNO = "car";
 	private static final String KEY_PHONE_MOBILE = "@";
 	private static final String KEY_DICTONARY = "ia";
@@ -65,7 +65,6 @@ public class CommandCollect extends CommandBase {
 	private static final String KEY_THIS_DAY_IN_HISTORY_CHINESE = "this";
 	private static final String KEY_THIS_DAY_IN_HISTORY_ENGLISH = "hist";
 	private static final String KEY_NOBEL_PRIZE = "nobel";
-	private static final String KEY_SINA = "sina";
 
 	{
 		helpMeanings.put("money.forex.url", XRatesForexRateExtractor.URL_X_RATES);
@@ -371,16 +370,6 @@ public class CommandCollect extends CommandBase {
 			export2(items, solo);
 			
 			return true;
-		}
-		
-		solo = parseParam(KEY_SINA + "\\s(.+)");
-		if(solo != null) {
-			if(HttpUtil.isHttp(solo)) {
-				List<String> items = ExtractorUtil.sinaSlides(solo);
-				export(items);
-				
-				return true;
-			}
 		}
 
 		return false;

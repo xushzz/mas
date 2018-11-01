@@ -7,109 +7,18 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.component.Extractor;
 import com.sirap.basic.json.JsonUtil;
+import com.sirap.basic.tool.D;
+import com.sirap.basic.util.RandomUtil;
 import com.sirap.basic.util.StrUtil;
+import com.sirap.basic.util.XXXUtil;
+import com.sirap.common.domain.Album;
 import com.sirap.common.domain.Link;
 
 public class ExtractorUtil {
 
-	public static final String HOMEPAGE_QIHU360 = "http://image.so.com";
-	public static final String HOMEPAGE_SOGOU = "http://pic.sogou.com";
-	public static final String SINA_SLIDES = "http://slide.sports.sina.com.cn/cba/slide_2_792_193598.html";
-
-	public static List<String> sinaSlides(final String albumUrl) {
-		Extractor<String> frank = new Extractor<String>() {
-			
-			@Override
-			public String getUrl() {
-				printFetching = true;
-				return albumUrl;
-			}
-			
-			@Override
-			protected void parse() {
-				String regex = JsonUtil.createRegexKey("image_url");
-				Matcher ma = createMatcher(regex);
-				while(ma.find()) {
-					String temp = ma.group(1);
-					temp = temp.replace("\\", "");
-					mexItems.add(temp);
-				}
-			}
-		};
-		
-		frank.process();
-		
-		return frank.getItems();
-	}
-
-	public static List<String> sogouImageLinks(final String keyword) {
-		Extractor<String> frank = new Extractor<String>() {
-			
-			public static final String URL = HOMEPAGE_SOGOU + "/pics?query=";
-			
-			@Override
-			public String getUrl() {
-				printFetching = true;
-				String param = encodeURLParam(keyword);
-				return StrUtil.occupy(URL + param);
-			}
-			
-			@Override
-			protected void parse() {
-				String regex = "\"pic_url\":\"(.*?)\"";
-				Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
-				while(m.find()) {
-					String imageUrl = m.group(1);
-					mexItems.add(imageUrl);
-				}
-			}
-		};
-		
-		frank.process();
-		
-		return frank.getItems();
-	}
-	
-	public static List<String> qihu360ImageLinks(final String keyword) {
-		Extractor<String> frank = new Extractor<String>() {
-			
-			public static final String URL = HOMEPAGE_QIHU360 + "/i?q=";
-			
-			@Override
-			public String getUrl() {
-				printFetching = true;
-				String param = encodeURLParam(keyword);
-				return StrUtil.occupy(URL + param);
-			}
-			
-			@Override
-			protected void parse() {
-				String regex = "\"img\":\"(.*?)\"";
-				Matcher m = createMatcher(regex);
-				while(m.find()) {
-					String temp = m.group(1);
-					String item = temp.replace("\\", "");
-					mexItems.add(item);
-				}
-			}
-		};
-		
-		frank.process();
-		
-		return frank.getItems();
-	}
-	
-	public static List<String> items2Links(List<Link> links) {
-		List<String> records = new ArrayList<String>();
-		for(Link link:links) {
-			records.add(link.getHref());
-		}
-		
-		return records;
-	}
-	
 	@SuppressWarnings("unchecked")
 	public static List<String> photos(String method, Class<?> clazz) {
 		
@@ -125,32 +34,12 @@ public class ExtractorUtil {
 		return Collections.EMPTY_LIST; 
 	}
 	
-	public static List<String> imageLinks(final String pageUrl, final String imageUrlExp) {
+	public static List<String> items2Links(List<Link> links) {
+		List<String> records = new ArrayList<String>();
+		for(Link link:links) {
+			records.add(link.getHref());
+		}
 		
-		Extractor<Link> frank = new Extractor<Link>() {
-			
-			@Override
-			public String getUrl() {
-				return pageUrl;
-			}
-			
-			@Override
-			protected void parse() {
-				String regex = imageUrlExp;
-				Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
-				int count = m.groupCount();
-				while(m.find()) {
-					if(count < 1) {
-						break;
-					}
-					String temp = m.group(1);
-					mexItems.add(new Link(temp));
-				}
-			}
-		};
-		
-		frank.process();
-		
-		return ExtractorUtil.items2Links(frank.getItems());
+		return records;
 	}
 }
