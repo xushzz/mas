@@ -12,6 +12,7 @@ import java.util.Map;
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.component.map.AlinkMap;
+import com.sirap.basic.exception.MexException;
 import com.sirap.basic.math.PermutationGenerator;
 import com.sirap.basic.tool.C;
 
@@ -582,5 +583,64 @@ public class MathUtil {
 		Arrays.fill(arr, value);
 		
 		return arr;
+	}
+
+	/***
+	 * 1. no space
+	 * @param source "1,5,3,5-7,23"
+	 * @return "1,5,3,6,7,23"
+	 */
+	public static List<Integer> parsePrintPageNumbers(String source, int maxPageNumber) {
+		int maxLength = String.valueOf(Integer.MAX_VALUE).length() + 1;
+		List<Integer> numbers = new ArrayList<>();
+		List<String> items = StrUtil.split(source, ',');
+		String tempRegex = "(\\d{1,{0}}|(\\d{1,{0}})\\s*\\-\\s*(\\d{1,{0}}))";
+		String regex = StrUtil.occupy(tempRegex, maxLength);
+		for(String item : items) {
+			String[] params = StrUtil.parseParams(regex, item);
+			if(params == null) {
+				throw new MexException("Illegal page numbers expression: " + item + " from " + source + ".");
+			}
+			
+			String fixedValue = params[0];
+			String rangeA = params[1];
+			String rangeB = params[2];
+			
+			if(rangeA == null) {
+				Integer value = MathUtil.toInteger(fixedValue);
+				if(value > maxPageNumber) {
+					throw new MexException("The page number " + value + " should not exceed max page number " + maxPageNumber + ".");
+				}
+				if(!numbers.contains(value)) {
+					numbers.add(value);
+				}
+			} else {
+				Integer start = MathUtil.toInteger(rangeA);
+				Integer end = MathUtil.toInteger(rangeB);
+				if(start <= end) {
+					if(end > maxPageNumber) {
+						throw new MexException("The page number " + end + " should not exceed max page number " + maxPageNumber + ".");
+					}
+					for(int i = start; i <= end; i++) {
+						int value = i;
+						if(!numbers.contains(value)) {
+							numbers.add(value);
+						}
+					}
+				} else {
+					if(start > maxPageNumber) {
+						throw new MexException("The page number " + start + " should not exceed max page number " + maxPageNumber + ".");
+					}
+					for(int i = start; i >= end; i--) {
+						int value = i;
+						if(!numbers.contains(value)) {
+							numbers.add(value);
+						}
+					}
+				}
+			}
+		}
+		
+		return numbers;
 	}
 }

@@ -1,7 +1,8 @@
 so fire            search online sogou photos by keyword fire, and download to folder sogou/fire
 so fire            search sogou photos, number is fixed as 48, courtesy of ${sogou.url}
-qi fire            search online qihu360 photos by keyword fire, and download to folder ${qihu360.folder}/fire
-qi fire            search qihu360 photos, number is fixed as 60, courtesy of ${qihu360.url}
+hu fire            search online qihu360 photos by keyword fire, and download to folder ${qihu360.folder}/fire
+hu fire            search qihu360 photos, get image links from first page, courtesy of ${qihu360.url}
+hu3 fire            search qihu360 photos, get image links from page first till page K, three in this case
 163[seriea, china, social, bundes, laliga, premier, uefa], courtesy of ${163.netease.url}
 163social          display 163 social photo URLs, courtesy of ${163.netease.url}
 phoenix            display phoenix social photo URLs, courtesy of ${phoenix.url}
@@ -9,4 +10,5 @@ postcode,youbian   display all post code info, courtesy of ${youbian.postcode.ur
 areacode,quhao     display all area code info, courtesy of ${quhao.areacode.url}
 ga http://slide.sports.sina.com.cn/n_n/slide_2_789_195999.html  get albums from sina, netease, weixin
 ga option like $+do, to download as default value, same for sogou, qihu and so on
-ver=11/1/2018, IV  EXTRACTOR-WHOLESALE1.0.4-LAWSUIT
+ga keyword         if not url, then use qihu360 as search engine
+ver=11/5/2018, I  EXTRACTOR-WHOLESALE1.0.5-LAWSUIT

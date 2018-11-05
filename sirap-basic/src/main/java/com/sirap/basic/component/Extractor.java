@@ -144,6 +144,10 @@ public abstract class Extractor<T extends Object> {
 		return this;
 	}
 	
+	public String useHttps(String webUrl) {
+		return webUrl.replaceAll("^http:", "https:");
+	}
+	
 	public Extractor<T> useGBK() {
 		this.charset = Konstants.CODE_GBK;
 		return this;

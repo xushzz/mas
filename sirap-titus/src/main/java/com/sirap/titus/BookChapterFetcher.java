@@ -31,7 +31,7 @@ public class BookChapterFetcher extends Worker<ChapterSense> {
 	@Override
 	public void process(ChapterSense sense) {
 		String bookFolderDir = storage + sense.getBook().getNameWithNiceOrder();
-		FileUtil.makeDirectoriesIfNonExist(bookFolderDir);
+		FileUtil.makeDirectories(bookFolderDir);
 		
 		String fileName = sense.getChapterNameWithNiceOrder() +  fileType;
 		String fullFileName = bookFolderDir + File.separator + fileName;

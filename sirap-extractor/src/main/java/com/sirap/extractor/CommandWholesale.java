@@ -1,7 +1,9 @@
 package com.sirap.extractor;
 
+import java.io.File;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.tool.C;
@@ -9,6 +11,8 @@ import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.HttpUtil;
+import com.sirap.basic.util.ImageUtil;
+import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.common.command.CommandBase;
@@ -22,17 +26,16 @@ import com.sirap.extractor.impl.ExtractorPhoenix;
 public class CommandWholesale extends CommandBase {
 
 	private static final String KEY_SOGOU = "so";
-	private static final String KEY_QIHU360 = "qi";
+	private static final String KEY_QIHU360 = "hu";
+	private static final String KEY_WEIBO = "wo";
 	private static final String KEY_PHOENIX = "fenghuang,phoenix";
 	private static final String KEY_POSTCODE = "postcode,youbian";
 	private static final String KEY_AREACODE = "areacode,quhao";
-	private static final String FOLDER_QIHU360 = "so360";
 	private static final String KEY_GET_ALBUM = "ga";
 	
 	{
 		helpMeanings.put("sogou.url", LinksFetcher.HOMEPAGE_SOGOU);
 		helpMeanings.put("qihu360.url", LinksFetcher.HOMEPAGE_QIHU360);
-		helpMeanings.put("qihu360.folder", FOLDER_QIHU360);
 		helpMeanings.put("163.netease.url", "http://www.163.com");
 		helpMeanings.put("phoenix.url", ExtractorPhoenix.HOMEPAGE);
 		helpMeanings.put("youbian.postcode.url", ExtractorChinaPostCodeToolcncn.HOMEPAGE);
@@ -57,6 +60,12 @@ public class CommandWholesale extends CommandBase {
 				}
 				
 				return true;
+			} else {
+				useLowOptions("-ts");
+				int maxpage = 3;
+				String keyword = solo;
+				List<String> links = LinksFetcher.qihu360ImageLinks(keyword, maxpage);
+				dealWithLinks(links, keyword, "qihu");
 			}
 		}
 		
@@ -69,11 +78,33 @@ public class CommandWholesale extends CommandBase {
 			return true;
 		}
 		
-		solo = parseParam(KEY_QIHU360 + "\\s(.*?)");
+		params = parseParams(KEY_QIHU360 + "(|\\d{1,3})\\s(.*?)");
+		if(isParamsNotnull()) {
+			useLowOptions("-ts");
+			int maxpage = MathUtil.toInteger(params[0], 1);
+			String keyword = params[1];
+			List<String> links = LinksFetcher.qihu360ImageLinks(keyword, maxpage);
+			dealWithLinks(links, keyword, "qihu");
+			
+			return true;
+		}
+		
+		solo = parseParam(KEY_WEIBO + "\\s(.*?)");
 		if(isSingleParamNotnull()) {
 			useLowOptions("-ts");
-			List<String> links = LinksFetcher.qihu360ImageLinks(solo);
-			dealWithLinks(links, solo, "qihu");
+			int maxPage = OptionUtil.readIntegerPRI(options, "p", 1);
+			List<String> total = Lists.newArrayList();
+			for(int page = 1; page <= maxPage; page++) {
+				List<String> links = LinksFetcher.weiboImageLinks(solo, page);
+				if(links.isEmpty()) {
+					C.msg("Found no images from page {0}", page);
+					break;
+				} else {
+					total.addAll(links);
+				}
+			}
+			
+			dealWithLinks(total, solo, "weibo");
 			
 			return true;
 		}
@@ -121,9 +152,11 @@ public class CommandWholesale extends CommandBase {
 		
 		boolean download = OptionUtil.readBooleanPRI(options, "do", true);
 		if(download) {
-			String temp = StrUtil.occupy("{0}({1}{2})", about, tag, links.size());
-			String folderName = FileUtil.generateLegalFileName(temp);
-			String whereToSave = pathOfImages() + folderName + "/";
+			String origin = StrUtil.occupy("{0}({1})", about, tag);
+			String temp = FileUtil.generateUrlFriendlyFilename(origin);
+			temp = temp.replace("[", "(");
+			temp = temp.replace("]", ")");
+			String whereToSave = pathOfImages() + temp + "/";
 			batchDownload(links, whereToSave);
 		} else {
 			export(links);
@@ -133,7 +166,18 @@ public class CommandWholesale extends CommandBase {
 	public boolean batchDownload(List<String> links, String whereToSave) {
 		long start = System.currentTimeMillis();
 		
-		List<String> pathList = downloadFiles(whereToSave, links, Konstants.DOT_JPG);
+		List<String> files = downloadFiles(whereToSave, links, Konstants.DOT_JPG);
+		List<String> pathList = Lists.newArrayList();
+		for(String filepath : files) {
+			File file = new File(filepath);
+			if(file.exists()) {
+				if(ImageUtil.isValidImage(file.getAbsolutePath())) {
+					pathList.add(filepath);
+				} else {
+//					file.delete();
+				}
+			}
+		}
 		
 		if(!pathList.isEmpty()) {
 			String lastFile = pathList.get(pathList.size() - 1);

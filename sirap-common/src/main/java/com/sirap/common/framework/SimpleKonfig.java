@@ -155,7 +155,7 @@ public class SimpleKonfig extends Konfig {
 		}
 		
 		storage = originalStorage.replace("/", File.separator);
-		FileUtil.makeDirectoriesIfNonExist(storage);
+		FileUtil.makeDirectories(storage);
 
 		commandNodes = parseCommandNodes();
 		if(EmptyUtil.isNullOrEmpty(commandNodes)) {
@@ -381,7 +381,7 @@ public class SimpleKonfig extends Konfig {
 			path = getStorageWithSeparator() + temp;
 		}
 		if(toCreate) {
-			FileUtil.makeDirectoriesIfNonExist(path);
+			FileUtil.makeDirectories(path);
 		}
 
 		return FileUtil.unixSeparator(path) + "/";

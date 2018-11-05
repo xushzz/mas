@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.comparator.StringSenseComparator;
@@ -301,5 +303,10 @@ public class Colls {
 		}
 		
 		return items;
+	}
+	
+	public static <T extends Object> List<T> distinctOf(List<T> items) {
+		Set<T> okset = new LinkedHashSet<>(items);
+		return Lists.newArrayList(okset);
 	}
 }

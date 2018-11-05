@@ -604,7 +604,7 @@ public abstract class CommandBase {
 		if(FileUtil.exists(filePath)) {
 			C.pl("Existed => " + filePath);
 		} else {
-			FileUtil.makeDirectoriesIfNonExist(storage);
+			FileUtil.makeDirectories(storage);
 			C.pl("Fetching... " + httpUrl);
 			boolean flag = IOUtil.downloadNormalFile(httpUrl, filePath, false);
 			if(flag) {

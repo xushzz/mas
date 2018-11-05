@@ -20,7 +20,7 @@ public class HistoryEventsFetcher extends Worker<MexObject> {
 	
 	@Override
 	public void process(MexObject mo) {
-		FileUtil.makeDirectoriesIfNonExist(location);
+		FileUtil.makeDirectories(location);
 		
 		String urlParam = mo.getString();
 		String shortName = urlParam.replace("-", "") + Konstants.DOT_TXT;

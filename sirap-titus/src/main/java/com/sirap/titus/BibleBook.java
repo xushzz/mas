@@ -1,5 +1,8 @@
 package com.sirap.titus;
 
+import java.util.List;
+
+import com.google.common.collect.Lists;
 import com.sirap.basic.domain.MexItem;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.util.StrUtil;
@@ -59,6 +62,15 @@ public class BibleBook extends MexItem implements Cloneable {
 
 	public int getMaxChapter() {
 		return maxChapter;
+	}
+	
+	@Override
+	public List toList(String options) {
+		List<String> items = Lists.newArrayList();
+		items.add("#" + order);
+		items.add(name);
+		items.add(maxChapter + " chapters");
+		return items;
 	}
 
 	public boolean isMatched(String keyWord, boolean caseSensitive) {

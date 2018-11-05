@@ -505,7 +505,7 @@ public class IOUtil {
         try {
             inBuff = new BufferedInputStream(new FileInputStream(sourceFile));
         	String targetPath = StrUtil.useSeparator(targetFolder, sourceFile.getName()); 
-        	FileUtil.makeDirectoriesIfNonExist(targetFolder);
+        	FileUtil.makeDirectories(targetFolder);
             outBuff = new BufferedOutputStream(new FileOutputStream(targetPath));
 
             byte[] b = new byte[Konstants.FILE_SIZE_STEP * 5];
@@ -551,7 +551,7 @@ public class IOUtil {
 	}
 	
 	public static List<String> downloadFiles(String storage, List<String> links, String suffixWhenObscure, final int threads, boolean useUniqueFilename) {
-		FileUtil.makeDirectoriesIfNonExist(storage);
+		FileUtil.makeDirectories(storage);
 		
 		InternetFileFetcher dinesh = new InternetFileFetcher(storage, suffixWhenObscure);
 		dinesh.setUseUniqueFilename(useUniqueFilename);

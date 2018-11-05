@@ -10,8 +10,8 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -22,7 +22,6 @@ import java.util.regex.Pattern;
 import javax.swing.filechooser.FileSystemView;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.component.map.AlinkMap;
 import com.sirap.basic.domain.MexFile;
@@ -58,7 +57,7 @@ public class FileUtil {
 	public static final List<String> EXTENSIONS_HTML = StrUtil.split("htm,html");
 	public static final List<String> EXTENSIONS_SIRAP = StrUtil.split("sir,aka");
 
-	public static final char[] BAD_CHARS_FOR_FILENAME_WINDOWS = {'/','\\',':','\"','*','?','|','>','<'};
+	public static final char[] BAD_CHARS_FOR_FILENAME_WINDOWS = {'\\','/',':','*','?','\"','<','>','|'};
 	public static final char[] BAD_CHARS_FOR_FILENAME_MAC = {'/','?','~','^','&','*'};
 	
 	public static final String SLASH_DOUBLE = "\\\\";
@@ -154,18 +153,16 @@ public class FileUtil {
 		return file.exists();
 	}
 
-	public static boolean makeDirectoriesIfNonExist(String storage) {
-		if (EmptyUtil.isNullOrEmptyOrBlank(storage)) {
-			return false;
-		}
+	public static void makeDirectories(String pathname) {
+		XXXUtil.nullOrEmptyCheck(pathname, "directory");
 
-		File file = new File(storage);
-		if (!file.exists()) {
-			file.mkdirs();
-			return false;
+		File file = new File(pathname);
+		if(file.exists()) {
+			return;
 		}
-
-		return true;
+		
+		boolean flag = file.mkdirs();
+		XXXUtil.shouldBeTrue(flag, "Can't create directories by: " + pathname);
 	}
 
 	public static String generateFileName(String prefix, String name) {
@@ -276,6 +273,32 @@ public class FileUtil {
 			return items;
 		}
 	}
+	
+	public static String generateUrlFriendlyFilename(String source) {
+		if(source == null) {
+			return null;
+		}
+		
+		String badChars = new String(BAD_CHARS_FOR_FILENAME_WINDOWS);
+		if(PanaceaBox.isMacOrLinuxOrUnix()) {
+			badChars = new String(BAD_CHARS_FOR_FILENAME_MAC);
+		}
+		
+		StringBuffer sb = new StringBuffer();
+		for(int i = 0; i < source.length(); i++) {
+			char key = source.charAt(i);
+			if(badChars.indexOf(key) >= 0) {
+				sb.append("_");
+			} else {
+				sb.append(key);
+			}
+		}
+		
+		String fileName = sb.toString(); 
+		fileName = fileName.replace("\t", " ");
+
+		return fileName;
+	}
 
 	public static String generateLegalFileName(String source) {
 		if(source == null) {
@@ -302,6 +325,7 @@ public class FileUtil {
 
 		return fileName;
 	}
+	
 	public static String generateLegalFileNameBySpace(String source) {
 		if(source == null) {
 			return null;
@@ -371,105 +395,35 @@ public class FileUtil {
 		return null;
 	}
 	
-	public static List<Map<String, Object>> listShortnames(String dir) {
-		final List<Map<String, Object>> holder = Lists.newArrayList();
-		List<File> files = Lists.newArrayList();
-		(new File(dir)).listFiles(new FileFilter() {
-			@Override
-			public boolean accept(File current) {
-				if(current.isFile()) {
-					files.add(current);
-				}
-				return true;
-			}
-		});
-		
-		Collections.sort(files, new Comparator<File>(){
-			@Override
-			public int compare(File obj1, File obj2) {
-				long last1 = obj1.lastModified();
-				long last2 = obj2.lastModified();
-				
-				int va = 0;
-				if(last1 > last2) {
-					va = -1;
-				} else if (last1 < last2) {
-					va = 1;
-				}
-				
-				return va;
-			}
-		});
-		
-//		C.listSome(files, 10);
-
-		int count = 0, next, previous;
-		for(File current : files) {
-			next = count + 1;
-			if(next >= files.size()) {
-				next = 0;
-			}
-
-			previous = count - 1;
-			if(previous < 0) {
-				previous = files.size() - 1;
-			}
-			
-			count++;
-			
-			String path = current.getAbsolutePath();
-			String extension = FileUtil.extensionOf(path);
-			Map<String, Object> fileitem = Maps.newConcurrentMap();
-			fileitem.put("istxt", StrUtil.isIn(extension, FileUtil.EXTENSIONS_TEXT));
-			fileitem.put("isimage", StrUtil.isIn(extension, FileUtil.EXTENSIONS_IMAGE));
-			fileitem.put("name", current.getName());
-			fileitem.put("next", files.get(next).getName());
-			fileitem.put("previous", files.get(previous).getName());
-			fileitem.put("size", FileUtil.formatSize(current.length()));
-			holder.add(fileitem);
+	public static List<File> getSubFilesByLastModifiedAscend(String dir) {
+		File[] files = (new File(dir)).listFiles();
+		if(EmptyUtil.isNullOrEmpty(files)) {
+			return Lists.newArrayList();
 		}
 		
-		return holder;
+		List<File> list = Arrays.asList(files);
+		Collections.sort(list, ComparatorUtils.fileLastModifiedAscend());
+		
+		return list;
 	}
 	
-	public static List<String> getImageShortnamesFrom(String dir) {
-		List<String> names = Lists.newArrayList();
-		(new File(dir)).listFiles(new FileFilter() {
-			@Override
-			public boolean accept(File current) {
-				String path = current.getAbsolutePath();
-				String extension = FileUtil.extensionOf(path);
-				if(StrUtil.isIn(extension, FileUtil.EXTENSIONS_IMAGE)) {
-					names.add(current.getName());
-				}
-				return true;
-			}
-		});
+	public static List<File> getSubFilesByNameAscend(String dir) {
+		File[] files = (new File(dir)).listFiles();
+		if(EmptyUtil.isNullOrEmpty(files)) {
+			return Lists.newArrayList();
+		}
 		
-		return names;
+		List<File> list = Arrays.asList(files);
+		Collections.sort(list, ComparatorUtils.fileNameAscend());
+		
+		return list;
 	}
 	
-	public static List<Map<String, Object>> getSubFolderShortnamesFrom(String dir) {
-		List<Map<String, Object>> items = Lists.newArrayList();
-		(new File(dir)).listFiles(new FileFilter() {
-			@Override
-			public boolean accept(File current) {
-				if(!current.isDirectory()) {
-					return false;
-				}
-				
-				int countOfSubfiles = current.list().length;
-				String folderName = current.getName();
-			
-				Map<String, Object> props = Amaps.createMap("size", countOfSubfiles);
-				props.put("name", folderName);
-				items.add(props);
-				
-				return true;
-			}
-		});
+	public static List<File> getSubFilesByLastModifiedDescend(String dir) {
+		List<File> list = getSubFilesByLastModifiedAscend(dir);
+		Collections.reverse(list);
 		
-		return items;
+		return list;
 	}
 	
 	public static String generateFilenameByUrl(String httpUrl) {
@@ -631,7 +585,6 @@ public class FileUtil {
 	 */
 	public static List<ValuesItem> availableDiskDetails() {
 		List<ValuesItem> items = Lists.newArrayList();
-		String template = "{0} {3}% available {1} out of {2}";
 		FileSystemView dan = FileSystemView.getFileSystemView();
 		
 		for(char flag = 'A'; flag <= 'Z'; flag++) {
@@ -703,7 +656,11 @@ public class FileUtil {
 			double max = Math.pow(base, (i + 1));
 			if(sizeInByte < max) {
 				double number = sizeInByte / Math.pow(base, i);
+				char unit = units.charAt(i);
 				value = pretty.format(number) + units.charAt(i);
+				if(unit != 'B') {
+					value += 'B';
+				}
 				
 				break;
 			}

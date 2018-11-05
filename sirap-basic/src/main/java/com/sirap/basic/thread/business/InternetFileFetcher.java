@@ -42,7 +42,7 @@ public class InternetFileFetcher extends WorkerItemOriented<String, String> {
 			status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "Existed =>", filePath);
 		} else {
 			status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "Fetching...", url);
-			FileUtil.makeDirectoriesIfNonExist(storage);
+			FileUtil.makeDirectories(storage);
 			boolean flag = IOUtil.downloadNormalFile(url, filePath, true);
 			if(flag) {
 				status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "Saved =>", filePath);

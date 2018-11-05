@@ -158,21 +158,39 @@ public class ImageUtil {
 			throw new MexException(ex.getMessage());
 		}
 	}
-
-	public static String readImageWidthHeight(String filepath, String connector) {
-		File file = new File(filepath);
-
+	
+	public static boolean isValidImage(String filepath) {
+		return isValidImage(new File(filepath));
+	}
+	
+	public static boolean isValidImage(File file) {
 		try {
 			BufferedImage image = ImageIO.read(file);
 			if(image == null) {
-				String msg = "Not valid image [" + filepath + "]";
-				throw new MexException(msg);
+				return false;
 			}
-			String value = image.getWidth() + connector + image.getHeight();
+			
+			return true;
+		} catch (Exception ex) {
+			return false;
+		}
+	}
 
+	public static String readImageWidthHeight(String filepath, String connector) {
+		return readImageWidthHeight(new File(filepath), connector);
+	}
+
+	public static String readImageWidthHeight(File file, String connector) {
+		try {
+			BufferedImage image = ImageIO.read(file);
+			if(image == null) {
+				return null;
+			}
+			
+			String value = image.getWidth() + connector + image.getHeight();
 			return value;
 		} catch (Exception ex) {
-			throw new MexException(ex);
+			return null;
 		}
 	}
 	

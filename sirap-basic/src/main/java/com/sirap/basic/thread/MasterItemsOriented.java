@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.sirap.basic.component.map.AconcMap;
+import com.google.common.collect.Maps;
 
 public class MasterItemsOriented<PARAM extends Object, RETURN extends Object> extends MasterBase<PARAM> {
 
-	private Map<PARAM, List<RETURN>> result = new AconcMap<PARAM, List<RETURN>>();
+	private Map<PARAM, List<RETURN>> result = Maps.newConcurrentMap();
 	
 	public MasterItemsOriented(List<PARAM> tasks, WorkerItemsOriented<PARAM, RETURN> w) {
 		setTasks(tasks);

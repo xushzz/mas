@@ -120,7 +120,7 @@ public class CommandBible extends CommandBase {
 				fileType = "." + params[1];
 			}
 			String targetFolder = pathBibleStorage() + versionCode + File.separator;
-			FileUtil.makeDirectoriesIfNonExist(targetFolder);
+			FileUtil.makeDirectories(targetFolder);
 			BibleManager.g().downloadAllBooks(targetFolder, versionCode, fileType);
 			C.pl2("Done with downloading as " + fileType);
 			

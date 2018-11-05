@@ -188,12 +188,16 @@ public class CommandFile extends CommandBase {
 						items.add("chars: " + count[1]);
 						items.add("coding: " + IOUtil.charsetOfTextFile(filePath));
 					} else if(FileOpener.isImageFile(filePath)) {
-						items.add("area: " + ImageUtil.readImageWidthHeight(filePath, " x "));
-						String format = ImageUtil.getRealFormat(filePath);
-						if(!StrUtil.endsWith(filePath, format)) {
-							items.add("format: " + format);
+						String area = ImageUtil.readImageWidthHeight(filePath, " x ");
+						if(area != null) {
+							items.add("area: " + ImageUtil.readImageWidthHeight(filePath, " x "));
+							String format = ImageUtil.getRealFormat(filePath);
+							if(!StrUtil.endsWith(filePath, format)) {
+								items.add("format: " + format);
+							}
+						} else {
+							items.add("info: invalid image");
 						}
-						
 					} else {
 						MediaFileAnalyzer mario = MediaHelper.getMediaFileAnalyzer(filePath);
 						if(mario != null) {

@@ -108,8 +108,12 @@ public class XXXUtil {
 	}
 	
 	public static void shouldBeTrue(boolean flag) {
+		shouldBeTrue(flag, "variable should be true.");
+	}
+	
+	public static void shouldBeTrue(boolean flag, String msg) {
 		if(!flag) {
-			throw new MexException("variable should be true.");
+			throw new MexException(msg);
 		}
 	}
 	
