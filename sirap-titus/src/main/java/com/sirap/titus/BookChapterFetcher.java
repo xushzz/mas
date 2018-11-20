@@ -42,7 +42,7 @@ public class BookChapterFetcher extends Worker<ChapterSense> {
 
 		int count = countOfTasks - queue.size();
 		status(STATUS_FILE_COPY, count, countOfTasks, "Downloading...", sense.getBook().getName() + " " + sense.getChapterNumber(), storage);
-		Extractor<MexObject> nick = new BibleChapterExtractor(sense.getChapterHref());
+		Extractor<MexObject> nick = null;//new BibleChapterExtractor(sense.getChapterHref());
 		nick.process();
 		List<MexObject> items = nick.getItems();
 		if(StrUtil.equals(Konstants.DOT_TXT, fileType)) {

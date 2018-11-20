@@ -5,6 +5,7 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.sirap.basic.component.Extractor;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.exception.MexException;
@@ -19,6 +20,7 @@ import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.domain.Link;
 import com.sirap.titus.extractor.BibleBooksExtractor;
 import com.sirap.titus.extractor.BibleChapterFromSirapExtractor;
+import com.sirap.titus.extractor.BibleFetchers;
 
 public class BibleManager {
 	
@@ -36,7 +38,7 @@ public class BibleManager {
 	
 	public List<String> getSpecificChapter(int[] coordinates, StringBuilder bookAndChapter, String bibleStorage, String version) {
 		XXXUtil.shouldBeTrue(coordinates.length >= 2);
-		String versionCode = getVersion(version).getCode();
+		String versionCode = BibleData.versionCodeOf(version);
 		String versionStorage = StrUtil.useSeparator(bibleStorage, versionCode);
 		
 		String specificBook = specificSubFileName(versionStorage, coordinates[0], true, false);
@@ -56,7 +58,7 @@ public class BibleManager {
 	}
 	
 	public List<String> getRandomChapter(StringBuilder bookAndChapter, String bibleStorage, String version) {
-		String versionCode = getVersion(version).getCode();
+		String versionCode = BibleData.versionCodeOf(version);
 		String versionStorage = StrUtil.useSeparator(bibleStorage, versionCode);
 		
 		String randomBook = randomSubFolderName(versionStorage, true, false);
@@ -183,6 +185,34 @@ public class BibleManager {
 		return nick.getItems();
 	}
 	
+	public int[] downloadXBooks(String versionFolder, String version, String fileType) {
+		List<BibleBook> books = BibleFetchers.getBooks(version);
+		List<ChapterSense> alist = Lists.newArrayList();
+		for(BibleBook bo : books) {
+			for(int chapterId = 1; chapterId <= bo.getMaxChapter(); chapterId++) {
+				ChapterSense kid = new ChapterSense(bo, chapterId, version);
+				alist.add(kid);
+			}
+		}
+//		alist = Colls.top(alist, 3);
+//		alist = Colls.last(alist, 3);
+//		alist = Colls.range(alist, 40, 46);
+//		List<String> blist = StrUtil.split("a,b,c,e,f,g,h,yr");
+//		C.list(Colls.range(blist, 3, 5));
+//		if(!alist.isEmpty()) {
+//			return null;
+//		}
+		Master<ChapterSense> master = new Master<ChapterSense>(alist, new BookXFetcher(versionFolder, fileType){
+			@Override
+			public List<String> getVerses(BibleBook book, int chapterId, String version) {
+				return BibleFetchers.getVersesFromBibleGateway(book.getName(), chapterId, version);
+			}
+		});
+
+		master.sitAndWait();
+		return new int[]{books.size(), alist.size()};
+	}
+	
 	public String downloadAllBooks(String bibleFolder, String versionCode, String fileType) {
 		Extractor<Link> nick = new BibleBooksExtractor(versionCode);
 		List<Link> bookLinks = nick.process().getItems();
@@ -203,7 +233,7 @@ public class BibleManager {
 			BibleBook bb = BibleData.BOOKS.get(bookIndex).clone();
 			bb.setVersion(versionCode);
 			bb.setName(link.getName());
-			bb.setHref(link.getHref());
+			//bb.setHref(link.getHref());
 			
 			List<ChapterSense> links = getChapterSenses(bb);
 			allLinks.addAll(links);
@@ -268,16 +298,5 @@ public class BibleManager {
 		}
 		
 		return verses;
-	}
-	
-	public BibleVersion getVersion(String mexCriteria) {
-		List<BibleVersion> items = Colls.filter(BibleData.VERSIONS, mexCriteria);
-		if(items.isEmpty()) {
-			throw new MexException("Version '{0}' not found.", mexCriteria);
-		} else if(items.size() == 1) {
-			return items.get(0);
-		} else {
-			throw new MexException("Total {0} versions found by '{1}'.", items.size(), mexCriteria);
-		}
 	}
 }

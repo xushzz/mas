@@ -68,6 +68,10 @@ public class ValuesItem extends MexItem {
 	public Object getByIndex(int index) {
 		return values.get(index);
 	}
+
+	public String stringAt(int index) {
+		return String.valueOf(values.get(index));
+	}
 	
 	public void add(Object value) {
 		values.add(value);

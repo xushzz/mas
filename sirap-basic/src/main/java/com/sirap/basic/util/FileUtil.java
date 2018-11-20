@@ -161,8 +161,8 @@ public class FileUtil {
 			return;
 		}
 		
-		boolean flag = file.mkdirs();
-		XXXUtil.shouldBeTrue(flag, "Can't create directories by: " + pathname);
+		file.mkdirs();
+//		XXXUtil.shouldBeTrue(flag, "Can't create directories by: " + pathname);
 	}
 
 	public static String generateFileName(String prefix, String name) {

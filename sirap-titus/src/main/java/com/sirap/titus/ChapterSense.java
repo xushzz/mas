@@ -7,6 +7,7 @@ import com.sirap.basic.util.StrUtil;
 public class ChapterSense extends MexItem {
 	private BibleBook book;
 	private int chapterNumber;
+	private String version;
 	
 	public ChapterSense() {
 		
@@ -17,6 +18,20 @@ public class ChapterSense extends MexItem {
 		this.chapterNumber = chapterNumber;
 	}
 	
+	public ChapterSense(BibleBook book, int chapterNumber, String version) {
+		this.book = book;
+		this.chapterNumber = chapterNumber;
+		this.version = version;
+	}
+	
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
 	public BibleBook getBook() {
 		return book;
 	}
@@ -29,10 +44,5 @@ public class ChapterSense extends MexItem {
 
 	public int getChapterNumber() {
 		return chapterNumber;
-	}
-	
-	public String getChapterHref() {
-		String url = book.getHref() + chapterNumber + ".html";
-		return url;
 	}
 }

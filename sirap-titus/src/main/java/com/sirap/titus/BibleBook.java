@@ -10,27 +10,32 @@ import com.sirap.basic.util.StrUtil;
 @SuppressWarnings("serial")
 public class BibleBook extends MexItem implements Cloneable {
 	
-	private int order;
+	private int id;
+	private String type;
 	private int maxChapter;
 	private String version;
 	private String name;
-	private String href;
 	
-	public BibleBook(String name, int maxChapter) {
+	public BibleBook(int id, String type, String name, int maxChapter) {
+		this.id = id;
+		this.type = type;
 		this.name = name;
 		this.maxChapter = maxChapter;
 	}
 	
-	public BibleBook(int order, String name, int maxChapter) {
-		this.order = order;
-		this.name = name;
-		this.maxChapter = maxChapter;
+	public int getId() {
+		return id;
 	}
 	
-	public int getOrder() {
-		return order;
+	public String getType() {
+		return type;
 	}
-	
+
+	public BibleBook setType(String type) {
+		this.type = type;
+		return this;
+	}
+
 	public String getVersion() {
 		return version;
 	}
@@ -43,16 +48,8 @@ public class BibleBook extends MexItem implements Cloneable {
 		this.name = name;
 	}
 
-	public String getHref() {
-		return href;
-	}
-
-	public void setHref(String href) {
-		this.href = href;
-	}
-
 	public String getNameWithNiceOrder() {
-		String value = StrUtil.padLeft(order + "", 2, "0") + " " + name;
+		String value = StrUtil.padLeft(id + "", 2, "0") + " " + name;
 		return value;
 	}
 
@@ -67,7 +64,8 @@ public class BibleBook extends MexItem implements Cloneable {
 	@Override
 	public List toList(String options) {
 		List<String> items = Lists.newArrayList();
-		items.add("#" + order);
+		items.add("#" + id);
+		items.add(type);
 		items.add(name);
 		items.add(maxChapter + " chapters");
 		return items;
@@ -91,6 +89,14 @@ public class BibleBook extends MexItem implements Cloneable {
 			return true;
 		}
 		
+		if(isRegexMatched(type, keyWord)) {
+			return true;
+		}
+		
+		if(StrUtil.contains(type, keyWord, caseSensitive)) {
+			return true;
+		}
+		
 		temp = maxChapter + "";
 		if(isRegexMatched(temp, keyWord)) {
 			return true;
@@ -100,12 +106,12 @@ public class BibleBook extends MexItem implements Cloneable {
 			return true;
 		}
 		
-		temp = "#" + order;
+		temp = "#" + id;
 		if(StrUtil.equalsCaseSensitive(temp, keyWord)) {
 			return true;
 		}
 		
-		temp = "" + order;
+		temp = "" + id;
 		if(StrUtil.equalsCaseSensitive(temp, keyWord)) {
 			return true;
 		}
@@ -122,6 +128,6 @@ public class BibleBook extends MexItem implements Cloneable {
     }
 	
 	public String toString() {
-		return "#" + order + " " + name + ", " + maxChapter + " chapters";
+		return "#" + id + " " + name + ", " + maxChapter + " chapters";
 	}
 }

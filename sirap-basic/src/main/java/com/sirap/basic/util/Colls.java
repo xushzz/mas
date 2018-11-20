@@ -40,6 +40,25 @@ public class Colls {
 		return subList;
 	}
 	
+	/***
+	 * 
+	 * @param list
+	 * @param start, from 0, inclusive
+	 * @param end, from 0, inclusive
+	 * @return
+	 */
+	public static <T> List<T> range(List<T> list, int start, int end) {
+		List<T> subList = new ArrayList<T>();
+		int size = list.size();
+		for(int i = start; i <= end; i++) {
+			if(i >=0 && i < size) {
+				subList.add(list.get(i));
+			}
+		}
+		
+		return subList;
+	}
+	
 	public static <T> List<T> last(List<T> list, int size) {
 		List<T> subList = new ArrayList<T>();
 		int start = list.size() - size;
@@ -308,5 +327,14 @@ public class Colls {
 	public static <T extends Object> List<T> distinctOf(List<T> items) {
 		Set<T> okset = new LinkedHashSet<>(items);
 		return Lists.newArrayList(okset);
+	}
+	
+	public static List<Integer> listOfInts(int min, int max) {
+		List<Integer> ints = Lists.newArrayList();
+		for(int k = min; k <= max; k++) {
+			ints.add(k);
+		}
+		
+		return ints;
 	}
 }

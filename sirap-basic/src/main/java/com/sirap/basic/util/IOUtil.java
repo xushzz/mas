@@ -24,6 +24,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -384,6 +385,17 @@ public class IOUtil {
 		}
 		
 		return false;
+	}
+	
+	public static void main(String[] args) {
+		String fa = "E:/KDB/tasks/1108_Bible/" + DateUtil.timestamp() + ".txt";
+		List<String> lines = RandomUtil.names(8);
+		lines.add("兄弟");
+		saveAsTxtWithCharset(lines, fa, Konstants.CODE_UTF8);
+	}
+
+	public static boolean saveAsTxtWithUTF8(List objList, String fullFileName) {
+		return saveAsTxtWithCharset(objList, fullFileName, Konstants.CODE_UTF8);
 	}
 	
 	public static boolean saveAsTxtWithCharset(List objList, String fullFileName, String charset) {

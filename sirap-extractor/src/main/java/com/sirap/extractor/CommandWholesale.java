@@ -34,8 +34,8 @@ public class CommandWholesale extends CommandBase {
 	private static final String KEY_GET_ALBUM = "ga";
 	
 	{
-		helpMeanings.put("sogou.url", LinksFetcher.HOMEPAGE_SOGOU);
-		helpMeanings.put("qihu360.url", LinksFetcher.HOMEPAGE_QIHU360);
+		helpMeanings.put("sogou.url", LinksFetchers.HOMEPAGE_SOGOU);
+		helpMeanings.put("qihu360.url", LinksFetchers.QIHU360_HTML_QUERY);
 		helpMeanings.put("163.netease.url", "http://www.163.com");
 		helpMeanings.put("phoenix.url", ExtractorPhoenix.HOMEPAGE);
 		helpMeanings.put("youbian.postcode.url", ExtractorChinaPostCodeToolcncn.HOMEPAGE);
@@ -47,7 +47,7 @@ public class CommandWholesale extends CommandBase {
 		solo = parseParam(KEY_GET_ALBUM + "\\s(.+)");
 		if(solo != null) {
 			if(HttpUtil.isHttp(solo)) {
-				Album al = LinksFetcher.fetchAlbum(solo);
+				Album al = LinksFetchers.fetchAlbum(solo);
 				if(al == null) {
 					exportEmptyMsg();
 				} else {
@@ -62,17 +62,17 @@ public class CommandWholesale extends CommandBase {
 				return true;
 			} else {
 				useLowOptions("-ts");
-				int maxpage = 3;
+				int maxpage = OptionUtil.readIntegerPRI(options, "m", 10);
 				String keyword = solo;
-				List<String> links = LinksFetcher.qihu360ImageLinks(keyword, maxpage);
-				dealWithLinks(links, keyword, "qihu");
+				List<String> links = LinksFetchers.qihu360ImageLinks(keyword, maxpage);
+				dealWithLinks(links, keyword, "");
 			}
 		}
 		
 		solo = parseParam(KEY_SOGOU + "\\s(.*?)");
 		if(isSingleParamNotnull()) {
 			useLowOptions("-ts");
-			List<String> links = LinksFetcher.sogouImageLinks(solo);
+			List<String> links = LinksFetchers.sogouImageLinks(solo);
 			dealWithLinks(links, solo, "sogou");
 			
 			return true;
@@ -81,10 +81,10 @@ public class CommandWholesale extends CommandBase {
 		params = parseParams(KEY_QIHU360 + "(|\\d{1,3})\\s(.*?)");
 		if(isParamsNotnull()) {
 			useLowOptions("-ts");
-			int maxpage = MathUtil.toInteger(params[0], 1);
+			int maxpage = MathUtil.toInteger(params[0], 3);
 			String keyword = params[1];
-			List<String> links = LinksFetcher.qihu360ImageLinks(keyword, maxpage);
-			dealWithLinks(links, keyword, "qihu");
+			List<String> links = LinksFetchers.qihu360ImageLinks(keyword, maxpage);
+			dealWithLinks(links, keyword, "");
 			
 			return true;
 		}
@@ -95,7 +95,7 @@ public class CommandWholesale extends CommandBase {
 			int maxPage = OptionUtil.readIntegerPRI(options, "p", 1);
 			List<String> total = Lists.newArrayList();
 			for(int page = 1; page <= maxPage; page++) {
-				List<String> links = LinksFetcher.weiboImageLinks(solo, page);
+				List<String> links = LinksFetchers.weiboImageLinks(solo, page);
 				if(links.isEmpty()) {
 					C.msg("Found no images from page {0}", page);
 					break;
@@ -152,7 +152,10 @@ public class CommandWholesale extends CommandBase {
 		
 		boolean download = OptionUtil.readBooleanPRI(options, "do", true);
 		if(download) {
-			String origin = StrUtil.occupy("{0}({1})", about, tag);
+			if(!EmptyUtil.isNullOrEmpty(tag)) {
+				tag = " -" + tag;
+			}
+			String origin = StrUtil.occupy("{0}{1}", about, tag);
 			String temp = FileUtil.generateUrlFriendlyFilename(origin);
 			temp = temp.replace("[", "(");
 			temp = temp.replace("]", ")");
