@@ -420,30 +420,15 @@ public class FileUtil {
 	}
 	
 	public static List<File> getSubFilesByLastModifiedDescend(String dir) {
-		List<File> list = getSubFilesByLastModifiedAscend(dir);
-		Collections.reverse(list);
+		File[] files = (new File(dir)).listFiles();
+		if(EmptyUtil.isNullOrEmpty(files)) {
+			return Lists.newArrayList();
+		}
+		
+		List<File> list = Arrays.asList(files);
+		Collections.sort(list, ComparatorUtils.fileLastModifiedDescend());
 		
 		return list;
-	}
-	
-	public static String generateFilenameByUrl(String httpUrl) {
-		return generateFilenameByUrl(httpUrl, null);
-	}
-	
-	public static String generateFilenameByUrl(String httpUrl, String suffixWhenObscure) {
-		String temp = httpUrl.substring(httpUrl.lastIndexOf("/") + 1);
-		int idxOfAsk = temp.indexOf('?');
-		if(idxOfAsk != -1) {
-			temp = temp.substring(0, idxOfAsk);
-		}
-		temp = FileUtil.generateLegalFileName(temp);
-		if(temp.indexOf(".") == -1 && suffixWhenObscure != null) {
-			temp += suffixWhenObscure;
-		}
-		
-		String filePath = XCodeUtil.urlDecodeUTF8(temp);
-		
-		return filePath;
 	}
 	
 	public static File parseFile(String param, String defaultFolder) {

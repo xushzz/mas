@@ -283,7 +283,9 @@ public class WebReader {
 	}
 	
 	private void equip(URLConnection conn) throws Exception {
-		conn.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
+		conn.addRequestProperty("User-Agent", "MSIE");
+//		conn.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)");
+//		conn.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
 //		urlConn.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1WOW64rv:25.0) Gecko/20100101 Firefox/25.0");
 		if(isMethodPost) {
 			conn.setDoOutput(true);

@@ -78,7 +78,7 @@ public class CommandBible extends CommandBase {
 		//display random verse
 		if(is(KEY_VERSE)) {
 			String storage = pathBibleStorage();
-			String versionCode = BibleFetchers.DEFAULT_BIBLE_CHINESE_VERSION;
+			String versionCode = g().getUserValueOf("bible.version", BibleFetchers.DEFAULT_BIBLE_ENGLISH_VERSION);
 			StringBuilder bookAndChapter = new StringBuilder();
 			List<String> items = BibleManager.g().getRandomChapter(bookAndChapter, storage, versionCode);
 			XXXUtil.nullOrEmptyCheck(items);
@@ -104,43 +104,43 @@ public class CommandBible extends CommandBase {
 			return true;
 		}
 		
-//		regex = "#(\\d{1,2})[\\.:\\-](\\d{1,3})(|[\\.:\\-](\\d{1,3}))";
-//		params = parseParams(regex);
-//		if(params != null) {
-//			int bookNumber = Integer.parseInt(params[0]);
-//			int chapterNumber = Integer.parseInt(params[1]);
-//			String storage = pathBibleStorage();
-//			String versionCode = g().getUserValueOf("bible.version", "niv");
-//			StringBuilder bookAndChapter = new StringBuilder();
-//			int[] coordinates = {bookNumber, chapterNumber};
-//			List<String> items = BibleManager.g().getSpecificChapter(coordinates, bookAndChapter, storage, versionCode);
-//			if(params[3] != null) {
-//				XXXUtil.nullOrEmptyCheck(items);
-//				int verseNumber = Integer.parseInt(params[3]);
-//				String verse = BibleManager.g().readVerse(items, verseNumber);
-//				export(bookAndChapter.toString() + ":" + verse);
-//			} else {
-//				export(items);
-//			}
-//			
-//			return true;
-//		}
-//		
-//		regex = "([123][\\^a-z\\$]{2,}|[\\^a-z\\$]{3,})(\\d{1,3})(|[\\.:\\-](\\d{1,3}))";
-//		params = parseParams(regex);
-//		if(params != null) {
-//			String bookName = params[0];
-//			int chapter = Integer.parseInt(params[1]);
-//			BibleBook book = BibleManager.g().searchByName(bookName, chapter, isCaseSensitive());
-//			if(book != null) {
-//				if(!StrUtil.equals(book.getName(), bookName)) {
-//					C.pr("Looking for book " + book.getName() + " chapter " + chapter + ". ");
-//				}
-//				
-//				dealWith(book, chapter, params[3]);
-//				return true;
-//			}
-//		}
+		regex = "#(\\d{1,2})[\\.:\\-](\\d{1,3})(|[\\.:\\-](\\d{1,3}))";
+		params = parseParams(regex);
+		if(params != null) {
+			int bookNumber = Integer.parseInt(params[0]);
+			int chapterNumber = Integer.parseInt(params[1]);
+			String storage = pathBibleStorage();
+			String versionCode = g().getUserValueOf("bible.version", BibleFetchers.DEFAULT_BIBLE_ENGLISH_VERSION);
+			StringBuilder bookAndChapter = new StringBuilder();
+			int[] coordinates = {bookNumber, chapterNumber};
+			List<String> items = BibleManager.g().getSpecificChapter(coordinates, bookAndChapter, storage, versionCode);
+			if(params[3] != null) {
+				XXXUtil.nullOrEmptyCheck(items);
+				int verseNumber = Integer.parseInt(params[3]);
+				String verse = BibleManager.g().readVerse(items, verseNumber);
+				export(bookAndChapter.toString() + ":" + verse);
+			} else {
+				export(items);
+			}
+			
+			return true;
+		}
+		
+		regex = "([123][\\^a-z\\$]{2,}|[\\^a-z\\$]{3,})(\\d{1,3})(|[\\.:\\-](\\d{1,3}))";
+		params = parseParams(regex);
+		if(params != null) {
+			String bookName = params[0];
+			int chapter = Integer.parseInt(params[1]);
+			BibleBook book = BibleManager.g().searchByName(bookName, chapter, isCaseSensitive());
+			if(book != null) {
+				if(!StrUtil.equals(book.getName(), bookName)) {
+					C.pr("Looking for book " + book.getName() + " chapter " + chapter + ". ");
+				}
+				
+				dealWith(book, chapter, params[3]);
+				return true;
+			}
+		}
 		
 		params = parseParams("(bb|bv)\\.([a-z]+)");
 		if(params != null) {
@@ -198,7 +198,7 @@ public class CommandBible extends CommandBase {
 			
 			if(FileUtil.getIfNormalFile(chapterLocation) != null) {
 				C.pl("Reading... " + chapterLocation);
-				items = IOUtil.readFileIntoList(chapterLocation);
+				items = IOUtil.readLines(chapterLocation, Konstants.CODE_UTF8);
 			}
 			
 			if(EmptyUtil.isNullOrEmpty(items)) {

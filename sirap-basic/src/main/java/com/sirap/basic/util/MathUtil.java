@@ -462,17 +462,17 @@ public class MathUtil {
 		
 		return values;
 	}
-	
-	/****
-	 * 69720 seconds
-	 * 8day1hour40minutes11second
+
+	/***
+	 * year month day hour minute second
+	 * @param seconds
+	 * @return
 	 */
-	public static List<Integer> dhmsOfSeconds(int seconds) {
-		List<Integer> values = Lists.newArrayList();
-		int[] secondsPer = {Konstants.SECONDS_PER_DAY, Konstants.SECONDS_PER_HOUR, Konstants.SECONDS_PER_MINUTE};
-		int remain = seconds;
+	public static List<Long> xxdhmsOfSeconds(long seconds, int[] secondsPer) {
+		List<Long> values = Lists.newArrayList();
+		long remain = seconds;
 		for(int item : secondsPer) {
-			int mod = remain / item;
+			long mod = remain / item;
 			remain = remain % item;
 			values.add(mod);
 		}
@@ -486,16 +486,34 @@ public class MathUtil {
 	}
 	
 	public static String dhmsStrOfSeconds(int seconds, boolean inEnglish) {
-		List<Integer> items = dhmsOfSeconds(seconds);
 		List<String> units = Lists.newArrayList("day", "hour", "min", "second");
 		if(!inEnglish) {
 			units = Lists.newArrayList(Konstants.CHINESE_DAY_TIAN, Konstants.CHINESE_HOUR_XIAOSHI, Konstants.CHINESE_MINUTE_FEN, Konstants.CHINESE_SECOND_MIAO);
 		}
+		int[] secondsPer = {Konstants.SECONDS_PER_DAY, Konstants.SECONDS_PER_HOUR, Konstants.SECONDS_PER_MINUTE};
+		return xxdhmsStrOfSeconds(seconds, units, secondsPer, inEnglish);
+	}
+	
+	public static String ymdhmsStrOfSeconds(long seconds) {
+		return ymdhmsStrOfSeconds(seconds, false);
+	}
+	
+	public static String ymdhmsStrOfSeconds(long seconds, boolean inEnglish) {
+		List<String> units = Lists.newArrayList("year", "month", "day", "hour", "min", "second");
+		if(!inEnglish) {
+			units = Lists.newArrayList(Konstants.CHINESE_YEAR_NIAN, Konstants.CHINESE_MONTH_YUE, Konstants.CHINESE_DAY_TIAN, Konstants.CHINESE_HOUR_XIAOSHI, Konstants.CHINESE_MINUTE_FEN, Konstants.CHINESE_SECOND_MIAO);
+		}
+		int[] secondsPer = {Konstants.SECONDS_PER_DAY * 365, Konstants.SECONDS_PER_DAY * 30, Konstants.SECONDS_PER_DAY, Konstants.SECONDS_PER_HOUR, Konstants.SECONDS_PER_MINUTE};
+		return xxdhmsStrOfSeconds(seconds, units, secondsPer, inEnglish);
+	}
+	
+	public static String xxdhmsStrOfSeconds(long seconds, List<String> units, int[] secondsPer, boolean inEnglish) {
+		List<Long> items = xxdhmsOfSeconds(seconds, secondsPer);
 		XXXUtil.shouldBeEqual(items.size(), units.size());
 		StringBuffer sb = StrUtil.sb();
 		int count = 0;
 		for(int i = 0 ; i < items.size(); i++) {
-			Integer item = items.get(i);
+			Long item = items.get(i);
 			if(item != 0) {
 				if(inEnglish) {
 					if(count != 0) {
@@ -642,5 +660,13 @@ public class MathUtil {
 		}
 		
 		return numbers;
+	}
+	
+	public static int totalPageOf(int countAll, int perpage) {
+		int mode = countAll / perpage;
+		int remain = countAll % perpage;
+		int totalpage = mode + (remain != 0 ? 1 : 0);
+		
+		return totalpage;
 	}
 }

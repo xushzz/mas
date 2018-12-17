@@ -16,6 +16,7 @@ import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XCodeUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.domain.Album;
+import com.sirap.extractor.images.FenunFetcher;
 import com.sirap.extractor.images.Netease163Fetcher;
 import com.sirap.extractor.images.SinaFetcher;
 import com.sirap.extractor.images.SuperiorFetcher;
@@ -35,6 +36,7 @@ public class LinksFetchers {
 		MY_FETCHERS.put("sina.c", new SinaFetcher());
 		MY_FETCHERS.put("weixin.qq.com", new WeixinFetcher());
 		MY_FETCHERS.put("superiorpics.com", new SuperiorFetcher());
+		MY_FETCHERS.put("www.fenun.cn", new FenunFetcher());
 	}
 	
 	public static Album fetchAlbum(final String albumUrl) {
@@ -46,7 +48,7 @@ public class LinksFetchers {
 			}
 		}
 		
-		XXXUtil.alerto("Not yet supported website: ", albumUrl);
+		XXXUtil.alerto("Not yet supported website: {0}", albumUrl);
 		return null;
 	}
 

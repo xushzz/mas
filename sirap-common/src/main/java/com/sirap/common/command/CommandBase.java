@@ -552,7 +552,7 @@ public abstract class CommandBase {
 			if(attachmentFilename != null) {
 				filename = attachmentFilename;
 			} else {
-				filename = HttpUtil.prettyFilenameOfUrl(url);
+				filename = HttpUtil.filenameByUrl(url);
 			}
 			toView = false;
 			downloadFile(url, filename);
@@ -568,7 +568,7 @@ public abstract class CommandBase {
 				} else {
 					extension = "png";
 				}
-				String tempFilename = HttpUtil.prettyFilenameOfUrl(url);
+				String tempFilename = HttpUtil.filenameByUrl(url);
 				String imageFilename = tempFilename.replaceAll("\\..+", "") + "." + extension;
 				toView = false;
 				downloadFile(url, imageFilename);
@@ -593,7 +593,7 @@ public abstract class CommandBase {
 		if(solidName != null) {
 			jack = solidName;
 		} else {
-			jack = FileUtil.generateFilenameByUrl(httpUrl);
+			jack = HttpUtil.filenameByUrl(url);
 		}
 		if(EmptyUtil.isNullOrEmpty(jack)) {
 			jack = RandomUtil.letters(7);
@@ -721,14 +721,13 @@ public abstract class CommandBase {
 		return null;
 	}
 	
-	protected List<String> downloadFiles(String destination, List<String> links) {
+	protected List<String> downloadFilesx(String destination, List<String> links) {
 		return downloadFiles(destination, links, null);
 	}
 	
 	protected List<String> downloadFiles(String destination, List<String> links, String suffixWhenObscure) {
 		int threads = SimpleKonfig.g().getUserNumberValueOf("threads.download");
-		boolean useUniqueFilename = g().isExportWithTimestampEnabled(options);
-		return IOUtil.downloadFiles(destination, links, suffixWhenObscure, threads, useUniqueFilename);
+		return IOUtil.downloadFiles(destination, links, suffixWhenObscure, threads);
 	}
 	
 	protected void checkTooBigToHandle(File file, String maxSize) {

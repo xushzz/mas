@@ -13,14 +13,28 @@ public class HttpUtil {
 	 * @param urlstring
 	 * @return
 	 */
-	public static String prettyFilenameOfUrl(String urlstring) {
-		String temp = urlstring.replaceAll("\\?.+", "");
+	public static String filenameByUrl(String urlstring) {
+		return filenameByUrl(urlstring, 15, ".xyz");
+	}
+	
+	public static String filenameByUrl(String urlstring, int useMD5WhenLessThanKSize, String useExtensionIfNeeded) {
+		String temp = urlstring.replaceAll("\\?.*", "");
 		temp = temp.replaceAll(".+/", "");
+		if(!StrUtil.isRegexFound("\\.[a-z]+$", temp)) {
+			temp += useExtensionIfNeeded;
+		}
 		temp = XCodeUtil.urlDecodeUTF8(temp);
-		temp = FileUtil.generateLegalFileNameBySpace(temp);
+		temp = FileUtil.generateUrlFriendlyFilename(temp);
 		if(temp.isEmpty()) {
 			temp = RandomUtil.name();
 		}
+		
+		if(temp.length() < useMD5WhenLessThanKSize) {
+			String md5 = SecurityUtil.md5(urlstring);
+			String half = md5.substring(0, 10);
+			temp = half + "_" + temp;
+		}
+		
 		return temp;
 	}
 

@@ -649,4 +649,15 @@ public class DateUtil {
 	public static String infoNow(Locale locale) {
 		return info(new Date(), locale);
 	}
+
+	public static String timeAgo(Date when) {
+		return timeAgo(when.getTime());
+	}
+	
+	public static String timeAgo(long when) {
+		long duration = (new Date()).getTime() - when;
+		String timeago = MathUtil.ymdhmsStrOfSeconds((int)(duration/1000));
+		
+		return timeago;
+	}
 }

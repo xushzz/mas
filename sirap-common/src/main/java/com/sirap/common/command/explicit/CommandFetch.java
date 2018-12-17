@@ -4,9 +4,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sirap.basic.component.Konstants;
 import com.sirap.basic.tool.C;
+import com.sirap.basic.tool.D;
 import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.EmptyUtil;
+import com.sirap.basic.util.HttpUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.StrUtil;
@@ -35,22 +38,19 @@ public class CommandFetch extends CommandBase {
 			if(file != null) {
 				String filePath = file.getAbsolutePath();
 				if(FileOpener.isTextFile(filePath)) {
-					records = IOUtil.readFileIntoList(filePath);
+					records = IOUtil.readLinesWithUTF8(filePath);
 				}
 			}
-			
-			for(String record: records) {
-				if(EmptyUtil.isNullOrEmpty(record)) {
+			for(String record : records) {
+				if(EmptyUtil.isNullOrEmptyOrBlank(record)) {
 					continue;
 				}
 				String temp = record.trim();
-				String url = StrUtil.parseParam(KEY_HTTP_WWW, temp);
-				url = equiHttpProtoclIfNeeded(url);
-				if(url != null && FileOpener.isPossibleNormalFile(url)) {
-					links.add(url);
+				if(HttpUtil.isHttp(temp)) {
+					links.add(temp);
 				}
 			}
-			
+
 			if(EmptyUtil.isNullOrEmpty(links)) {
 				return false;
 			}
@@ -65,7 +65,7 @@ public class CommandFetch extends CommandBase {
 			String folderName = temp;
 			String destination = miscPath() + folderName + File.separator;
 			
-			List<String> pathList = downloadFiles(destination, links);
+			List<String> pathList = downloadFiles(destination, links, Konstants.DOT_JPG);
 			
 			if(g().isGeneratedFileAutoOpen() && !pathList.isEmpty()) {
 				String lastFile = pathList.get(pathList.size() - 1);

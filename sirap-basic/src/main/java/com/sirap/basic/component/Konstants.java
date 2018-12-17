@@ -16,7 +16,9 @@ public class Konstants {
 	public static final int SECONDS_PER_MINUTE = TIME_STEP * 1;
     public static final int SECONDS_PER_HOUR   = TIME_STEP * SECONDS_PER_MINUTE;
     public static final int SECONDS_PER_DAY    = 24 * SECONDS_PER_HOUR;
-    
+
+    public static final String CHINESE_YEAR_NIAN = XCodeUtil.urlDecodeUTF8("%E5%B9%B4");
+    public static final String CHINESE_MONTH_YUE = XCodeUtil.urlDecodeUTF8("%E6%9C%88");
     public static final String CHINESE_DAY_TIAN = XCodeUtil.urlDecodeUTF8("%E5%A4%A9");
     public static final String CHINESE_HOUR_XIAOSHI = XCodeUtil.urlDecodeUTF8("%E5%B0%8F%E6%97%B6");
     public static final String CHINESE_MINUTE_FENZHONG = XCodeUtil.urlDecodeUTF8("%E5%88%86%E9%92%9F");

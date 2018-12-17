@@ -1,14 +1,14 @@
 package com.sirap.basic.thread.business;
 
-import com.sirap.basic.component.TimestampIDGenerator;
 import com.sirap.basic.thread.WorkerItemOriented;
 import com.sirap.basic.util.FileUtil;
+import com.sirap.basic.util.HttpUtil;
 import com.sirap.basic.util.IOUtil;
+import com.sirap.basic.util.StrUtil;
 
 public class InternetFileFetcher extends WorkerItemOriented<String, String> {
 	private String storage;
 	private String suffixWhenObscure;
-	private boolean useUniqueFilename;
 	
 	public InternetFileFetcher(String storage) {
 		this.storage = storage;
@@ -18,14 +18,6 @@ public class InternetFileFetcher extends WorkerItemOriented<String, String> {
 		this.storage = storage;
 		this.suffixWhenObscure = suffixWhenObscure;
 	}
-	
-	public boolean isUseUniqueFilename() {
-		return useUniqueFilename;
-	}
-
-	public void setUseUniqueFilename(boolean useUniqueFilename) {
-		this.useUniqueFilename = useUniqueFilename;
-	}
 
 	@Override
 	public String process(String url) {
@@ -33,11 +25,8 @@ public class InternetFileFetcher extends WorkerItemOriented<String, String> {
 			return null;
 		}
 		int count = countOfTasks - queue.size();
-		String unique = "";
-		if(useUniqueFilename) {
-			unique = TimestampIDGenerator.nextId() + "_";
-		}
-		String filePath = storage + unique + FileUtil.generateFilenameByUrl(url, suffixWhenObscure);
+		String newFilename = HttpUtil.filenameByUrl(url, 15, suffixWhenObscure);
+		String filePath = StrUtil.useSeparator(storage, newFilename);
 		if(FileUtil.exists(filePath)) {
 			status(STATUS_TEMPLATE_SIMPLE, count, countOfTasks, "Existed =>", filePath);
 		} else {

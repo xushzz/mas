@@ -11,7 +11,13 @@ public class ComparatorUtils {
 			public int compare(File f1, File f2) {
 				Long v1 = f1.lastModified();
 				Long v2 = f2.lastModified();
-				return v1.compareTo(v2);
+//				return v1.compareTo(v2);
+				int val = v1.compareTo(v2);
+				if(val == 0) {
+					return f1.getAbsolutePath().compareTo(f2.getAbsolutePath());
+				} else {
+					return val;
+				}
 			}
 		};
 	}
@@ -31,7 +37,12 @@ public class ComparatorUtils {
 			public int compare(File f1, File f2) {
 				Long v1 = f1.lastModified();
 				Long v2 = f2.lastModified();
-				return v2.compareTo(v1);
+				int val = v2.compareTo(v1);
+				if(val == 0) {
+					return f2.getAbsolutePath().compareTo(f1.getAbsolutePath());
+				} else {
+					return val;
+				}
 			}
 		};
 	}

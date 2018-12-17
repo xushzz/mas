@@ -87,6 +87,10 @@ public class IOUtil {
 		return lines;
 	}
 	
+	public static List<String> readLinesWithUTF8(String dynamicLocation) {
+		return readLines(dynamicLocation, Konstants.CODE_UTF8);
+	}
+	
 	public static List<String> readLines(String dynamicLocation, String charset) {
 		if(HttpUtil.isHttp(dynamicLocation)) {
 			WebReader xiu = new WebReader(dynamicLocation, charset);
@@ -138,6 +142,10 @@ public class IOUtil {
 	
 	public static String readString(String dynamicLocation, String charset) {
 		return readString(dynamicLocation, charset, "");
+	}
+	
+	public static String readStringWithUTF8(String dynamicLocation) {
+		return readString(dynamicLocation, Konstants.CODE_UTF8, "");
 	}
 	
 	public static String readString(String dynamicLocation, String charset, String lineSeperator) {
@@ -558,15 +566,14 @@ public class IOUtil {
 		george.sitAndWait();
 	}
 	
-	public static List<String> downloadFiles(String storage, List<String> links, String suffixWhenObscure, final int threads) {
-		return downloadFiles(storage, links, suffixWhenObscure, threads, false);
+	public static List<String> downloadFiles(String storage, List<String> links, String suffixWhenObscure) {
+		return downloadFiles(storage, links, suffixWhenObscure, -1);
 	}
 	
-	public static List<String> downloadFiles(String storage, List<String> links, String suffixWhenObscure, final int threads, boolean useUniqueFilename) {
+	public static List<String> downloadFiles(String storage, List<String> links, String suffixWhenObscure, final int threads) {
 		FileUtil.makeDirectories(storage);
 		
 		InternetFileFetcher dinesh = new InternetFileFetcher(storage, suffixWhenObscure);
-		dinesh.setUseUniqueFilename(useUniqueFilename);
 		
 		MasterItemOriented<String, String> master = new MasterItemOriented<String, String>(links, dinesh){
 			@Override

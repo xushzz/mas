@@ -41,7 +41,7 @@ public class Netease163Fetcher extends WebsiteImageLinksFetcher {
 				if(!links.isEmpty()) {
 					regex = "<h1>([^<>]+)</h1>";
 					String title = StrUtil.findFirstMatchedItem(regex, source);
-					
+					title = getPrettyText(title);
 					item = new Album(title, links);
 					item.setTag("ease");
 				}

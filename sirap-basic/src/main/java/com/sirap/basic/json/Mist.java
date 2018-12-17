@@ -70,15 +70,20 @@ public class Mist {
 	 * @return	Snow Crash
 	 */
 	public Object valueOf(String expression) {
-		XXXUtil.nullOrEmptyCheck(expression);
+		XXXUtil.nullCheckOnly(expression);
 		
-		List<String> keys = StrUtil.split(expression, '.');
-
+		List<String> keys = Lists.newArrayList();
+		if(expression.isEmpty()) {
+			keys.add(expression);
+		} else {
+			keys = StrUtil.split(expression, '.');
+		}
+		
 		return valueOf(keys);
 	}
 	
 	public Object valueOf(List<String> keys) {
-		XXXUtil.nullOrEmptyCheck(keys);
+		XXXUtil.nullCheckOnly(keys);
 		
 		Object gist = core;
 		

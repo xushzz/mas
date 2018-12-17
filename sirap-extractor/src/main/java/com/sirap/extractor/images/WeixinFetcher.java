@@ -48,9 +48,10 @@ public class WeixinFetcher extends WebsiteImageLinksFetcher {
 						title = "Title-" + RandomUtil.name();
 					}
 					
+					title = getPrettyText(title);
+					
 					item = new Album(title, links);
 					item.setTag("wxin");
-					item.setUseUnique(true);
 				}
 			}
 		};

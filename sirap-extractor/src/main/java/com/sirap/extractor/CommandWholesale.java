@@ -9,7 +9,6 @@ import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.tool.C;
 import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.EmptyUtil;
-import com.sirap.basic.util.FileUtil;
 import com.sirap.basic.util.HttpUtil;
 import com.sirap.basic.util.ImageUtil;
 import com.sirap.basic.util.MathUtil;
@@ -51,12 +50,8 @@ public class CommandWholesale extends CommandBase {
 				if(al == null) {
 					exportEmptyMsg();
 				} else {
-					if(al.isUseUnique()) {
-						useLowOptions("+ts");
-					} else {
-						useLowOptions("-ts");
-					}
-					dealWithLinks(al.getLinks(), al.getName(), al.getTag());
+//					dealWithLinks(al.getLinks(), al.getName(), al.getTag());
+					dealWithAlbum(al);
 				}
 				
 				return true;
@@ -65,7 +60,8 @@ public class CommandWholesale extends CommandBase {
 				int maxpage = OptionUtil.readIntegerPRI(options, "m", 10);
 				String keyword = solo;
 				List<String> links = LinksFetchers.qihu360ImageLinks(keyword, maxpage);
-				dealWithLinks(links, keyword, "");
+//				dealWithLinks(links, keyword, "");
+				dealWithAlbum(new Album(keyword, links));
 			}
 		}
 		
@@ -73,7 +69,8 @@ public class CommandWholesale extends CommandBase {
 		if(isSingleParamNotnull()) {
 			useLowOptions("-ts");
 			List<String> links = LinksFetchers.sogouImageLinks(solo);
-			dealWithLinks(links, solo, "sogou");
+//			dealWithLinks(links, solo, "sogou");
+			dealWithAlbum(new Album(solo, links).setTag("sogou"));
 			
 			return true;
 		}
@@ -84,27 +81,28 @@ public class CommandWholesale extends CommandBase {
 			int maxpage = MathUtil.toInteger(params[0], 3);
 			String keyword = params[1];
 			List<String> links = LinksFetchers.qihu360ImageLinks(keyword, maxpage);
-			dealWithLinks(links, keyword, "");
+//			dealWithLinks(links, keyword, "");
+			dealWithAlbum(new Album(keyword, links));
 			
 			return true;
 		}
 		
 		solo = parseParam(KEY_WEIBO + "\\s(.*?)");
 		if(isSingleParamNotnull()) {
-			useLowOptions("-ts");
 			int maxPage = OptionUtil.readIntegerPRI(options, "p", 1);
-			List<String> total = Lists.newArrayList();
+			List<String> sumlinks = Lists.newArrayList();
 			for(int page = 1; page <= maxPage; page++) {
 				List<String> links = LinksFetchers.weiboImageLinks(solo, page);
 				if(links.isEmpty()) {
 					C.msg("Found no images from page {0}", page);
 					break;
 				} else {
-					total.addAll(links);
+					sumlinks.addAll(links);
 				}
 			}
-			
-			dealWithLinks(total, solo, "weibo");
+
+//			dealWithLinks(total, solo, "weibo");
+			dealWithAlbum(new Album(solo, sumlinks).setTag("weibo"));
 			
 			return true;
 		}
@@ -144,28 +142,44 @@ public class CommandWholesale extends CommandBase {
 		return false;
 	}
 	
-	private void dealWithLinks(List<String> links, String about, String tag) {
+	private void dealWithAlbum(Album bum) {
+		List<String> links = bum.getLinks();
 		if(EmptyUtil.isNullOrEmpty(links)) {
 			export(links);
 			return;
 		}
 		
-		boolean download = OptionUtil.readBooleanPRI(options, "do", true);
-		if(download) {
-			if(!EmptyUtil.isNullOrEmpty(tag)) {
-				tag = " -" + tag;
-			}
-			String origin = StrUtil.occupy("{0}{1}", about, tag);
-			String temp = FileUtil.generateUrlFriendlyFilename(origin);
-			temp = temp.replace("[", "(");
-			temp = temp.replace("]", ")");
-			String whereToSave = pathOfImages() + temp + "/";
+		if(OptionUtil.readBooleanPRI(options, "do", true)) {
+			String folderName = bum.niceName();
+			String whereToSave = pathOfImages() + folderName + "/";
 			batchDownload(links, whereToSave);
 		} else {
 			export(links);
 		}
 	}
-	
+//	
+//	private void dealWithLinks(List<String> links, String about, String tag) {
+//		if(EmptyUtil.isNullOrEmpty(links)) {
+//			export(links);
+//			return;
+//		}
+//		
+//		if(OptionUtil.readBooleanPRI(options, "do", true)) {
+//			if(!EmptyUtil.isNullOrEmpty(tag)) {
+//				tag = " -" + tag;
+//			}
+//			String origin = StrUtil.occupy("{0}{1}", about, tag);
+//			String temp = FileUtil.generateUrlFriendlyFilename(origin);
+//			temp = temp.replace("[", "(");
+//			temp = temp.replace("]", ")");
+//			String folderName = 
+//			String whereToSave = pathOfImages() + temp + "/";
+//			batchDownload(links, whereToSave);
+//		} else {
+//			export(links);
+//		}
+//	}
+//	
 	public boolean batchDownload(List<String> links, String whereToSave) {
 		long start = System.currentTimeMillis();
 		

@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.Extractor;
+import com.sirap.basic.component.Konstants;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.exception.MexException;
 import com.sirap.basic.thread.Master;
@@ -54,7 +55,7 @@ public class BibleManager {
 		String filePath = chapterLocation;
 		C.pl("Reading... " + filePath);
 		
-		return IOUtil.readFileIntoList(filePath);
+		return IOUtil.readLines(filePath, Konstants.CODE_UTF8);
 	}
 	
 	public List<String> getRandomChapter(StringBuilder bookAndChapter, String bibleStorage, String version) {
@@ -74,7 +75,7 @@ public class BibleManager {
 		String filePath = chapterLocation;
 		C.pl("Reading... " + filePath);
 		
-		return IOUtil.readFileIntoList(filePath);
+		return IOUtil.readLines(filePath, Konstants.CODE_UTF8);
 	}
 	
 	public String randomSubFolderName(String folderName, final boolean checkFolder, final boolean checkFile) {
@@ -289,7 +290,7 @@ public class BibleManager {
 		List<VerseSake> verses = new ArrayList<>();
 		for(int i = 1; i < items.size(); i++) {
 			String item = items.get(i) + "";
-			String regex = "(^\\d+)\\s+(.+)";
+			String regex = "^#(\\d+).(.+)";
 			String[] params = StrUtil.parseParams(regex, item);
 			if(params != null) {
 				int number = Integer.parseInt(params[0]);

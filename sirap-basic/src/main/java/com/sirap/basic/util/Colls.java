@@ -40,6 +40,17 @@ public class Colls {
 		return subList;
 	}
 	
+	public static <T> List<T> byPage(List<T> list, int pageNumber, int itemsPerPage) {
+		List<T> subList = new ArrayList<T>();
+		for(int i = (pageNumber - 1) * itemsPerPage; i < list.size(); i++) {
+			if(subList.size() < itemsPerPage) {
+				subList.add(list.get(i));
+			}
+		}
+		
+		return subList;
+	}
+	
 	/***
 	 * 
 	 * @param list
