@@ -157,29 +157,7 @@ public class CommandWholesale extends CommandBase {
 			export(links);
 		}
 	}
-//	
-//	private void dealWithLinks(List<String> links, String about, String tag) {
-//		if(EmptyUtil.isNullOrEmpty(links)) {
-//			export(links);
-//			return;
-//		}
-//		
-//		if(OptionUtil.readBooleanPRI(options, "do", true)) {
-//			if(!EmptyUtil.isNullOrEmpty(tag)) {
-//				tag = " -" + tag;
-//			}
-//			String origin = StrUtil.occupy("{0}{1}", about, tag);
-//			String temp = FileUtil.generateUrlFriendlyFilename(origin);
-//			temp = temp.replace("[", "(");
-//			temp = temp.replace("]", ")");
-//			String folderName = 
-//			String whereToSave = pathOfImages() + temp + "/";
-//			batchDownload(links, whereToSave);
-//		} else {
-//			export(links);
-//		}
-//	}
-//	
+
 	public boolean batchDownload(List<String> links, String whereToSave) {
 		long start = System.currentTimeMillis();
 		

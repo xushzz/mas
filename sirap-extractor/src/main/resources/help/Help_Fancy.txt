@@ -1,4 +1,10 @@
 lady[iga,pinder,carver]  display URLs of lady-related photos from corresponding original web-sites
+mmax               get the max keyword and id of site699, same as mmax2048
+mmax5123           get the max keyword and id of site699, range from 1 to 5123
+mmt                print traced keywords, get the max keyword and id of site699, same as mmt2048
+mmt5123            print traced keywords, get the max keyword and id of site699, range from 1 to 5123
+mload,2099         print the keywords and ids from 1 to 2099
+mload1282,2099     print the keywords and ids from 1282 to 2099
 mei..              list all organizations in library
 mei.orgs           list all organizations in library
 mei....            list all lass items in library, options:$m=3, m means max items
@@ -8,4 +14,4 @@ mei s/59           list image links for specified category
 mei x/74           list image links for specified organization
 mei taiwan         list image links for specified location, also for riben, zhongguo, hanguo
 mei.intro E:\lass.txt    fetch lass intros from lass path which locates in text file
-ver=9/12/2017, II  EXTRACTOR-FANCY1.0.2-NAVAS
+ver=12/6/2017, III  EXTRACTOR-FANCY1.0.3-MIDICI

@@ -639,6 +639,9 @@ public class StrUtil {
 	}
 	
 	public static boolean isRegexMatched(String regex, String source) {
+		if(source == null) {
+			return false;
+		}
 		Matcher m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(source);
 
 		if(m.matches()) {

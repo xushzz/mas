@@ -28,10 +28,73 @@ public class CommandMath extends CommandBase {
 	private static final String LENGTH_OF = "l\\.";
 	private static final String KEY_MAXMIN = "max,min";
 	private static final String KEY_PERMUTATION = "p=";
+	private static final String KEY_SHIFT_LEFT = "<<";
+	private static final String KEY_POWER = "pow";
+	private static final String KEY_ROOT = "root";
 	private static final String REGEX_HEX8 = "0x([0-9a-f]{1,16})";
 	
 	@Override
 	public boolean handle() {
+		if(is(KEY_SHIFT_LEFT)) {
+			long base = 1;
+			List<String> results = Lists.newArrayList();
+			for(int k = 0; k < 64; k++) {
+				String temp = (base<<k) + "";
+				results.add(StrUtil.occupy("{0}<<{1} = {2}", 1, k, temp));
+			}
+			export(results);
+			
+			return true;
+		}
+		
+		params = parseParams("(\\d{1,9})" + KEY_SHIFT_LEFT + "(\\d{1,63})");
+		if(params != null) {
+			long base = Integer.parseInt(params[0]);
+			long times = Integer.parseInt(params[1]);
+			
+			List<String> results = Lists.newArrayList();
+			String temp = (base<<times) + "";
+			results.add(command + " = " + temp);
+			if(temp.length() > 5) {
+				results.add("Result contains " + temp.length() + " chars.");
+			}
+			export(results);
+			
+			return true;
+		}
+		
+		params = parseParams(Konstants.REGEX_FLOAT + KEY_POWER + Konstants.REGEX_FLOAT);
+		if(params != null) {
+			double base = Double.parseDouble(params[0]);
+			double power = Double.parseDouble(params[1]);
+			double result = Math.pow(base, power);
+			
+			List<String> results = Lists.newArrayList();
+			String temp = MathUtil.toPrettyString(result, 9);
+			results.add(command + " = " + temp);
+			if(temp.length() > 5) {
+				results.add("Result contains " + temp.length() + " chars.");
+			}
+			export(results);
+			
+			return true;
+		}
+		
+		solo = parseParam(KEY_ROOT + Konstants.REGEX_FLOAT);
+		if(solo != null) {
+			double base = Double.parseDouble(solo);
+			double result = Math.sqrt(base);
+			List<String> results = Lists.newArrayList();
+			String temp = MathUtil.toPrettyString(result, 9);
+			results.add(command + " = " + temp);
+			if(temp.length() > 5) {
+				results.add("Result contains " + temp.length() + " chars.");
+			}
+			export(results);
+			
+			return true;
+		}
+		
 		params = parseParams("split\\s+(\\d{1,4})\\s+([\\d\\s,]+)");
 		if(params != null) {
 			int amount = Integer.parseInt(params[0]);
