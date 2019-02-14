@@ -25,7 +25,7 @@ public class KeysReader {
 	
 	public List<String> readKeysFromFile() {
 		List<String> entries = new ArrayList<String>();
-		List<String> records = IOUtil.readFileIntoList(filePath);
+		List<String> records = IOUtil.readLines(filePath);
 		for(int i = 0; i < records.size(); i++) {
 			String record = records.get(i);
 			int lineNumber = i + 1;

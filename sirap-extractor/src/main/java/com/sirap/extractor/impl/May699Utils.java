@@ -9,7 +9,6 @@ import com.sirap.basic.component.Extractor;
 import com.sirap.basic.thread.MasterItemOriented;
 import com.sirap.basic.thread.WorkerItemOriented;
 import com.sirap.basic.tool.D;
-import com.sirap.basic.util.Amaps;
 import com.sirap.basic.util.StrUtil;
 
 public class May699Utils {

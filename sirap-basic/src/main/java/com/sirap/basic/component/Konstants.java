@@ -42,6 +42,7 @@ public class Konstants {
 	public static final String KEY_CONTENT_LENGTH = "Content-Length";
 	public static final String KEY_CONTENT_TYPE = "Content-Type";
 	public static final String KEY_AGE = "Age";
+	public static final String KEY_LOCATION = "Location";
 	public static final String FOLDER_EXPORT = "exp";
 	public static final String FOLDER_DATA = "data";
 	public static final String FOLDER_IMG = "img";
@@ -49,7 +50,7 @@ public class Konstants {
 	public static final String FOLDER_YOUDAO = "youdao";
 	public static final String FOLDER_MISC = "misc";
 	public static final String FOLDER_SCREENSHOT = "shot";
-	public static final String FOLDER_HISTORY = "log";
+	public static final String FOLDER_HISTORY = "loghere";
 	public static final String FOLDER_REMOTE = "remote";
 	public static final String DOT_BAT = ".bat";
 	public static final String DOT_TXT = ".txt";
@@ -82,6 +83,7 @@ public class Konstants {
 
 	public static final String CODE_GBK = "GBK";
 	public static final String CODE_GB2312 = "GB2312";
+    public static final String CODE_ISO88591 = "ISO-8859-1";
     public static final String CODE_UTF8 = "UTF-8";
     public static final String CODE_UNICODE = "Unicode";
 

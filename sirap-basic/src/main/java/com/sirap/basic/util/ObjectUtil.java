@@ -4,7 +4,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.exception.MexException;
@@ -210,5 +212,16 @@ public class ObjectUtil {
 	
 	public static String simpleNameOf(Class<?> clazz) {
 		return clazz != null ? clazz.getSimpleName() : Konstants.FAKED_NULL;
+	}
+	
+	public static Map<String, Object> detailOf(Object instance, List<String> methodNames) {
+		Map<String, Object> info = Amaps.newLinkHashMap();	
+		
+		for(String met : methodNames) {
+			Object obj = ObjectUtil.execute(instance, met);
+			info.put(met, obj);
+		}
+		
+		return info;
 	}
 }

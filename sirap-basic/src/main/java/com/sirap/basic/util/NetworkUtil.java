@@ -1,17 +1,22 @@
 package com.sirap.basic.util;
 
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.NetworkInterface;
+import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.Extractor;
 import com.sirap.basic.component.Konstants;
+import com.sirap.basic.data.MethodData;
 import com.sirap.basic.exception.MexException;
+import com.sirap.basic.tool.C;
 
 public class NetworkUtil {
 	
@@ -273,5 +278,34 @@ public class NetworkUtil {
 		}
 		
 		return StrUtil.isRegexMatched(Konstants.REGEX_IP, source);
+	}
+	
+	public static Map<String, Object> urlDetail(String urlstring) {
+		URL uk = null;
+		try {
+			uk = new URL(urlstring);
+			return ObjectUtil.detailOf(uk, MethodData.URL);
+		} catch (MalformedURLException ex) {
+			XXXUtil.alert(ex);
+		}
+		
+		return null;
+	}
+	
+	public static void main(String[] args) {
+		String sa = null;
+		sa = "https://blog.csdn.net/qq_20065991/article/details/82902220";
+		sa = "https://baijiahao.baidu.com/s?id=1621160874039792094&wfr=spider&for=pc#Fleet_restructuring";
+//		sa = "http://en.wikipedia.org/wiki/Air_India?id=1621160874039792094&wfr=spider&for=pc#Fleet_restructuring";
+		sa = "http://120.79.195.133:1998/wiki/Air_India?i= =d=162 1160874039792094&wfr=spider&for=pc#Fleet_restructuring";
+//		sa = "xfile:///D:/Gitpro/OSChina/todos/high/picker.html?id=1621#nice";
+		Object oa = null;
+		sa = "i=16211&ni=60874039792094&wfr=spider&for=pc";
+//		oa = urlDetail(sa);
+		C.pl(sa);
+//		Map map = queryOf(sa);
+//		D.pjsp(map);
+//		C.pl(queryOf(map));
+//		D.pjsp(oa);
 	}
 }

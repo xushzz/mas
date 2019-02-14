@@ -12,6 +12,7 @@ lm fire            open last modified file matching criteria in ll. folder
 sx                 sound on/off switch when capturing screen
 swap               generate random captcha, aka verification code
 qrc ABC            generate QRCode for text ABC, the image will be saved in "shot"
+qrc ABC $i=info,l=logopath,w=329 options i for info, l for logo path and w for width in pixel
 qrc D:\\ABC.txt    generate QRCode for content of ABC.txt, the image will be saved suffixed with "ABC"
 qrc ABC///jack     generate QRCode for text ABC, the image will be saved and suffixed with "jack"
 qrc ABC>D:         generate QRCode for text ABC, the image will be saved in "D:"

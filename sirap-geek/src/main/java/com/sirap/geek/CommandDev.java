@@ -7,10 +7,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.Extractor;
+import com.sirap.basic.component.Konstants;
 import com.sirap.basic.component.comparator.MexFileComparator;
 import com.sirap.basic.data.HtmlData;
 import com.sirap.basic.data.HttpData;
@@ -21,23 +23,26 @@ import com.sirap.basic.domain.ValuesItem;
 import com.sirap.basic.json.JsonUtil;
 import com.sirap.basic.search.MexFilter;
 import com.sirap.basic.tool.C;
-import com.sirap.basic.tool.D;
 import com.sirap.basic.tool.ScreenCaptor;
+import com.sirap.basic.util.Amaps;
 import com.sirap.basic.util.ArisUtil;
 import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.EmptyUtil;
 import com.sirap.basic.util.FileUtil;
+import com.sirap.basic.util.HttpUtil;
 import com.sirap.basic.util.IOUtil;
 import com.sirap.basic.util.ImageUtil;
 import com.sirap.basic.util.MathUtil;
 import com.sirap.basic.util.MatrixUtil;
 import com.sirap.basic.util.MavenUtils;
+import com.sirap.basic.util.NetworkUtil;
 import com.sirap.basic.util.OptionUtil;
 import com.sirap.basic.util.PanaceaBox;
 import com.sirap.basic.util.SatoUtil;
 import com.sirap.basic.util.StrUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.command.CommandBase;
+import com.sirap.common.component.MexItemsFetcher;
 import com.sirap.common.framework.SimpleKonfig;
 import com.sirap.common.framework.command.FileSizeInputAnalyzer;
 import com.sirap.common.framework.command.InputAnalyzer;
@@ -58,6 +63,7 @@ public class CommandDev extends CommandBase {
 	private static final String KEY_ISSUE = "iss";
 	private static final String KEY_JENKINS = "jk";
 	private static final String KEY_PAIR_KEY_VALUE = "pa";
+	private static final String KEY_DETAIL_URL = "pal";
 	private static final String KEY_TO_UPPERCASE = "up";
 	private static final String KEY_TO_LOWERCASE= "lo";
 	private static final String KEY_ZIP = FileUtil.SUFFIXES_ZIP.replace(';', '|');
@@ -67,6 +73,8 @@ public class CommandDev extends CommandBase {
 	private static final String KEY_HOSTS = "hosts";
 	private static final String KEY_PAGE_VIEWERS = "pvs";
 	private static final String KEY_HTML = "html";
+	private static final String KEY_PORT = "port";
+	private static final String KEY_SHORT_URL = "tcn";
 	
 	public boolean handle() {
 		
@@ -250,13 +258,32 @@ public class CommandDev extends CommandBase {
 			return true;
 		}
 		
+		solo = parseParam(KEY_DETAIL_URL + "\\s+(.+)");
+		if(solo != null) {
+			Map<String, Object> map = NetworkUtil.urlDetail(solo);
+			Object querystring = map.get("getQuery");
+			if(querystring != null) {
+				map.put("query", HttpUtil.queryOf(querystring + ""));
+			}
+			
+			export(JsonUtil.objectToPrettyJsonInLines(map));
+			
+			return true;
+		}
+		
 		solo = parseParam(KEY_PAIR_KEY_VALUE + "\\s+(.+)");
 		if(solo != null) {
-			List<String> pairs = StrUtil.parseUrlParams(solo);
-			if(OptionUtil.readBooleanPRI(options, "s", false)) {
-				Colls.sortIgnoreCase(pairs);
+			int index = solo.indexOf("?");
+			if(index == -1) {
+				exportEmptyMsg();
+			} else {
+				String temp = solo.replaceAll(".*\\?", "");
+				temp = temp.replaceAll("#.+", "");
+				Map<String, String> kids = HttpUtil.queryOf(temp);
+				List<String> items = Lists.newArrayList(solo);
+				items.addAll(Amaps.listOf(kids));
+				export(items);
 			}
-			export(pairs);
 			
 			return true;
 		}
@@ -317,7 +344,7 @@ public class CommandDev extends CommandBase {
 				useHighOptions("+size");
 			}
 			
-			D.pl(criteria);
+//			D.pl(criteria);
 			if(KEY_2DOTS.equals(criteria)) {
 				Collections.sort(allItems);
 				export(allItems);
@@ -404,6 +431,30 @@ public class CommandDev extends CommandBase {
 			List<List> matrix = MatrixUtil.matrixOf(HtmlData.eggs());
 			useLowOptions("c=#s2");
 			exportMatrix(matrix);
+			
+			return true;
+		}
+		
+		flag = searchAndProcess(KEY_PORT, new MexItemsFetcher<MexItem>() {
+			@Override
+			public void handle(List<MexItem> items) {
+				exportMatrix(items);
+			}
+			
+			@Override
+			public List<MexItem> body() {
+				String path = "#data/ports.txt";
+				List<String> lines = IOUtil.readLines(path, Konstants.CODE_UTF8);
+				return toMexItems(lines);
+			}
+		});
+		if(flag) return true;
+		
+		solo = parseParam(KEY_SHORT_URL + "\\s+(.+)");
+		if(solo != null) {
+			String longUrl = equiHttpProtoclIfNeeded(solo);
+			String tcn = HttpUtil.tcnOf(longUrl);
+			export(tcn);
 			
 			return true;
 		}

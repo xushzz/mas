@@ -1,5 +1,6 @@
 package com.sirap.basic.util;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,7 +13,6 @@ import java.util.regex.Pattern;
 import com.google.common.collect.Lists;
 import com.sirap.basic.component.Konstants;
 import com.sirap.basic.exception.MexException;
-import com.sirap.basic.tool.D;
 
 public class StrUtil {
 
@@ -911,22 +911,6 @@ public class StrUtil {
 		return params;
 	}
 	
-	public static List<String> parseUrlParams(String wholeUrl) {
-		String regex = "([^\\?&=]+)=([^\\?&#]*)";
-		Matcher ma = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(wholeUrl);
-		
-		List<String> params = new ArrayList<>();
-		String mainUrl = wholeUrl.replaceAll("\\?.*", "");
-		params.add(mainUrl);
-		while(ma.find()) {
-			String key = ma.group(1);
-			String value = ma.group(2);
-			params.add(key + " = " + value);
-		}
-		
-		return params;
-	}
-	
 	/***
 	 * "\\uE59BBE\\uE781B5"
 	 * @param utf8EncodedString
@@ -1149,5 +1133,14 @@ public class StrUtil {
 		}
 		
 		return count % 2 == 0;
+	}
+	
+	public static String newString(String origin, String encodingFrom, String encodingTo) {
+		try {
+			String temp = new String(origin.getBytes(encodingFrom), encodingTo);
+			return temp;
+		} catch (UnsupportedEncodingException ex) {
+			throw new MexException(ex);
+		}
 	}
 }

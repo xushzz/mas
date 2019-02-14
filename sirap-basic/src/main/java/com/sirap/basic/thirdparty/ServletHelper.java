@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import com.google.common.collect.Lists;
+import com.sirap.basic.data.MethodData;
 import com.sirap.basic.tool.D;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.ObjectUtil;
@@ -60,48 +61,9 @@ public class ServletHelper {
 		
 		List<String> mets = Lists.newArrayList();
 		mets.add("== HttpServletRequest ==");
-		mets.add("getCookies");
-		mets.add("getHeaderNames");
-		mets.add("getSession");
-		mets.add("getUserPrincipal");
-		mets.add("getAuthType");
-		mets.add("getContextPath");
-		mets.add("getMethod");
-		mets.add("getPathInfo");
-		mets.add("getPathTranslated");
-		mets.add("getQueryString");//返回请求行中的参数部分
-		mets.add("getRemoteUser");
-		mets.add("getRequestURI");//返回请求行中的资源名称
-		mets.add("getRequestURL");//获得客户端发送请求的完整url
-		mets.add("getRequestedSessionId");
-		mets.add("getServletPath");
-		mets.add("isRequestedSessionIdFromCookie");
-		mets.add("isRequestedSessionIdFromURL");
-		mets.add("isRequestedSessionIdFromUrl");
-		mets.add("isRequestedSessionIdValid");
+		mets.addAll(MethodData.HttpServletRequest);
 		mets.add("== ServletRequest ==");
-//		mets.add("getReader");//getReader() has already been called for this request
-		mets.add("getAttributeNames");
-		mets.add("getLocales");
-		mets.add("getParameterNames");
-		mets.add("getLocale");
-		mets.add("getParameterMap");
-		mets.add("getInputStream");
-		mets.add("getRemoteHost");
-		mets.add("getCharacterEncoding");
-		mets.add("getContentType");
-		mets.add("getLocalAddr");
-		mets.add("getLocalName");
-		mets.add("getProtocol");
-		mets.add("getRemoteAddr");//返回发出请求的IP地址
-		mets.add("getRemoteHost");//返回发出请求的客户机的主机名
-		mets.add("getScheme");
-		mets.add("getServerName");
-		mets.add("isSecure");
-		mets.add("getContentLength");
-		mets.add("getLocalPort");
-		mets.add("getRemotePort");//返回发出请求的客户机的主机名
-		mets.add("getServerPort");//返回发出请求的客户机的端口号。
+		mets.addAll(MethodData.ServletRequest);
 		
 		for(String met : mets) {
 			if(StrUtil.isRegexFound("^[a-z]", met)) {
@@ -114,13 +76,7 @@ public class ServletHelper {
 		
 		mets.clear();
 		mets.add("== HttpSession ==");
-		mets.add("getAttributeNames");
-		mets.add("getServletContext");
-		mets.add("getId");
-		mets.add("getValueNames");
-		mets.add("isNew");
-		mets.add("getCreationTime");
-		mets.add("getLastAccessedTime");
+		mets.addAll(MethodData.HttpSession);
 		
 		for(String met : mets) {
 			if(StrUtil.isRegexFound("^[a-z]", met)) {

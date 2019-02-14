@@ -32,6 +32,14 @@ public class EmptyUtil {
 		}
 	}
 	
+	public static boolean isNotEmpty(String str) {
+		if(str == null || str.isEmpty()) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
 	public static List filter(List lines) {
 		List items = Lists.newArrayList();
 		for(Object line : lines) {

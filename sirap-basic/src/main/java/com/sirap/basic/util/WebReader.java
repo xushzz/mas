@@ -163,21 +163,24 @@ public class WebReader {
 			while(it.hasNext()) {
 				String key = it.next();
 				String value = StrUtil.connect(map.get(key));
-				if(StrUtil.equals(Konstants.KEY_CONTENT_LENGTH, key)) {
-					value = value + " (" + FileUtil.formatSize(Long.parseLong(value)) + ")";
-				} else if(StrUtil.equals(Konstants.KEY_AGE, key)) {
-					double dur = Double.parseDouble(value);
-					value = value + " (" + MathUtil.dhmsStrOfTime(dur, "sec") + ")";
-				}
 				if(key == null) {
 					key = "Status";
 				}
-				items.add(key + ": " + value);
+				if(StrUtil.equals(Konstants.KEY_CONTENT_LENGTH, key)) {
+					value = value + " (" + FileUtil.formatSize(Long.parseLong(value)) + ")";
+					items.add(key + ": " + value);
+				} else if(StrUtil.equals(Konstants.KEY_AGE, key)) {
+					value = value + " (" + MathUtil.dhmsStrOfSeconds(Integer.parseInt(value)) + ")";
+					items.add(key + ": " + value);
+				} else {
+					String utf8 = StrUtil.newString(value, Konstants.CODE_ISO88591, Konstants.CODE_UTF8);
+					items.add(key + ": " + utf8);
+				}
+//				String utf8 = new String(value.getBytes("ISO-8859-1"), "UTF-8");
 			}
 		} catch (Exception ex) {
 			throw new MexException(ex);
 		}
-		
 		Collections.sort(items, new Comparator<String>() {
 
 			@Override
@@ -316,5 +319,11 @@ public class WebReader {
         }
 		
 		return null;
+	}
+	
+	public static void main(String[] args) {
+		String sa = "http://t.cn/EqgdcyM";
+		Object oa = headers(sa);
+		D.pjsp(oa);
 	}
 }

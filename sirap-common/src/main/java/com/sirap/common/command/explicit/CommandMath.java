@@ -30,6 +30,7 @@ public class CommandMath extends CommandBase {
 	private static final String KEY_PERMUTATION = "p=";
 	private static final String KEY_SHIFT_LEFT = "<<";
 	private static final String KEY_POWER = "pow";
+	private static final String KEY_LOGARITHM = "log";
 	private static final String KEY_ROOT = "root";
 	private static final String REGEX_HEX8 = "0x([0-9a-f]{1,16})";
 	
@@ -63,27 +64,33 @@ public class CommandMath extends CommandBase {
 			return true;
 		}
 		
-		params = parseParams(Konstants.REGEX_FLOAT + KEY_POWER + Konstants.REGEX_FLOAT);
+		regex = StrUtil.occupy("({0}|{1}|{2})\\s*{3}(\\s*,\\s*|\\s+){3}", KEY_POWER, KEY_ROOT, KEY_LOGARITHM, Konstants.REGEX_SIGN_FLOAT);
+		params = parseParams(regex);
 		if(params != null) {
-			double base = Double.parseDouble(params[0]);
-			double power = Double.parseDouble(params[1]);
-			double result = Math.pow(base, power);
-			
-			List<String> results = Lists.newArrayList();
-			String temp = MathUtil.toPrettyString(result, 9);
-			results.add(command + " = " + temp);
-			if(temp.length() > 5) {
-				results.add("Result contains " + temp.length() + " chars.");
+			String type = params[0];
+			double va = Double.parseDouble(params[1]);
+			double vb = Double.parseDouble(params[3]);
+			Double result = null;
+			if(StrUtil.equals(KEY_POWER, type)) {
+				result = Math.pow(va, vb);
+			} else if(StrUtil.equals(KEY_LOGARITHM, type)) {
+				double temp1 = Math.log(va);
+				if(temp1 == 0) {
+					String msg = StrUtil.occupy("Bad expression because of {0}", va);
+					export(msg);
+					return true;
+				}
+				double temp2 = Math.log(vb);
+				result = temp2 / temp1;
+			} else if(StrUtil.equals(KEY_ROOT, type)) {
+				if(vb == 0) {
+					String msg = StrUtil.occupy("Bad expression because of {0}", vb);
+					export(msg);
+					return true;
+				}
+				result = Math.pow(va, 1 / vb);
 			}
-			export(results);
-			
-			return true;
-		}
-		
-		solo = parseParam(KEY_ROOT + Konstants.REGEX_FLOAT);
-		if(solo != null) {
-			double base = Double.parseDouble(solo);
-			double result = Math.sqrt(base);
+//			D.pl(result);
 			List<String> results = Lists.newArrayList();
 			String temp = MathUtil.toPrettyString(result, 9);
 			results.add(command + " = " + temp);

@@ -15,6 +15,7 @@ import com.sirap.basic.domain.MexFile;
 import com.sirap.basic.domain.MexObject;
 import com.sirap.basic.domain.PaymentItem;
 import com.sirap.basic.tool.C;
+import com.sirap.basic.tool.D;
 import com.sirap.basic.util.Colls;
 import com.sirap.basic.util.DateUtil;
 import com.sirap.basic.util.EmptyUtil;
@@ -207,17 +208,21 @@ public class CommandImage extends CommandBase {
 			}
 
 			String[] filenameAndFormat = generateQRCodeImageFilenameAndFormat(nameInfo, content, "png");
-			String filepath = filenameAndFormat[0];
-			String format = filenameAndFormat[1];
-			
-			String filePath = QRCodeHelper.createImage(content, filepath, format, 200, 200);
+			String filePath = filenameAndFormat[0];
+
+			int width = OptionUtil.readIntegerPRI(options, "w", 300);
+			String info = OptionUtil.readString(options, "i", content);
+			String logoDefault = g().getUserValueOf("qrcode.logo");
+			String logo = OptionUtil.readString(options, "l", logoDefault);
+//			D.pla(content, logo, filePath, info, width, width);
+			QRCodeHelper.createImage(content, logo, filePath, info, width);
 			if (filePath != null) {
-				String info = "";
+				String temp = "";
 				if(OptionUtil.readBooleanPRI(options, "d", false)) {
-					info += " " + FileUtil.formatSize(filePath);
-					info += " " + ImageUtil.readImageWidthHeight(filePath, "x");
+					temp += " " + FileUtil.formatSize(filePath);
+					temp += " " + ImageUtil.readImageWidthHeight(filePath, "x");
 				}
-				C.pl(filePath + info);
+				C.pl(filePath + temp);
 				tryToOpenGeneratedImage(filePath);
 			}
 			
@@ -302,10 +307,10 @@ public class CommandImage extends CommandBase {
 				C.pl2("No active & valid payment info from " + PaymentUtil.URL_DONATION);
 			} else {
 				String[] filenameAndFormat = generateQRCodeImageFilenameAndFormat(type + payinfo.getRemark(), RandomUtil.letters(3), "png");
-				String filepath = filenameAndFormat[0];
+				String filePath = filenameAndFormat[0];
 				String format = filenameAndFormat[1];
 				
-				String filePath = QRCodeHelper.createImage(payinfo.getUrl(), filepath, format, 400, 400);
+//				QRCodeHelper.createImage(payinfo.getUrl(), filePath, format, 400, 400, "");
 				if (filePath != null) {
 					String info = "";
 					if(OptionUtil.readBooleanPRI(options, "d", false)) {

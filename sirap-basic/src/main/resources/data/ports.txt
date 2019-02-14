@@ -1,0 +1,35 @@
+HTTP协议代理服务器常用端口号：80/8080/3128/8081/9098
+SOCKS代理协议服务器常用端口号：1080
+FTP（文件传输）协议代理服务器常用端口号：20（控制端口）/tcp
+FTP（文件传输）协议代理服务器常用端口号：21（数据传输端口）/tcp
+Telnet（远程登录）协议代理服务器常用端口号：23/tcp
+DNS（域名解析服务）默认端口号：53/udp
+HTTP服务器，默认端口号：80/tcp
+POP3（邮局协议版本3）使用的端口号：110/tcp
+HTTPS（securely transferring web pages）服务器，默认端口号：443/tcp
+TFTP（Trivial File Transfer Protocol），默认端口号：69/udp
+SSH（安全登录）、SCP（文件传输）、端口号重定向，默认的端口号：22/tcp
+SMTP （Simple Mail Transfer Protocol），默认端口号：25/tcp
+POP3 Post Office Protocol（E-mail），默认端口号：110/tcp
+Webshpere应用程序默认端口号：9080
+webshpere管理工具，默认端口号：9090
+JBOSS，默认端口号：8080
+TOMCAT，默认端口号：8080
+WIN2003远程登录，默认端口号：3389
+Symantec AV/Filter for MSE,默认端口号：8081
+MSN Messenger的文件传输功能所使用的端口号：1863/tcp
+Oracle 数据库默认的端口号：1521/tcp
+ORACLE EMCTL，默认的端口号：1158
+Oracle XDB（XML 数据库），默认的端口号：8080
+Oracle XDB FTP服务，默认的端口号：2100
+MS SQL*SERVER数据库server，默认的端口号：1433/tcp
+MS SQL*SERVER数据库monitor，默认的端口号：1434/tcp
+Microsoft RDP 微软远程桌面使用的端口号：1863/tcp
+Symantec pcAnywhere 远程控制数据传输时使用的端口号：5631/tcp
+Symantec pcAnywhere 主控端扫描被控端时使用的端口号：5632/udp
+MS SQL Server使用的端口号：5000/tcp
+腾讯QQ端口号：8000/udp
+https://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers
+http://www.pearsonitcertification.com/articles/article.aspx?p=1868080
+https://www.examcollection.com/certification-training/network-plus-overview-of-common-tcp-and-udp-default-ports.html
+http://dwz.wailian.work/

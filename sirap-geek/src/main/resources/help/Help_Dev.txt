@@ -19,7 +19,8 @@ jk                 display the location of Jenkins server
 jk Elastos         display build info for Jenkins job Elasto
 jk Elastos.18      display latest 18 build info for Jenkins job Elasto
 jk Elastos#8       display build No.8 info for Jenkins job Elasto
-pa http://X/json?name=jack&id=19 parse key value pairs in URL with ask and &
+pa http://X/json?name=jack&id=19 parse query key-value pairs in URL
+pal http://X/json?name=jack&id=19 detail of URL
 lo.QwErTy21        convert given string to lower case
 up.QwErTy21        convert given string to upper case
 E:\abc.jar a&b     list out what is inside a jar with criteria, $+full,+size,+case
@@ -31,4 +32,6 @@ pvs                list all available explorers, as in page viewers, like Chrome
 &oplus;            display html entity or symbol by name
 &8869;             display html entity or symbol by code
 html..             list all html entities and symbols
-ver=10/3/2018, III  GEEK-DEV1.0.37-RONALDO
+port html          get port information about html
+tcn yourhttplink   you will get a short address, guess what is "http://t.cn/Ecsko8M"
+ver=2/14/2019, IV  GEEK-DEV1.0.38-BAIWANG
