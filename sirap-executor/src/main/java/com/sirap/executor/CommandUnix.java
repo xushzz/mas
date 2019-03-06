@@ -21,6 +21,8 @@ import com.sirap.executor.ssh.SshUtil;
 public class CommandUnix extends CommandBase {
 
 	private static final String KEY_SSH = "ssh";
+	private static final String KEY_SSH_DOCKER = "docker";
+	private static final String KEY_SSH_HADOOP = "hadoop";
 	private static final String KEY_SSH_TOPS = "docker|hadoop";
 	private static final String KEY_CHEF_CLIENT_EXECUTE = "!";
 	private static final String KEY_CHEF_RECIPE_DISPLAY = "=";
@@ -100,6 +102,22 @@ public class CommandUnix extends CommandBase {
 			List<String> items = SshCommandExecutor.g().execute(usercommand, isPretty());
 			
 			export(items);
+			
+			return true;
+		}
+		
+		if(is(KEY_SSH_DOCKER)) {
+			String usercommand = KEY_SSH_DOCKER;
+			List<String> items = SshCommandExecutor.g().execute(usercommand, isPretty());
+			
+			export(items);
+			
+			return true;
+		}
+		
+		if(is(KEY_SSH_DOCKER + KEY_2DOTS)) {
+			String url = "https://github.com/moby/moby/blob/b5f68d7ed3a2a9db7bdbfd3bdee42d9d1a7e5423/pkg/namesgenerator/names-generator.go#L105";
+			export(url);
 			
 			return true;
 		}

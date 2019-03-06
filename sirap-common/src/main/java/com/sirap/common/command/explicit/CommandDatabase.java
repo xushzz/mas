@@ -28,6 +28,7 @@ import com.sirap.common.component.db.MysqlHelper;
 import com.sirap.common.framework.Stash;
 import com.sirap.common.framework.command.InputAnalyzer;
 import com.sirap.common.framework.command.SqlInputAnalyzer;
+import com.sirap.common.framework.command.target.TargetConsole;
 import com.sirap.common.framework.command.target.TargetExcel;
 
 public class CommandDatabase extends CommandBase {
@@ -421,8 +422,14 @@ public class CommandDatabase extends CommandBase {
 	
 	private List watcherExport(QueryWatcher ming) {
 		boolean rotate = OptionUtil.readBooleanPRI(options, "r", false);
-		
-		if(TargetExcel.class.isInstance(target)) {
+//		if(TargetConsole.class.isInstance(target)) {
+//			boolean pretty = OptionUtil.readBooleanPRI(options, "p", true);
+//			String connector = OptionUtil.readString(options, "c", " , ");
+//			return ming.exportLiteralStrings(rotate, pretty, connector);
+//		} else {
+//			return ming.exportListItems(rotate);
+//		}
+		if(isToExcel() || isToPdf()) {
 			return ming.exportListItems(rotate);
 		} else {
 			boolean pretty = OptionUtil.readBooleanPRI(options, "p", true);

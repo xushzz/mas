@@ -1,12 +1,17 @@
 <<                 display 1<<0, 1<<1, ..1<<k., 1<<63, 1<<62 = 4611686018427387904
 3<<7               shift and display
+pi                 shows Math.PI such as 3.142 and Math.E such as 2.718
+pie                shows Math.PI such as 3.142 and Math.E such as 2.718
 pow3,4             the K power of given number, gets 81 in this case
-root81,4            the K root of given number, gets 3 in this case
-log3,81            the logarithm of K with given number, gets 4 in this case
+root81,4           the K root of given number, gets 3 in this case
+log3,81            the base K logarithm of given number, gets 4 in this case
+pow4               the 2 power of given number, gets 16 in this case
+root81             the 2 root of given number, gets 9 in this case
+log81              the base 2 logarithm of given number, gets 4.394449 in this case
 pow3 4             the K power of given number, gets 81 in this case
 root81 4           the K root of given number, gets 3 in this case
 root 81 4          the K root of given number, gets 3 in this case
-log3 81            the logarithm of K with given number, gets 4 in this case
+log3 81            the base K logarithm of given number, gets 4 in this case
 70kg               convert weight units between KG,LB,OZ, 1kg=2.2lb=35.237oz, options:$s=3, scale
 50Fa               convert temperature units between Fahrenheit and Celsius, options:$s=3, scale
 10cm               convert short distance units between cm, yard, chi, feet, cun, inch, options:$s=3, scale

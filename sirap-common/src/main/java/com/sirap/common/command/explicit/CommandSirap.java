@@ -160,6 +160,7 @@ public class CommandSirap extends CommandBase {
 			items.add(ValuesItem.of("Local", NetworkUtil.getLocalhostIp()));
 			items.add(ValuesItem.of("Public", NetworkUtil.getPublicIp(OptionUtil.readBooleanPRI(options, "url", false))));
 			items.add(ValuesItem.of("Aliyun", "120.79.195.133"));
+			items.add(ValuesItem.of("HWCloud", "139.9.56.194"));
 			exportMatrix(items);
 			
 			return true;

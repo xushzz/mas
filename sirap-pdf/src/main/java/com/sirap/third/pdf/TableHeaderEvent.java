@@ -21,7 +21,8 @@ import com.sirap.basic.util.StrUtil;
 
 public class TableHeaderEvent extends PdfPageEventHelper {
     /** The template with the total number of pages. */
-    PdfTemplate total;
+    private PdfTemplate total;
+    private String randomName = RandomUtil.name(100);
     
     public TableHeaderEvent() {
     }
@@ -51,7 +52,7 @@ public class TableHeaderEvent extends PdfPageEventHelper {
             table.getDefaultCell().setFixedHeight(20);
             table.getDefaultCell().setBorder(Rectangle.BOTTOM);
             String datestr = DateUtil.strOf(new Date(), DateUtil.GMT);
-            table.addCell(StrUtil.occupy("{0} [{1}]", datestr, RandomUtil.name(100)));
+            table.addCell(StrUtil.occupy("{0} [{1}]", datestr, randomName));
             table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_RIGHT);
             table.addCell(String.format("%d /", writer.getPageNumber()));
             PdfPCell cell = new PdfPCell(Image.getInstance(total));

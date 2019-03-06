@@ -17,6 +17,7 @@ import com.sirap.basic.util.XCodeUtil;
 import com.sirap.basic.util.XXXUtil;
 import com.sirap.common.domain.Album;
 import com.sirap.extractor.images.FenunFetcher;
+import com.sirap.extractor.images.MayFetcher;
 import com.sirap.extractor.images.Netease163Fetcher;
 import com.sirap.extractor.images.SinaFetcher;
 import com.sirap.extractor.images.SuperiorFetcher;
@@ -37,6 +38,7 @@ public class LinksFetchers {
 		MY_FETCHERS.put("weixin.qq.com", new WeixinFetcher());
 		MY_FETCHERS.put("superiorpics.com", new SuperiorFetcher());
 		MY_FETCHERS.put("www.fenun.cn", new FenunFetcher());
+		MY_FETCHERS.put("www.699mm.com", new MayFetcher());
 	}
 	
 	public static Album fetchAlbum(final String albumUrl) {

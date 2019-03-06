@@ -323,8 +323,12 @@ public class Colls {
 		if (obj instanceof List) {
 			items = (List)obj;
 		} else if(obj instanceof String) {
-			String splitBy = OptionUtil.readString(options, "sp", ",");
-			items = StrUtil.split(obj + "", splitBy);
+			String splitBy = OptionUtil.readString(options, "sp");
+			if(splitBy != null) {
+				items = StrUtil.split(obj + "", splitBy);
+			} else {
+				items = Lists.newArrayList(obj);
+			}
 		} else if (obj instanceof MexItem) {
 			MexItem item = (MexItem)obj;
 			items = item.toList(options);

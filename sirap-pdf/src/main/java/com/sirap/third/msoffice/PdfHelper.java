@@ -85,8 +85,7 @@ public class PdfHelper {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static void insertTable(Document doc, List<Object> list, PDFParams params)
-			throws DocumentException {
+	public static void insertTable(Document doc, List<Object> list, PDFParams params) throws DocumentException {
 		Font font = createFont(params.isUseAsianFont());
 		boolean toGray = false;
 		int[] cellsWidth = params.getCellWidths();
@@ -119,18 +118,23 @@ public class PdfHelper {
 					String stuff = items.get(k) + "";
 					int align = cellsAlign[k];
 					datatable.getDefaultCell().setHorizontalAlignment(align);
-					datatable.addCell(new Paragraph(stuff, font));	
+					datatable.addCell(new Paragraph(wrapEmpty(stuff), font));	
 				}
 			} else {
 				String stuff = record + "";
-				if(stuff.isEmpty()) {
-					stuff = " ";
-				}
-				datatable.addCell(new Paragraph(stuff, font));	
+				datatable.addCell(new Paragraph(wrapEmpty(stuff), font));	
 			}
 			toGray = !toGray;
 		}
 		doc.add(datatable);
+	}
+	
+	private static String wrapEmpty(String str) {
+		if(str.isEmpty()) {
+			return " ";
+		} else {
+			return str;
+		}
 	}
 
 	public static Font createFont(boolean useAsianFont) {

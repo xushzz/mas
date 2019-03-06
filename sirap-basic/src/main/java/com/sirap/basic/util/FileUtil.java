@@ -52,6 +52,7 @@ public class FileUtil {
 	
 	public static final List<String> EXTENSIONS_TEXT = StrUtil.split("txt,properties,java,js,json,css,xml,pom,bat,cpp,sh,py,sql,cmd,md,ini");
 	public static final List<String> EXTENSIONS_IMAGE = StrUtil.split("png,bmp,jpg,jpeg,jpe,jfif,gif,tif,tiff,ico");
+	public static final List<String> EXTENSIONS_VIDEO = StrUtil.split("3gp,avi,wmv,wmp,asf,rm,ram,rmvb,ra,mpg,mpeg,mp4,mpa,mkv");
 	public static final List<String> EXTENSIONS_PDF = StrUtil.split("pdf");
 	public static final List<String> EXTENSIONS_EXCEL = StrUtil.split("xls,xlsx");
 	public static final List<String> EXTENSIONS_HTML = StrUtil.split("htm,html");

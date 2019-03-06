@@ -30,12 +30,22 @@ public class CommandMath extends CommandBase {
 	private static final String KEY_PERMUTATION = "p=";
 	private static final String KEY_SHIFT_LEFT = "<<";
 	private static final String KEY_POWER = "pow";
+	private static final String KEY_PIE = "pie,pi";
 	private static final String KEY_LOGARITHM = "log";
 	private static final String KEY_ROOT = "root";
 	private static final String REGEX_HEX8 = "0x([0-9a-f]{1,16})";
 	
 	@Override
 	public boolean handle() {
+		if(isIn(KEY_PIE)) {
+			List<String> items = Lists.newArrayList();
+			items.add("Math.PI = " + Math.PI);
+			items.add("Math.E = " + Math.E);
+			export(items);
+			
+			return true;
+		}
+		
 		if(is(KEY_SHIFT_LEFT)) {
 			long base = 1;
 			List<String> results = Lists.newArrayList();
@@ -64,16 +74,27 @@ public class CommandMath extends CommandBase {
 			return true;
 		}
 		
-		regex = StrUtil.occupy("({0}|{1}|{2})\\s*{3}(\\s*,\\s*|\\s+){3}", KEY_POWER, KEY_ROOT, KEY_LOGARITHM, Konstants.REGEX_SIGN_FLOAT);
+		regex = StrUtil.occupy("({0}|{1}|{2})\\s*{3}(|(\\s*,\\s*|\\s+){3})", KEY_POWER, KEY_ROOT, KEY_LOGARITHM, Konstants.REGEX_SIGN_FLOAT);
 		params = parseParams(regex);
+//		D.pla(params);
 		if(params != null) {
 			String type = params[0];
 			double va = Double.parseDouble(params[1]);
-			double vb = Double.parseDouble(params[3]);
+			String sb = params[2];
+			
 			Double result = null;
 			if(StrUtil.equals(KEY_POWER, type)) {
+				double vb = sb.isEmpty() ? 2 : Double.parseDouble(sb);
 				result = Math.pow(va, vb);
 			} else if(StrUtil.equals(KEY_LOGARITHM, type)) {
+				double vb = -1.1;
+				if(sb.isEmpty()) {
+					vb = va;
+					va = 2;
+				} else {
+					vb = Double.parseDouble(sb);
+				}
+				
 				double temp1 = Math.log(va);
 				if(temp1 == 0) {
 					String msg = StrUtil.occupy("Bad expression because of {0}", va);
@@ -82,7 +103,9 @@ public class CommandMath extends CommandBase {
 				}
 				double temp2 = Math.log(vb);
 				result = temp2 / temp1;
+
 			} else if(StrUtil.equals(KEY_ROOT, type)) {
+				double vb = sb.isEmpty() ? 2 : Double.parseDouble(sb);
 				if(vb == 0) {
 					String msg = StrUtil.occupy("Bad expression because of {0}", vb);
 					export(msg);

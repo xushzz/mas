@@ -15,13 +15,13 @@ public class FenunFetcher extends WebsiteImageLinksFetcher {
 		return of(weburl);
 	}
 	
-	public static Album of(String personUrl) {
+	public static Album of(String albumurl) {
 		Extractor<Album> frank = new Extractor<Album>() {
     		
 			@Override
 			public String getUrl() {
 				showFetching();
-				return personUrl;
+				return albumurl;
 			}
 			
 			@Override
@@ -34,8 +34,8 @@ public class FenunFetcher extends WebsiteImageLinksFetcher {
 				}
 
 				String regex2 = "<h1>(.+?)</h1>";
-				String title = StrUtil.findFirstMatchedItem(regex2, source);
-				item = new Album(title, links).setTag("feng");
+				String name = StrUtil.findFirstMatchedItem(regex2, source);
+				item = Album.of(name, links).setTag("fen").setUrl(albumurl).setListObj(links);
 			}
 		};
 		
